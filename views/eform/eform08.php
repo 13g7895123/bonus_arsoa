@@ -9,17 +9,17 @@
     <title>Arsoa 安露莎化粧品 - Single Post With Sidebar</title>
 
     <!-- CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/animsition.min.css" rel="stylesheet">
-    <link href="css/owl.carousel.min.css" rel="stylesheet">
-    <link href="css/owl.theme.default.min.css" rel="stylesheet">
-    <link href="css/socicon.css" rel="stylesheet">
-    <link href="css/ionicons.min.css" rel="stylesheet">
-    <link href="css/animate.min.css" rel="stylesheet">
-    <link href="css/jquery.fancybox.min.css" rel="stylesheet">
+    <link href="<?=base_url('public/online_form/')?>css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?=base_url('public/online_form/')?>css/animsition.min.css" rel="stylesheet">
+    <link href="<?=base_url('public/online_form/')?>css/owl.carousel.min.css" rel="stylesheet">
+    <link href="<?=base_url('public/online_form/')?>css/owl.theme.default.min.css" rel="stylesheet">
+    <link href="<?=base_url('public/online_form/')?>css/socicon.css" rel="stylesheet">
+    <link href="<?=base_url('public/online_form/')?>css/ionicons.min.css" rel="stylesheet">
+    <link href="<?=base_url('public/online_form/')?>css/animate.min.css" rel="stylesheet">
+    <link href="<?=base_url('public/online_form/')?>css/jquery.fancybox.min.css" rel="stylesheet">
 
     <!-- Main CSS -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="<?=base_url('public/online_form/')?>css/style.css" rel="stylesheet">
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
@@ -394,22 +394,22 @@
 
 
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
-    <script src="js/smoothscroll.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/animsition.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/wow.min.js"></script>
-    <script src="js/jquery.pagepiling.min.js"></script>
-    <script src="js/isotope.pkgd.min.js"></script>
-    <script src="js/jquery.fancybox.min.js"></script>
-    <script src="js/TweenMax.min.js"></script>
-    <script src="js/ScrollMagic.min.js"></script>
-    <script src="js/animation.gsap.min.js"></script>
-    <script src="js/jquery.viewport.js"></script>
-    <script src="js/jquery.countdown.min.js"></script>
-    <script src="js/script.js"></script>
+    <script>window.jQuery || document.write('<script src="<?=base_url('public/online_form/')?>js/jquery.min.js"><\/script>')</script>
+    <script src="<?=base_url('public/online_form/')?>js/smoothscroll.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/popper.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/bootstrap.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/animsition.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/owl.carousel.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/wow.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/jquery.pagepiling.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/isotope.pkgd.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/jquery.fancybox.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/TweenMax.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/ScrollMagic.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/animation.gsap.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/jquery.viewport.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/jquery.countdown.min.js"></script>
+    <script src="<?=base_url('public/online_form/')?>js/script.js"></script>
 
 
     <script>

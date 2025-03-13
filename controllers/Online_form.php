@@ -20,8 +20,49 @@ class Online_form extends MY_Controller
 
     public function form1()
     {
-        // print_r(123); die();
-        // print_r(base_url()); die();
+        $data = array();
         $this->layout->view('./eform/eform01', $data);
+    }
+
+    public function form2()
+    {
+        $data = array();
+        $this->layout->view('./eform/eform02', $data);
+    }
+
+    public function form3()
+    {
+        $data = array();
+        $this->layout->view('./eform/eform03', $data);
+    }
+
+    public function form4()
+    {
+        $data = array();
+        $this->layout->view('./eform/eform04', $data);
+    }
+
+    public function form5()
+    {
+        $data = array();
+        $this->layout->view('./eform/eform05', $data);
+    }
+
+    public function form6()
+    {
+        $data = array();
+        $this->layout->view('./eform/eform06', $data);
+    }
+
+    public function form7()
+    {
+        $data = array();
+        $this->layout->view('./eform/eform07', $data);
+    }
+
+    public function form8()
+    {
+        $data = array();
+        $this->layout->view('./eform/eform08', $data);
     }
 }
