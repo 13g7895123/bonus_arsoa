@@ -8,14 +8,17 @@ class Online_form extends MY_Controller
         parent::__construct();
         _timer('*** controllers start ***');
 
-        // $this->load->model( 'front_member_model' );
-        // $this->load->model( 'front_order_model' );
-        // $this->load->model( 'front_base_model' );
-        // $this->load->model( 'front_product_model' );
-        // $this->load->model( 'front_mssql_model' );
+        $this->load->model( 'front_member_model' );
+        $this->load->model( 'front_order_model' );
+        $this->load->model( 'front_base_model' );
+        $this->load->model( 'front_product_model' );
+        $this->load->model( 'front_mssql_model' );
                       
         $this->load->library( 'user_agent' );
         $this->load->library('layout', array('layout' => '../template/layout'));
+        if ( !$this->front_member_model->check_member_login( TRUE ) ) {
+            redirect( 'member/login' );
+        }
     }
 
     public function form1()

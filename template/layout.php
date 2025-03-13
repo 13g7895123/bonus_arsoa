@@ -77,6 +77,8 @@
 <meta name="image" content="<?=$meta_image?>"/>
 <meta name="robots" content="index,follow" />
 <meta name="googlebot" content="index,follow"/>
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script>window.jQuery || document.write('<script src="<?=base_url()?>public/js/jquery.min.js"><\/script>')</script>
 <script type="text/javascript" src="<?=base_url()?>public/js/jquery-latest.min.js"></script>
@@ -171,7 +173,24 @@
 <?php if (isset($schema_embed['schema'])){ 
           echo $schema_embed['schema'];
       } ?>
+<!-- CSS -->
+<link href="<?= base_url('public/online_form/') ?>css/bootstrap.min.css" rel="stylesheet">
+<link href="<?= base_url('public/online_form/') ?>css/animsition.min.css" rel="stylesheet">
+<link href="<?= base_url('public/online_form/') ?>css/owl.carousel.min.css" rel="stylesheet">
+<link href="<?= base_url('public/online_form/') ?>css/owl.theme.default.min.css" rel="stylesheet">
+<link href="<?= base_url('public/online_form/') ?>css/socicon.css" rel="stylesheet">
+<link href="<?= base_url('public/online_form/') ?>css/ionicons.min.css" rel="stylesheet">
+<link href="<?= base_url('public/online_form/') ?>css/animate.min.css" rel="stylesheet">
+<link href="<?= base_url('public/online_form/') ?>css/jquery.fancybox.min.css" rel="stylesheet">
 
+<!-- Main CSS -->
+<link href="<?= base_url('public/online_form/') ?>css/style.css" rel="stylesheet">
+
+<!-- Favicons -->
+<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+<link rel="manifest" href="favicon/site.webmanifest">
 <link href="<?=base_url()?>public/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="<?=base_url()?>public/css/animsition.min.css" rel="stylesheet">
