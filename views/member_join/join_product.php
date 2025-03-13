@@ -1,0 +1,1 @@
+<a href="javascript:void();" onclick="product_show('<?=trim($p_no)?>','<?=trim($p_name)?>','<?=trim(number_format($p_price))?>','<?=$unit?>');" data-toggle="modal" data-target="#join_product"><?=trim($p_name)?></a>

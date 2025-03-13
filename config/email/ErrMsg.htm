@@ -1,0 +1,75 @@
+
+<html>
+
+
+
+<style TYPE="text/css">
+body {
+        font-family:Arial, Helvetica, sans-serif;
+        font-size:12px;
+        line-height: 18px;
+        margin-top: 0px;　
+        margin-left: 0px;
+        margin-right: 0px;　
+        margin-bottom: 0px;
+        color: #666666;
+}
+.STableBgcolor
+{
+        background-color: #FFCC99;
+}
+tr.SDataBgcolor1,td.SDataBgcolor1
+{
+	background-color: #FFFFFF;
+         text-align: right;
+	color:#00A080;font-weight: 800
+}
+tr.SDataBgcolor2,td.SDataBgcolor2
+{
+	background-color: #FFFFFF;
+
+	color: #000000;	
+}
+
+</style>
+<body>
+<table border="0" width="100%"  bordercolorlight="#000000" bordercolordark="#FFFFFF" cellspacing="0" cellpadding="3" align="center" class="STableBgcolor"> 
+  <tr>
+<td class="SDataBgcolor1" valign="top" width="15%">錯誤訊息:</td>
+<td class="SDataBgcolor2" valign="top"><+Msg+>&nbsp;</td>
+  </tr>
+ 
+ <tr>
+<td class="SDataBgcolor1" valign="top" width="15%">上一頁:</td>
+<td class="SDataBgcolor2" valign="top"><+HTTP_REFERER+>&nbsp;</td>
+  </tr>
+  <tr>  
+  <tr>
+<td class="SDataBgcolor1" valign="top" width="15%">檔案名稱:</td>
+<td class="SDataBgcolor2" valign="top"><+PATH_INFO+>&nbsp;</td>
+  </tr>
+<tr>
+<td class="SDataBgcolor1" valign="top" width="15%">REQUEST_METHOD:</td>
+<td class="SDataBgcolor2" valign="top"><+REQUEST_METHOD+>&nbsp;</td>
+  </tr>  
+  <tr>
+<td class="SDataBgcolor1" valign="top" width="15%">Request.Form:</td>
+<td class="SDataBgcolor2" valign="top"><+RequestForm+>&nbsp;</td>
+  </tr>
+  
+  <tr>
+<td class="SDataBgcolor1" valign="top" width="15%">QueryString:</td>
+<td class="SDataBgcolor2" valign="top"><+QueryString+>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td class="SDataBgcolor1" valign="top" width="15%">USER IP: </td>
+<td class="SDataBgcolor2" valign="top"><+clientip+>&nbsp;</td>
+  </tr>
+  <tr>
+<td class="SDataBgcolor1" valign="top" width="15%">時間:</td>
+<td class="SDataBgcolor2" valign="top"><+Date+>&nbsp;</td>
+  </tr>
+</table>
+</body>
+</html>

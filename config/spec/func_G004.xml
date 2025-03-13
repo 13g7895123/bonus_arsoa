@@ -1,0 +1,15 @@
+<?xml version="1.0"  encoding="utf-8" ?>
+<table name="article">	
+	<Field name="id" title="自動編號" 必填="1"  />			
+	<Field name="title" title="文件名稱"  color="FFFFFF" type="String" maxlength="20" method="text" list="Y" edit="Y" search="Y" 必填="Y" />	
+	<Field name="field1" title="檔案"  type="txt" method="uifile" 上傳目錄="file" Size="5120" FileLimit="pdf" list="N" edit="Y" search="N" 必填="Y" />		
+	<Field name="field1_name" title="檔案"  type="txt" method="String" list="Y" edit="N" search="Y" 必填="N" />		
+	<Field name="begindate" title="開始日期"   type="datetime" method="pj_inputdatetime" list="Y"  edit="Y"  search="Y" 必填="Y" />	
+	<Field name="closedate" title="終束日期"   type="date" method="pj_inputdatetime" list="Y"  edit="Y"  search="Y" 必填="N" Memo="(不填寫為不限時間)"/>	
+	<Field name="boardsort" title="順序" color="FFFFFF"  type="text" maxlength="10" method="text"  list="Y" size="180" search="N" edit="Y"  必填="Y" Memo="(小到大排序)" />	
+	<Field name="nshow" title="上下架"  color="FFFFFF" type="xml" method="xml" methodtype="radio" list="Y" edit="Y" search="N" 必填="Y"   />	
+	<Field name="crdt" title="建立日期" color="FFFFFF" type="date" list="N"  edit="N"  search="N" 必填="N" />	
+	<Field name="hits" title="點閱數" color="FFFFFF"  type="INT" method="int" list="Y" search="N" edit="N" 必填="N" />
+	<Field name="updt" title="最後修改時間" color="FFFFFF" type="date" list="Y"  edit="N"  search="N" 必填="N" />
+	<Field name="account" title="最後修改人" color="FFFFFF" type="String" list="Y"  edit="N"  search="N" 必填="N" />	
+</table>

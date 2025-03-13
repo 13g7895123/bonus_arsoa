@@ -1,0 +1,12 @@
+<?xml version="1.0"  encoding="utf-8" ?>
+<table name="article">	
+	<Field name="id" title="自動編號" 必填="1"  />			
+	<Field name="atype" title="問題類型"  color="FFFFFF" type="xml" method="xml" methodtype="SELECT" list="Y" edit="Y" search="N" 必填="Y"   />		
+	<Field name="title" title="問題"  color="FFFFFF" type="String" maxlength="50" method="text" list="Y" edit="Y" search="Y" 必填="Y" />					
+	<Field name="body" title="答案"  color="FFFFFF" type="String" method="html" list="N" edit="Y" search="Y" 必填="N" />	
+	<Field name="boardsort" title="順序"  type="INT" method="int"  list="Y" search="Y" edit="Y"  必填="N" Memo="(小到大排序)" />	
+	<Field name="nshow" title="上下架"  color="FFFFFF" type="xml" method="xml" methodtype="radio" list="Y" edit="Y" search="N" 必填="N"   />		
+	<Field name="crdt" title="建立日期" color="FFFFFF" type="date" list="N"  edit="N"  search="N" 必填="N" />		
+	<Field name="updt" title="最後修改時間" color="FFFFFF" type="date" list="Y"  edit="N"  search="N" 必填="N" />
+	<Field name="account" title="最後修改人" color="FFFFFF" type="String" list="Y"  edit="N"  search="N" 必填="N" />	
+</table>

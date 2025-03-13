@@ -1,0 +1,8 @@
+<?xml version="1.0"  encoding="utf-8" ?>
+<table name="article">	
+	<Field name="id" title="自動編號" 必填="1"  />		
+	<Field name="title" title="問題Q"  color="FFFFFF" type="String" maxlength="50" method="text" list="Y" edit="Y" search="Y" 必填="Y" />		
+	<Field name="descr" title="答案A"  color="FFFFFF" type="String" method="html" list="N" edit="Y" search="Y" 必填="Y" />		
+	<Field name="nshow" title="上下架"  color="FFFFFF" type="xml" method="xml" methodtype="radio" list="Y" edit="Y" search="N" 必填="N"   />
+	<Field name="boardsort" title="順序" color="FFFFFF"  type="text" maxlength="10" method="text"  list="Y" size="180" search="N" edit="Y"  必填="Y" Memo="(小到大排序)" />	
+</table>
