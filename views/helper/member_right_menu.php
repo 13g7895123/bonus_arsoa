@@ -61,7 +61,7 @@ if ($active > ''){
 </div>
 
 <!-- 線上表單 -->
-<a href="javascript:;" class="btn btn-outline-secondary btn-block">線上表單<i class="icon ion-ios-list"></i></a>
+<a href="javascript:;" class="btn btn-outline-secondary btn-block <?=($active == 'online_form')?'active':'';?>">線上表單<i class="icon ion-ios-list"></i></a>
 <div class="card">
   <div class="card-body">
     <a href="<?php echo base_url( 'online_form/form1' ); ?>" class="btn btn-outline-secondary btn-block text-left">單一產品訂購單</a>

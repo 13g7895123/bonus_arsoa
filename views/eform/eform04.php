@@ -482,7 +482,7 @@
                             <div class="col-lg-1 d-none d-xl-block"></div>
                             <aside role="complementary" class="aside col-xl-3 col-md-3">
                                 <div class="mt100 mb75">
-                                    <?= $this->block_service->member_right_menu('N'); ?>
+                                    <?= $this->block_service->member_right_menu('online_form'); ?>
                                 </div>
                             </aside>
                         </div>
@@ -644,28 +644,6 @@
     </div>
 
     <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
-
-
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script>
-        window.jQuery || document.write('<script src="<?= base_url('public/online_form/') ?>js/jquery.min.js"><\/script>')
-    </script>
-    <script src="<?= base_url('public/online_form/') ?>js/smoothscroll.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/popper.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/bootstrap.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/animsition.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/owl.carousel.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/wow.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/jquery.pagepiling.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/isotope.pkgd.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/jquery.fancybox.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/TweenMax.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/ScrollMagic.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/animation.gsap.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/jquery.viewport.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/jquery.countdown.min.js"></script>
-    <script src="<?= base_url('public/online_form/') ?>js/script.js"></script>
-
 
     <script>
         $(document).ready(function() {
