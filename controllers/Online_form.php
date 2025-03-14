@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Online_form extends MY_Controller
 {
+    protected $userdata;
     public function __construct()
     {
         parent::__construct();
@@ -19,11 +20,26 @@ class Online_form extends MY_Controller
         if ( !$this->front_member_model->check_member_login( TRUE ) ) {
             redirect( 'member/login' );
         }
+        $this->userdata = $this->session->userdata['member_session'];
+    }
+
+    public function testVariable()
+    {
+        echo '<pre>';
+        print_r();
+        echo '</pre>';
     }
 
     public function form1()
     {
         $data = array();
+        $data['userdata'] = $this->userdata;
+        
+        $blockNum = 10;
+        for($index=1;$index<=$blockNum;$index++) {
+            $subView['index'] = $index;
+            $data['subView'] .= $this->load->view('eform/sub_eform01', $subView, true);
+        }
         $this->layout->view('./eform/eform01', $data);
     }
 

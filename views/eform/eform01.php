@@ -22,19 +22,19 @@
                                             <div class="row">
                                                 <div class="col-sm-4 mb30">
                                                     <label class="label-custom">收貨人</label>
-                                                    <input type="text" class="form-control form-control-custom" placeholder="真實姓名" />
+                                                    <input type="text" name="consignee" class="form-control form-control-custom" placeholder="請填收貨人" value="<?=$userdata['c_name'];?>" />
                                                 </div>
                                                 <div class="col-sm-4 mb30">
                                                     <label class="label-custom">手機</label>
-                                                    <input type="text" class="form-control form-control-custom" placeholder="請填09xx-xxx-xxx" />
+                                                    <input type="text" name="consignee_cellphone" class="form-control form-control-custom" placeholder="請填手機" value="<?=$userdata['cell1'];?>" />
                                                 </div>
                                                 <div class="col-sm-4 mb30">
                                                     <label class="label-custom">聯絡電話</label>
-                                                    <input type="text" class="form-control form-control-custom" placeholder="限填數字" />
+                                                    <input type="text" name="consignee_contact_phone_number" class="form-control form-control-custom" placeholder="請填聯絡電話" value="<?=$userdata['cell1'];?>" />
                                                 </div>
                                                 <div class="col-sm-12 mb30">
                                                     <label class="label-custom">送貨地址</label>
-                                                    <input type="text" class="form-control form-control-custom" placeholder="請填寫完整地址…" />
+                                                    <input type="text" name="delivery_address" class="form-control form-control-custom" placeholder="請填寫完整地址" value="<?=$userdata['addr_dl'];?>" />
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <p>付款郵局：郵政劃撥帳號：50049675</p>
@@ -118,15 +118,15 @@
                                                     <div class="row">
                                                         <div class="col-sm-3 mb30">
                                                             <label class="label-custom">貨號：</label>
-                                                            <input type="text">
+                                                            <input type="text" name="p_no">
                                                         </div>
                                                         <div class="col-sm-6 mb30">
                                                             <label class="label-custom">品名：</label>
-                                                            <input type="text" style="width: 100%;">
+                                                            <input type="text" name="p_name" style="width: 100%;">
                                                         </div>
                                                         <div class="col-sm-3 mb30">
                                                             <label class="label-custom">建議售價：</label>
-                                                            <input type="text">
+                                                            <input type="text" name="r_price" id="r_price">
                                                         </div>
                                                     </div>
                                                 </form>
@@ -136,305 +136,15 @@
                                 </div>
 
                                 <hr class="mt-0 mb-4">
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container mb-2 wow fadeInUp">
-                                    <div class="card bg-light ">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
-                                                    <div class="row">
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">會員編號：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">姓名：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">數量：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <label class="label-custom">金額：</label>
-                                                            <input type="text" style="width: 100%;">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                                <?=$subView;?>
                                 <hr class="my-4">
 
                                 <div class="wow fadeInUp" data-wow-delay=".2s">
                                     <div class="col-12 text-right">
-                                        <p class="fs20">代下單會員姓名：<input type="text"></p>
+                                        <p class="fs20">代下單會員姓名：<input type="text" name="substitute_order_name" value="<?=$userdata['c_name'];?>"></p>
                                     </div>
                                     <div class="col-12 text-right">
-                                        <p class="fs20">付款合計金額：<input type="text"></p>
+                                        <p class="fs20">付款合計金額：<input type="text" readonly name="totol_amount"></p>
                                     </div>
                                 </div>
                                 <hr class="my-4">
@@ -624,9 +334,49 @@
                 })
                 .addTo(controller);
 
+            (function() {
+                $("#back2Top").click(function(event) {
+                    event.preventDefault();
+                    $("html, body").animate({
+                        scrollTop: 0
+                    }, "slow");
+                    return false;
+                });
+
+                function calculateAmount(index) {
+                    let price = parseFloat($("#r_price").val()) || 0; // 獲取建議售價
+                    if ($("input[name='purchaser_num_" + index + "']").val() != "") {
+                        let quantity = parseInt($("input[name='purchaser_num_" + index + "']").val()) || 0; // 獲取數量
+                        let total = price * quantity; // 計算金額
+                        
+                        $("input[name='purchaser_amount_" + index + "']").val(total); // 更新金額
+                        calculateTotal(); // 更新總計金額
+                    }
+                }
+                function calculateTotal() {
+                    let totalAmount = 0;
+                    $("input[name^='purchaser_amount_']").each(function() {
+                        totalAmount += parseFloat($(this).val()) || 0;
+                    });
+                    $("input[name='totol_amount']").val(totalAmount); // 更新總計金額
+                }
+                
+                // 當建議售價變更時，重新計算所有金額
+                $("#r_price").on("input", function() {
+                    $("input[name^='purchaser_num_']").each(function() {
+                        let index = $(this).attr("name").split("_").pop();
+                        calculateAmount(index);
+                    });
+                });
+                // 當數量輸入框變更時，計算對應的金額
+                $(document).on("input", "input[name^='purchaser_num_']", function() {
+                    let index = $(this).attr("name").split("_").pop();
+                    calculateAmount(index);
+                });
+
+            })();
+            
         });
-    </script>
-    <script>
         /*Scroll to top when arrow up clicked BEGIN*/
         $(window).scroll(function() {
             var height = $(window).scrollTop();
@@ -635,16 +385,6 @@
             } else {
                 $('#back2Top').fadeOut();
             }
-        });
-        $(document).ready(function() {
-            $("#back2Top").click(function(event) {
-                event.preventDefault();
-                $("html, body").animate({
-                    scrollTop: 0
-                }, "slow");
-                return false;
-            });
-
         });
         /*Scroll to top when arrow up clicked END*/
     </script>
