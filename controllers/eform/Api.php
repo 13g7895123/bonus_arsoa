@@ -97,7 +97,8 @@ class Api extends MY_Controller
         $postData = $this->input->post();
         $result = array('success' => false, 'message' => '');
         
-        if ($this->Form7Model->createData($postData)){
+        $form7Model = new Form7Model();
+        if ($form7Model->createData($postData)){
             $result['success'] = true;
             $result['message'] = '資料新增成功';
             
