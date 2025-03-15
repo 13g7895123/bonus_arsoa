@@ -7,26 +7,27 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-8 mb130 mt-lg-5 wow fadeInUp" role="main" data-wow-delay=".2s">
-                                <h1 class="h2-3d font-libre"><strong>0917單一產品訂購單-new</strong></h1>
-                                <div class="mb30">
-                                    <div class="alert alert-danger" role="alert">
-                                        為節省您寶貴的時間，表單送出前請自行確認：<br>
-                                        <ol>
-                                            <li>信用卡欄位是否填妥。</li>
-                                            <li>收件地址、聯絡電話是否正確。</li>
-                                            <li>※為必填項目，未完整填妥，恕不受理。</li>
-                                        </ol>
-                                    </div>
-                                    <div class="container">
-                                        <form action="#" class="text-left">
+                                <form id="eform">
+                                    <h1 class="h2-3d font-libre"><strong>0917單一產品訂購單-new</strong></h1>
+                                    <div class="mb30">
+                                        <div class="alert alert-danger" role="alert">
+                                            為節省您寶貴的時間，表單送出前請自行確認：<br>
+                                            <ol>
+                                                <li>信用卡欄位是否填妥。</li>
+                                                <li>收件地址、聯絡電話是否正確。</li>
+                                                <li>※為必填項目，未完整填妥，恕不受理。</li>
+                                            </ol>
+                                        </div>
+                                    
+                                        <div class="container">
                                             <div class="row">
                                                 <div class="col-sm-4 mb30">
                                                     <label class="label-custom">收貨人</label>
-                                                    <input type="text" name="consignee" class="form-control form-control-custom" placeholder="請填收貨人" value="<?=$userdata['c_name'];?>" />
+                                                    <input type="text" name="consignee_name" class="form-control form-control-custom" placeholder="請填收貨人" value="<?=$userdata['c_name'];?>" />
                                                 </div>
                                                 <div class="col-sm-4 mb30">
                                                     <label class="label-custom">手機</label>
-                                                    <input type="text" name="consignee_cellphone" class="form-control form-control-custom" placeholder="請填手機" value="<?=$userdata['cell1'];?>" />
+                                                    <input type="text" name="consignee_cellphone_number" class="form-control form-control-custom" placeholder="請填手機" value="<?=$userdata['cell1'];?>" />
                                                 </div>
                                                 <div class="col-sm-4 mb30">
                                                     <label class="label-custom">聯絡電話</label>
@@ -56,15 +57,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="container mb-4 wow fadeInUp">
-                                    <div class="card bg-light border-danger">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
+                                    <div class="container mb-4 wow fadeInUp">
+                                        <div class="card bg-light border-danger">
+                                            <div class="card-body">
+                                                <div class="container">
                                                     <div class="row">
                                                         <div class="form-check form-check mb20">
                                                             <label class="form-check-label" for="inlineRadio4">本人</label>
@@ -103,18 +102,16 @@
                                                             <input type="text"> （同信用卡背面簽名）
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <hr class="mt-0 mb-4">
+                                    <hr class="mt-0 mb-4">
 
-                                <div class="container mb-4 wow fadeInUp">
-                                    <div class="card bg-light border-info">
-                                        <div class="card-body">
-                                            <div class="container">
-                                                <form action="#" class="text-left">
+                                    <div class="container mb-4 wow fadeInUp">
+                                        <div class="card bg-light border-info">
+                                            <div class="card-body">
+                                                <div class="container">
                                                     <div class="row">
                                                         <div class="col-sm-3 mb30">
                                                             <label class="label-custom">貨號：</label>
@@ -126,29 +123,29 @@
                                                         </div>
                                                         <div class="col-sm-3 mb30">
                                                             <label class="label-custom">建議售價：</label>
-                                                            <input type="text" name="r_price" id="r_price">
+                                                            <input type="number" step="1" min="0" name="r_price" id="r_price">
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <hr class="mt-0 mb-4">
-                                <?=$subView;?>
-                                <hr class="my-4">
+                                    <hr class="mt-0 mb-4">
+                                    <?=$subView;?>
+                                    <hr class="my-4">
 
-                                <div class="wow fadeInUp" data-wow-delay=".2s">
-                                    <div class="col-12 text-right">
-                                        <p class="fs20">代下單會員姓名：<input type="text" name="substitute_order_name" value="<?=$userdata['c_name'];?>"></p>
+                                    <div class="wow fadeInUp" data-wow-delay=".2s">
+                                        <div class="col-12 text-right">
+                                            <p class="fs20">代下單會員姓名：<input type="text" name="substitute_order_name" value="<?=$userdata['c_name'];?>"></p>
+                                        </div>
+                                        <div class="col-12 text-right">
+                                            <p class="fs20">付款合計金額：<input type="text" readonly name="totol_amount"></p>
+                                        </div>
                                     </div>
-                                    <div class="col-12 text-right">
-                                        <p class="fs20">付款合計金額：<input type="text" readonly name="totol_amount"></p>
-                                    </div>
-                                </div>
-                                <hr class="my-4">
-                                <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
+                                    <hr class="my-4">
+                                    <button type="button" id="submit_btn" class="btn btn-outline-danger btn-block">送出表單</button>
+                                </form>
                             </div>
                             <div class="col-lg-1 d-none d-xl-block"></div>
                             <aside role="complementary" class="aside col-xl-3 col-md-3">
@@ -334,7 +331,52 @@
                 })
                 .addTo(controller);
 
-            (function() {
+            const eform1 = (function() {
+                function getFormData(){
+                    let $form = $('#eform');
+                    let data = $form.serializeArray();
+                    let mainData = {};
+                    let detailData = {}; // 存放以 "purchaser_" 開頭的欄位
+                    $.map(data, function(n, i) {
+                        if (n['name'].startsWith("purchaser_")) {
+                            // 檢查是否已經存在，若存在則用逗號合併
+                            if (detailData[n['name']] != null) {
+                                detailData[n['name']] += "," + n['value'];
+                            } else {
+                                detailData[n['name']] = n['value'];
+                            }
+                        } else {
+                            if (mainData[n['name']] != null) {
+                                mainData[n['name']] += "," + n['value'];
+                            } else {
+                                mainData[n['name']] = n['value'];
+                            }
+                        }
+                    });
+                    let returnData = {
+                        mainData,
+                        detailData
+                    }
+                    return returnData;
+                }
+                
+                function submitFormData() {
+                    let formData = getFormData();
+                    $.ajax({
+                        url: '<?=$apiUrl;?>',
+                        type: 'POST',
+                        data: formData,
+                        success: function(response) {
+                            console.log(response);
+                        }
+                    });
+                }
+
+                $('#submit_btn').click(function() {
+                    submitFormData();
+                });
+                
+
                 $("#back2Top").click(function(event) {
                     event.preventDefault();
                     $("html, body").animate({
@@ -373,6 +415,7 @@
                     let index = $(this).attr("name").split("_").pop();
                     calculateAmount(index);
                 });
+                
 
             })();
             
