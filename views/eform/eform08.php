@@ -12,7 +12,7 @@
                                     <p class="text-danger"></p>
                                     <div class="form-check form-check-inline">
                                         <label class="form-check-label" for="inlineRadio4">媒體產生日期： </label>
-                                        <input type="text">
+                                        <input type="text" id="media_date">
                                     </div>
                                 </div>
 
@@ -21,7 +21,7 @@
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="inlineRadio4">立授權書人（以下稱授權人）： </label>
-                                                <input type="text">
+                                                <input type="text" id="name1">
                                             </div>
                                             <p>授權郵局依照 台灣安露莎股份有限公司提供之資料，自授權人在郵局開立之儲金帳戶以自動轉帳付款方式，交付 貨款 款項；惟帳戶餘額不足支付帳款時，則不予轉帳。</p>
                                             <p>郵局如因電腦系統故障、電腦設備故障、電信線路故障、停電、斷電、第三人之行為、不可抗力或其他不可歸責於郵局之事由致無法於 約定日期完成轉帳作業時，郵局得順延至前開障礙事由排除後始進行轉帳作業，因而所致之遲延或損失，授權人同意免除郵局之一切責任。但該障礙事由係郵局之故意或重大過失所致者，不在此限。</p>
@@ -35,61 +35,61 @@
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="inlineRadio4">戶名： </label>
-                                                <input type="text">
+                                                <input type="text" id="name2">
                                             </div>
                                         </div>
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="inlineRadio4">身份證統一編號： </label>
-                                                <input type="text">
+                                                <input type="text" id="id_number">
                                             </div>
                                         </div>
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="inlineRadio4">存簿帳號： </label>
-                                                <input type="text">
+                                                <input type="text" id="account_number">
                                             </div>
                                         </div>
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="inlineRadio4">劃撥帳號： </label>
-                                                <input type="text">
+                                                <input type="text" id="transfer_account">
                                             </div>
                                         </div>
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">聯絡電話：
                                                 <label class="form-check-label" for="inlineRadio4">（宅）： </label>
-                                                <input type="text" size="12" maxlength="10">
+                                                <input type="text" size="12" maxlength="10" id="phone_home">
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="inlineRadio4">（公）： </label>
-                                                <input type="text" size="12" maxlength="10">
+                                                <input type="text" size="12" maxlength="10" id="phone_office">
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="inlineRadio4">（手機）： </label>
-                                                <input type="text" size="12" maxlength="10">
+                                                <input type="text" size="12" maxlength="10" id="phone_mobile">
                                             </div>
                                         </div>
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="inlineRadio4">聯絡地址： </label>
-                                                <input type="text" size="50" maxlength="50">
+                                                <input type="text" size="50" maxlength="50" id="address">
                                             </div>
                                         </div>
                                         <div class="mb30">
                                             <div class="form-group mb30">
                                                 <label for="exampleFormControlFile1">授權人用印（帳戶印鑑）</label>
-                                                <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                                                <input type="file" class="form-control-file" id="file" name="file">
                                             </div>
                                         </div>
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
                                                 <label class="form-check-label" for="inlineRadio4">授權書填寫日期： </label>
-                                                <input type="text" size="4" maxlength="2">
+                                                <input type="text" size="4" maxlength="2" id="year">
                                                 年
-                                                <input type="text" size="4" maxlength="2">
+                                                <input type="text" size="4" maxlength="2" id="month">
                                                 月
-                                                <input type="text" size="4" maxlength="2">
+                                                <input type="text" size="4" maxlength="2" id="day">
                                                 日
                                             </div>
                                         </div>
@@ -103,14 +103,14 @@
                                     <div class="mb30">
                                         <div class="form-check form-check-inline">
                                             <label class="form-check-label" for="inlineRadio4">授權人簽名： </label>
-                                            <input type="text">
+                                            <input type="text" id="sign">
                                         </div>
                                     </div>
                                 </div>
 
 
                                 <hr class="my-4">
-                                <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
+                                <button type="button" class="btn btn-outline-danger btn-block" onclick="submitForm()">送出表單</button>
 
 
 
@@ -298,6 +298,31 @@
                 })
                 .addTo(controller);
 
+            function submitForm() {
+                const apiUrl = base_url() + 'eform/form8/submit';
+
+                const formData = {
+                    media_date: $('#media_date').val(),
+                    name1: $('#name1').val(),
+                    id_number: $('#id_number').val(),
+                    account_number: $('#account_number').val(),
+                    transfer_account: $('#transfer_account').val(),
+                    phone_home: $('#phone_home').val(),
+                    phone_office: $('#phone_office').val(),
+                    phone_mobile: $('#phone_mobile').val(),
+                    address: $('#address').val(),
+                    file: $('#file').val(),
+                };
+
+                $.ajax({
+                    url: apiUrl,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        console.log(response);
+                    }
+                });
+            }
         });
     </script>
     <script>
