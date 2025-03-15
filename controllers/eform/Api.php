@@ -94,19 +94,17 @@ class Api extends MY_Controller
             redirect( 'member/login' );
         }
 
-        $msconn = $this->front_mssql_model->ms_connect(); 
-
         $postData = $this->input->post();
-
         $result = array('success' => false, 'message' => '');
         
-        if ($this->Form7Model->createData($postData) === true){
+        if ($this->Form7Model->createData($postData)){
             $result['success'] = true;
             $result['message'] = '資料新增成功';
             
             $this->output
                 ->set_content_type('application/json', 'utf-8')
                 ->set_output(json_encode($result));
+            return;
         }
 
         $result['message'] = '資料新增失敗';

@@ -14,6 +14,26 @@ class Form7Model extends CI_Model
 
     public function createData($data)
     {
+        // 布林欄位
+        $booleanField = array(
+            'muscle_energy_home_delivery_ten_days',
+            'five_days',
+            'twenty_days',
+            'vitality_fermentation_extract',
+            'white_crane_ganoderma_extract',
+            'beauty_C_tablets',
+        );
+
+        // 布林欄位轉換
+        foreach ($booleanField as $_val) {
+            if (isset($data[$_val])) {
+                $data[$_val] = $data[$_val] == 'false' ? 0 : 1;
+            }
+        }
+
+        $data['create_time'] = date('Y-m-d H:i:s');
+        $data['update_time'] = date('Y-m-d H:i:s');
+
         return $this->db->insert('eform7_pri', $data);
     }
     
