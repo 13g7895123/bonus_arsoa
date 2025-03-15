@@ -39,6 +39,7 @@ class Online_form extends MY_Controller
     {
         $data = array();
         $data['userdata'] = $this->userdata;
+        $data['apiUrl'] = $this->apiBaseUrl . $this->router->fetch_method() . '/submit';
         
         $blockNum = 10;
         for($index=1;$index<=$blockNum;$index++) {
@@ -80,7 +81,11 @@ class Online_form extends MY_Controller
 
     public function form7()
     {
-        $data = array();
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
+        );
+
         $this->layout->view('./eform/eform07', $data);
     }
 
