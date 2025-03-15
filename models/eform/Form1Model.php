@@ -50,20 +50,12 @@ class Form1Model extends CI_Model
         }
         if (!empty($detailBatchData)) {
             $this->db->insert_batch($this->detailTableName, $detailBatchData);
+        } else {
+            return false;
         }
         $this->db->trans_complete(); // 自動檢查錯誤，成功則 commit，失敗則 rollback
 
-        if ($this->db->trans_status() === false) {
-            return array(
-                'success'=> false,
-                'message'=> '資料新增失敗'
-            );
-        } else {
-            return array(
-                'success'=> true,
-                'message'=> '資料新增成功'
-            );
-        }
+        return $this->db->trans_status();
     }
     
 }

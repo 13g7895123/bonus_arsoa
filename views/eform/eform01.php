@@ -367,7 +367,27 @@
                         type: 'POST',
                         data: formData,
                         success: function(response) {
-                            console.log(response);
+                            Swal.fire({
+                                icon: "success",
+                                title: "系統訊息",
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            })
+                            // 3 秒後刷新頁面
+                            setTimeout(function() {
+                                location.reload();
+                            }, 3000);
+                        },
+                        error: function(xhr, status, error) {
+                            let errorResponse = xhr.responseJSON || { message: "資料新增失敗" };
+                            Swal.fire({
+                                icon: "error",
+                                title: "系統訊息",
+                                text: errorResponse.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
                         }
                     });
                 }

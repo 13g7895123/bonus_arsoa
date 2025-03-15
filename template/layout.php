@@ -252,6 +252,7 @@ var csrf_cookie_name = '<?php echo $this->config->item("csrf_cookie_name"); ?>';
 <script src="<?=base_url()?>public/js/jquery.viewport.js"></script>
 <script src="<?=base_url()?>public/js/jquery.countdown.min.js"></script>
 <script src="<?=base_url()?>public/js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>lazyload_set('main');</script>
 <?php
     $js_file = array('var'  => $this->config->item('ver_js'),

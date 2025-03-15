@@ -26,7 +26,19 @@ class Api extends MY_Controller
         $postData = $this->input->post();
         
         $form1Model = new Form1Model();
-        $result = $form1Model->createData($postData);
+        if ($form1Model->createData($postData)) {
+            $result = array(
+                "status" => 200,
+                "message" => "資料新增成功"
+            );
+        } else {
+            http_response_code(400);
+            $result = array(
+                "status" => 400,
+                "error" => "Validation Error",
+                "message" => "資料新增失敗，請檢查欄位是否填寫齊全"
+            );
+        }
         $this->output
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode($result));
