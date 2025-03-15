@@ -81,7 +81,10 @@ class Online_form extends MY_Controller
 
     public function form8()
     {
-        $data = array();
+        $data = array(
+            'apiUrl' => base_url() . 'eform/form8/submit'
+        );
+        
         $this->layout->view('./eform/eform08', $data);
     }
 }

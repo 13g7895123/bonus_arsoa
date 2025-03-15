@@ -110,9 +110,7 @@
 
 
                                 <hr class="my-4">
-                                <button type="button" class="btn btn-outline-danger btn-block" onclick="submitForm()">送出表單</button>
-
-
+                                <button type="button" id="submit_btn" class="btn btn-outline-danger btn-block">送出表單</button>
 
                             </div>
                             <div class="col-lg-1 d-none d-xl-block"></div>
@@ -298,8 +296,12 @@
                 })
                 .addTo(controller);
 
+            $('#submit_btn').click(function() {
+                submitForm();
+            });
+
             function submitForm() {
-                const apiUrl = base_url() + 'eform/form8/submit';
+                const apiUrl = '<?=$apiUrl;?>';
 
                 const formData = {
                     media_date: $('#media_date').val(),
