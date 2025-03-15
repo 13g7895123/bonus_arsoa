@@ -4,6 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Online_form extends MY_Controller
 {
     protected $userdata;
+    protected $apiBaseUrl;
+
     public function __construct()
     {
         parent::__construct();
@@ -21,6 +23,9 @@ class Online_form extends MY_Controller
             redirect( 'member/login' );
         }
         $this->userdata = $this->session->userdata['member_session'];
+
+        // api url
+        $this->apiBaseUrl = base_url() . 'eform/api/';
     }
 
     public function testVariable()
@@ -82,7 +87,7 @@ class Online_form extends MY_Controller
     public function form8()
     {
         $data = array(
-            'apiUrl' => base_url() . 'eform/form8/submit'
+            'apiUrl' => $this->apiBaseUrl . 'submit'
         );
         
         $this->layout->view('./eform/eform08', $data);
