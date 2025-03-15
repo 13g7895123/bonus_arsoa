@@ -7,7 +7,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-8 mb130 mt-lg-5 wow fadeInUp" role="main" data-wow-delay=".2s">
-                                <form id="eform">
+                                <form id="eform_main_1">
                                     <h1 class="h2-3d font-libre"><strong>0917單一產品訂購單-new</strong></h1>
                                     <div class="mb30">
                                         <div class="alert alert-danger" role="alert">
@@ -130,11 +130,13 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                </form>
+                                <form id="eform_detail">
                                     <hr class="mt-0 mb-4">
                                     <?=$subView;?>
                                     <hr class="my-4">
-
+                                </form>
+                                <form id="eform_main_2">
                                     <div class="wow fadeInUp" data-wow-delay=".2s">
                                         <div class="col-12 text-right">
                                             <p class="fs20">代下單會員姓名：<input type="text" name="substitute_order_name" value="<?=$userdata['c_name'];?>"></p>
@@ -143,9 +145,9 @@
                                             <p class="fs20">付款合計金額：<input type="text" readonly name="totol_amount"></p>
                                         </div>
                                     </div>
-                                    <hr class="my-4">
-                                    <button type="button" id="submit_btn" class="btn btn-outline-danger btn-block">送出表單</button>
                                 </form>
+                                <hr class="my-4">
+                                <button type="button" id="submit_btn" class="btn btn-outline-danger btn-block">送出表單</button>
                             </div>
                             <div class="col-lg-1 d-none d-xl-block"></div>
                             <aside role="complementary" class="aside col-xl-3 col-md-3">
@@ -331,37 +333,37 @@
                 })
                 .addTo(controller);
 
+            
             const eform1 = (function() {
-                function getFormData(){
-                    let $form = $('#eform');
+                function getFormData($form, returnData){
                     let data = $form.serializeArray();
-                    let mainData = {};
-                    let detailData = {}; // 存放以 "purchaser_" 開頭的欄位
                     $.map(data, function(n, i) {
-                        if (n['name'].startsWith("purchaser_")) {
-                            // 檢查是否已經存在，若存在則用逗號合併
-                            if (detailData[n['name']] != null) {
-                                detailData[n['name']] += "," + n['value'];
-                            } else {
-                                detailData[n['name']] = n['value'];
-                            }
+                        if (returnData[n['name']] != null) {
+                            returnData[n['name']] += "," + n['value'];
                         } else {
-                            if (mainData[n['name']] != null) {
-                                mainData[n['name']] += "," + n['value'];
-                            } else {
-                                mainData[n['name']] = n['value'];
-                            }
+                            returnData[n['name']] = n['value'];
                         }
                     });
-                    let returnData = {
-                        mainData,
-                        detailData
-                    }
                     return returnData;
                 }
+
+                $('#submit_btn').click(function() {
+                    submitFormData();
+                });
                 
                 function submitFormData() {
-                    let formData = getFormData();
+                    let mainData = {};
+                    let detailData = {};
+
+                    mainData = getFormData($('#eform_main_1'), mainData);
+                    mainData = getFormData($('#eform_main_2'), mainData);
+
+                    detailData = getFormData($('#eform_detail'), detailData);
+
+                    let formData = {
+                        mainData,
+                        detailData
+                    };
                     $.ajax({
                         url: '<?=$apiUrl;?>',
                         type: 'POST',
@@ -391,11 +393,6 @@
                         }
                     });
                 }
-
-                $('#submit_btn').click(function() {
-                    submitFormData();
-                });
-                
 
                 $("#back2Top").click(function(event) {
                     event.preventDefault();
@@ -435,8 +432,6 @@
                     let index = $(this).attr("name").split("_").pop();
                     calculateAmount(index);
                 });
-                
-
             })();
             
         });

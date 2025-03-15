@@ -15,7 +15,6 @@ class Form1Model extends CI_Model
 
     public function createData($data)
     {
-        
         $mainData = $data['mainData'];
         $mainData['create_time'] = date('Y-m-d H:i:s');
         $mainData['update_time'] = date('Y-m-d H:i:s');
