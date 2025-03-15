@@ -565,7 +565,8 @@ if ((substr_count($_SERVER['REQUEST_URI'],'wadmin') > 0 || substr_count($_SERVER
                                           'link/receive',
                                           'activity/receive','activity/form/(.*)','activity/form_save/(.*)',
                                           'consent/save/(.*)','consent/receive',
-                                          'order/auth/[CAW]','order/auth/[CAW]/Y','order/auth/[\s\S]*');
+                                          'order/auth/[CAW]','order/auth/[CAW]/Y','order/auth/[\s\S]*',
+                                          'eform/(.*)');
 }
 
 /*
