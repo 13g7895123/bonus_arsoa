@@ -110,6 +110,7 @@
 
 
                                 <hr class="my-4">
+                                <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" id="<?php echo $this->security->get_csrf_token_name(); ?>_eform08" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                 <button type="button" id="submit_btn" class="btn btn-outline-danger btn-block">送出表單</button>
 
                             </div>
