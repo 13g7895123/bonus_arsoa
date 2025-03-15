@@ -37,9 +37,10 @@ class Online_form extends MY_Controller
 
     public function form1()
     {
-        $data = array();
-        $data['userdata'] = $this->userdata;
-        $data['apiUrl'] = $this->apiBaseUrl . $this->router->fetch_method() . '/submit';
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
+        );
         
         $blockNum = 10;
         for($index=1;$index<=$blockNum;$index++) {
@@ -51,31 +52,51 @@ class Online_form extends MY_Controller
 
     public function form2()
     {
-        $data = array();
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
+        );
+
         $this->layout->view('./eform/eform02', $data);
     }
 
     public function form3()
     {
-        $data = array();
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
+        );
+
         $this->layout->view('./eform/eform03', $data);
     }
 
     public function form4()
     {
-        $data = array();
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
+        );
+
         $this->layout->view('./eform/eform04', $data);
     }
 
     public function form5()
     {
-        $data = array();
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
+        );
+
         $this->layout->view('./eform/eform05', $data);
     }
 
     public function form6()
     {
-        $data = array();
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
+        );
+
         $this->layout->view('./eform/eform06', $data);
     }
 
