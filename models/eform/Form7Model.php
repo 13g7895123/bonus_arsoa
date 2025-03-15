@@ -31,8 +31,8 @@ class Form7Model extends CI_Model
             }
         }
 
-        $data['create_time'] = date('Y-m-d H:i:s');
-        $data['update_time'] = date('Y-m-d H:i:s');
+        $data['create_time'] = date('Y-m-d H:i:s');     // 新增時間
+        $data['update_time'] = date('Y-m-d H:i:s');     // 更新時間
 
         return $this->db->insert('eform7_pri', $data);
     }
