@@ -11,6 +11,7 @@ class Api extends MY_Controller
         $this->load->model( 'front_member_model' );
         $this->load->model( 'front_base_model' );
         $this->load->model( 'front_mssql_model' );
+        $this->load->model( 'eform/Form7Model' );
                       
         $this->load->library( 'user_agent' );
     }
@@ -22,7 +23,7 @@ class Api extends MY_Controller
         }
 
         $msconn = $this->front_mssql_model->ms_connect(); 
-        
+
         $postData = $this->input->post();
         print_r($postData); die();
     }
@@ -34,7 +35,7 @@ class Api extends MY_Controller
         }
 
         $msconn = $this->front_mssql_model->ms_connect(); 
-        
+
         $postData = $this->input->post();
         print_r($postData); die();
     }
@@ -46,7 +47,7 @@ class Api extends MY_Controller
         }
 
         $msconn = $this->front_mssql_model->ms_connect(); 
-        
+
         $postData = $this->input->post();
         print_r($postData); die();
     }
@@ -58,7 +59,7 @@ class Api extends MY_Controller
         }
 
         $msconn = $this->front_mssql_model->ms_connect(); 
-        
+
         $postData = $this->input->post();
         print_r($postData); die();
     }
@@ -70,7 +71,7 @@ class Api extends MY_Controller
         }
 
         $msconn = $this->front_mssql_model->ms_connect(); 
-        
+
         $postData = $this->input->post();
         print_r($postData); die();
     }
@@ -82,7 +83,7 @@ class Api extends MY_Controller
         }
 
         $msconn = $this->front_mssql_model->ms_connect(); 
-        
+
         $postData = $this->input->post();
         print_r($postData); die();
     }
@@ -94,9 +95,25 @@ class Api extends MY_Controller
         }
 
         $msconn = $this->front_mssql_model->ms_connect(); 
-        
+
         $postData = $this->input->post();
-        print_r($postData); die();
+
+        $result = array('success' => false, 'message' => '');
+        
+        if ($this->Form7Model->createData($postData) === true){
+            $result['success'] = true;
+            $result['message'] = '資料新增成功';
+            
+            $this->output
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode($result));
+        }
+
+        $result['message'] = '資料新增失敗';
+
+        $this->output
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode($result));
     }
     
     

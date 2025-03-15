@@ -12,7 +12,7 @@
                                     <p class="text-danger">★務必於宅配出貨日的前3個工作天提出申請書。</p>
                                     <div class="form-check form-check-inline">
                                         <label class="form-check-label" for="inlineRadio4">異動日期： </label>
-                                        <input type="text">
+                                        <input type="text" name="change_date">
                                     </div>
                                 </div>
 
@@ -24,43 +24,43 @@
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">會員編號： </label>
-                                                        <input type="text" size="10" maxlength="6">
+                                                        <input type="text" size="10" maxlength="6" name="member_code" value="<?= $userdata['c_no']; ?>">
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">會員姓名： </label>
-                                                        <input type="text">
+                                                        <input type="text" value="<?= $userdata['c_name']; ?>">
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">聯絡電話： </label>
-                                                        <input type="text" size="12" maxlength="10">
+                                                        <input type="text" size="12" maxlength="10" value="<?= $userdata['cell1']; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">肌能宅配10日 </label>
+                                                        <input class="muscle_energy_home_delivery_ten_days form-check-input" type="checkbox" name="muscle_energy_home_delivery_ten_days" id="muscle_energy_home_delivery_ten_days" value="muscle_energy_home_delivery_ten_days">
+                                                        <label class="form-check-label" for="muscle_energy_home_delivery_ten_days">肌能宅配10日 </label>
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline"> 保健宅配　
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">5日 </label>
+                                                        <input class="health_care form-check-input" type="checkbox" id="five_days" value="five_days">
+                                                        <label class="form-check-label" for="five_days">5日 </label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">20日 </label>
+                                                        <input class="health_care form-check-input" type="checkbox" id="twenty_days" value="twenty_days">
+                                                        <label class="form-check-label" for="twenty_days">20日 </label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">活力發酵精萃 </label>
+                                                        <input class="health_care form-check-input" type="checkbox" id="vitality_fermentation_extract" value="vitality_fermentation_extract">
+                                                        <label class="form-check-label" for="vitality_fermentation_extract">活力發酵精萃 </label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">白鶴靈芝EX </label>
+                                                        <input class="health_care form-check-input" type="checkbox" id="white_crane_ganoderma_extract" value="white_crane_ganoderma_extract">
+                                                        <label class="form-check-label" for="white_crane_ganoderma_extract">白鶴靈芝EX </label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">美力C錠 </label>
+                                                        <input class="health_care form-check-input" type="checkbox" id="beauty_C_tablets" value="beauty_C_tablets">
+                                                        <label class="form-check-label" for="beauty_C_tablets">美力C錠 </label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -73,12 +73,12 @@
                                         <p class="fs20">◆ 出貨日異動</p>
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">須提前出貨 </label>
+                                                <input class="form-check-input" type="checkbox" name="shipped_in_advance" id="shipped_in_advance" value="shipped_in_advance">
+                                                <label class="form-check-label" for="shipped_in_advance">須提前出貨 </label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">日期： </label>
-                                                <input type="text">
+                                                <label class="form-check-label" for="delivery_date">日期： </label>
+                                                <input type="text" id="delivery_date" name="delivery_date" disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -87,22 +87,22 @@
                                         <p class="fs20">◆ 收件人地址異動</p>
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">郵遞區號： </label>
-                                                <input type="text">
+                                                <label class="form-check-label" for="postal_code">郵遞區號： </label>
+                                                <input type="text" name="postal_code" id="postal_code">
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">收件地址： </label>
-                                                <input type="text" size="50" maxlength="50">
+                                                <label class="form-check-label" for="delivery_address">收件地址： </label>
+                                                <input type="text" name="delivery_address" id="delivery_address">
                                             </div>
                                         </div>
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">收件人： </label>
-                                                <input type="text">
+                                                <label class="form-check-label" for="consignee_name">收件人： </label>
+                                                <input type="text" name="consignee_name" id="consignee_name">
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">收件人聯絡電話： </label>
-                                                <input type="text">
+                                                <label class="form-check-label" for="consignee_contact_phone_number">收件人聯絡電話： </label>
+                                                <input type="text" name="consignee_contact_phone_number" id="consignee_contact_phone_number">
                                             </div>
                                         </div>
                                     </div>
@@ -187,8 +187,8 @@
                                 <div class="mb30 wow fadeInUp">
                                     <div class="mb30">
                                         <div class="form-check form-check-inline">
-                                            <label class="form-check-label" for="inlineRadio4">代理申請會員姓名 (或會員編號)： </label>
-                                            <input type="text">
+                                            <label class="form-check-label" for="agent_application">代理申請會員姓名 (或會員編號)： </label>
+                                            <input type="text" name="agent_application" id="agent_application">
                                         </div>
                                     </div>
                                 </div>
@@ -417,10 +417,7 @@
 
 
                                 <hr class="my-4">
-                                <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
-
-
-
+                                <button type="button" id="submit" class="btn btn-outline-danger btn-block">送出表單</button>
                             </div>
                             <div class="col-lg-1 d-none d-xl-block"></div>
                             <aside role="complementary" class="aside col-xl-3 col-md-3">
@@ -605,6 +602,164 @@
                 })
                 .addTo(controller);
 
+            // 肌能宅配10日
+            class MuscleEenergy {
+                constructor() {
+                    this.data = [];
+                    this.isChecked = false;
+                }
+
+                // 取得資料
+                fetchData() {
+                    // 先清空 data，避免重複累積舊資料
+                    this.data = [];
+
+                    // 使用箭頭函式確保 this 指向 MuscleEenergy 類別
+                    $('.muscle_energy_home_delivery_ten_days').each((index, element) => {
+                        if ($(element).is(':checked')) {
+                            this.data.push($(element).val());
+                        }
+                    });
+
+                    // 判斷是否有選擇
+                    this.isChecked = this.data.length > 0;
+                }
+            }
+                
+            // 健保宅配
+            class HealthCare {
+                constructor() {
+                    this.data = [];
+                    this.isChecked = false;
+                }
+
+                // 取得資料
+                fetchData() {
+                    // 先清空 data，避免重複累積舊資料
+                    this.data = [];
+
+                    // 使用箭頭函式確保 this 指向 HealthCare 類別
+                    $('.health_care').each((index, element) => {
+                        if ($(element).is(':checked')) {
+                            this.data.push($(element).val());
+                        }
+                    });
+                }
+
+                // 5日
+                fetchFiveDays() {
+                    if (this.data.includes('five_days')) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                // 20日
+                fetchTwentyDays() {
+                    if (this.data.includes('twenty_days')) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                // 活力發酵精萃
+                fetchVitalityFermentationExtract() {
+                    if (this.data.includes('vitality_fermentation_extract')) {
+                        return true;
+                    }
+                    return false;
+                }
+                
+                // 白鶴靈芝EX
+                fetchWhiteCraneGanodermaExtract() {
+                    if (this.data.includes('white_crane_ganoderma_extract')) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                // 美力C錠
+                fetchBeautyCTablets() {
+                    if (this.data.includes('beauty_C_tablets')) {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+
+            // 出貨日異動
+            class ChangeDeliveryDate {
+                constructor() {
+                    this.isChecked = false;
+                    this.date = '';
+                }
+
+                // 取得資料
+                fetchData() {
+                    // 確認勾選
+                    this.isChecked = false;
+                    if ($("#shipped_in_advance").prop("checked")) {
+                        this.isChecked = true;
+                    }
+                    
+                    if ($('input[name="delivery_date"]').val() !== '') {
+                        this.date = $('input[name="delivery_date"]').val();
+                    }
+                }
+
+                // 更新渲染
+                updateRender() {
+                    // 預設禁用
+                    $("#delivery_date").prop("disabled", true); 
+
+                    // 確認勾選
+                    if (this.isChecked) {
+                        $("#delivery_date").prop("disabled", false); 
+                    }
+                }
+            }
+
+            const muscleEenergy = new MuscleEenergy();
+            const healthCare = new HealthCare();
+            const changeDeliveryDate = new ChangeDeliveryDate();
+
+            // 須提前出貨
+            $('input[name="shipped_in_advance"]').on('change', function() {
+                changeDeliveryDate.fetchData();
+                changeDeliveryDate.updateRender();
+            });
+
+            $('#submit').click(function() {
+                muscleEenergy.fetchData();
+                healthCare.fetchData();
+                changeDeliveryDate.fetchData();
+
+                const formData = {
+                    change_date: $('input[name="change_date"]').val(),
+                    member_code: $('input[name="member_code"]').val(),
+                    muscle_energy_home_delivery_ten_days: muscleEenergy.isChecked,
+                    five_days: healthCare.fetchFiveDays(),
+                    twenty_days: healthCare.fetchTwentyDays(),
+                    vitality_fermentation_extract: healthCare.fetchVitalityFermentationExtract(),
+                    white_crane_ganoderma_extract: healthCare.fetchWhiteCraneGanodermaExtract(),
+                    beauty_C_tablets: healthCare.fetchBeautyCTablets(),
+                    delivery_date: changeDeliveryDate.date,
+                    postal_code: $('input[name="postal_code"]').val(),
+                    delivery_address: $('input[name="delivery_address"]').val(),
+                    consignee_name: $('input[name="consignee_name"]').val(),
+                    consignee_contact_phone_number: $('input[name="consignee_contact_phone_number"]').val(),
+                    agent_application: $('input[name="agent_application"]').val()
+                }
+                
+                $.ajax({
+                    url: '<?=$apiUrl;?>',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        console.log(response);
+                    }
+                });
+            });
         });
     </script>
     <script>
