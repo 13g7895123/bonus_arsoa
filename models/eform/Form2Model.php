@@ -51,9 +51,10 @@ class Form2Model extends CI_Model
         return $data;
     }
 
+    // 批次建立細項資料
     public function createDetailData($data)
     {
-        $this->db->insert('eform2_detail', $data);
+        $this->db->insert_batch('eform2_detail', $data);
     }
 
     // 格式化信用卡資料

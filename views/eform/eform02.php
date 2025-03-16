@@ -800,7 +800,7 @@
                     contentType: false,  // 不設置內容類型
                     dataType: 'json',
                     success: function(response) {
-                        if (response.status === '200') {
+                        if (response.status == '200') {
                             Swal.fire({
                                 icon: 'success',
                                 title: '提交成功',
@@ -808,7 +808,7 @@
                                 confirmButtonText: '確定'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    window.location.href = response.redirect_url || '/eform/success';
+                                    // window.location.href = response.redirect_url || '/eform/success';
                                 }
                             });
                         } else {

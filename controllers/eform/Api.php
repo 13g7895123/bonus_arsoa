@@ -93,16 +93,18 @@ class Api extends MY_Controller
         $formId = $form2Model->createData($postData);
 
         // 細項
-        if (isset($postData['product'])) {
-            if (count($postData['product']) > 0) {
+        if (isset($postData['products'])) {
+            $products = explode(',', $postData['products']);
+            if (count($products) > 0) {
                 $insertBatchData = array();
-                foreach ($postData['product'] as $_val) {
+                foreach ($products as $_val) {
                     $insertBatchData[] = array(
                         'form_id' => $formId,
                         'product_code' => $_val,
                     );
                 }
 
+                // 批次建立資料
                 $form2Model->createDetailData($insertBatchData);
             }
         }
