@@ -1,3 +1,20 @@
+<style>
+#signaturePad,
+#signaturePadAgreement,
+#signaturePadCheck {
+    border: 2px solid #000;
+    width: 300px;
+    height: 150px;
+    cursor: crosshair;
+}
+
+#signaturePadPost{
+    border: 2px solid #000;
+    width: 100%;
+    height: 150px;
+    cursor: crosshair;
+}
+</style>
 <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
         <div class="wrapper">
@@ -10,91 +27,96 @@
                                 <h1 class="h2-3d font-libre"><strong>健康宅配訂單暨入會申請書</strong></h1>
                                 <div class="mb30">
                                     <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                        <form action="#" class="text-left">
+                                        <form action="#" class="text-left" id="healthSubscriptionForm">
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">新增 </label>
+                                                    <input class="form-check-input" type="radio" name="form_type" id="form_type_new" value="new">
+                                                    <label class="form-check-label" for="form_type_new">新增</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">異動：</label>
-                                                    (自<input type="text" size="6" maxlength="4">年<input type="text" size="4" maxlength="2">月起　
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">改卡</label>　
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">改品項</label>　　
+                                                    <input class="form-check-input" type="radio" name="form_type" id="form_type_change" value="change">
+                                                    <label class="form-check-label" for="form_type_change">異動：</label>
+                                                    (自<input type="number" name="change_year" id="change_year" size="6" maxlength="4">年
+                                                    <input type="number" name="change_month" id="change_month" size="4" maxlength="2">月起　
+                                                    <input class="form-check-input" type="radio" name="change_type" id="change_type_card" value="card">
+                                                    <label class="form-check-label" for="change_type_card">改卡</label>　
+                                                    <input class="form-check-input" type="radio" name="change_type" id="change_type_item" value="item">
+                                                    <label class="form-check-label" for="change_type_item">改品項</label>　　
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">訂購日期： </label>
-                                                    <input type="text" size="4" maxlength="4">年 <input type="text" size="4" maxlength="2">月 <input type="text" size="4" maxlength="2">日
+                                                    <input class="form-check-input" type="checkbox" name="order_date_check" id="order_date_check" value="1">
+                                                    <label class="form-check-label" for="order_date_check">訂購日期：</label>
+                                                    <input type="number" name="order_year" id="order_year" size="4" maxlength="4">年
+                                                    <input type="number" name="order_month" id="order_month" size="4" maxlength="2">月
+                                                    <input type="number" name="order_day" id="order_day" size="4" maxlength="2">日
                                                 </div>
                                             </div>
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">會員編號： </label>
-                                                    <input type="text" size="8" maxlength="6">
+                                                    <label class="form-check-label" for="member_id">會員編號：</label>
+                                                    <input type="text" name="member_id" id="member_id" size="8" maxlength="6">
                                                     (欲以健康宅配專案入會，請將此申請表正本繳回本公司)
                                                 </div>
                                             </div>
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">訂購會員姓名： </label>
-                                                    <input type="text" size="10" maxlength="8">
+                                                    <label class="form-check-label" for="order_member_name">訂購會員姓名：</label>
+                                                    <input type="text" name="order_member_name" id="order_member_name" size="10" maxlength="8">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">身分證字號： </label>
-                                                    <input type="text" size="10" maxlength="8">
+                                                    <label class="form-check-label" for="id_number">身分證字號：</label>
+                                                    <input type="text" name="id_number" id="id_number" size="10" maxlength="10">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">生日： </label>
-                                                    <input type="text" size="4" maxlength="4">年 <input type="text" size="4" maxlength="2">月 <input type="text" size="4" maxlength="2">日
-                                                </div>
-                                            </div>
-                                            <div class="row mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">收件地址： </label>
-                                                    <input type="text" size="10" maxlength="8">
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">收件人： </label>
-                                                    <input type="text" size="10" maxlength="8">
+                                                    <label class="form-check-label">生日：</label>
+                                                    <input type="number" name="birth_year" id="birth_year" size="4" maxlength="4">年
+                                                    <input type="number" name="birth_month" id="birth_month" size="4" maxlength="2">月
+                                                    <input type="number" name="birth_day" id="birth_day" size="4" maxlength="2">日
                                                 </div>
                                             </div>
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">聯絡電話： </label>
-                                                    <input type="text" size="10" maxlength="8">
+                                                    <label class="form-check-label" for="shipping_address">收件地址：</label>
+                                                    <input type="text" name="shipping_address" id="shipping_address" size="50">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">推薦人會員編號： </label>
-                                                    <input type="text" size="10" maxlength="8">
+                                                    <label class="form-check-label" for="recipient_name">收件人：</label>
+                                                    <input type="text" name="recipient_name" id="recipient_name" size="10" maxlength="8">
+                                                </div>
+                                            </div>
+                                            <div class="row mb30">
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label" for="contact_phone">聯絡電話：</label>
+                                                    <input type="tel" name="contact_phone" id="contact_phone" size="10" maxlength="10">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">推薦人姓名： </label>
-                                                    <input type="text" size="10" maxlength="8">
+                                                    <label class="form-check-label" for="referrer_id">推薦人會員編號：</label>
+                                                    <input type="text" name="referrer_id" id="referrer_id" size="10" maxlength="8">
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label" for="referrer_name">推薦人姓名：</label>
+                                                    <input type="text" name="referrer_name" id="referrer_name" size="10" maxlength="8">
                                                 </div>
                                             </div>
 
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
                                                     願意接受國家高考合格營養師免費健康諮詢：
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">不願意 </label>
+                                                    <input class="form-check-input" type="radio" name="nutrition_consult" id="nutrition_consult_no" value="no">
+                                                    <label class="form-check-label" for="nutrition_consult_no">不願意</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">願意 </label>
+                                                    <input class="form-check-input" type="radio" name="nutrition_consult" id="nutrition_consult_yes" value="yes">
+                                                    <label class="form-check-label" for="nutrition_consult_yes">願意</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     (可諮詢時段：
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">9:00-12:00 </label>
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">13:00-18:00 </label>
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">19:00-21:00 </label>
+                                                    <input class="form-check-input" type="checkbox" name="consult_time[]" id="consult_time_morning" value="morning">
+                                                    <label class="form-check-label" for="consult_time_morning">9:00-12:00</label>
+                                                    <input class="form-check-input" type="checkbox" name="consult_time[]" id="consult_time_afternoon" value="afternoon">
+                                                    <label class="form-check-label" for="consult_time_afternoon">13:00-18:00</label>
+                                                    <input class="form-check-input" type="checkbox" name="consult_time[]" id="consult_time_evening" value="evening">
+                                                    <label class="form-check-label" for="consult_time_evening">19:00-21:00</label>
                                                 </div>
                                             </div>
                                             <div class="row mb30">
@@ -109,28 +131,28 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td><input class="" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3"></td>
+                                                            <td><input class="form-check-input" type="checkbox" name="product[]" id="product_A0010" value="A0010"></td>
                                                             <td class="text-left">A0010活力發酵精萃 (含天然酵素) 每月1盒/ 20條</td>
                                                             <td>10條</td>
                                                             <td>15條</td>
                                                             <td>2,980元/50BP</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><input class="" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3"></td>
+                                                            <td><input class="form-check-input" type="checkbox" name="product[]" id="product_A0011" value="A0011"></td>
                                                             <td class="text-left">A0011活力發酵精萃 (含天然酵素) 每月1盒/ 60條</td>
                                                             <td>30條</td>
                                                             <td>50條</td>
                                                             <td>8,800元/150BP</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><input class="" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3"></td>
+                                                            <td><input class="form-check-input" type="checkbox" name="product[]" id="product_B0009" value="B0009"></td>
                                                             <td class="text-left">B0009白鶴靈芝EX SP 每月1盒/ 05瓶</td>
                                                             <td>02瓶</td>
                                                             <td>03瓶</td>
                                                             <td>2,750元/55BP</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><input class="" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3"></td>
+                                                            <td><input class="form-check-input" type="checkbox" name="product[]" id="product_C0005" value="C0005"></td>
                                                             <td class="text-left">C0005美力C錠 每月2盒/60包</td>
                                                             <td>45包</td>
                                                             <td>60包</td>
@@ -143,13 +165,12 @@
 
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
-                                                    ※請指定次月起每月付款與出貨日：
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">5日 </label>
+                                                    <input class="form-check-input" type="radio" name="payment_date" id="payment_date_5" value="5">
+                                                    <label class="form-check-label" for="payment_date_5">5日</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">20日 (遇假日提前) </label>
+                                                    <input class="form-check-input" type="radio" name="payment_date" id="payment_date_20" value="20">
+                                                    <label class="form-check-label" for="payment_date_20">20日 (遇假日提前)</label>
                                                 </div>
                                             </div>
 
@@ -166,50 +187,56 @@
                                                         <div class="row mb30">
                                                             <div class="form-check form-check-inline">
                                                                 信用卡卡別：
-                                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                                <label class="form-check-label" for="inlineRadio4">VISA </label>
+                                                                <input class="form-check-input" type="radio" name="card_type" id="card_type_visa" value="VISA">
+                                                                <label class="form-check-label" for="card_type_visa">VISA</label>
                                                             </div>
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                                <label class="form-check-label" for="inlineRadio4">MASTER </label>
+                                                                <input class="form-check-input" type="radio" name="card_type" id="card_type_master" value="MASTER">
+                                                                <label class="form-check-label" for="card_type_master">MASTER</label>
                                                             </div>
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                                <label class="form-check-label" for="inlineRadio4">JCB </label>
+                                                                <input class="form-check-input" type="radio" name="card_type" id="card_type_jcb" value="JCB">
+                                                                <label class="form-check-label" for="card_type_jcb">JCB</label>
                                                             </div>
                                                         </div>
                                                         <div class="row d-flex justify-content-between mb30">
                                                             <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="inlineRadio4">每月付款金額： </label>
-                                                                <input type="text" size="10" maxlength="8"> 元
+                                                                <label class="form-check-label" for="monthly_payment">每月付款金額：</label>
+                                                                <input type="number" name="monthly_payment" id="monthly_payment" size="10">元
                                                             </div>
                                                             <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="inlineRadio4">發卡銀行： </label>
-                                                                <input type="text" size="10" maxlength="8">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb30">
-                                                            <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
-                                                                <input type="text" size="4" maxlength="4"> - <input type="text" size="4" maxlength="4"> - <input type="text" size="4" maxlength="4"> - <input type="text" size="4" maxlength="4">
+                                                                <label class="form-check-label" for="bank_name">發卡銀行：</label>
+                                                                <input type="text" name="bank_name" id="bank_name" size="10" maxlength="8">
                                                             </div>
                                                         </div>
                                                         <div class="row mb30">
                                                             <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="inlineRadio4">有效期限： </label>
-                                                                <input type="text" size="6" maxlength="4">月<input type="text" size="4" maxlength="2">年
+                                                                <label class="form-check-label">信用卡卡號（共16碼）：</label>
+                                                                <input type="text" name="card_number[]" id="card_number_1" size="4" maxlength="4"> - 
+                                                                <input type="text" name="card_number[]" id="card_number_2" size="4" maxlength="4"> - 
+                                                                <input type="text" name="card_number[]" id="card_number_3" size="4" maxlength="4"> - 
+                                                                <input type="text" name="card_number[]" id="card_number_4" size="4" maxlength="4">
                                                             </div>
                                                         </div>
                                                         <div class="row mb30">
                                                             <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="inlineRadio4">持卡人簽名： </label>
-                                                                <input type="text" size="10" maxlength="8">(與信用卡一致)
+                                                                <label class="form-check-label" for="card_expiry">有效期限：</label>
+                                                                <input type="text" name="card_expiry_month" id="card_expiry_month" size="6" maxlength="4">月<input type="text" name="card_expiry_year" id="card_expiry_year" size="4" maxlength="2">年
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb30">
+                                                            <div class="form-check form-check-inline">
+                                                                <label class="form-check-label" for="signaturePad">持卡人簽名： </label>
+                                                                <div style="display: flex; flex-direction: column;">
+                                                                    <canvas id="signaturePad" width="400" height="200"></canvas>
+                                                                    <button id="clearBtn">清除簽名</button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                                <label class="form-check-label" for="inlineRadio4">使用訂購會員授權卡，僅須填寫發卡銀行與持卡人簽名 </label>
+                                                                <input class="form-check-input" type="checkbox" name="use_member_auth" id="use_member_auth" value="1">
+                                                                <label class="form-check-label" for="use_member_auth">使用訂購會員授權卡，僅須填寫發卡銀行與持卡人簽名 </label>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -223,12 +250,15 @@
                                             <div class="card-body">
                                                 <div class="">
                                                     <p class="text-center fs20">郵局帳戶授權人簽名 </p>
-                                                    <input type="text" style="width: 100%;">
+                                                    <div style="display: flex; flex-direction: column;">
+                                                        <canvas id="signaturePadPost" width="400" height="200"></canvas>
+                                                        <button id="clearBtnPost">清除簽名</button>
+                                                    </div>
                                                 </div>
                                                 <hr>
                                                 <div class="form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">日期： </label>
-                                                    <input type="text" size="4" maxlength="4">年<input type="text" size="3" maxlength="2">月<input type="text" size="3" maxlength="2">日
+                                                    <label class="form-check-label" for="auth_date">日期：</label>
+                                                    <input type="text" name="auth_date_year" id="auth_date_year" size="4" maxlength="4">年<input type="text" name="auth_date_month" id="auth_date_month" size="3" maxlength="2">月<input type="text" name="auth_date_day" id="auth_date_day" size="3" maxlength="2">日
                                                 </div>
                                             </div>
                                         </div>
@@ -240,20 +270,20 @@
                                     <div class="col-lg-12">
                                         <div class="form-check form-check-inline">
                                             付款方式：
-                                            <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                            <label class="form-check-label" for="inlineRadio4">信用卡付款 </label>
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_credit_card" value="credit_card">
+                                            <label class="form-check-label" for="payment_method_credit_card">信用卡付款 </label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                            <label class="form-check-label" for="inlineRadio4">劃撥 </label>
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_withdrawal" value="withdrawal">
+                                            <label class="form-check-label" for="payment_method_withdrawal">劃撥 </label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                            <label class="form-check-label" for="inlineRadio4">ATM轉帳 </label>
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_atm" value="atm">
+                                            <label class="form-check-label" for="payment_method_atm">ATM轉帳 </label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                            <label class="form-check-label" for="inlineRadio4">郵局扣款 (須填寫<a href="#">自動轉帳付款授權書</a>) </label>
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_post_office" value="post_office">
+                                            <label class="form-check-label" for="payment_method_post_office">郵局扣款 (須填寫<a href="#">自動轉帳付款授權書</a>) </label>
                                         </div>
                                     </div>
                                 </div>
@@ -267,32 +297,35 @@
                                                 <p class="fs20">信用卡使用同意聲明書 ★持卡人非訂購會員本人，務必完整填寫信用卡使用同意申明書。</p>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">持卡人本人： </label>
-                                                        <input type="text"> ；
+                                                        <label class="form-check-label" for="cardholder_name">持卡人本人：</label>
+                                                        <input type="text" name="cardholder_name" id="cardholder_name"> ；
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">身份證字號： </label>
-                                                        <input type="text">
+                                                        <label class="form-check-label" for="cardholder_id">身份證字號：</label>
+                                                        <input type="text" name="cardholder_id" id="cardholder_id">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">本人授權台灣安露莎公司就訂購會員 </label>
-                                                        <input type="text"> ；
+                                                        <label class="form-check-label" for="auth_member_name">本人授權台灣安露莎公司就訂購會員</label>
+                                                        <input type="text" name="auth_member_name" id="auth_member_name"> ；
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">購買產品合計每月 </label>
-                                                        <input type="text">元得使用本人留存之信用卡資訊，填寫信用卡授權書向銀行請款支付上開消費金額，毋須再與本人電話確認。
+                                                        <label class="form-check-label" for="auth_amount">購買產品合計每月</label>
+                                                        <input type="text" name="auth_amount" id="auth_amount">元得使用本人留存之信用卡資訊，填寫信用卡授權書向銀行請款支付上開消費金額，毋須再與本人電話確認。
                                                     </div>
                                                 </div>
                                                 <div class="">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">持卡人簽名：</label>
-                                                        <input type="text"> ；
+                                                        <label class="form-check-label" for="auth_signature">持卡人簽名：</label>
+                                                        <div style="display: flex; flex-direction: column;">
+                                                            <canvas id="signaturePadAgreement" width="400" height="200"></canvas>
+                                                            <button id="clearBtnAgreement">清除簽名</button>
+                                                        </div>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">日期：</label>
-                                                        <input type="text">
+                                                        <label class="form-check-label" for="auth_date">日期：</label>
+                                                        <input type="date" name="auth_date" id="auth_date">
                                                     </div>
                                                 </div>
                                             </div>
@@ -310,11 +343,14 @@
                                     <div class="col-lg-12 mb30">
                                         <div class="card bg-light wow fadeInUp" data-wow-delay=".2s">
                                             <div class="card-body">
-                                                <p class="">關於您的會員註冊以及其他特定資料，台灣安露莎股份有限公司(以下簡稱“本公司”)均依照『個人資料保護法』進行保護與規範。在您了解並同意簽署本協議書時（會員是否生效仍須經本公司核准），您同意本公司依據『個人資料保護法』進行您包括但不限於姓名、身份證字號、出生年月日、電話、戶籍/居住地址等個人資料的蒐集與利用。參加人知悉並確認於加入會員後，本公司得依參加人之傳銷組織，將參加人包含地址、電話、會員編號等「個人資料」及後代會員有關銷售品名、項目、售價、訂購數、業績等「銷售資料」揭露於會員網站，供所屬支部及優秀地區本部傳銷組織人員登入查詢並供本公司佣金計算使用。</p>
+                                                <p class="">關於您的會員註冊以及其他特定資料，台灣安露莎股份有限公司(以下簡稱"本公司")均依照『個人資料保護法』進行保護與規範。在您了解並同意簽署本協議書時（會員是否生效仍須經本公司核准），您同意本公司依據『個人資料保護法』進行您包括但不限於姓名、身份證字號、出生年月日、電話、戶籍/居住地址等個人資料的蒐集與利用。參加人知悉並確認於加入會員後，本公司得依參加人之傳銷組織，將參加人包含地址、電話、會員編號等「個人資料」及後代會員有關銷售品名、項目、售價、訂購數、業績等「銷售資料」揭露於會員網站，供所屬支部及優秀地區本部傳銷組織人員登入查詢並供本公司佣金計算使用。</p>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">※本人已明確知悉並同意上開個人資料之揭露及使用： </label>
-                                                        <input type="text"> (本人親筆簽名)
+                                                        <label class="form-check-label" for="privacy_agreement">※本人已明確知悉並同意上開個人資料之揭露及使用：(本人親筆簽名)</label>
+                                                        <div style="display: flex; flex-direction: column;">
+                                                            <canvas id="signaturePadCheck" width="400" height="200"></canvas>
+                                                            <button id="clearBtnCheck">清除簽名</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -323,8 +359,8 @@
                                     <div class="col-lg-12 d-flex justify-content-end">
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">代下單會員姓名： </label>
-                                                <input type="text">
+                                                <label class="form-check-label" for="order_by_member">代下單會員姓名：</label>
+                                                <input type="text" name="order_by_member" id="order_by_member">
                                             </div>
                                         </div>
                                     </div>
@@ -420,7 +456,7 @@
                                 </div>
 
                                 <hr class="my-4">
-                                <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
+                                <button type="button" id="submit" class="btn btn-outline-danger btn-block">送出表單</button>
 
 
 
@@ -592,22 +628,206 @@
     <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
 
     <script>
+        class signature {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.drawing = false;
+                this.signatured = false;    // 是否有簽名
+
+                // 設定筆刷樣式
+                this.ctx.lineWidth = 2;
+                this.ctx.lineCap = "round";
+                this.ctx.strokeStyle = "#000";
+            }
+
+            // 監聽滑鼠事件
+            init() {
+                $(this.canvas).on('mousedown', (e) => {
+                    this.signatured = true;
+                    this.drawing = true;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(e.offsetX, e.offsetY);
+                });
+
+                $(this.canvas).on('mousemove', (e) => {
+                    if (this.drawing) {
+                        this.ctx.lineTo(e.offsetX, e.offsetY);
+                        this.ctx.stroke();
+                    }
+                });
+
+                $(this.canvas).on('mouseup mouseleave', () => {
+                    this.drawing = false;
+                });
+            }
+
+            // 取得簽名 Blob（圖片格式）
+            getSignatureBlob() {
+                return new Promise((resolve, reject) => {
+                    if (!this.signatured) {
+                        reject("請先簽名！");
+                        return;
+                    }
+                    this.canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject("轉換失敗");
+                        }
+                    }, "image/png");
+                });
+            }
+        }
+    </script>
+
+    <script>
         $(document).ready(function() {
             // init controller
             var controller = new ScrollMagic.Controller();
 
             // build scenes
             new ScrollMagic.Scene({
-                    triggerElement: '.section-mini',
-                    triggerHook: 1,
-                    duration: '200%'
-                })
-                .setTween('.article-promo-item', {
-                    backgroundPosition: '50% 100%',
-                    ease: Linear.easeNone
-                })
-                .addTo(controller);
+                triggerElement: '.section-mini',
+                triggerHook: 1,
+                duration: '200%'
+            })
+            .setTween('.article-promo-item', {
+                backgroundPosition: '50% 100%',
+                ease: Linear.easeNone
+            })
+            .addTo(controller);
 
+            // 簽名
+            const signaturePad = new signature('signaturePad');
+            const signaturePadPost = new signature('signaturePadPost');
+            const signaturePadAgreement = new signature('signaturePadAgreement');
+            const signaturePadCheck = new signature('signaturePadCheck');
+
+            signaturePad.init();
+            signaturePadAgreement.init();
+            signaturePadCheck.init();
+            signaturePadPost.init();
+
+            $('#submit').on('click', async function() {
+                // 顯示載入中提示
+                Swal.fire({
+                    title: '處理中...',
+                    text: '正在提交您的申請',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // 收集所有表單數據
+                let formData = {
+                    form_type: $('input[name="form_type"]:checked').val(),
+                    change_year: $('#change_year').val(),
+                    change_month: $('#change_month').val(),
+                    change_type: $('input[name="change_type"]:checked').val(),
+                    order_date_check: $('#order_date_check').is(':checked'),
+                    order_year: $('#order_year').val(),
+                    order_month: $('#order_month').val(),
+                    order_day: $('#order_day').val(),
+                    c_no: $('#member_id').val(),
+                    order_member_name: $('#order_member_name').val(),
+                    id_number: $('#id_number').val(),
+                    birth_year: $('#birth_year').val(),
+                    birth_month: $('#birth_month').val(),
+                    birth_day: $('#birth_day').val(),
+                    shipping_address: $('#shipping_address').val(),
+                    recipient_name: $('#recipient_name').val(),
+                    contact_phone: $('#contact_phone').val(),
+                    referrer_id: $('#referrer_id').val(),
+                    referrer_name: $('#referrer_name').val(),
+                    nutrition_consult: $('input[name="nutrition_consult"]:checked').val(),
+                    consult_time: $('input[name="consult_time[]"]:checked').map(function() { return $(this).val(); }).get(),
+                    products: $('input[name="product[]"]:checked').map(function() { return $(this).val(); }).get(),
+                    payment_date: $('input[name="payment_date"]:checked').val(),
+                    card_type: $('input[name="card_type"]:checked').val(),
+                    monthly_payment: $('#monthly_payment').val(),
+                    bank_name: $('#bank_name').val(),
+                    card_number: [
+                        $('#card_number_1').val(),
+                        $('#card_number_2').val(),
+                        $('#card_number_3').val(),
+                        $('#card_number_4').val()
+                    ],
+                    card_expiry_month: $('#card_expiry_month').val(),
+                    card_expiry_year: $('#card_expiry_year').val(),
+                    card_signature: $('#card_signature').val(),
+                    use_member_auth: $('#use_member_auth').is(':checked'),
+                    post_office_auth_signature: $('#post_office_auth_signature').val(),
+                    auth_date_year: $('#auth_date_year').val(),
+                    auth_date_month: $('#auth_date_month').val(),
+                    auth_date_day: $('#auth_date_day').val(),
+                    payment_method: $('input[name="payment_method"]:checked').map(function() { return $(this).val(); }).get(),
+                    cardholder_name: $('#cardholder_name').val(),
+                    cardholder_id: $('#cardholder_id').val(),
+                    auth_member_name: $('#auth_member_name').val(),
+                    auth_amount: $('#auth_amount').val(),
+                    auth_signature: $('#auth_signature').val(),
+                    auth_date: $('#auth_date').val(),
+                    privacy_agreement: $('#privacy_agreement').val(),
+                    order_by_member: $('#order_by_member').val()
+                };
+
+                // 取得簽名 Blob
+                if (signaturePad.signatured) {
+                    formData.signature = await signaturePad.getSignatureBlob();                    
+                }
+
+                if (signaturePadPost.signatured) {
+                    formData.signaturePost = await signaturePadPost.getSignatureBlob();                    
+                }
+
+                if (signaturePadAgreement.signatured) {
+                    formData.signatureAgreement = await signaturePadAgreement.getSignatureBlob();                    
+                }
+
+                if (signaturePadCheck.signatured) {
+                    formData.signatureCheck = await signaturePadCheck.getSignatureBlob();                    
+                }
+
+                // 發送 AJAX 請求
+                $.ajax({
+                    url: '<?=$apiUrl;?>',
+                    method: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '提交成功',
+                                text: response.message || '您的健康宅配訂單已成功提交',
+                                confirmButtonText: '確定'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = response.redirect_url || '/eform/success';
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '提交失敗',
+                                text: response.message || '提交過程中發生錯誤，請稍後再試',
+                                confirmButtonText: '確定'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '系統錯誤',
+                            text: '提交過程中發生錯誤，請稍後再試',
+                            confirmButtonText: '確定'
+                        });
+                        console.error('Error:', error);
+                    }
+                });
+            });
         });
     </script>
     <script>
@@ -632,7 +852,6 @@
         });
         /*Scroll to top when arrow up clicked END*/
     </script>
-
 </body>
 
 </html>
