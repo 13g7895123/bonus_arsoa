@@ -76,7 +76,11 @@ class Online_form extends MY_Controller
             'userdata' => $this->userdata,
             'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
         );
-
+        $blockNum = 4;
+        for($index=1;$index<=$blockNum;$index++) {
+            $subView['index'] = $index;
+            $data['subView'] .= $this->load->view('eform/sub_eform04', $subView, true);
+        }
         $this->layout->view('./eform/eform04', $data);
     }
 

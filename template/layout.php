@@ -173,18 +173,6 @@
 <?php if (isset($schema_embed['schema'])){ 
           echo $schema_embed['schema'];
       } ?>
-<!-- CSS -->
-<link href="<?= base_url('public/online_form/') ?>css/bootstrap.min.css" rel="stylesheet">
-<link href="<?= base_url('public/online_form/') ?>css/animsition.min.css" rel="stylesheet">
-<link href="<?= base_url('public/online_form/') ?>css/owl.carousel.min.css" rel="stylesheet">
-<link href="<?= base_url('public/online_form/') ?>css/owl.theme.default.min.css" rel="stylesheet">
-<link href="<?= base_url('public/online_form/') ?>css/socicon.css" rel="stylesheet">
-<link href="<?= base_url('public/online_form/') ?>css/ionicons.min.css" rel="stylesheet">
-<link href="<?= base_url('public/online_form/') ?>css/animate.min.css" rel="stylesheet">
-<link href="<?= base_url('public/online_form/') ?>css/jquery.fancybox.min.css" rel="stylesheet">
-
-<!-- Main CSS -->
-<link href="<?= base_url('public/online_form/') ?>css/style.css" rel="stylesheet">
 
 <!-- Favicons -->
 <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
@@ -199,7 +187,8 @@
 <link href="<?=base_url()?>public/css/socicon.css" rel="stylesheet">
 <link href="<?=base_url()?>public/css/ionicons.min.css" rel="stylesheet">
 <link href="<?=base_url()?>public/css/animate.min.css" rel="stylesheet">
-<link href="<?=base_url()?>public/css/jquery.fancybox.min.css" rel="stylesheet">    
+<link href="<?=base_url()?>public/css/jquery.fancybox.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 <?php    
 $css_file = array('var'  => $this->config->item('ver_css'),
@@ -212,11 +201,6 @@ $css_name = urlencode(base64_encode(json_encode($css_file)));
     <!-- Main CSS -->
     <link href="<?=base_url()?>public/css/style.css" rel="stylesheet">
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="<?=base_url()?>public/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?=base_url()?>public/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?=base_url()?>public/favicon/favicon-16x16.png">
-    
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 <script>
@@ -252,6 +236,8 @@ var csrf_cookie_name = '<?php echo $this->config->item("csrf_cookie_name"); ?>';
 <script src="<?=base_url()?>public/js/jquery.viewport.js"></script>
 <script src="<?=base_url()?>public/js/jquery.countdown.min.js"></script>
 <script src="<?=base_url()?>public/js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script> <!-- 引入中文語言包 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>lazyload_set('main');</script>
 <?php

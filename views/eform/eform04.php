@@ -1,3 +1,12 @@
+<style>
+    .flatpickr-input[readonly]  {
+        border: none;
+        border-bottom: #cccccc 1px solid;
+    }
+    .underline-text {
+        text-decoration: underline;
+    }
+</style>
 <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
         <div class="wrapper">
@@ -8,282 +17,217 @@
                         <div class="row">
                             <div class="col-md-8 mb130 mt-lg-5" role="main">
                                 <h1 class="h2-3d font-libre"><strong>《合歡會員協議書》</strong></h1>
-                                <div class="mb30">
-                                    <div class="container wow fadeInUp" data-wow-delay=".2s">
+                                <div class="container wow fadeInUp" data-wow-delay=".2s">
+                                    <form id="eform_main_1">
                                         <div class="row">
-                                            <p class="fs20">在填寫本協議書並簽署姓名之前，請詳閱本協議書正背兩面所有條文與說明。</p>
-                                        </div>
-                                        <div class="row mb30">
-                                            <div class="form-check form-check-inline"> 欲加入會員之型態請勾選　
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">個人 </label>
+                                            <div class="col-sm-12 mb30">
+                                                <p class="fs20">在填寫本協議書並簽署姓名之前，請詳閱本協議書正背兩面所有條文與說明。</p>
                                             </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">公司</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">合夥組織</label>
-                                            </div>
-                                        </div>
-                                        <div class="row mb30">
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">姓名： </label>
-                                                <input type="text" size="10" maxlength="8">
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">身分證號碼： </label>
-                                                <input type="text" size="10" maxlength="8">
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">生日： </label>
-                                                <input type="text" size="4" maxlength="4">
-                                                年
-                                                <input type="text" size="4" maxlength="2">
-                                                月
-                                                <input type="text" size="4" maxlength="2">
-                                                日<br>
-                                            </div>
-                                            <p class="mb-0">(夫妻僅能以一人之名義加入本公司)</p>
-                                        </div>
-                                        <div class="row mb30">
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">配偶姓名： </label>
-                                                <input type="text" size="10" maxlength="8">
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">身分證號碼： </label>
-                                                <input type="text" size="10" maxlength="8">
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">生日： </label>
-                                                <input type="text" size="4" maxlength="4">
-                                                年
-                                                <input type="text" size="4" maxlength="2">
-                                                月
-                                                <input type="text" size="4" maxlength="2">
-                                                日<br>
-                                            </div>
-                                        </div>
-                                        <div class="row mb30">
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">通訊地址： </label>
-                                                <input type="text" size="50" maxlength="50">
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">郵遞區號： </label>
-                                                <input type="text" size="7" maxlength="6">
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">手機： </label>
-                                                <input type="text" size="10" maxlength="8">
-                                            </div>
-                                        </div>
-                                        <div class="row mb30">
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">電話：公司 </label>
-                                                <input type="text" size="12" maxlength="10">
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">住家： </label>
-                                                <input type="text" size="12" maxlength="10">
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">傳真： </label>
-                                                <input type="text" size="12" maxlength="10">
-                                            </div>
-                                        </div>
-                                        <div class="row mb30">
-                                            <div class="col-lg-12">
+                                            <div class="col-sm-12 mb30">
+                                                <div class="form-check form-check-inline"> 欲加入會員之型態請勾選　
+                                                    <input class="form-check-input" type="radio" name="member_type" id="personal" value="personal">
+                                                    <label class="form-check-label" for="personal">個人 </label>
+                                                </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                    <label class="form-check-label" for="inlineRadio4">我要收相關簡訊 </label>
+                                                    <input class="form-check-input" type="radio" name="member_type" id="company" value="company">
+                                                    <label class="form-check-label" for="company">公司</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="member_type" id="partner_organization" value="partner_organization">
+                                                    <label class="form-check-label" for="partner_organization">合夥組織</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">姓名：</label>
+                                                <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名">
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">身分證號碼： </label>
+                                                <input type="text" name="member_id_card_number" maxlength="10" class="form-control form-control-custom" placeholder="請填身分證字號">
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">生日：</label>
+                                                <input type="text" class="datapicker" name="member_birth_date" class="form-control form-control-custom" placeholder="選擇日期">
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">配偶姓名：</label>
+                                                <input type="text" name="spouse_name" class="form-control form-control-custom" placeholder="請填姓名">
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">身分證號碼： </label>
+                                                <input type="text" name="spouse_id_card_number" maxlength="10" class="form-control form-control-custom" placeholder="請填身分證字號">
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">生日：</label>
+                                                <input type="text" class="datapicker" name="spouse_birth_date" class="form-control form-control-custom" placeholder="選擇日期">
+                                            </div>
+                                            <div class="col-sm-6 mb30">
+                                                <label class="label-custom">通訊地址：郵遞區號 </label>
+                                                <input type="text" name="postal_code" maxlength="6" class="form-control form-control-custom" placeholder="請填郵遞區號">
+                                            </div>
+                                            <div class="col-sm-8 mb30">
+                                                <label class="label-custom">通訊地址： </label>
+                                                <input type="text" name="address" maxlength="6" class="form-control form-control-custom" placeholder="請填地址">
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">手機： </label>
+                                                <input type="text" name="cellphone_number" maxlength="10" class="form-control form-control-custom" placeholder="請填手機">
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">電話：公司 </label>
+                                                <input type="text" name="company_phone_number" maxlength="10" class="form-control form-control-custom" placeholder="請填公司電話">
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">電話：住家 </label>
+                                                <input type="text" name="home_phone_number" maxlength="10" class="form-control form-control-custom" placeholder="請填住家電話">
+                                            </div>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">傳真 </label>
+                                                <input type="text" name="fax" maxlength="10" class="form-control form-control-custom" placeholder="請填傳真">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="is_recieve_message" id="is_recieve_message" value="1">
+                                                    <label class="form-check-label" for="is_recieve_message">我要收相關簡訊 </label>
                                                 </div>
                                                 <div class="form-check form-check-inline"> ※為保障會員權益，安露莎所有訊息僅提供予會員本人。 </div>
                                             </div>
-                                        </div>
-                                        <div class="row mb30">
-                                            <div class="col-lg-12">
-                                                <p>本協議書為會員與台灣安露莎公司訂定之合約…</p>
-                                                <p>關於您的會員註冊與其他特定資料…</p>
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">推薦人姓名： </label>
+                                                <input type="text" name="recommend_name" maxlength="10" class="form-control form-control-custom" placeholder="請填推薦人">
                                             </div>
-                                        </div>
-                                        <div class="row mb30">
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">申請人正楷親筆簽署： </label>
-                                                <input type="text" size="10" maxlength="8">
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">連絡電話 </label>
+                                                <input type="text" name="recommend_phone_number" maxlength="10" class="form-control form-control-custom" placeholder="請填電話">
                                             </div>
-                                            <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="inlineRadio4">日期： </label>
-                                                <input type="text" size="10" maxlength="8">
+                                            <div class="col-sm-4 mb30">
+                                                <label class="label-custom">會員編號 </label>
+                                                <input type="text" name="recommend_no" maxlength="10" class="form-control form-control-custom" placeholder="請填編號">
                                             </div>
-                                            <div>※申請名簽名同時代表已詳閱所有條文，並承諾各欄填寫資料所提供相關證明文件均屬實無誤，如有虛假願承擔法律責任。</div>
-                                        </div>
+                                            <div class="col-sm-12">
+                                                <p>
+                                                    本協議書為會員與台灣安露莎公司訂定之合約，本協議書正背兩面、營業守則、傭金制度及其他附屬文件均為本合約之一部分。
+                                                    經本人親自簽屬後，即表示本人已詳閱所有條款，明白且同意接受該等條款。申請人為營利事業者請檢附營利事業登記證；
+                                                    為外籍人士請檢附工作證或居留證影本；申請人為18歲以上未滿20歲需檢附法定代理人同意書。<b>本協議書第一連正本請寄回公司，才算正式完成入會手續</b>
+                                                </p>
+                                                <p>
+                                                    關於您的會員註冊與其他特定資料，安露莎公司均依照『個人資料保護法』進行保護與規範。
+                                                    <b class="underline-text">在您了解並同意簽屬本協議書時(會員是否生效仍須經安露莎公司核准)</b>，您同意安露莎公司依據『個人資料保護法』
+                                                    進行您包括但不限於姓名、身分證字號、出生年月日、電話、戶籍/居住地等個人資料的蒐集與利用。
+                                                    參加人知悉並確認於加入會員後，安露莎公司得依參加人之傳銷組織，將參加人包含地址、電話、會員編號等『個人資料』及後代會員有關銷售品名、項目、售價、訂購數、業績等『銷售資料』揭露於會員網站，供所屬
+                                                    傳銷組織人員登入查詢並供安露莎公司佣金計算使用。台端可隨時為查詢、閱覽、補充或更正。
+                                                    但若您不同意，亦可告知請求本公司停止處理、利用，唯恐將無法提供最完善服務。
+                                                </p>
+                                            </div>
+                                            <div class="col-sm-6 mb30">
+                                                <label class="label-custom">申請人正楷親筆簽署： </label>
+                                                <input type="text" maxlength="10" class="form-control form-control-custom" placeholder="請填正楷親筆簽署">
+                                            </div>
+                                            <div class="col-sm-6 mb30">
+                                                <label class="label-custom">日期：</label>
+                                                <input type="text" class="datapicker" class="form-control form-control-custom" placeholder="選擇日期">
+                                            </div>
+                                            <div class="col-sm-12 mb30">
+                                                <div>※申請名簽名同時代表已詳閱所有條文，並承諾各欄填寫資料所提供相關證明文件均屬實無誤，如有虛假願承擔法律責任。</div>
+                                            </div>
+                                        
 
-                                        <hr class="mb30">
-
-                                        <div class="row mb30">
-                                            <div class="form-check form-check-inline"> ※請選取入會方式　　
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">入會費750元 </label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">購滿建議售價3500元</label>
-                                            </div>
-                                        </div>
-                                        <div class="row mb30">
-                                            <div class="form-check form-check-inline"> ※付款方式：
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">現場付款 </label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">信用卡 （</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">VISA </label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">MASTER </label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">JCB ）</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">電匯（合作金庫復旦分行帳號1254-717-706612） </label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">劃撥（帳號：50049675）戶名：台灣安露莎股份有限公司 </label>
-                                            </div>
-                                        </div>
-
-                                        <hr class="mb30">
-
-                                        <div class="row mb-2">
-                                            <div class="card bg-light ">
-                                                <div class="card-body">
-                                                    <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                                        <div class="row">
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">貨號：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">品名：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">數量：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">售價：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                        </div>
+                                            <hr class="mb30">
+                                            <div class="col-sm-12">
+                                                <p>※請選取入會方式:</p>
+                                                <div class="mb30 d-flex flex-row align-items-center">
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="join_type" id="MembershipFee" value="membership_fee">
+                                                        <label class="form-check-label" for="MembershipFee">入會費750元</label>
+                                                    </div>
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="join_type" id="amountThreshold" value="amount_threshold">
+                                                        <label class="form-check-label" for="amountThreshold">購滿建議售價3500元</label>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="card bg-light ">
-                                                <div class="card-body">
-                                                    <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                                        <div class="row">
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">貨號：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">品名：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">數量：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">售價：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
+                                            <div class="col-sm-12">
+                                                <p>※付款方式：</p>
+                                                <div class="col-sm-12 mb30 d-flex flex-row align-items-center">
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="payment_method" id="cash" value="cash">
+                                                        <label class="form-check-label" for="cash">現場付款</label>
+                                                    </div>
+                                                    <!-- 信用卡 -->
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="payment_method" id="creditCard" value="credit_card">
+                                                        <label class="form-check-label" for="creditCard">信用卡</label>
+                                                    </div>
+                                                    
+                                                    <!-- 信用卡類別 -->
+                                                    <div class="d-flex flex-row" id="cardTypeGroup">
+                                                        (
+                                                        <div class="form-check me-3">
+                                                            <input class="form-check-input" type="radio" name="card_type" id="visa" value="VISA" disabled>
+                                                            <label class="form-check-label" for="visa">VISA</label>
                                                         </div>
+                                                        <div class="form-check me-3">
+                                                            <input class="form-check-input" type="radio" name="card_type" id="master" value="MASTER" disabled>
+                                                            <label class="form-check-label" for="master">MASTER</label>
+                                                        </div>
+                                                        <div class="form-check me-3">
+                                                            <input class="form-check-input" type="radio" name="card_type" id="jcb" value="JCB" disabled>
+                                                            <label class="form-check-label" for="jcb">JCB</label>
+                                                        </div>
+                                                        )
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 mb30 d-flex flex-row align-items-center">
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="payment_method" id="wireTransfer" value="wire_transfer">
+                                                        <label class="form-check-label" for="wireTransfer">電匯（合作金庫復旦分行帳號1254-717-706612）</label>
+                                                    </div>
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="payment_method" id="postalTransfer" value="postal_transfer">
+                                                        <label class="form-check-label" for="postalTransfer">劃撥（帳號：50049675）戶名：台灣安露莎股份有限公司</label>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="card bg-light ">
-                                                <div class="card-body">
-                                                    <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                                        <div class="row">
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">貨號：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">品名：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">數量：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">售價：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                            <hr class="mb30">
+                                            <div class="col-sm-12">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="sameAsAbove">
+                                                    <label class="form-check-label" for="sameAsAbove">同上列通訊地址</label>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="card bg-light ">
-                                                <div class="card-body">
-                                                    <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                                        <div class="row">
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">貨號：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">品名：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">數量：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <label class="label-custom">售價：</label>
-                                                                <input type="text" style="width: 100%;">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div class="col-sm-12 mb30">
+                                                <label class="label-custom">收件人地址： </label>
+                                                <input type="text" name="consignee_address"class="form-control form-control-custom" placeholder="請填地址">
+                                            </div>
+                                            <div class="col-sm-6 mb30">
+                                                <label class="label-custom">收件人姓名： </label>
+                                                <input type="text" name="consignee_name"class="form-control form-control-custom" placeholder="請填收件人姓名">
+                                            </div>
+                                            <div class="col-sm-6 mb30">
+                                                <label class="label-custom">收件人電話： </label>
+                                                <input type="text" name="consignee_phone_number"class="form-control form-control-custom" placeholder="請填電話">
                                             </div>
                                         </div>
+                                    </form>
+                                    <form id="eform_detail">
+                                        <?=$subView;?>
+                                    </form>
+                                    <form id="eform_main_2">
                                         <div class="wow fadeInUp" data-wow-delay=".2s">
                                             <div class="col-12 text-right">
                                                 <p class="fs20">總計：
-                                                    <input type="text">
+                                                    <input type="text" readonly name="totol_amount" id="totalAmount"></p>
                                                 </p>
                                             </div>
                                         </div>
-                                        <ul>
-                                            <li>※購滿建議售價2000元，免付運費100元。</li>
-                                            <li>※如品項不敷填寫，請另填產品訂購單。</li>
-                                            <li>劃撥及轉帳請檢附收據或電話以利確認。</li>
-                                        </ul>
-                                    </div>
+                                    </form>
+                                    <ul>
+                                        <li>※購滿建議售價2000元，免付運費100元。</li>
+                                        <li>※如品項不敷填寫，請另填產品訂購單。</li>
+                                        <li>劃撥及轉帳請檢附收據或電話以利確認。</li>
+                                    </ul>
                                 </div>
+                                
 
                                 <div class="row mb-4">
                                     <div class="col-lg-12">
@@ -472,12 +416,8 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <hr class="my-4">
-                                <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
-
-
-
+                                <button type="button" id="submit_btn" class="btn btn-outline-danger btn-block">送出表單</button>
                             </div>
                             <div class="col-lg-1 d-none d-xl-block"></div>
                             <aside role="complementary" class="aside col-xl-3 col-md-3">
@@ -662,9 +602,150 @@
                 })
                 .addTo(controller);
 
+            const eform4 = (function() {
+                const $eform_main_1 = $('#eform_main_1');
+                function getFormData($form, returnData){
+                    let data = $form.serializeArray();
+                    $.map(data, function(n, i) {
+                        if (returnData[n['name']] != null) {
+                            returnData[n['name']] += "," + n['value'];
+                        } else {
+                            returnData[n['name']] = n['value'];
+                        }
+                    });
+                    return returnData;
+                }
+
+                $eform_main_1.find(".datapicker").flatpickr({
+                    locale: "zh", // 設定語系為中文
+                    dateFormat: "Y-m-d", // 日期格式 YYYY-MM-DD
+                    disableMobile: true // 在行動裝置上顯示桌面版
+                });
+
+                $eform_main_1.find('input[name="payment_method"]').change(function () {
+                    if ($('#creditCard').is(':checked')) {
+                        $('input[name="card_type"]').prop('disabled', false);
+                    } else {
+                        $('input[name="card_type"]').prop('disabled', true).prop('checked', false);
+                    }
+                });
+
+                $eform_main_1.find('#sameAsAbove').change(function () {
+                    if ($('#sameAsAbove').is(':checked')) {
+                        let address = $eform_main_1.find("input[name='address']").val();
+                        let name = $eform_main_1.find("input[name='member_name']").val();
+                        let phone_number = $eform_main_1.find("input[name='cellphone_number']").val();
+                        $("input[name='consignee_address']").val(address);
+                        $("input[name='consignee_name']").val(name);
+                        $("input[name='consignee_phone_number']").val(phone_number);
+                    }
+                });
+
+                $('#submit_btn').click(function() {
+                    submitFormData();
+                });
+
+                function checkForm() {
+                    let selectedMemberType = $("input[name='member_type']:checked").val();
+                    let selectedPayment = $("input[name='payment_method']:checked").val();
+                    let selectedjoinType = $("input[name='join_type']:checked").val();
+        
+                    if (!selectedMemberType) {
+                        return false;
+                    }
+                    if (!selectedjoinType) {
+                        return false;
+                    }
+                    if (!selectedPayment) {
+                        return false;
+                    }
+                    if (selectedPayment === "credit_card") {
+                        let selectedCardType = $("input[name='member_type']:checked").val();
+                        if (!selectedCardType) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+
+                function submitFormData() {
+                    if (!checkForm()) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "系統訊息",
+                            text: "請檢查欄位是否皆已填寫",
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                        return;
+                    }
+                    let mainData = {};
+                    let detailData = {};
+
+                    mainData = getFormData($('#eform_main_1'), mainData);
+                    mainData = getFormData($('#eform_main_2'), mainData);
+
+                    detailData = getFormData($('#eform_detail'), detailData);
+
+                    let formData = {
+                        mainData,
+                        detailData
+                    };
+                    $.ajax({
+                        url: '<?=$apiUrl;?>',
+                        type: 'POST',
+                        data: formData,
+                        success: function(response) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "系統訊息",
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            })
+                            // 3 秒後刷新頁面
+                            setTimeout(function() {
+                                location.reload();
+                            }, 3000);
+                        },
+                        error: function(xhr, status, error) {
+                            let errorResponse = xhr.responseJSON || { message: "資料新增失敗" };
+                            Swal.fire({
+                                icon: "error",
+                                title: "系統訊息",
+                                text: errorResponse.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }
+                    });
+                }
+
+                function calculateTotal() {
+                    let total = 0;
+
+                    // 遍歷所有 .product-item，計算總金額
+                    $('.product-item').each(function () {
+                        let quantity = parseInt($(this).find('.quantity').val()) || 0;
+                        let price = parseFloat($(this).find('.price').val()) || 0;
+                        total += quantity * price;
+                    });
+
+                    // 更新合計金額
+                    $('#totalAmount').val(total);
+                }
+                const $formDetail = $('#eform_detail');
+                $formDetail.find('.quantity, .price').on('input', calculateTotal);
+
+            })();
+            $("#back2Top").click(function(event) {
+                event.preventDefault();
+                $("html, body").animate({
+                    scrollTop: 0
+                }, "slow");
+                return false;
+            });
         });
-    </script>
-    <script>
         /*Scroll to top when arrow up clicked BEGIN*/
         $(window).scroll(function() {
             var height = $(window).scrollTop();
@@ -673,16 +754,6 @@
             } else {
                 $('#back2Top').fadeOut();
             }
-        });
-        $(document).ready(function() {
-            $("#back2Top").click(function(event) {
-                event.preventDefault();
-                $("html, body").animate({
-                    scrollTop: 0
-                }, "slow");
-                return false;
-            });
-
         });
         /*Scroll to top when arrow up clicked END*/
     </script>

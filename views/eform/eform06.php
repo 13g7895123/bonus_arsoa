@@ -8,7 +8,7 @@
                     <div class="row">
                         <div class="col-md-8 mb130 mt-lg-5" role="main">
                             <form id="eform_main_1">
-                            <h1 class="h2-3d font-libre"><strong>產品訂購單</strong></h1>
+                                <h1 class="h2-3d font-libre"><strong>產品訂購單</strong></h1>
                                 <div class="container wow fadeInUp" data-wow-delay=".2s">
                                     <div class="row">
                                         <div class="col-sm-4 mb30">
@@ -430,7 +430,7 @@
                     });
                     return returnData;
                 }
-                
+
                 $('input[name="payment_method"]').change(function () {
                     if ($('#creditCard').is(':checked')) {
                         $('input[name="card_type"]').prop('disabled', false);
@@ -443,7 +443,32 @@
                     submitFormData();
                 });
 
+                function checkForm() {
+                    let selectedPayment = $("input[name='payment_method']:checked").val();
+
+                    if (!selectedPayment) {
+                        return false;
+                    }
+
+                    if (selectedPayment === "credit_card") {
+                        if ($("input[name='card_type']:checked").length === 0) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+
                 function submitFormData() {
+                    if (!checkForm()) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "系統訊息",
+                            text: "請檢查欄位是否皆已填寫",
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                        return;
+                    }
                     let mainData = {};
                     let detailData = {};
 
@@ -456,8 +481,6 @@
                         mainData,
                         detailData
                     };
-                    console.log(formData);
-                    debugger;
                     $.ajax({
                         url: '<?=$apiUrl;?>',
                         type: 'POST',
