@@ -27,7 +27,7 @@
                                         <div class="card bg-light border-danger wow fadeInUp" data-wow-delay=".2s">
                                             <div class="card-body">
                                                 <div class="mb30">
-                                                    <div class="form-check form-check-inline">date1
+                                                    <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">會員編號： </label>
                                                         <input type="text" size="10" maxlength="6" id="member_code" name="member_code" value="<?= $userdata['c_no']; ?>">
                                                     </div>
