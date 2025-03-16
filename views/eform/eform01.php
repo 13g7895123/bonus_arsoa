@@ -1,3 +1,11 @@
+<style>
+#signaturePad {
+    border: 2px solid #000;
+    width: 400px;
+    height: 200px;
+    cursor: crosshair;
+}
+</style>
 <body class="theme-orange fixed-footer fixed-footer-lg" id="main">
     <div class="animsition">
         <div class="wrapper parallax-start">
@@ -42,24 +50,25 @@
                                                     <p>付款銀行：合作金庫銀行復旦分行銀行代號：006　帳號：1254-717-706612　受款人：台灣安露莎股份有限公司</p>
                                                     <p>付款方式：</p>
                                                     <div class="form-check form-check mb20">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">信用卡（請填寫下欄框內資料） </label>
+                                                        <input class="form-check-input" type="radio" name="payment_method" id="creditCard" value="credit_card">
+                                                        <label class="form-check-label" for="creditCard">信用卡（請填寫下欄框內資料） </label>
                                                     </div>
                                                     <div class="form-check form-check mb20">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">劃撥交易序碼：</label>
-                                                        <input type="text">
+                                                        <input class="form-check-input" type="radio" name="payment_method" id="postalTransfer" value="postal_transfer">
+                                                        <label class="form-check-label" for="postalTransfer">劃撥交易序碼：</label>
+                                                        <input type="text" name="postal_transaction_number">
                                                     </div>
                                                     <div class="form-check form-check mb20">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">ATM轉帳、銀行電匯（帳號後五碼）：</label>
-                                                        <input type="text">
+                                                        <input class="form-check-input" type="radio" name="payment_method" id="atmTransfer" value="atm_transfer">
+                                                        <label class="form-check-label" for="atmTransfer">ATM轉帳、銀行電匯（帳號後五碼）：</label>
+                                                        <input type="text" name="atm_transaction_number">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
+                                </form>
+                                <form id="credit_card_form" style="display:none">
                                     <div class="container mb-4 wow fadeInUp">
                                         <div class="card bg-light border-danger">
                                             <div class="card-body">
@@ -67,22 +76,22 @@
                                                     <div class="row">
                                                         <div class="form-check form-check mb20">
                                                             <label class="form-check-label" for="inlineRadio4">本人</label>
-                                                            <input type="text">
+                                                            <input type="text" name="member_name">
                                                             <label class="form-check-label" for="inlineRadio4">身份證字號</label>
-                                                            <input type="text">
+                                                            <input type="text" name="member_id_card_number">
                                                             授權台灣安露莎股份有限公司使用本人之信用卡支付以下訂購人之消費貨款（以電腦系統金額為主），無任何異議。
                                                         </div>
                                                         <div class="col-sm-4 mb30">
                                                             <label class="label-custom">持卡人姓名：</label>
-                                                            <input type="text">
+                                                            <input type="text" name="cardholder_name">
                                                         </div>
                                                         <div class="col-sm-4 mb30">
                                                             <label class="label-custom">會員編號：</label>
-                                                            <input type="text">
+                                                            <input type="text" name="c_no">
                                                         </div>
                                                         <div class="col-sm-4 mb30">
                                                             <label class="label-custom">聯絡電話：</label>
-                                                            <input type="text">
+                                                            <input type="text" name="contact_phone_number">
                                                         </div>
                                                         <div class="col-sm-12 mb30">
                                                             <label class="form-check-label">發卡銀行：</label>
@@ -91,23 +100,32 @@
                                                         </div>
                                                         <div class="col-sm-12 mb30">
                                                             <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
-                                                            <input type="text" size="4" maxlength="4"> - <input type="text" size="4" maxlength="4"> - <input type="text" size="4" maxlength="4"> - <input type="text" size="4" maxlength="4">
+                                                            <input type="text" name="card_number[]" id="card_number_1" size="4" maxlength="4"> - 
+                                                            <input type="text" name="card_number[]" id="card_number_2" size="4" maxlength="4"> - 
+                                                            <input type="text" name="card_number[]" id="card_number_3" size="4" maxlength="4"> - 
+                                                            <input type="text" name="card_number[]" id="card_number_4" size="4" maxlength="4">
                                                         </div>
                                                         <div class="col-sm-12 mb30">
                                                             <label class="form-check-label">有效期限：</label>
-                                                            <input type="text" size="4" maxlength="2">月 20<input type="text" size="4" maxlength="2">年
+                                                            <input type="text" name="card_expiry_month" id="card_expiry_month" size="4" maxlength="2">月 20
+                                                            <input type="text" name="card_expiry_year" id="card_expiry_year" size="4" maxlength="2">年
                                                         </div>
                                                         <div class="col-sm-12 mb30">
                                                             <label class="form-check-label">持卡人簽名：</label>
-                                                            <input type="text"> （同信用卡背面簽名）
+                                                            <div style="display: flex; flex-direction: column;">
+                                                                <canvas id="signaturePad" width="400" height="200"></canvas>
+                                                                <button id="clearSignaturePadBtn" type="button">清除簽名</button>
+                                                            </div>
+                                                            （同信用卡背面簽名）
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                </form>
                                     <hr class="mt-0 mb-4">
-
+                                <form id="eform_main_2">
                                     <div class="container mb-4 wow fadeInUp">
                                         <div class="card bg-light border-info">
                                             <div class="card-body">
@@ -136,7 +154,7 @@
                                     <?=$subView;?>
                                     <hr class="my-4">
                                 </form>
-                                <form id="eform_main_2">
+                                <form id="eform_main_3">
                                     <div class="wow fadeInUp" data-wow-delay=".2s">
                                         <div class="col-12 text-right">
                                             <p class="fs20">代下單會員姓名：<input type="text" name="substitute_order_name" value="<?=$userdata['c_name'];?>"></p>
@@ -317,6 +335,60 @@
     <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
 
     <script>
+        class signature {
+            constructor(canvasId) {
+                this.canvasId = canvasId;
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.drawing = false;
+                this.signatured = false;    // 是否有簽名
+
+                // 設定筆刷樣式
+                this.ctx.lineWidth = 2;
+                this.ctx.lineCap = "round";
+                this.ctx.strokeStyle = "#000";
+            }
+
+            // 監聽滑鼠事件
+            init() {
+                $('#' + this.canvasId).on('mousedown', (e) => {
+                    console.log('mousedown');
+                    this.signatured = true;
+                    this.drawing = true;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(e.offsetX, e.offsetY);
+                });
+
+                $('#' + this.canvasId).on('mousemove', (e) => {
+                    if (this.drawing) {
+                        this.ctx.lineTo(e.offsetX, e.offsetY);
+                        this.ctx.stroke();
+                    }
+                });
+
+                $('#' + this.canvasId).on('mouseup mouseleave', () => {
+                    this.drawing = false;
+                });
+            }
+
+            // 取得簽名 Blob（圖片格式）
+            getSignatureBlob() {
+                return new Promise((resolve, reject) => {
+                    if (!this.signatured) {
+                        reject("請先簽名！");
+                        return;
+                    }
+                    this.canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject("轉換失敗");
+                        }
+                    }, "image/png");
+                });
+            }
+        }
+
         $(document).ready(function() {
             // init controller
             var controller = new ScrollMagic.Controller();
@@ -335,6 +407,38 @@
 
             
             const eform1 = (function() {
+                $("input[name='payment_method']").change(function () {
+                    // 先將所有的輸入框禁用並清空
+                    $("input[name='postal_transaction_number'], input[name='atm_transaction_number']").prop("disabled", true).val("");
+                    // 將信用卡資訊隱藏
+                    $("#credit_card_form").hide();
+                    $("#credit_card_form")[0].reset();
+                    // 根據選中的 radio 啟用對應的輸入框
+                    if ($("#postalTransfer").is(":checked")) {
+                        $("input[name='postal_transaction_number']").prop("disabled", false);
+                    } else if ($("#atmTransfer").is(":checked")) {
+                        $("input[name='atm_transaction_number']").prop("disabled", false);
+                    } else if ($("#creditCard").is(":checked")) {
+                        $("#credit_card_form").show();
+                        $("input[name='member_name']").val('<?=$userdata['c_name'];?>');
+                        $("input[name='cardholder_name']").val('<?=$userdata['c_name'];?>');
+                        $("input[name='c_no']").val('<?=$userdata['c_no'];?>');
+                        $("input[name='contact_phone_number']").val('<?=$userdata['cell1'];?>');
+                    }
+                });
+
+                // 預設禁用所有輸入框
+                $("input[name='postal_transaction_number'], input[name='atm_transaction_number']").prop("disabled", true);
+                
+                $("#clearSignaturePadBtn").click(function () {
+                    var canvas = document.getElementById("signaturePad"); // 確保獲取的是 DOM
+                    var ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+                // 簽名
+                const signaturePad = new signature('signaturePad');
+                signaturePad.init();
+
                 function getFormData($form, returnData){
                     let data = $form.serializeArray();
                     $.map(data, function(n, i) {
@@ -347,27 +451,66 @@
                     return returnData;
                 }
 
-                $('#submit_btn').click(function() {
-                    submitFormData();
-                });
-                
-                function submitFormData() {
+                function checkForm() {
+                    let selectedPayment = $("input[name='payment_method']:checked").val();
+
+                    if (!selectedPayment) {
+                        return false;
+                    }
+
+                    if (selectedPayment === "postal_transfer") {
+                        if ($("input[name='postal_transaction_number']").val() === '') {
+                            return false;
+                        }
+                    }
+                    if (selectedPayment === "atm_transfer") {
+                        if ($("input[name='atm_transaction_number']").val() === '') {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+
+                $('#submit_btn').on('click', async function() {
+                    if (!checkForm()) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "系統訊息",
+                            text: "請檢查欄位是否皆已填寫",
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                        return;
+                    }
+                    const formData = new FormData();
                     let mainData = {};
                     let detailData = {};
-
+                    let creditData = {};
+                    
                     mainData = getFormData($('#eform_main_1'), mainData);
                     mainData = getFormData($('#eform_main_2'), mainData);
+                    mainData = getFormData($('#eform_main_3'), mainData);
 
+                    creditData = getFormData($('#credit_card_form'), creditData);
+                    // 處理簽名
+                    if (signaturePad.signatured) {
+                        const blob = await signaturePad.getSignatureBlob();
+                        formData.append('signature', blob, 'signature.png');
+                    }
+                    
                     detailData = getFormData($('#eform_detail'), detailData);
 
-                    let formData = {
-                        mainData,
-                        detailData
-                    };
+                    // 將 JSON 物件轉為字串，然後加入 FormData
+                    formData.append('mainData', JSON.stringify(mainData));
+                    formData.append('creditData', JSON.stringify(creditData));
+                    formData.append('detailData', JSON.stringify(detailData));
+
                     $.ajax({
                         url: '<?=$apiUrl;?>',
                         type: 'POST',
                         data: formData,
+                        processData: false,  // 不處理數據
+                        contentType: false,  // 不設置內容類型
                         success: function(response) {
                             Swal.fire({
                                 icon: "success",
@@ -377,9 +520,9 @@
                                 timer: 3000
                             })
                             // 3 秒後刷新頁面
-                            setTimeout(function() {
-                                location.reload();
-                            }, 3000);
+                            // setTimeout(function() {
+                            //     location.reload();
+                            // }, 3000);
                         },
                         error: function(xhr, status, error) {
                             let errorResponse = xhr.responseJSON || { message: "資料新增失敗" };
@@ -392,7 +535,8 @@
                             });
                         }
                     });
-                }
+                });
+                
 
                 $("#back2Top").click(function(event) {
                     event.preventDefault();

@@ -15,11 +15,11 @@ class Form1Model extends CI_Model
 
     public function createData($data)
     {
-        $mainData = $data['mainData'];
+        $mainData = json_decode($data['mainData'], true);
         $mainData['create_time'] = date('Y-m-d H:i:s');
         $mainData['update_time'] = date('Y-m-d H:i:s');
 
-        $detailData = $data['detailData'];
+        $detailData = json_decode($data['detailData'], true);
         $detailBatchData = array();
         $detilColumn = array(
             'purchaser_c_no_',
