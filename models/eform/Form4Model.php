@@ -2,16 +2,13 @@
 /*
  *  活動
  */
-class Form4Model extends CI_Model
+class Form4Model extends CommonModel
 {
-    private $db;
     protected $mainTableName = "eform4_main";
     protected $detailTableName = "eform4_detail";
-    protected $key = "e0b1c1d4f2a8c9b7d23f5d9a12e7d35b";
     function __construct()
     {
         parent::__construct();
-        $this->db = $this->load->database('default', true);
     }
 
     public function createData($data)
@@ -71,21 +68,4 @@ class Form4Model extends CI_Model
         $this->db->trans_complete(); // 自動檢查錯誤，成功則 commit，失敗則 rollback
         return $this->db->trans_status();
     }
-
-    private function encryptID($plaintext) {
-        $cipher = "AES-256-CBC";
-        $iv = openssl_random_pseudo_bytes(16); // 產生 16-byte IV
-        $ciphertext = openssl_encrypt($plaintext, $cipher, $this->key, OPENSSL_RAW_DATA, $iv);
-        
-        return [
-            'encrypted' => base64_encode($ciphertext), // 轉為 base64 存入資料庫
-            'iv' => base64_encode($iv)
-        ];
-    }
-
-    private function decryptID($ciphertext, $iv) {
-        $cipher = "AES-256-CBC";
-        return openssl_decrypt(base64_decode($ciphertext), $cipher, $this->key, OPENSSL_RAW_DATA, base64_decode($iv));
-    }
-    
 }

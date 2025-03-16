@@ -2,20 +2,21 @@
 /*
  *  活動
  */
-class Form1Model extends CI_Model
+class Form1Model extends CommonModel
 {
-    private $db;
     protected $mainTableName = "eform1_main";
     protected $detailTableName = "eform1_detail";
     function __construct()
     {
         parent::__construct();
-        $this->db = $this->load->database('default', true);
     }
 
-    public function createData($data)
+    public function createData($data, $fileIds=array())
     {
         $mainData = json_decode($data['mainData'], true);
+        if ($mainData['payment_method'] === 'credit_card') {
+            
+        }
         $mainData['create_time'] = date('Y-m-d H:i:s');
         $mainData['update_time'] = date('Y-m-d H:i:s');
 

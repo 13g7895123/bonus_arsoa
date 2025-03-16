@@ -1,7 +1,8 @@
 <?php
 class CommonModel extends CI_Model
 {
-    private $db;
+    protected $db;
+    protected $key = "e0b1c1d4f2a8c9b7d23f5d9a12e7d35b"; //身分證加密私鑰
 
     function __construct()
     {
@@ -90,5 +91,21 @@ class CommonModel extends CI_Model
 
         $this->db->insert('eform_credit', $data);
         return $this->db->insert_id();
+    }
+
+    protected function encryptID($plaintext) {
+        $cipher = "AES-256-CBC";
+        $iv = openssl_random_pseudo_bytes(16); // 產生 16-byte IV
+        $ciphertext = openssl_encrypt($plaintext, $cipher, $this->key, OPENSSL_RAW_DATA, $iv);
+        
+        return [
+            'encrypted' => base64_encode($ciphertext), // 轉為 base64 存入資料庫
+            'iv' => base64_encode($iv)
+        ];
+    }
+
+    protected function decryptID($ciphertext, $iv) {
+        $cipher = "AES-256-CBC";
+        return openssl_decrypt(base64_decode($ciphertext), $cipher, $this->key, OPENSSL_RAW_DATA, base64_decode($iv));
     }
 }

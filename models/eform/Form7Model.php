@@ -2,14 +2,12 @@
 /*
  *  活動
  */
-class Form7Model extends CI_Model
+class Form7Model extends CommonModel
 {
-    private $db;
 
     function __construct()
     {
         parent::__construct();
-        $this->db = $this->load->database('default', true);
     }
 
     public function createData($data)

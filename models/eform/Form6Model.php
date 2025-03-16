@@ -2,15 +2,13 @@
 /*
  *  活動
  */
-class Form6Model extends CI_Model
+class Form6Model extends CommonModel
 {
-    private $db;
     protected $mainTableName = "eform6_main";
     protected $detailTableName = "eform6_detail";
     function __construct()
     {
         parent::__construct();
-        $this->db = $this->load->database('default', true);
     }
 
     public function createData($data)
