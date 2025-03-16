@@ -1,5 +1,5 @@
 <?php
-class Form2Model extends CI_Model
+class Form3Model extends CI_Model
 {
     private $db;
 
@@ -14,7 +14,7 @@ class Form2Model extends CI_Model
         $data = $this->formatMainData($data);
         // $sql = $this->db->set($data)->get_compiled_insert('eform2_main');
         // print_r($sql); die();
-        $this->db->insert('eform2_main', $data);
+        $this->db->insert('eform3_main', $data);
         $insertId = $this->db->insert_id(); 
 
         return $insertId;
@@ -50,7 +50,7 @@ class Form2Model extends CI_Model
     // 批次建立細項資料
     public function createDetailData($data)
     {
-        $this->db->insert_batch('eform2_detail', $data);
+        $this->db->insert_batch('eform3_detail', $data);
     }
 
     // 格式化信用卡資料

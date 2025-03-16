@@ -1,20 +1,3 @@
-<style>
-#signaturePad,
-#signaturePadAgreement,
-#signaturePadCheck {
-    border: 2px solid #000;
-    width: 300px;
-    height: 150px;
-    cursor: crosshair;
-}
-
-#signaturePadPost{
-    border: 2px solid #000;
-    width: 100%;
-    height: 150px;
-    cursor: crosshair;
-}
-</style>
 <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
         <div class="wrapper">
@@ -24,10 +7,10 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-8 mb130 mt-lg-5" role="main">
-                                <h1 class="h2-3d font-libre"><strong>健康宅配訂單暨入會申請書</strong></h1>
+                                <h1 class="h2-3d font-libre"><strong>《肌能調理宅配訂單暨入會申請書》</strong></h1>
                                 <div class="mb30">
                                     <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                        <form action="#" class="text-left" id="healthSubscriptionForm">
+                                        <form action="#" class="text-left" id="skinCareSubscriptionForm">
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="form_type" id="form_type_new" value="new">
@@ -53,124 +36,90 @@
                                             </div>
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="member_id">會員編號：</label>
-                                                    <input type="text" name="member_id" id="member_id" size="8" maxlength="6" value="<?= $userdata['c_no']; ?>">
-                                                    (欲以健康宅配專案入會，請將此申請表正本繳回本公司)
+                                                    <label class="form-check-label" for="inlineRadio4">會員編號： </label>
+                                                    <input type="text" size="8" maxlength="6">
+                                                    ★(欲以肌能調理宅配專案入會，請將此申請表正本繳回本公司)★
                                                 </div>
                                             </div>
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="order_member_name">訂購會員姓名：</label>
-                                                    <input type="text" name="order_member_name" id="order_member_name" size="10" maxlength="8">
+                                                    <label class="form-check-label" for="inlineRadio4">訂購會員姓名： </label>
+                                                    <input type="text" size="10" maxlength="8">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="id_number">身分證字號：</label>
-                                                    <input type="text" name="id_number" id="id_number" size="10" maxlength="10">
+                                                    <label class="form-check-label" for="inlineRadio4">身分證字號： </label>
+                                                    <input type="text" size="10" maxlength="8">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label">生日：</label>
-                                                    <input type="number" name="birth_year" id="birth_year" size="4" maxlength="4">年
-                                                    <input type="number" name="birth_month" id="birth_month" size="4" maxlength="2">月
-                                                    <input type="number" name="birth_day" id="birth_day" size="4" maxlength="2">日
+                                                    <label class="form-check-label" for="inlineRadio4">生日： </label>
+                                                    <input type="text" size="4" maxlength="4">年 <input type="text" size="4" maxlength="2">月 <input type="text" size="4" maxlength="2">日
                                                 </div>
                                             </div>
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="shipping_address">收件地址：</label>
-                                                    <input type="text" name="shipping_address" id="shipping_address" size="50">
+                                                    <label class="form-check-label" for="inlineRadio4">收件地址： </label>
+                                                    <input type="text" size="10" maxlength="8">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="recipient_name">收件人：</label>
-                                                    <input type="text" name="recipient_name" id="recipient_name" size="10" maxlength="8">
+                                                    <label class="form-check-label" for="inlineRadio4">收件人： </label>
+                                                    <input type="text" size="10" maxlength="8">
                                                 </div>
                                             </div>
                                             <div class="row mb30">
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="contact_phone">聯絡電話：</label>
-                                                    <input type="tel" name="contact_phone" id="contact_phone" size="10" maxlength="10">
+                                                    <label class="form-check-label" for="inlineRadio4">聯絡電話： </label>
+                                                    <input type="text" size="10" maxlength="8">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="referrer_id">推薦人會員編號：</label>
-                                                    <input type="text" name="referrer_id" id="referrer_id" size="10" maxlength="8">
+                                                    <label class="form-check-label" for="inlineRadio4">推薦人會員編號： </label>
+                                                    <input type="text" size="10" maxlength="8">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="referrer_name">推薦人姓名：</label>
-                                                    <input type="text" name="referrer_name" id="referrer_name" size="10" maxlength="8">
-                                                </div>
-                                            </div>
-
-                                            <div class="row mb30">
-                                                <div class="form-check form-check-inline">
-                                                    願意接受國家高考合格營養師免費健康諮詢：
-                                                    <input class="form-check-input" type="radio" name="nutrition_consult" id="nutrition_consult_no" value="no">
-                                                    <label class="form-check-label" for="nutrition_consult_no">不願意</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="nutrition_consult" id="nutrition_consult_yes" value="yes">
-                                                    <label class="form-check-label" for="nutrition_consult_yes">願意</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    (可諮詢時段：
-                                                    <input class="form-check-input" type="checkbox" name="consult_time[]" id="consult_time_morning" value="morning">
-                                                    <label class="form-check-label" for="consult_time_morning">9:00-12:00</label>
-                                                    <input class="form-check-input" type="checkbox" name="consult_time[]" id="consult_time_afternoon" value="afternoon">
-                                                    <label class="form-check-label" for="consult_time_afternoon">13:00-18:00</label>
-                                                    <input class="form-check-input" type="checkbox" name="consult_time[]" id="consult_time_evening" value="evening">
-                                                    <label class="form-check-label" for="consult_time_evening">19:00-21:00</label>
+                                                    <label class="form-check-label" for="inlineRadio4">推薦人姓名： </label>
+                                                    <input type="text" size="10" maxlength="8">
                                                 </div>
                                             </div>
                                             <div class="row mb30">
                                                 <table class="table table-responsive table-bordered mb-2 text-center">
                                                     <thead class="thead-dark">
                                                         <tr>
-                                                            <th colspan="2">專案選項專案選項</th>
-                                                            <th>首簽當期贈品</th>
-                                                            <th>月循環總贈品</th>
-                                                            <th>每月 宅配金額</th>
+                                                            <th colspan="2">專案選項 ( 一次3期 / 6個月為一完整循環 )</th>
+                                                            <th>每期贈品</th>
+                                                            <th>每期宅配金額</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td><input type="checkbox" name="product[]" id="product_A0010" value="A0010"></td>
-                                                            <td class="text-left">A0010活力發酵精萃 (含天然酵素) 每月1盒/ 20條</td>
-                                                            <td>10條</td>
-                                                            <td>15條</td>
-                                                            <td>2,980元/50BP</td>
+                                                            <td><input class="form-check-input" type="checkbox" name="product[]" id="product_Q0001" value="Q0001"></td>
+                                                            <td class="text-left">Q0001 135g 淨白活膚蜜皂 +安露莎化粧水Ⅰ</td>
+                                                            <td>安露莎活妍泥膜(0BP）</td>
+                                                            <td>2,580元/55BP</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><input type="checkbox" name="product[]" id="product_A0011" value="A0011"></td>
-                                                            <td class="text-left">A0011活力發酵精萃 (含天然酵素) 每月1盒/ 60條</td>
-                                                            <td>30條</td>
-                                                            <td>50條</td>
-                                                            <td>8,800元/150BP</td>
+                                                            <td><input class="form-check-input" type="checkbox" name="product[]" id="product_Q0002" value="Q0002"></td>
+                                                            <td class="text-left">Q0002 135g 淨白活膚蜜皂 +安露莎化粧水Ⅱ</td>
+                                                            <td>安露莎活妍泥膜(0BP）</td>
+                                                            <td>2,790元/63BP</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><input type="checkbox" name="product[]" id="product_B0009" value="B0009"></td>
-                                                            <td class="text-left">B0009白鶴靈芝EX SP 每月1盒/ 05瓶</td>
-                                                            <td>02瓶</td>
-                                                            <td>03瓶</td>
-                                                            <td>2,750元/55BP</td>
+                                                            <td><input class="form-check-input" type="checkbox" name="product[]" id="product_Q0003" value="Q0003"></td>
+                                                            <td class="text-left">Q0003 135g 淨白活膚蜜皂 +安露莎活膚化粧水</td>
+                                                            <td>安露莎活妍泥膜(0BP）</td>
+                                                            <td>2,950元/65BP</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><input type="checkbox" name="product[]" id="product_C0005" value="C0005"></td>
-                                                            <td class="text-left">C0005美力C錠 每月2盒/60包</td>
-                                                            <td>45包</td>
-                                                            <td>60包</td>
-                                                            <td>2,800元/52BP</td>
+                                                            <td><input class="form-check-input" type="checkbox" name="product[]" id="product_Q0004" value="Q0004"></td>
+                                                            <td class="text-left">Q0004 AP柔敏潔顏皂 + AP柔敏化粧水2瓶</td>
+                                                            <td>安露莎精華液Ⅰ(0BP）</td>
+                                                            <td>3,500元/81BP</td>
                                                         </tr>
-
                                                     </tbody>
                                                 </table>
                                             </div>
 
                                             <div class="row mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="payment_date" id="payment_date_5" value="5">
-                                                    <label class="form-check-label" for="payment_date_5">5日</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="payment_date" id="payment_date_20" value="20">
-                                                    <label class="form-check-label" for="payment_date_20">20日 (遇假日提前)</label>
+                                                <div class="col-lg-12">
+                                                    <p>《 宅配專案若未填寫身分證字號，則無法登入官網【組織專區】，如需使用【組織專區】請務必提供身分證字號 》</p>
                                                 </div>
                                             </div>
 
@@ -201,42 +150,36 @@
                                                         </div>
                                                         <div class="row d-flex justify-content-between mb30">
                                                             <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="monthly_payment">每月付款金額：</label>
-                                                                <input type="number" name="monthly_payment" id="monthly_payment" size="10">元
+                                                                <label class="form-check-label" for="inlineRadio4">每月付款金額： </label>
+                                                                <input type="text" size="10" maxlength="8"> 元
                                                             </div>
                                                             <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="bank_name">發卡銀行：</label>
-                                                                <input type="text" name="bank_name" id="bank_name" size="10" maxlength="8">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mb30">
-                                                            <div class="form-check form-check-inline">
-                                                                <label class="form-check-label">信用卡卡號（共16碼）：</label>
-                                                                <input type="text" name="card_number[]" id="card_number_1" size="4" maxlength="4"> - 
-                                                                <input type="text" name="card_number[]" id="card_number_2" size="4" maxlength="4"> - 
-                                                                <input type="text" name="card_number[]" id="card_number_3" size="4" maxlength="4"> - 
-                                                                <input type="text" name="card_number[]" id="card_number_4" size="4" maxlength="4">
+                                                                <label class="form-check-label" for="inlineRadio4">發卡銀行： </label>
+                                                                <input type="text" size="10" maxlength="8">
                                                             </div>
                                                         </div>
                                                         <div class="row mb30">
                                                             <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="card_expiry">有效期限：</label>
-                                                                <input type="text" name="card_expiry_month" id="card_expiry_month" size="6" maxlength="4">月<input type="text" name="card_expiry_year" id="card_expiry_year" size="4" maxlength="2">年
+                                                                <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
+                                                                <input type="text" size="4" maxlength="4"> - <input type="text" size="4" maxlength="4"> - <input type="text" size="4" maxlength="4"> - <input type="text" size="4" maxlength="4">
                                                             </div>
                                                         </div>
                                                         <div class="row mb30">
                                                             <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="signaturePad">持卡人簽名： </label>
-                                                                <div style="display: flex; flex-direction: column;">
-                                                                    <canvas id="signaturePad" width="400" height="200"></canvas>
-                                                                    <button id="clearBtn">清除簽名</button>
-                                                                </div>
+                                                                <label class="form-check-label" for="inlineRadio4">有效期限： </label>
+                                                                <input type="text" size="6" maxlength="4">月<input type="text" size="4" maxlength="2">年
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb30">
+                                                            <div class="form-check form-check-inline">
+                                                                <label class="form-check-label" for="inlineRadio4">持卡人簽名： </label>
+                                                                <input type="text" size="10" maxlength="8">(與信用卡一致)
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="form-check form-check-inline">
                                                                 <input class="form-check-input" type="checkbox" name="use_member_auth" id="use_member_auth" value="1">
-                                                                <label class="form-check-label" for="use_member_auth">使用訂購會員授權卡，僅須填寫發卡銀行與持卡人簽名 </label>
+                                                                <label class="form-check-label" for="use_member_auth">使用訂購會員授權卡，僅須填寫發卡銀行與持卡人簽名</label>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -250,15 +193,12 @@
                                             <div class="card-body">
                                                 <div class="">
                                                     <p class="text-center fs20">郵局帳戶授權人簽名 </p>
-                                                    <div style="display: flex; flex-direction: column;">
-                                                        <canvas id="signaturePadPost" width="400" height="200"></canvas>
-                                                        <button id="clearBtnPost">清除簽名</button>
-                                                    </div>
+                                                    <input type="text" style="width: 100%;">
                                                 </div>
                                                 <hr>
                                                 <div class="form-check-inline">
-                                                    <label class="form-check-label" for="auth_date">日期：</label>
-                                                    <input type="text" name="auth_date_year" id="auth_date_year" size="4" maxlength="4">年<input type="text" name="auth_date_month" id="auth_date_month" size="3" maxlength="2">月<input type="text" name="auth_date_day" id="auth_date_day" size="3" maxlength="2">日
+                                                    <label class="form-check-label" for="inlineRadio4">日期： </label>
+                                                    <input type="text" size="4" maxlength="4">年<input type="text" size="3" maxlength="2">月<input type="text" size="3" maxlength="2">日
                                                 </div>
                                             </div>
                                         </div>
@@ -270,21 +210,24 @@
                                     <div class="col-lg-12">
                                         <div class="form-check form-check-inline">
                                             付款方式：
-                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_credit_card" value="credit_card">
-                                            <label class="form-check-label" for="payment_method_credit_card">信用卡付款 </label>
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_credit" value="credit">
+                                            <label class="form-check-label" for="payment_method_credit">信用卡付款</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_withdrawal" value="transfer">
-                                            <label class="form-check-label" for="payment_method_withdrawal">劃撥 </label>
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_transfer" value="transfer">
+                                            <label class="form-check-label" for="payment_method_transfer">劃撥</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="payment_method" id="payment_method_atm" value="atm">
-                                            <label class="form-check-label" for="payment_method_atm">ATM轉帳 </label>
+                                            <label class="form-check-label" for="payment_method_atm">ATM轉帳</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_post_office" value="post">
-                                            <label class="form-check-label" for="payment_method_post_office">郵局扣款 (須填寫<a href="#">自動轉帳付款授權書</a>) </label>
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_post" value="post">
+                                            <label class="form-check-label" for="payment_method_post">郵局扣款</label>
                                         </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <p class="text-danger">※首期出貨日以宅配訂單傳至公司並付款完成日為準；第2期起，出貨當月10日。〈遇假日提前出貨〉</p>
                                     </div>
                                 </div>
 
@@ -297,35 +240,32 @@
                                                 <p class="fs20">信用卡使用同意聲明書 ★持卡人非訂購會員本人，務必完整填寫信用卡使用同意申明書。</p>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="cardholder_name">持卡人本人：</label>
-                                                        <input type="text" name="cardholder_name" id="cardholder_name"> ；
+                                                        <label class="form-check-label" for="inlineRadio4">持卡人本人： </label>
+                                                        <input type="text"> ；
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="cardholder_id">身份證字號：</label>
-                                                        <input type="text" name="cardholder_id" id="cardholder_id">
+                                                        <label class="form-check-label" for="inlineRadio4">身份證字號： </label>
+                                                        <input type="text">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="auth_member_name">本人授權台灣安露莎公司就訂購會員</label>
-                                                        <input type="text" name="auth_member_name" id="auth_member_name"> ；
+                                                        <label class="form-check-label" for="inlineRadio4">本人授權台灣安露莎公司就訂購會員 </label>
+                                                        <input type="text"> ；
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="auth_amount">購買產品合計每月</label>
-                                                        <input type="text" name="auth_amount" id="auth_amount">元得使用本人留存之信用卡資訊，填寫信用卡授權書向銀行請款支付上開消費金額，毋須再與本人電話確認。
+                                                        <label class="form-check-label" for="inlineRadio4">購買產品合計每月 </label>
+                                                        <input type="text">元得使用本人留存之信用卡資訊，填寫信用卡授權書向銀行請款支付上開消費金額，毋須再與本人電話確認。
                                                     </div>
                                                 </div>
                                                 <div class="">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="signaturePadAgreement">持卡人簽名：</label>
-                                                        <div style="display: flex; flex-direction: column;">
-                                                            <canvas id="signaturePadAgreement" width="400" height="200"></canvas>
-                                                            <button id="clearBtnAgreement">清除簽名</button>
-                                                        </div>
+                                                        <label class="form-check-label" for="inlineRadio4">持卡人簽名：</label>
+                                                        <input type="text"> ；
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="auth_date">日期：</label>
-                                                        <input type="date" name="auth_date" id="auth_date">
+                                                        <label class="form-check-label" for="inlineRadio4">日期：</label>
+                                                        <input type="text">
                                                     </div>
                                                 </div>
                                             </div>
@@ -346,11 +286,8 @@
                                                 <p class="">關於您的會員註冊以及其他特定資料，台灣安露莎股份有限公司(以下簡稱"本公司")均依照『個人資料保護法』進行保護與規範。在您了解並同意簽署本協議書時（會員是否生效仍須經本公司核准），您同意本公司依據『個人資料保護法』進行您包括但不限於姓名、身份證字號、出生年月日、電話、戶籍/居住地址等個人資料的蒐集與利用。參加人知悉並確認於加入會員後，本公司得依參加人之傳銷組織，將參加人包含地址、電話、會員編號等「個人資料」及後代會員有關銷售品名、項目、售價、訂購數、業績等「銷售資料」揭露於會員網站，供所屬支部及優秀地區本部傳銷組織人員登入查詢並供本公司佣金計算使用。</p>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="signaturePadCheck">※本人已明確知悉並同意上開個人資料之揭露及使用：(本人親筆簽名)</label>
-                                                        <div style="display: flex; flex-direction: column;">
-                                                            <canvas id="signaturePadCheck" width="400" height="200"></canvas>
-                                                            <button id="clearBtnCheck">清除簽名</button>
-                                                        </div>
+                                                        <label class="form-check-label" for="inlineRadio4">※本人已明確知悉並同意上開個人資料之揭露及使用： </label>
+                                                        <input type="text"> (本人親筆簽名)
                                                     </div>
                                                 </div>
                                             </div>
@@ -359,8 +296,8 @@
                                     <div class="col-lg-12 d-flex justify-content-end">
                                         <div class="mb30">
                                             <div class="form-check form-check-inline">
-                                                <label class="form-check-label" for="order_by_member">代下單會員姓名：</label>
-                                                <input type="text" name="order_by_member" id="order_by_member">
+                                                <label class="form-check-label" for="inlineRadio4">代下單會員姓名： </label>
+                                                <input type="text">
                                             </div>
                                         </div>
                                     </div>
@@ -456,7 +393,7 @@
                                 </div>
 
                                 <hr class="my-4">
-                                <button type="button" id="submit" class="btn btn-outline-danger btn-block">送出表單</button>
+                                <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
 
 
 
@@ -628,208 +565,22 @@
     <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
 
     <script>
-        class signature {
-            constructor(canvasId) {
-                this.canvasId = canvasId;
-                this.canvas = document.getElementById(canvasId);
-                this.ctx = this.canvas.getContext('2d');
-                this.drawing = false;
-                this.signatured = false;    // 是否有簽名
-
-                // 設定筆刷樣式
-                this.ctx.lineWidth = 2;
-                this.ctx.lineCap = "round";
-                this.ctx.strokeStyle = "#000";
-            }
-
-            // 監聽滑鼠事件
-            init() {
-                $('#' + this.canvasId).on('mousedown', (e) => {
-                    console.log('mousedown');
-                    this.signatured = true;
-                    this.drawing = true;
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(e.offsetX, e.offsetY);
-                });
-
-                $('#' + this.canvasId).on('mousemove', (e) => {
-                    if (this.drawing) {
-                        this.ctx.lineTo(e.offsetX, e.offsetY);
-                        this.ctx.stroke();
-                    }
-                });
-
-                $('#' + this.canvasId).on('mouseup mouseleave', () => {
-                    this.drawing = false;
-                });
-            }
-
-            // 取得簽名 Blob（圖片格式）
-            getSignatureBlob() {
-                return new Promise((resolve, reject) => {
-                    if (!this.signatured) {
-                        reject("請先簽名！");
-                        return;
-                    }
-                    this.canvas.toBlob((blob) => {
-                        if (blob) {
-                            resolve(blob);
-                        } else {
-                            reject("轉換失敗");
-                        }
-                    }, "image/png");
-                });
-            }
-        }
-    </script>
-
-    <script>
         $(document).ready(function() {
             // init controller
             var controller = new ScrollMagic.Controller();
 
             // build scenes
             new ScrollMagic.Scene({
-                triggerElement: '.section-mini',
-                triggerHook: 1,
-                duration: '200%'
-            })
-            .setTween('.article-promo-item', {
-                backgroundPosition: '50% 100%',
-                ease: Linear.easeNone
-            })
-            .addTo(controller);
+                    triggerElement: '.section-mini',
+                    triggerHook: 1,
+                    duration: '200%'
+                })
+                .setTween('.article-promo-item', {
+                    backgroundPosition: '50% 100%',
+                    ease: Linear.easeNone
+                })
+                .addTo(controller);
 
-            // 簽名
-            const signaturePad = new signature('signaturePad');
-            const signaturePadPost = new signature('signaturePadPost');
-            const signaturePadAgreement = new signature('signaturePadAgreement');
-            const signaturePadCheck = new signature('signaturePadCheck');
-
-            signaturePad.init();
-            signaturePadAgreement.init();
-            signaturePadCheck.init();
-            signaturePadPost.init();
-
-            $('#submit').on('click', async function() {
-                // 顯示載入中提示
-                Swal.fire({
-                    title: '處理中...',
-                    text: '正在提交您的申請',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                // 收集所有表單數據
-                const formData = new FormData();
-                formData.append('form_type', $('input[name="form_type"]:checked').val());
-                formData.append('change_year', $('#change_year').val());
-                formData.append('change_month', $('#change_month').val());
-                formData.append('change_type', $('input[name="change_type"]:checked').val());
-                formData.append('order_date_check', $('#order_date_check').is(':checked'));
-                formData.append('order_year', $('#order_year').val());
-                formData.append('order_month', $('#order_month').val());
-                formData.append('order_day', $('#order_day').val());
-                formData.append('c_no', $('#member_id').val());
-                formData.append('order_member_name', $('#order_member_name').val());
-                formData.append('id_number', $('#id_number').val());
-                formData.append('birth_year', $('#birth_year').val());
-                formData.append('birth_month', $('#birth_month').val());
-                formData.append('birth_day', $('#birth_day').val());
-                formData.append('shipping_address', $('#shipping_address').val());
-                formData.append('recipient_name', $('#recipient_name').val());
-                formData.append('contact_phone', $('#contact_phone').val());
-                formData.append('referrer_id', $('#referrer_id').val());
-                formData.append('referrer_name', $('#referrer_name').val());
-                formData.append('nutrition_consult', $('input[name="nutrition_consult"]:checked').val());
-                formData.append('consult_time', $('input[name="consult_time[]"]:checked').map(function() { return $(this).val(); }).get());
-                formData.append('products', $('input[name="product[]"]:checked').map(function() { return $(this).val(); }).get());
-                formData.append('payment_date', $('input[name="payment_date"]:checked').val());
-                formData.append('card_type', $('input[name="card_type"]:checked').val());
-                formData.append('monthly_payment', $('#monthly_payment').val());
-                formData.append('bank_name', $('#bank_name').val());
-                formData.append('card_number', [
-                    $('#card_number_1').val(),
-                    $('#card_number_2').val(),
-                    $('#card_number_3').val(),
-                    $('#card_number_4').val()
-                ]);
-                formData.append('card_expiry_month', $('#card_expiry_month').val());
-                formData.append('card_expiry_year', $('#card_expiry_year').val());
-                formData.append('use_member_auth', $('#use_member_auth').is(':checked'));
-                formData.append('auth_date_year', $('#auth_date_year').val());
-                formData.append('auth_date_month', $('#auth_date_month').val());
-                formData.append('auth_date_day', $('#auth_date_day').val());
-                formData.append('payment_method', $('input[name="payment_method"]:checked').map(function() { return $(this).val(); }).get());
-                formData.append('cardholder_name', $('#cardholder_name').val());
-                formData.append('cardholder_id', $('#cardholder_id').val());
-                formData.append('auth_member_name', $('#auth_member_name').val());
-                formData.append('auth_amount', $('#auth_amount').val());
-                formData.append('auth_date', $('#auth_date').val());
-                formData.append('order_by_member', $('#order_by_member').val());
-
-                // 處理簽名
-                if (signaturePad.signatured) {
-                    const blob = await signaturePad.getSignatureBlob();
-                    formData.append('signature', blob, 'signature.png');
-                }
-
-                if (signaturePadPost.signatured) {
-                    const blob = await signaturePadPost.getSignatureBlob();
-                    formData.append('signaturePost', blob, 'signaturePost.png');
-                }
-
-                if (signaturePadAgreement.signatured) {
-                    const blob = await signaturePadAgreement.getSignatureBlob();
-                    formData.append('signatureAgreement', blob, 'signatureAgreement.png');
-                }
-
-                if (signaturePadCheck.signatured) {
-                    const blob = await signaturePadCheck.getSignatureBlob();
-                    formData.append('signatureCheck', blob, 'signatureCheck.png');
-                }
-
-                // 發送 AJAX 請求
-                $.ajax({
-                    url: '<?=$apiUrl;?>',
-                    method: 'POST',
-                    data: formData,
-                    processData: false,  // 不處理數據
-                    contentType: false,  // 不設置內容類型
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.status == '200') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '提交成功', 
-                                text: response.message,
-                                timer: 1500,
-                                showConfirmButton: false
-                            }).then(() => {
-                                window.location.reload();
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: '提交失敗',
-                                text: response.message || '提交過程中發生錯誤，請稍後再試',
-                                confirmButtonText: '確定'
-                            });
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '系統錯誤',
-                            text: '提交過程中發生錯誤，請稍後再試',
-                            confirmButtonText: '確定'
-                        });
-                        console.error('Error:', error);
-                    }
-                });
-            });
         });
     </script>
     <script>
@@ -854,6 +605,196 @@
         });
         /*Scroll to top when arrow up clicked END*/
     </script>
+
+    <script>
+    class signature {
+        constructor(canvasId) {
+            this.canvasId = canvasId;
+            this.canvas = document.getElementById(canvasId);
+            this.ctx = this.canvas.getContext('2d');
+            this.drawing = false;
+            this.signatured = false;    // 是否有簽名
+
+            // 設定筆刷樣式
+            this.ctx.lineWidth = 2;
+            this.ctx.lineCap = "round";
+            this.ctx.strokeStyle = "#000";
+        }
+
+        // 監聽滑鼠事件
+        init() {
+            $('#' + this.canvasId).on('mousedown', (e) => {
+                this.signatured = true;
+                this.drawing = true;
+                this.ctx.beginPath();
+                this.ctx.moveTo(e.offsetX, e.offsetY);
+            });
+
+            $('#' + this.canvasId).on('mousemove', (e) => {
+                if (this.drawing) {
+                    this.ctx.lineTo(e.offsetX, e.offsetY);
+                    this.ctx.stroke();
+                }
+            });
+
+            $('#' + this.canvasId).on('mouseup mouseleave', () => {
+                this.drawing = false;
+            });
+        }
+
+        // 取得簽名 Blob
+        getSignatureBlob() {
+            return new Promise((resolve, reject) => {
+                if (!this.signatured) {
+                    reject("請先簽名！");
+                    return;
+                }
+                this.canvas.toBlob((blob) => {
+                    if (blob) {
+                        resolve(blob);
+                    } else {
+                        reject("轉換失敗");
+                    }
+                }, "image/png");
+            });
+        }
+    }
+
+    $(document).ready(function() {
+        // 初始化簽名板
+        const signaturePad = new signature('signaturePad');
+        const signaturePadPost = new signature('signaturePadPost');
+        const signaturePadAgreement = new signature('signaturePadAgreement');
+        const signaturePadCheck = new signature('signaturePadCheck');
+
+        signaturePad.init();
+        signaturePadAgreement.init();
+        signaturePadCheck.init();
+        signaturePadPost.init();
+
+        // 表單提交處理
+        $('#submit').on('click', async function() {
+            // 顯示載入中提示
+            Swal.fire({
+                title: '處理中...',
+                text: '正在提交您的申請',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // 收集表單數據
+            const formData = new FormData();
+            formData.append('form_type', $('input[name="form_type"]:checked').val());
+            formData.append('change_year', $('#change_year').val());
+            formData.append('change_month', $('#change_month').val());
+            formData.append('change_type', $('input[name="change_type"]:checked').val());
+            formData.append('order_date_check', $('#order_date_check').is(':checked'));
+            formData.append('order_year', $('#order_year').val());
+            formData.append('order_month', $('#order_month').val());
+            formData.append('order_day', $('#order_day').val());
+            formData.append('c_no', $('#member_id').val());
+            formData.append('order_member_name', $('#order_member_name').val());
+            formData.append('id_number', $('#id_number').val());
+            formData.append('birth_year', $('#birth_year').val());
+            formData.append('birth_month', $('#birth_month').val());
+            formData.append('birth_day', $('#birth_day').val());
+            formData.append('shipping_address', $('#shipping_address').val());
+            formData.append('recipient_name', $('#recipient_name').val());
+            formData.append('contact_phone', $('#contact_phone').val());
+            formData.append('referrer_id', $('#referrer_id').val());
+            formData.append('referrer_name', $('#referrer_name').val());
+            // 特別注意這裡的產品代碼改為 Q 系列
+            formData.append('products', $('input[name="product[]"]:checked').map(function() { return $(this).val(); }).get());
+            formData.append('payment_date', $('input[name="payment_date"]:checked').val());
+            formData.append('card_type', $('input[name="card_type"]:checked').val());
+            formData.append('monthly_payment', $('#monthly_payment').val());
+            formData.append('bank_name', $('#bank_name').val());
+            formData.append('card_number', [
+                $('#card_number_1').val(),
+                $('#card_number_2').val(),
+                $('#card_number_3').val(),
+                $('#card_number_4').val()
+            ]);
+            formData.append('card_expiry_month', $('#card_expiry_month').val());
+            formData.append('card_expiry_year', $('#card_expiry_year').val());
+            formData.append('use_member_auth', $('#use_member_auth').is(':checked'));
+            formData.append('auth_date_year', $('#auth_date_year').val());
+            formData.append('auth_date_month', $('#auth_date_month').val());
+            formData.append('auth_date_day', $('#auth_date_day').val());
+            formData.append('payment_method', $('input[name="payment_method"]:checked').val());
+            formData.append('cardholder_name', $('#cardholder_name').val());
+            formData.append('cardholder_id', $('#cardholder_id').val());
+            formData.append('auth_member_name', $('#auth_member_name').val());
+            formData.append('auth_amount', $('#auth_amount').val());
+            formData.append('auth_date', $('#auth_date').val());
+            formData.append('order_by_member', $('#order_by_member').val());
+
+            // 處理簽名
+            if (signaturePad.signatured) {
+                const blob = await signaturePad.getSignatureBlob();
+                formData.append('signature', blob, 'signature.png');
+            }
+
+            if (signaturePadPost.signatured) {
+                const blob = await signaturePadPost.getSignatureBlob();
+                formData.append('signaturePost', blob, 'signaturePost.png');
+            }
+
+            if (signaturePadAgreement.signatured) {
+                const blob = await signaturePadAgreement.getSignatureBlob();
+                formData.append('signatureAgreement', blob, 'signatureAgreement.png');
+            }
+
+            if (signaturePadCheck.signatured) {
+                const blob = await signaturePadCheck.getSignatureBlob();
+                formData.append('signatureCheck', blob, 'signatureCheck.png');
+            }
+
+            // 發送 AJAX 請求
+            $.ajax({
+                url: '<?=$apiUrl;?>', // 確保這個變數有被正確設置
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === '200') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '提交成功',
+                            text: response.message,
+                            confirmButtonText: '確定'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = response.redirect_url || '/eform/success';
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '提交失敗',
+                            text: response.message || '提交過程中發生錯誤，請稍後再試',
+                            confirmButtonText: '確定'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '系統錯誤',
+                        text: '提交過程中發生錯誤，請稍後再試',
+                        confirmButtonText: '確定'
+                    });
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+    </script>
+
 </body>
 
 </html>
