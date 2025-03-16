@@ -23,7 +23,7 @@ class Form1Model extends CI_Model
         $creditData = json_decode($data['creditData'], true);
 
         if ($mainData['payment_method'] === 'credit_card') {
-            $mainData['payment_method'] = $creditData['member_name'];
+            $mainData['member_name'] = $creditData['member_name'];
             if (!empty($creditData['member_id_card_number'])) {
                 $memberEncrypt = $commonModel->encryptID($creditData['member_id_card_number']);
                 $mainData['member_id_card_number'] = $memberEncrypt['encrypted'];
