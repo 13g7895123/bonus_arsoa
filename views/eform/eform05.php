@@ -1,3 +1,11 @@
+<style>
+#signaturePad {
+    border: 2px solid #000;
+    width: 400px;
+    height: 200px;
+    cursor: crosshair;
+}
+</style>
 <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
         <div class="wrapper">
@@ -19,68 +27,68 @@
                                         <div class="card bg-light border-danger wow fadeInUp" data-wow-delay=".2s">
                                             <div class="card-body">
                                                 <div class="mb30">
-                                                    <div class="form-check form-check-inline">
+                                                    <div class="form-check form-check-inline">date1
                                                         <label class="form-check-label" for="inlineRadio4">會員編號： </label>
-                                                        <input type="text">
+                                                        <input type="text" size="10" maxlength="6" id="member_code" name="member_code" value="<?= $userdata['c_no']; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">會員姓名： </label>
-                                                        <input type="text">
+                                                        <input type="text" value="<?= $userdata['c_name']; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline"> 信用卡卡別：
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">VISA </label>
+                                                        <input class="card_type form-check-input" type="checkbox" id="visa" value="VISA">
+                                                        <label class="form-check-label" for="visa">VISA</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">MASTER </label>
+                                                        <input class="card_type form-check-input" type="checkbox" id="master" value="MASTER">
+                                                        <label class="form-check-label" for="master">MASTER</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">JCB </label>
+                                                        <input class="card_type form-check-input" type="checkbox" id="jcb" value="JCB">
+                                                        <label class="form-check-label" for="jcb">JCB</label>
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
-                                                        <input type="text" size="4" maxlength="4">
+                                                        <input type="text" size="4" maxlength="4" name="creditCardNumber1" id="creditCardNumber1">
                                                         -
-                                                        <input type="text" size="4" maxlength="4">
+                                                        <input type="text" size="4" maxlength="4" name="creditCardNumber2" id="creditCardNumber2">
                                                         -
-                                                        <input type="text" size="4" maxlength="4">
+                                                        <input type="text" size="4" maxlength="4" name="creditCardNumber3" id="creditCardNumber3">
                                                         -
-                                                        <input type="text" size="4" maxlength="4">
+                                                        <input type="text" size="4" maxlength="4" name="creditCardNumber4" id="creditCardNumber4">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">有效月年： </label>
-                                                        <input type="text" size="6" maxlength="4">
+                                                        <input type="text" size="2" maxlength="2" name="creditCardExpireMonth" id="creditCardExpireMonth">
                                                         月
-                                                        <input type="text" size="4" maxlength="2">
+                                                        <input type="text" size="2" maxlength="2" name="creditCardExpireYear" id="creditCardExpireYear">
                                                         年
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">發卡銀行： </label>
-                                                        <input type="text">
+                                                        <label class="form-check-label" for="creditCardBank">發卡銀行： </label>
+                                                        <input type="text" name="creditCardBank" id="creditCardBank">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">背面末3碼： </label>
-                                                        <input type="text" size="5" maxlength="3">
+                                                        <label class="form-check-label" for="creditCardCvv">背面末3碼： </label>
+                                                        <input type="text" size="3" maxlength="3" name="creditCardCvv" id="creditCardCvv">
                                                     </div>
                                                 </div>
                                                 <div class="">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">信用卡英文姓名： </label>
-                                                        <input type="text">
+                                                        <label class="form-check-label" for="creditCardName">信用卡英文姓名： </label>
+                                                        <input type="text" name="creditCardName" id="creditCardName">
                                                     </div>
                                                 </div>
                                             </div>
@@ -94,22 +102,23 @@
                                     </div>
                                 </div>
 
-                                <div class="mb30 wow fadeInUp d-flex justify-content-between">
+                                <div class="mb30 wow fadeInUp d-flex flex-column justify-content-between">
                                     <div class="mb30">
                                         <div class="form-check form-check-inline">
-                                            <label class="form-check-label" for="inlineRadio4">日期： </label>
-                                            <input type="text" size="6" maxlength="4">
+                                            <label class="form-check-label" for="date1">日期： </label>
+                                            <input type="text" size="4" maxlength="4" name="date1" id="date1">
                                             年
-                                            <input type="text" size="4" maxlength="2">
+                                            <input type="text" size="2" maxlength="2" name="date2" id="date2">
                                             月
-                                            <input type="text" size="4" maxlength="2">
+                                            <input type="text" size="2" maxlength="2" name="date3" id="date3">
                                             日
                                         </div>
                                     </div>
                                     <div class="mb30">
                                         <div class="form-check form-check-inline">
-                                            <label class="form-check-label" for="inlineRadio4">持卡人簽名： </label>
-                                            <input type="text">
+                                            <label class="form-check-label" for="signaturePad">持卡人簽名： </label>
+                                            <canvas id="signaturePad" width="400" height="200"></canvas>
+                                            <button id="clearBtn">清除簽名</button>
                                             (與信用卡一致)
                                         </div>
                                     </div>
@@ -117,12 +126,12 @@
 
                                 <div class="mb30 wow fadeInUp">
                                     <div class="form-group mb30">
-                                        <label for="exampleFormControlFile1">信用卡（正面）</label>
-                                        <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                                        <label for="creditCardFront">信用卡（正面）</label>
+                                        <input type="file" class="form-control-file" id="creditCardFront" name="creditCardFront">
                                     </div>
                                     <div class="form-group mb30">
-                                        <label for="exampleFormControlFile1">信用卡（背面）</label>
-                                        <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                                        <label for="creditCardBack">信用卡（背面）</label>
+                                        <input type="file" class="form-control-file" id="creditCardBack" name="creditCardBack">
                                     </div>
                                 </div>
 
@@ -141,7 +150,7 @@
 
 
                                 <hr class="my-4">
-                                <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
+                                <button id="submit" class="btn btn-outline-danger btn-block">送出表單</button>
 
 
 
@@ -313,22 +322,184 @@
     <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
 
     <script>
+    class CardType {
+        constructor() {
+            this.cardType = '';
+        }
+
+        setCardType(cardType) {
+            this.cardType = cardType;
+        }
+
+        clearCardType() {
+            $('.card_type').each((index, element) => {
+                $(element).prop('checked', false);
+            });
+        }
+
+        changeCardType() {
+            $(`.card_type[value="${this.cardType}"]`).prop('checked', true);
+        }
+        
+        updateRender() {
+            this.clearCardType();                   // 清除所有checked
+            this.changeCardType();     // 設定checked
+        }
+    }
+
+    class CreditCardData {
+        constructor() {
+            this.creditCardNumber = '';
+            this.creditCardData = {
+                'cardType': '',
+                'creditCardNumber': '',
+                'creditCardExpireMonth': '',
+                'creditCardExpireYear': '',
+                'creditCardBank': '',
+                'creditCardCvv': '',
+                'creditCardEnglishName': '',
+            };
+        }
+
+        getcreditCardNumber() {
+            for (let i = 0; i < 4; i++) {
+                this.creditCardNumber += String($('#creditCardNumber' + (i + 1)).val());
+            }
+        }
+
+        getcreditCardData() {
+            this.creditCardData.cardType = $('.card_type:checked').val();
+            this.creditCardData.creditCardNumber = this.creditCardNumber;
+            this.creditCardData.creditCardExpireMonth = $('#creditCardExpireMonth').val();
+            this.creditCardData.creditCardExpireYear = $('#creditCardExpireYear').val();
+            this.creditCardData.creditCardBank = $('#creditCardBank').val();
+            this.creditCardData.creditCardCvv = $('#creditCardCvv').val();
+            this.creditCardData.creditCardEnglishName = $('#creditCardName').val();
+        }
+    }
+    </script>
+    <script>
         $(document).ready(function() {
             // init controller
             var controller = new ScrollMagic.Controller();
 
             // build scenes
             new ScrollMagic.Scene({
-                    triggerElement: '.section-mini',
-                    triggerHook: 1,
-                    duration: '200%'
-                })
-                .setTween('.article-promo-item', {
-                    backgroundPosition: '50% 100%',
-                    ease: Linear.easeNone
-                })
-                .addTo(controller);
+                triggerElement: '.section-mini',
+                triggerHook: 1,
+                duration: '200%'
+            })
+            .setTween('.article-promo-item', {
+                backgroundPosition: '50% 100%',
+                ease: Linear.easeNone
+            })
+            .addTo(controller);
 
+            const cardType = new CardType();
+            const creditCardData = new CreditCardData();
+
+            // 選擇信用卡類別
+            $('.card_type').click(function() {
+                if ($(this).prop('checked')) {
+                    let value = $(this).val(); // 取得 value
+                    cardType.setCardType(value);
+                    cardType.updateRender();
+
+                    return;
+                }
+
+                cardType.clearCardType();
+            });
+
+            // 簽名
+            let canvas = document.getElementById('signaturePad');
+            let ctx = canvas.getContext('2d');
+            let drawing = false;
+            let signatured = false;     // 是否有簽名
+
+            // 設定筆刷樣式
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = "#000";
+
+            // 監聽滑鼠事件
+            $('#signaturePad').on('mousedown', function(e) {
+                signatured = true;
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(e.offsetX, e.offsetY);
+            });
+
+            $('#signaturePad').on('mousemove', function(e) {
+                if (drawing) {
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                    ctx.stroke();
+                }
+            });
+
+            $('#signaturePad').on('mouseup mouseleave', function() {
+                drawing = false;
+            });
+
+            $('#submit').click(function() {
+
+                // 顯示載入中提示
+                Swal.fire({
+                    title: '處理中...',
+                    text: '正在提交您的申請',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                creditCardData.getcreditCardNumber();
+                creditCardData.getcreditCardData();
+
+                // Convert canvas to blob
+                canvas.toBlob(function(blob) {
+                    // Create FormData and append file
+                    let formData = new FormData();
+                    formData.append('c_name', $('#member_code').val());
+                    formData.append('credit', JSON.stringify(creditCardData.creditCardData));
+                    formData.append('year', $('#date1').val());
+                    formData.append('month', $('#date2').val());
+                    formData.append('day', $('#date3').val());
+
+                    if (signatured) {
+                        formData.append('signature', blob, 'signature.png');
+                    }
+
+                    let creditCardFront = $('#creditCardFront')[0].files[0];
+                    let creditCardBack = $('#creditCardBack')[0].files[0];
+                    
+                    // Append credit card files if they exist
+                    if (creditCardFront) {
+                        formData.append('creditCardFront', creditCardFront);
+                    }
+                    if (creditCardBack) {
+                        formData.append('creditCardBack', creditCardBack); 
+                    }
+                    
+                    // Send file via AJAX
+                    $.ajax({
+                        url: '<?=$apiUrl;?>', 
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '提交成功', 
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                    });
+                });
+            });
         });
     </script>
     <script>

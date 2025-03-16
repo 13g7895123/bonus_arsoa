@@ -59,14 +59,28 @@ class CommonModel extends CI_Model
             'size' => $fileSize,
             'uploaded_at' => date('Y-m-d H:i:s')
         );
-        $insertId = $this->insertData($insertData);
+        $insertId = $this->insertFileData($insertData);
 
         return [True, $insertId];
     }
 
-    public function insertData($data)
+    public function insertFileData($data)
     {
         $this->db->insert('eform_file', $data);
+        return $this->db->insert_id();
+    }
+
+    /**
+     * 寫入信用卡資料
+     * @param array $data 信用卡資料
+     * @param string $formCode 表單代碼
+     * @return void
+     */ 
+    public function insertCreditCardData($data, $formCode)
+    {
+        $data['form_code'] = $formCode;
+        $data['created_at'] = date('Y-m-d H:i:s');
+        $this->db->insert('eform_credit', $data);
         return $this->db->insert_id();
     }
 }

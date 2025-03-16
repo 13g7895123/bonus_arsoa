@@ -16,9 +16,10 @@ class Api extends MY_Controller
 
         $this->load->model( 'eform/Form1Model' );
         $this->load->model( 'eform/Form4Model' );
+        $this->load->model( 'eform/Form5Model' );
         $this->load->model( 'eform/Form6Model' );
         $this->load->model( 'eform/Form7Model' );
-        
+        $this->load->model( 'eform/CommonModel' );
         $this->load->library( 'user_agent' );
 
         // $this->db = $this->load->database('default', true);
@@ -108,11 +109,68 @@ class Api extends MY_Controller
             redirect( 'member/login' );
         }
 
-        print_r(123); die();
-        // $this->fileUpload();
-        // print_r($_FILES); die();
-        // $commonModel = new CommonModel();
-        // $commonModel->uploadFile($_FILES);
+        // 取得表單資料
+        $postData = $this->input->post();
+
+        // 引用模型
+        $commonModel = new CommonModel();
+        $form5Model = new Form5Model();
+
+        // 上傳檔案
+        $files = array('signature', 'creditCardFront', 'creditCardBack');
+        $fileIds = array('signature' => null, 'creditCardFront' => null, 'creditCardBack' => null);
+
+        foreach ($files as $_val) {
+            if (isset($_FILES[$_val])) {
+                $uploadResult = $commonModel->uploadFile($_FILES, $_val);
+
+                // 確認上傳成功並取ID
+                if ($uploadResult[0] === true) {
+                    $fileIds[$_val] = $uploadResult[1];
+                }
+            }
+        }
+
+        // 寫入信用卡資料
+        if (isset($postData['credit'])) {
+            $creditCardData = json_decode($postData['credit'], true);
+            $creditCardData = $form5Model->fetchCreditCardDataFormat($creditCardData);
+            $creditCardId = $commonModel->insertCreditCardData($creditCardData, 'eform5');
+        }
+
+        // 寫入資料        
+        $insertData = array(
+            'c_name' => $postData['c_name'],
+            'credit_id' => $creditCardId,
+            'year' => $postData['year'],
+            'month' => $postData['month'],
+            'day' => $postData['day'],
+            'signature_id' => isset($fileIds['signature']) ? $fileIds['signature'] : null,
+            'credit_front_id' => isset($fileIds['creditCardFront']) ? $fileIds['creditCardFront'] : null,
+            'credit_back_id' => isset($fileIds['creditCardBack']) ? $fileIds['creditCardBack'] : null,
+        );
+
+        if ($form5Model->createData($insertData)) {
+            $result = array(
+                "status" => 200,
+                "message" => "資料新增成功"
+            );
+            
+            $this->output
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode($result));
+            return;
+        }
+
+        $result = array(
+            "status" => 400,
+            "error" => "Validation Error",
+            "message" => "資料新增失敗，請檢查欄位是否填寫齊全"
+        );
+
+        $this->output
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode($result));
     }
 
     public function form6()
@@ -168,60 +226,4 @@ class Api extends MY_Controller
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode($result));
     }
-    
-    // public function fileUpload()
-    // {        
-    //     if (!isset($_FILES['signature'])) {
-    //         throw new Exception("沒有上傳的檔案");
-    //     }
-
-    //     // 設定上傳資料夾 - IIS路徑
-    //     // $uploadPath = $_SERVER['DOCUMENT_ROOT'] . "/public/uploads/images/";
-    //     // $uploadPath = $_SERVER['DOCUMENT_ROOT'] . "/public/uploads/";
-    //     $filePath = "public/func/eform/";
-    //     $uploadPath = $_SERVER['DOCUMENT_ROOT'] . "/" . $filePath;
-        
-    //     // 取得上傳檔案資訊
-    //     $file = $_FILES['signature'];
-    //     print_r($file); die();
-    //     $fileTmpPath = $file['tmp_name'];
-    //     $fileName = "sign_" . time() . ".png";
-    //     $destination = $uploadPath . $fileName;
-    //     $originalFileName = $file['name'];      // 取得原始檔名
-    //     $fileType = $file['type'];             // 取得檔案類型 MIME type
-    //     $fileSize = $file['size'];             // 取得檔案大小(bytes)
-
-    //     // 取得原始檔名
-    //     $originalFileName = $file['name'];
-
-    //     // 檢查是否為有效圖片
-    //     $imageInfo = @getimagesize($fileTmpPath);
-    //     if ($imageInfo === false) {
-    //         throw new Exception("無效的圖片格式");
-    //     }
-
-    //     // 檢查圖片類型
-    //     $allowedTypes = [IMAGETYPE_PNG, IMAGETYPE_JPEG];
-    //     if (!in_array($imageInfo[2], $allowedTypes)) {
-    //         throw new Exception("只允許PNG或JPEG格式");
-    //     }
-
-    //     // 移動檔案到上傳目錄
-    //     // print_r($fileTmpPath); die();
-    //     if (!move_uploaded_file($fileTmpPath, $destination)) {
-    //         throw new Exception("檔案儲存失敗: " . error_get_last()['message']);
-    //     }
-
-    //     // 寫入資料表
-    //     $insertData = array(
-    //         'name' => $originalFileName,
-    //         'path' => $filePath . $fileName,
-    //         'type' => $fileType,
-    //         'size' => $fileSize,
-    //         'upload_at' => date('Y-m-d H:i:s')
-    //     );
-    //     $this->db->insert('eform_file', $insertData);
-
-    //     return True;
-    // }
 }
