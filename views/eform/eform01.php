@@ -95,15 +95,15 @@
                                                         </div>
                                                         <div class="col-sm-12 mb30">
                                                             <label class="form-check-label">發卡銀行：</label>
-                                                            <input type="text">
+                                                            <input type="text" name="bank_name">
                                                             銀行（若使用安露莎授權卡支付請務必填寫發卡銀行與持卡人簽名）
                                                         </div>
                                                         <div class="col-sm-12 mb30">
                                                             <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
-                                                            <input type="text" name="card_number[]" id="card_number_1" size="4" maxlength="4"> - 
-                                                            <input type="text" name="card_number[]" id="card_number_2" size="4" maxlength="4"> - 
-                                                            <input type="text" name="card_number[]" id="card_number_3" size="4" maxlength="4"> - 
-                                                            <input type="text" name="card_number[]" id="card_number_4" size="4" maxlength="4">
+                                                            <input type="text" name="card_number_1" id="card_number_1" size="4" maxlength="4"> - 
+                                                            <input type="text" name="card_number_2" id="card_number_2" size="4" maxlength="4"> - 
+                                                            <input type="text" name="card_number_3" id="card_number_3" size="4" maxlength="4"> - 
+                                                            <input type="text" name="card_number_4" id="card_number_4" size="4" maxlength="4">
                                                         </div>
                                                         <div class="col-sm-12 mb30">
                                                             <label class="form-check-label">有效期限：</label>
@@ -520,9 +520,9 @@
                                 timer: 3000
                             })
                             // 3 秒後刷新頁面
-                            // setTimeout(function() {
-                            //     location.reload();
-                            // }, 3000);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 3000);
                         },
                         error: function(xhr, status, error) {
                             let errorResponse = xhr.responseJSON || { message: "資料新增失敗" };
