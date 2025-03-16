@@ -11,9 +11,11 @@ class Api extends MY_Controller
         $this->load->model( 'front_member_model' );
         $this->load->model( 'front_base_model' );
         $this->load->model( 'front_mssql_model' );
-        $this->load->model( 'eform/Form7Model' );
+
         $this->load->model( 'eform/Form1Model' );
-                      
+        $this->load->model( 'eform/Form6Model' );
+        $this->load->model( 'eform/Form7Model' );
+        
         $this->load->library( 'user_agent' );
     }
 
@@ -98,10 +100,25 @@ class Api extends MY_Controller
             redirect( 'member/login' );
         }
 
-        $msconn = $this->front_mssql_model->ms_connect(); 
-
         $postData = $this->input->post();
-        print_r($postData); die();
+        
+        $form6Model = new Form6Model();
+        if ($form6Model->createData($postData)) {
+            $result = array(
+                "status" => 200,
+                "message" => "資料新增成功"
+            );
+        } else {
+            http_response_code(400);
+            $result = array(
+                "status" => 400,
+                "error" => "Validation Error",
+                "message" => "資料新增失敗，請檢查欄位是否填寫齊全"
+            );
+        }
+        $this->output
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode($result));
     }
 
     public function form7()

@@ -428,7 +428,7 @@
                     });
                 });
                 // 當數量輸入框變更時，計算對應的金額
-                $(document).on("input", "input[name^='purchaser_num_']", function() {
+                $('#eform_detail').on("input", "input[name^='purchaser_num_']", function() {
                     let index = $(this).attr("name").split("_").pop();
                     calculateAmount(index);
                 });

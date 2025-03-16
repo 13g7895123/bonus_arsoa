@@ -7,422 +7,222 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-8 mb130 mt-lg-5" role="main">
+                            <form id="eform_main_1">
                             <h1 class="h2-3d font-libre"><strong>產品訂購單</strong></h1>
-                            <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                <div class="row">
-                                    <div class="col-sm-4 mb30">
-                                        <label class="label-custom">訂購會員姓名：</label>
-                                        <input type="text" class="form-control form-control-custom" placeholder="真實姓名" />
-                                    </div>
-                                    <div class="col-sm-4 mb30">
-                                        <label class="label-custom">會員編號：</label>
-                                        <input type="text" class="form-control form-control-custom" placeholder="限填數字" />
-                                    </div>
-                                    <div class="col-sm-4 mb30">
-                                        <label class="label-custom">推薦人：</label>
-                                        <input type="text" class="form-control form-control-custom" placeholder="真實姓名" />
-                                    </div>
-                                    <div class="col-sm-4 mb30">
-                                        <label class="label-custom">收貨人姓名：</label>
-                                        <input type="text" class="form-control form-control-custom" placeholder="真實姓名" />
-                                    </div>
-                                    <div class="col-sm-4 mb30">
-                                        <label class="label-custom">電話：</label>
-                                        <input type="text" class="form-control form-control-custom" placeholder="請填09xx-xxx-xxx" />
-                                    </div>
-                                    <div class="col-sm-6 mb30">
-                                        <label class="label-custom">收貨人地址：郵遞區號</label>
-                                        <input type="text" class="form-control form-control-custom" placeholder="限填數字" />
-                                    </div>
-                                    <div class="col-sm-6 mb30">
-                                        <div class="form-check form-check mb20">
-                                            <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                            <label class="form-check-label" for="inlineRadio4">同公司建檔地址 </label>
+                                <div class="container wow fadeInUp" data-wow-delay=".2s">
+                                    <div class="row">
+                                        <div class="col-sm-4 mb30">
+                                            <label class="label-custom">訂購會員姓名：</label>
+                                            <input type="text" name="c_name" class="form-control form-control-custom" placeholder="真實姓名" value="<?=$userdata['c_name'];?>" />
                                         </div>
-                                    </div>
-                                    <div class="col-sm-3 mb30">
-                                        <label class="label-custom">收貨人地址</label>
-                                        <input type="text" class="form-control form-control-custom" placeholder="縣市…" />
-                                    </div>
-                                    <div class="col-sm-3 mb30">
-                                        <label class="label-custom">行政區</label>
-                                        <input type="text" class="form-control form-control-custom" placeholder="行政區…" />
-                                    </div>
-                                    <div class="col-sm-6 mb30">
-                                        <label class="label-custom">完整地址</label>
-                                        <input type="text" class="form-control form-control-custom" placeholder="請填寫完整地址…" />
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <p>付款方式：付款金額(以電腦系統金額為主)</p>
-                                        <div class="mb30">
-                                            <div class="form-check form-check-inline">
+                                        <div class="col-sm-4 mb30">
+                                            <label class="label-custom">會員編號：</label>
+                                            <input type="text" name="c_no" class="form-control form-control-custom" placeholder="請填會員編號" value="<?=$userdata['c_no'];?>" />
+                                        </div>
+                                        <div class="col-sm-4 mb30">
+                                            <label class="label-custom">推薦人：</label>
+                                            <input type="text" name="recommend_person" class="form-control form-control-custom" placeholder="請填推薦人" />
+                                        </div>
+                                        <div class="col-sm-4 mb30">
+                                            <label class="label-custom">收貨人姓名：</label>
+                                            <input type="text" name="consignee_name" class="form-control form-control-custom" placeholder="請填收貨人" value="<?=$userdata['c_name'];?>" />
+                                        </div>
+                                        <div class="col-sm-4 mb30">
+                                            <label class="label-custom">電話：</label>
+                                            <input type="text" name="consignee_cellphone_number" class="form-control form-control-custom" placeholder="請填電話" value="<?=$userdata['cell1'];?>" />
+                                        </div>
+                                        <div class="col-sm-6 mb30">
+                                            <label class="label-custom">收貨人地址：郵遞區號</label>
+                                            <input type="text" name="consignee_postal_code" class="form-control form-control-custom" placeholder="請填郵遞區號" value="<?=$userdata['zip_dl'];?>" />
+                                        </div>
+                                        <!-- <div class="col-sm-6 mb30">
+                                            <div class="form-check form-check mb20">
                                                 <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">信用卡</label>
+                                                <label class="form-check-label" for="inlineRadio4">同公司建檔地址 </label>
                                             </div>
-                                            <div class="form-check form-check-inline">（
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">VISA </label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">MASTER </label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">JCB ）</label>
-                                            </div>
+                                        </div> -->
+                                        <div class="col-sm-12 mb30">
+                                            <label class="label-custom">收貨人地址：地址</label>
+                                            <input type="text" name="consignee_address" class="form-control form-control-custom" placeholder="請填寫地址" value="<?=$userdata['addr_dl'];?>" />
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mb-4">
-                                <div class="col-lg-12">
-                                    <div class="card bg-light border-danger wow fadeInUp" data-wow-delay=".2s">
-                                        <div class="card-body">
-                                            <div class="mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">消費金額：NT＄ </label>
-                                                    <input type="text">
+                                        <div class="col-sm-12">
+                                            <p>付款方式：付款金額(以電腦系統金額為主)</p>
+                                            <div class="mb30 d-flex flex-row align-items-center">
+                                                <!-- 信用卡 -->
+                                                <div class="form-check me-3">
+                                                    <input class="form-check-input" type="radio" name="payment_method" id="creditCard" value="credit_card">
+                                                    <label class="form-check-label" for="creditCard">信用卡</label>
                                                 </div>
-                                            </div>
-                                            <div class="mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">消費日期： </label>
-                                                    <input type="text" size="6" maxlength="4">
-                                                    年
-                                                    <input type="text" size="4" maxlength="2">
-                                                    月
-                                                    <input type="text" size="4" maxlength="2">
-                                                    日
+                                                
+                                                <!-- 信用卡類別 -->
+                                                <div class="d-flex flex-row" id="cardTypeGroup">
+                                                    (
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="card_type" id="visa" value="VISA" disabled>
+                                                        <label class="form-check-label" for="visa">VISA</label>
+                                                    </div>
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="card_type" id="master" value="MASTER" disabled>
+                                                        <label class="form-check-label" for="master">MASTER</label>
+                                                    </div>
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="card_type" id="jcb" value="JCB" disabled>
+                                                        <label class="form-check-label" for="jcb">JCB</label>
+                                                    </div>
+                                                    )
                                                 </div>
-                                            </div>
-                                            <div class="mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">發卡銀行： </label>
-                                                    <input type="text">
+                                                
+                                                <!-- 其他付款方式 -->
+                                                <div class="form-check me-3">
+                                                    <input class="form-check-input" type="radio" name="payment_method" id="postalTransfer" value="postal_transfer">
+                                                    <label class="form-check-label" for="postalTransfer">郵政劃撥</label>
                                                 </div>
-                                            </div>
-                                            <div class="mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
-                                                    <input type="text" size="4" maxlength="4">
-                                                    -
-                                                    <input type="text" size="4" maxlength="4">
-                                                    -
-                                                    <input type="text" size="4" maxlength="4">
-                                                    -
-                                                    <input type="text" size="4" maxlength="4">
-                                                </div>
-                                            </div>
-                                            <div class="mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">背面末3碼(信用卡背面簽名處上方)： </label>
-                                                    <input type="text" size="5" maxlength="3">
-                                                </div>
-                                            </div>
-                                            <div class="mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">有效月年：自西元 </label>
-                                                    <input type="text" size="4" maxlength="2">
-                                                    月
-                                                    <input type="text" size="4" maxlength="2">
-                                                    年
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">至 </label>
-                                                    <input type="text" size="4" maxlength="2">
-                                                    月
-                                                    <input type="text" size="4" maxlength="2">
-                                                    年
-                                                </div>
-                                            </div>
-                                            <div class="">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">持卡人簽名(需與信用卡上一致)： </label>
-                                                    <input type="text">
+                                                <div class="form-check me-3">
+                                                    <input class="form-check-input" type="radio" name="payment_method" id="atmTransfer" value="atm_transfer">
+                                                    <label class="form-check-label" for="atmTransfer">ATM轉帳</label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row mb-4 wow fadeInUp" data-wow-delay=".2s">
-                                <div class="col-lg-12">
-                                    <p class="text-danger">★持卡人非訂購會員本人，務必完整填寫信用卡使用同意申明書。</p>
-                                    <div class="card bg-light border-info mb30">
-                                        <div class="card-body">
-                                            <p class="fs20">信用卡使用同意聲明書 </p>
-                                            <div class="mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">持卡人本人： </label>
-                                                    <input type="text">
-                                                    ；
+                            </form>
+                            <form id="eform_credit_card_data">
+                                <div class="row mb-4">
+                                    <div class="col-lg-12">
+                                        <div class="card bg-light border-danger wow fadeInUp" data-wow-delay=".2s">
+                                            <div class="card-body">
+                                                <div class="mb30">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">消費金額：NT＄ </label>
+                                                        <input type="text">
+                                                    </div>
                                                 </div>
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">身份證字號： </label>
-                                                    <input type="text">
+                                                <div class="mb30">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">消費日期： </label>
+                                                        <input type="text" size="6" maxlength="4">
+                                                        年
+                                                        <input type="text" size="4" maxlength="2">
+                                                        月
+                                                        <input type="text" size="4" maxlength="2">
+                                                        日
+                                                    </div>
+                                                </div>
+                                                <div class="mb30">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">發卡銀行： </label>
+                                                        <input type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="mb30">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
+                                                        <input type="text" size="4" maxlength="4">
+                                                        -
+                                                        <input type="text" size="4" maxlength="4">
+                                                        -
+                                                        <input type="text" size="4" maxlength="4">
+                                                        -
+                                                        <input type="text" size="4" maxlength="4">
+                                                    </div>
+                                                </div>
+                                                <div class="mb30">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">背面末3碼(信用卡背面簽名處上方)： </label>
+                                                        <input type="text" size="5" maxlength="3">
+                                                    </div>
+                                                </div>
+                                                <div class="mb30">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">有效月年：自西元 </label>
+                                                        <input type="text" size="4" maxlength="2">
+                                                        月
+                                                        <input type="text" size="4" maxlength="2">
+                                                        年
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">至 </label>
+                                                        <input type="text" size="4" maxlength="2">
+                                                        月
+                                                        <input type="text" size="4" maxlength="2">
+                                                        年
+                                                    </div>
+                                                </div>
+                                                <div class="">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">持卡人簽名(需與信用卡上一致)： </label>
+                                                        <input type="text">
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="mb30">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">本人授權台灣安露莎公司就訂購會員 </label>
-                                                    <input type="text">
-                                                    ；
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <form id="eform_credit_card_statement">
+                                <div class="row mb-4 wow fadeInUp" data-wow-delay=".2s">
+                                    <div class="col-lg-12">
+                                        <p class="text-danger">★持卡人非訂購會員本人，務必完整填寫信用卡使用同意申明書。</p>
+                                        <div class="card bg-light border-info mb30">
+                                            <div class="card-body">
+                                                <p class="fs20">信用卡使用同意聲明書 </p>
+                                                <div class="mb30">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">持卡人本人： </label>
+                                                        <input type="text">
+                                                        ；
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">身份證字號： </label>
+                                                        <input type="text">
+                                                    </div>
                                                 </div>
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">購買產品合計 </label>
-                                                    <input type="text">
-                                                    元
+                                                <div class="mb30">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">本人授權台灣安露莎公司就訂購會員 </label>
+                                                        <input type="text">
+                                                        ；
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">購買產品合計 </label>
+                                                        <input type="text">
+                                                        元
+                                                    </div>
+                                                    <div>得使用本人留存之信用卡資訊，填寫信用卡授權書向銀行請款支付上開消費金額，毋須再與本人電話確認。</div>
                                                 </div>
-                                                <div>得使用本人留存之信用卡資訊，填寫信用卡授權書向銀行請款支付上開消費金額，毋須再與本人電話確認。</div>
+                                                <div class="">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">持卡人簽名：</label>
+                                                        <input type="text">
+                                                        ；
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="inlineRadio4">日期：</label>
+                                                        <input type="text">
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">持卡人簽名：</label>
-                                                    <input type="text">
-                                                    ；
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="inlineRadio4">日期：</label>
-                                                    <input type="text">
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="col-sm-12">
-                                    <div class="mb30">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                            <label class="form-check-label" for="inlineRadio4">郵政劃撥</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                            <label class="form-check-label" for="inlineRadio4">ATM轉帳 </label>
-                                        </div>
+                                    
+                                </div>
+                            </form>
+                            <form id="eform_detail">
+                                <hr class="mt-0 mb-4">
+                                <?=$subView;?>
+                                <hr class="my-4">
+                            </form>
+                            <form id="eform_main_2">
+                                <div class="wow fadeInUp" data-wow-delay=".2s">
+                                    <div class="col-12 text-right">
+                                        <p class="fs20">建議售價合計：<input type="text" readonly name="totol_amount" id="totalAmount"></p>
+                                    </div>
+                                    <div class="col-12 text-right">
+                                        <p class="fs20">代下單會員姓名：<input type="text" name="substitute_order_name" value="<?=$userdata['c_name'];?>"></p>
                                     </div>
                                 </div>
-
-                            </div>
-
-                            <hr class="mt-0 mb-4">
-
-                            <div class="mb-2">
-                                <div class="card bg-light ">
-                                    <div class="card-body">
-                                        <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                            <form action="#" class="text-left">
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">貨號／品名：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">數量：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">建議售價：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">BP：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-2">
-                                <div class="card bg-light ">
-                                    <div class="card-body">
-                                        <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                            <form action="#" class="text-left">
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">貨號／品名：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">數量：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">建議售價：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">BP：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-2">
-                                <div class="card bg-light ">
-                                    <div class="card-body">
-                                        <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                            <form action="#" class="text-left">
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">貨號／品名：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">數量：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">建議售價：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">BP：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-2">
-                                <div class="card bg-light ">
-                                    <div class="card-body">
-                                        <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                            <form action="#" class="text-left">
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">貨號／品名：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">數量：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">建議售價：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">BP：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-2">
-                                <div class="card bg-light ">
-                                    <div class="card-body">
-                                        <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                            <form action="#" class="text-left">
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">貨號／品名：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">數量：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">建議售價：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">BP：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-2">
-                                <div class="card bg-light ">
-                                    <div class="card-body">
-                                        <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                            <form action="#" class="text-left">
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">貨號／品名：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">數量：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">建議售價：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">BP：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-2">
-                                <div class="card bg-light ">
-                                    <div class="card-body">
-                                        <div class="container wow fadeInUp" data-wow-delay=".2s">
-                                            <form action="#" class="text-left">
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">貨號／品名：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">數量：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">建議售價：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="label-custom">BP：</label>
-                                                        <input type="text" style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr class="my-4">
-
-                            <div class="wow fadeInUp" data-wow-delay=".2s">
-                                <div class="col-12 text-right">
-                                    <p class="fs20">建議售價合計：<input type="text"></p>
-                                </div>
-                                <div class="col-12 text-right">
-                                    <p class="fs20">代下單會員姓名：<input type="text"></p>
-                                </div>
-                            </div>
+                            </form>
 
                             <hr class="my-4">
 
@@ -433,10 +233,7 @@
                             </div>
 
                             <hr class="my-4">
-                            <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
-
-
-
+                            <button type="button" id="submit_btn" class="btn btn-outline-danger btn-block">送出表單</button>
                         </div>
                         <div class="col-lg-1 d-none d-xl-block"></div>
                         <aside role="complementary" class="aside col-xl-3 col-md-3">
@@ -620,10 +417,102 @@
                     ease: Linear.easeNone
                 })
                 .addTo(controller);
+            
+            const eform6 = (function() {
+                function getFormData($form, returnData){
+                    let data = $form.serializeArray();
+                    $.map(data, function(n, i) {
+                        if (returnData[n['name']] != null) {
+                            returnData[n['name']] += "," + n['value'];
+                        } else {
+                            returnData[n['name']] = n['value'];
+                        }
+                    });
+                    return returnData;
+                }
+                
+                $('input[name="payment_method"]').change(function () {
+                    if ($('#creditCard').is(':checked')) {
+                        $('input[name="card_type"]').prop('disabled', false);
+                    } else {
+                        $('input[name="card_type"]').prop('disabled', true).prop('checked', false);
+                    }
+                });
 
+                $('#submit_btn').click(function() {
+                    submitFormData();
+                });
+
+                function submitFormData() {
+                    let mainData = {};
+                    let detailData = {};
+
+                    mainData = getFormData($('#eform_main_1'), mainData);
+                    mainData = getFormData($('#eform_main_2'), mainData);
+
+                    detailData = getFormData($('#eform_detail'), detailData);
+
+                    let formData = {
+                        mainData,
+                        detailData
+                    };
+                    console.log(formData);
+                    debugger;
+                    $.ajax({
+                        url: '<?=$apiUrl;?>',
+                        type: 'POST',
+                        data: formData,
+                        success: function(response) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "系統訊息",
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            })
+                            // 3 秒後刷新頁面
+                            setTimeout(function() {
+                                location.reload();
+                            }, 3000);
+                        },
+                        error: function(xhr, status, error) {
+                            let errorResponse = xhr.responseJSON || { message: "資料新增失敗" };
+                            Swal.fire({
+                                icon: "error",
+                                title: "系統訊息",
+                                text: errorResponse.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }
+                    });
+                }
+
+                function calculateTotal() {
+                    let total = 0;
+
+                    // 遍歷所有 .product-item，計算總金額
+                    $('.product-item').each(function () {
+                        let quantity = parseInt($(this).find('.quantity').val()) || 0;
+                        let price = parseFloat($(this).find('.price').val()) || 0;
+                        total += quantity * price;
+                    });
+
+                    // 更新合計金額
+                    $('#totalAmount').val(total);
+                }
+                const $formDetail = $('#eform_detail');
+                $formDetail.find('.quantity, .price').on('input', calculateTotal);
+            })();
+
+            $("#back2Top").click(function(event) {
+                event.preventDefault();
+                $("html, body").animate({
+                    scrollTop: 0
+                }, "slow");
+                return false;
+            });
         });
-    </script>
-    <script>
         /*Scroll to top when arrow up clicked BEGIN*/
         $(window).scroll(function() {
             var height = $(window).scrollTop();
@@ -632,16 +521,6 @@
             } else {
                 $('#back2Top').fadeOut();
             }
-        });
-        $(document).ready(function() {
-            $("#back2Top").click(function(event) {
-                event.preventDefault();
-                $("html, body").animate({
-                    scrollTop: 0
-                }, "slow");
-                return false;
-            });
-
         });
         /*Scroll to top when arrow up clicked END*/
     </script>
