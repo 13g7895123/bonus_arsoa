@@ -1,10 +1,12 @@
 <?php
-class Form5Model extends CommonModel
+class Form5Model extends CI_Model
 {
+    private $db;
 
     function __construct()
     {
         parent::__construct();
+        $this->db = $this->load->database('default', true);
     }
 
     public function createData($data)

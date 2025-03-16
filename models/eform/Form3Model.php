@@ -1,10 +1,12 @@
 <?php
-class Form3Model extends CommonModel
+class Form3Model extends CI_Model
 {
+    private $db;
 
     function __construct()
     {
         parent::__construct();
+        $this->db = $this->load->database('default', true);
     }
 
     public function createData($data)
@@ -40,7 +42,7 @@ class Form3Model extends CommonModel
         unset($data['bank_name']);
         unset($data['card_number']);
         unset($data['card_expiry_month']);
-        unset($data['card_expiry_year']);
+        unset($data['card_expiry_year']);        
 
         return $data;
     }
