@@ -79,7 +79,15 @@ class CommonModel extends CI_Model
     public function insertCreditCardData($data, $formCode)
     {
         $data['form_code'] = $formCode;
-        $data['created_at'] = date('Y-m-d H:i:s');
+
+        // 確認資料
+        $checkData = array('three_code', 'english_name');
+        foreach ($checkData as $_val) {
+            if (isset($data[$_val]) === false) {
+                $data[$_val] = '';
+            }
+        }
+
         $this->db->insert('eform_credit', $data);
         return $this->db->insert_id();
     }

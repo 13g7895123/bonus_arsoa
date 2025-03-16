@@ -274,7 +274,7 @@
                                             <label class="form-check-label" for="payment_method_credit_card">信用卡付款 </label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_withdrawal" value="withdrawal">
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_withdrawal" value="transfer">
                                             <label class="form-check-label" for="payment_method_withdrawal">劃撥 </label>
                                         </div>
                                         <div class="form-check form-check-inline">
@@ -282,7 +282,7 @@
                                             <label class="form-check-label" for="payment_method_atm">ATM轉帳 </label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_post_office" value="post_office">
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_post_office" value="post">
                                             <label class="form-check-label" for="payment_method_post_office">郵局扣款 (須填寫<a href="#">自動轉帳付款授權書</a>) </label>
                                         </div>
                                     </div>
@@ -317,7 +317,7 @@
                                                 </div>
                                                 <div class="">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="auth_signature">持卡人簽名：</label>
+                                                        <label class="form-check-label" for="signaturePadAgreement">持卡人簽名：</label>
                                                         <div style="display: flex; flex-direction: column;">
                                                             <canvas id="signaturePadAgreement" width="400" height="200"></canvas>
                                                             <button id="clearBtnAgreement">清除簽名</button>
@@ -346,7 +346,7 @@
                                                 <p class="">關於您的會員註冊以及其他特定資料，台灣安露莎股份有限公司(以下簡稱"本公司")均依照『個人資料保護法』進行保護與規範。在您了解並同意簽署本協議書時（會員是否生效仍須經本公司核准），您同意本公司依據『個人資料保護法』進行您包括但不限於姓名、身份證字號、出生年月日、電話、戶籍/居住地址等個人資料的蒐集與利用。參加人知悉並確認於加入會員後，本公司得依參加人之傳銷組織，將參加人包含地址、電話、會員編號等「個人資料」及後代會員有關銷售品名、項目、售價、訂購數、業績等「銷售資料」揭露於會員網站，供所屬支部及優秀地區本部傳銷組織人員登入查詢並供本公司佣金計算使用。</p>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="privacy_agreement">※本人已明確知悉並同意上開個人資料之揭露及使用：(本人親筆簽名)</label>
+                                                        <label class="form-check-label" for="signaturePadCheck">※本人已明確知悉並同意上開個人資料之揭露及使用：(本人親筆簽名)</label>
                                                         <div style="display: flex; flex-direction: column;">
                                                             <canvas id="signaturePadCheck" width="400" height="200"></canvas>
                                                             <button id="clearBtnCheck">清除簽名</button>
@@ -630,6 +630,7 @@
     <script>
         class signature {
             constructor(canvasId) {
+                this.canvasId = canvasId;
                 this.canvas = document.getElementById(canvasId);
                 this.ctx = this.canvas.getContext('2d');
                 this.drawing = false;
@@ -643,21 +644,22 @@
 
             // 監聽滑鼠事件
             init() {
-                $(this.canvas).on('mousedown', (e) => {
+                $('#' + this.canvasId).on('mousedown', (e) => {
+                    console.log('mousedown');
                     this.signatured = true;
                     this.drawing = true;
                     this.ctx.beginPath();
                     this.ctx.moveTo(e.offsetX, e.offsetY);
                 });
 
-                $(this.canvas).on('mousemove', (e) => {
+                $('#' + this.canvasId).on('mousemove', (e) => {
                     if (this.drawing) {
                         this.ctx.lineTo(e.offsetX, e.offsetY);
                         this.ctx.stroke();
                     }
                 });
 
-                $(this.canvas).on('mouseup mouseleave', () => {
+                $('#' + this.canvasId).on('mouseup mouseleave', () => {
                     this.drawing = false;
                 });
             }
@@ -721,73 +723,72 @@
                 });
 
                 // 收集所有表單數據
-                let formData = {
-                    form_type: $('input[name="form_type"]:checked').val(),
-                    change_year: $('#change_year').val(),
-                    change_month: $('#change_month').val(),
-                    change_type: $('input[name="change_type"]:checked').val(),
-                    order_date_check: $('#order_date_check').is(':checked'),
-                    order_year: $('#order_year').val(),
-                    order_month: $('#order_month').val(),
-                    order_day: $('#order_day').val(),
-                    c_no: $('#member_id').val(),
-                    order_member_name: $('#order_member_name').val(),
-                    id_number: $('#id_number').val(),
-                    birth_year: $('#birth_year').val(),
-                    birth_month: $('#birth_month').val(),
-                    birth_day: $('#birth_day').val(),
-                    shipping_address: $('#shipping_address').val(),
-                    recipient_name: $('#recipient_name').val(),
-                    contact_phone: $('#contact_phone').val(),
-                    referrer_id: $('#referrer_id').val(),
-                    referrer_name: $('#referrer_name').val(),
-                    nutrition_consult: $('input[name="nutrition_consult"]:checked').val(),
-                    consult_time: $('input[name="consult_time[]"]:checked').map(function() { return $(this).val(); }).get(),
-                    products: $('input[name="product[]"]:checked').map(function() { return $(this).val(); }).get(),
-                    payment_date: $('input[name="payment_date"]:checked').val(),
-                    card_type: $('input[name="card_type"]:checked').val(),
-                    monthly_payment: $('#monthly_payment').val(),
-                    bank_name: $('#bank_name').val(),
-                    card_number: [
-                        $('#card_number_1').val(),
-                        $('#card_number_2').val(),
-                        $('#card_number_3').val(),
-                        $('#card_number_4').val()
-                    ],
-                    card_expiry_month: $('#card_expiry_month').val(),
-                    card_expiry_year: $('#card_expiry_year').val(),
-                    card_signature: $('#card_signature').val(),
-                    use_member_auth: $('#use_member_auth').is(':checked'),
-                    post_office_auth_signature: $('#post_office_auth_signature').val(),
-                    auth_date_year: $('#auth_date_year').val(),
-                    auth_date_month: $('#auth_date_month').val(),
-                    auth_date_day: $('#auth_date_day').val(),
-                    payment_method: $('input[name="payment_method"]:checked').map(function() { return $(this).val(); }).get(),
-                    cardholder_name: $('#cardholder_name').val(),
-                    cardholder_id: $('#cardholder_id').val(),
-                    auth_member_name: $('#auth_member_name').val(),
-                    auth_amount: $('#auth_amount').val(),
-                    auth_signature: $('#auth_signature').val(),
-                    auth_date: $('#auth_date').val(),
-                    privacy_agreement: $('#privacy_agreement').val(),
-                    order_by_member: $('#order_by_member').val()
-                };
+                const formData = new FormData();
+                formData.append('form_type', $('input[name="form_type"]:checked').val());
+                formData.append('change_year', $('#change_year').val());
+                formData.append('change_month', $('#change_month').val());
+                formData.append('change_type', $('input[name="change_type"]:checked').val());
+                formData.append('order_date_check', $('#order_date_check').is(':checked'));
+                formData.append('order_year', $('#order_year').val());
+                formData.append('order_month', $('#order_month').val());
+                formData.append('order_day', $('#order_day').val());
+                formData.append('c_no', $('#member_id').val());
+                formData.append('order_member_name', $('#order_member_name').val());
+                formData.append('id_number', $('#id_number').val());
+                formData.append('birth_year', $('#birth_year').val());
+                formData.append('birth_month', $('#birth_month').val());
+                formData.append('birth_day', $('#birth_day').val());
+                formData.append('shipping_address', $('#shipping_address').val());
+                formData.append('recipient_name', $('#recipient_name').val());
+                formData.append('contact_phone', $('#contact_phone').val());
+                formData.append('referrer_id', $('#referrer_id').val());
+                formData.append('referrer_name', $('#referrer_name').val());
+                formData.append('nutrition_consult', $('input[name="nutrition_consult"]:checked').val());
+                formData.append('consult_time', $('input[name="consult_time[]"]:checked').map(function() { return $(this).val(); }).get());
+                formData.append('products', $('input[name="product[]"]:checked').map(function() { return $(this).val(); }).get());
+                formData.append('payment_date', $('input[name="payment_date"]:checked').val());
+                formData.append('card_type', $('input[name="card_type"]:checked').val());
+                formData.append('monthly_payment', $('#monthly_payment').val());
+                formData.append('bank_name', $('#bank_name').val());
+                formData.append('card_number', [
+                    $('#card_number_1').val(),
+                    $('#card_number_2').val(),
+                    $('#card_number_3').val(),
+                    $('#card_number_4').val()
+                ]);
+                formData.append('card_expiry_month', $('#card_expiry_month').val());
+                formData.append('card_expiry_year', $('#card_expiry_year').val());
+                formData.append('use_member_auth', $('#use_member_auth').is(':checked'));
+                formData.append('auth_date_year', $('#auth_date_year').val());
+                formData.append('auth_date_month', $('#auth_date_month').val());
+                formData.append('auth_date_day', $('#auth_date_day').val());
+                formData.append('payment_method', $('input[name="payment_method"]:checked').map(function() { return $(this).val(); }).get());
+                formData.append('cardholder_name', $('#cardholder_name').val());
+                formData.append('cardholder_id', $('#cardholder_id').val());
+                formData.append('auth_member_name', $('#auth_member_name').val());
+                formData.append('auth_amount', $('#auth_amount').val());
+                formData.append('auth_date', $('#auth_date').val());
+                formData.append('order_by_member', $('#order_by_member').val());
 
-                // 取得簽名 Blob
+                // 處理簽名
                 if (signaturePad.signatured) {
-                    formData.signature = await signaturePad.getSignatureBlob();                    
+                    const blob = await signaturePad.getSignatureBlob();
+                    formData.append('signature', blob, 'signature.png');
                 }
 
                 if (signaturePadPost.signatured) {
-                    formData.signaturePost = await signaturePadPost.getSignatureBlob();                    
+                    const blob = await signaturePadPost.getSignatureBlob();
+                    formData.append('signaturePost', blob, 'signaturePost.png');
                 }
 
                 if (signaturePadAgreement.signatured) {
-                    formData.signatureAgreement = await signaturePadAgreement.getSignatureBlob();                    
+                    const blob = await signaturePadAgreement.getSignatureBlob();
+                    formData.append('signatureAgreement', blob, 'signatureAgreement.png');
                 }
 
                 if (signaturePadCheck.signatured) {
-                    formData.signatureCheck = await signaturePadCheck.getSignatureBlob();                    
+                    const blob = await signaturePadCheck.getSignatureBlob();
+                    formData.append('signatureCheck', blob, 'signatureCheck.png');
                 }
 
                 // 發送 AJAX 請求
@@ -795,13 +796,15 @@
                     url: '<?=$apiUrl;?>',
                     method: 'POST',
                     data: formData,
+                    processData: false,  // 不處理數據
+                    contentType: false,  // 不設置內容類型
                     dataType: 'json',
                     success: function(response) {
-                        if (response.status === 'success') {
+                        if (response.status === '200') {
                             Swal.fire({
                                 icon: 'success',
                                 title: '提交成功',
-                                text: response.message || '您的健康宅配訂單已成功提交',
+                                text: response.message,
                                 confirmButtonText: '確定'
                             }).then((result) => {
                                 if (result.isConfirmed) {

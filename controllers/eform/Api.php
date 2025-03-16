@@ -15,6 +15,7 @@ class Api extends MY_Controller
         $this->load->model( 'front_mssql_model' );
 
         $this->load->model( 'eform/Form1Model' );
+        $this->load->model( 'eform/Form2Model' );
         $this->load->model( 'eform/Form4Model' );
         $this->load->model( 'eform/Form5Model' );
         $this->load->model( 'eform/Form6Model' );
@@ -58,10 +59,62 @@ class Api extends MY_Controller
             redirect( 'member/login' );
         }
 
-        $msconn = $this->front_mssql_model->ms_connect(); 
+        $commonModel = new CommonModel();
+        
+        // 上傳檔案
+        $files = array('signature', 'signaturePost', 'signatureAgreement', 'signatureCheck');
+        $fileIds = array('signature' => null, 'signaturePost' => null, 'signatureAgreement' => null, 'signatureCheck' => null);
+
+        foreach ($files as $_val) {
+            if (isset($_FILES[$_val])) {
+                $uploadResult = $commonModel->uploadFile($_FILES, $_val);
+
+                // 確認上傳成功並取ID
+                if ($uploadResult[0] === true) {
+                    $fileIds[$_val] = $uploadResult[1];
+                }
+            }
+        }
 
         $postData = $this->input->post();
-        print_r($postData); die();
+
+        // 寫入信用卡資料
+        $creditCardData = array(
+            'card_type' => $postData['card_type'],
+            'number' => $postData['card_number'],
+            'month' => $postData['card_expiry_month'],
+            'year' => $postData['card_expiry_year'],
+            'bank' => $postData['bank_name'],
+        );
+        $creditCardId = $commonModel->insertCreditCardData($creditCardData, 'eform2');
+
+        $form2Model = new Form2Model();
+        $postData['credit_id'] = $creditCardId;
+        $formId = $form2Model->createData($postData);
+
+        // 細項
+        if (isset($postData['product'])) {
+            if (count($postData['product']) > 0) {
+                $insertBatchData = array();
+                foreach ($postData['product'] as $_val) {
+                    $insertBatchData[] = array(
+                        'form_id' => $formId,
+                        'product_code' => $_val,
+                    );
+                }
+
+                $form2Model->createDetailData($insertBatchData);
+            }
+        }
+
+        $result = array(
+            "status" => 200,
+            "message" => "資料新增成功"
+        );
+
+        $this->output
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode($result));
     }
 
     public function form3()
