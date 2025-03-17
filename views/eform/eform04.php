@@ -1,11 +1,4 @@
 <style>
-    .flatpickr-input[readonly]  {
-        border: none;
-        border-bottom: #cccccc 1px solid;
-    }
-    .underline-text {
-        text-decoration: underline;
-    }
     #signatureCredit, #signatureCreditAgreement, #signatureMemberAgreement {
         border: 2px solid #000;
         width: 400px;
@@ -53,7 +46,7 @@
                                             </div>
                                             <div class="col-sm-4 mb30">
                                                 <label class="label-custom">生日：</label>
-                                                <input type="text" class="datapicker" name="member_birth_date" class="form-control form-control-custom" placeholder="選擇日期">
+                                                <input type="date" name="member_birth_date" class="form-control form-control-custom" placeholder="選擇日期">
                                             </div>
                                             <div class="col-sm-4 mb30">
                                                 <label class="label-custom">配偶姓名：</label>
@@ -65,7 +58,7 @@
                                             </div>
                                             <div class="col-sm-4 mb30">
                                                 <label class="label-custom">生日：</label>
-                                                <input type="text" class="datapicker" name="spouse_birth_date" class="form-control form-control-custom" placeholder="選擇日期">
+                                                <input type="date" name="spouse_birth_date" class="form-control form-control-custom" placeholder="選擇日期">
                                             </div>
                                             <div class="col-sm-6 mb30">
                                                 <label class="label-custom">通訊地址：郵遞區號 </label>
@@ -134,7 +127,7 @@
                                             </div>
                                             <div class="col-sm-4 mb30">
                                                 <label class="label-custom">日期：</label>
-                                                <input type="text" name="member_agree_date" class="datapicker" class="form-control form-control-custom" placeholder="選擇日期">
+                                                <input type="date" name="member_agree_date" class="form-control form-control-custom" placeholder="選擇日期">
                                             </div>
                                             <div class="col-sm-12 mb30">
                                                 <div>※申請名簽名同時代表已詳閱所有條文，並承諾各欄填寫資料所提供相關證明文件均屬實無誤，如有虛假願承擔法律責任。</div>
@@ -285,7 +278,8 @@
                                                     <div class="mb30">
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">持卡人本人： </label>
-                                                            <input type="text" name="cardholder_name">;
+                                                            <input type="text" name="cardholder_name">
+                                                            ；
                                                         </div>
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">身份證字號： </label>
@@ -315,7 +309,7 @@
                                                         </div>
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">日期：</label>
-                                                            <input type="text" name="credit_card_statement_agree_date" class="datapicker">
+                                                            <input type="date" name="credit_card_statement_agree_date">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -665,11 +659,6 @@
                     return returnData;
                 }
 
-                $(".datapicker").flatpickr({
-                    locale: "zh", // 設定語系為中文
-                    dateFormat: "Y-m-d", // 日期格式 YYYY-MM-DD
-                    disableMobile: true // 在行動裝置上顯示桌面版
-                });
 
                 $eform_main_1.find('input[name="payment_method"]').change(function () {
                     $("#credit_card_form").hide();
@@ -725,6 +714,7 @@
                     mainData = getFormData($('#eform_main_1'), mainData);
                     mainData = getFormData($('#eform_main_2'), mainData);
 
+                    detailData = getFormData($('#eform_detail'), detailData);
                     creditData = getFormData($('#credit_card_form'), creditData);
                     creditStatementData = getFormData($('#credit_card_statement_form'), creditStatementData);
                     // 處理簽名
@@ -740,8 +730,6 @@
                         const blob = await signatureMemberAgreement.getSignatureBlob();
                         formData.append('signatureMemberAgreement', blob, 'signatureMemberAgreement.png');
                     }
-                    
-                    detailData = getFormData($('#eform_detail'), detailData);
 
                     // 將 JSON 物件轉為字串，然後加入 FormData
                     formData.append('mainData', JSON.stringify(mainData));

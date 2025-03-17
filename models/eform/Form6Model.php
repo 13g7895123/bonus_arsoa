@@ -13,13 +13,36 @@ class Form6Model extends CI_Model
         $this->db = $this->load->database('default', true);
     }
 
-    public function createData($data)
+    public function createData($data, $signatureFileIds=array(), $creditCardId=0)
     {
-        $mainData = $data['mainData'];
+        $commonModel = new CommonModel();
+        $mainData = json_decode($data['mainData'], true);
+        $detailData = json_decode($data['detailData'], true);
+        $creditData = json_decode($data['creditData'], true);
+        $creditStatementData = json_decode($data['creditStatementData'], true);
+
+        if ($mainData['payment_method'] === 'credit_card') {
+            //信用卡資料
+            $mainData['credit_card_consumption_amount'] = $creditData['credit_card_consumption_amount'];
+            $mainData['credit_card_consumption_date'] = $creditData['credit_card_consumption_date'];
+            $mainData['credit_id'] = $creditCardId;
+            $mainData['signature_id'] = $signatureFileIds['signatureCredit'];
+            //信用卡聲明同意
+            $mainData['cardholder_name'] = $creditStatementData['cardholder_name'];
+            if (!empty($creditStatementData['cardholder_id_card_number'])) {
+                $memberEncrypt = $commonModel->encryptID($creditStatementData['cardholder_id_card_number']);
+                $mainData['cardholder_id_card_number'] = $memberEncrypt['encrypted'];
+                $mainData['cardholder_iv'] = $memberEncrypt['iv'];
+            }
+            $mainData['credit_card_statement_agree_text'] = $creditStatementData['credit_card_statement_agree_text'];
+            $mainData['credit_card_statement_agree_total_amount'] = $creditStatementData['credit_card_statement_agree_total_amount'];
+            $mainData['credit_card_statement_agree_date'] = $creditStatementData['credit_card_statement_agree_date'];
+            $mainData['credit_card_statement_agree_signature_id'] = $signatureFileIds['signatureCreditAgreement'];
+        }
+
         $mainData['create_time'] = date('Y-m-d H:i:s');
         $mainData['update_time'] = date('Y-m-d H:i:s');
 
-        $detailData = $data['detailData'];
         $detailBatchData = array();
         $detilColumn = array(
             'p_no_',

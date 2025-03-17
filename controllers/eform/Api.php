@@ -352,9 +352,40 @@ class Api extends MY_Controller
         }
 
         $postData = $this->input->post();
+        $commonModel = new CommonModel();
+        // 上傳檔案
+        $files = array('signatureCredit', 'signatureCreditAgreement');
+        $fileIds = array('signatureCredit' => null, 'signatureCreditAgreement' => null);
+
+        foreach ($files as $_val) {
+            if (isset($_FILES[$_val])) {
+                $uploadResult = $commonModel->uploadFile($_FILES, $_val);
+
+                // 確認上傳成功並取ID
+                if ($uploadResult[0] === true) {
+                    $fileIds[$_val] = $uploadResult[1];
+                }
+            }
+        }
+
+        $mainData = json_decode($postData['mainData'], true);
+        // 寫入信用卡資料
+        $creditCardId = 0;
+        if ($mainData['payment_method'] === 'credit_card') {
+            $creditData = json_decode($postData['creditData'], true);
+            $creditCardData = array(
+                'card_type' => '',
+                'number' => $creditData['card_number_1'].$creditData['card_number_2'].$creditData['card_number_3'].$creditData['card_number_4'],
+                'month' => $creditData['card_expiry_month'],
+                'year' => $creditData['card_expiry_year'],
+                'bank' => '',
+                'three_code' => $creditData['creditCardCvv'],
+            );
+            $creditCardId = $commonModel->insertCreditCardData($creditCardData, 'eform4');
+        }
         
         $form6Model = new Form6Model();
-        if ($form6Model->createData($postData)) {
+        if ($form6Model->createData($postData, $fileIds, $creditCardId)) {
             $result = array(
                 "status" => 200,
                 "message" => "資料新增成功"

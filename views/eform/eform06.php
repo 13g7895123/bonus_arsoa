@@ -1,3 +1,11 @@
+<style>
+    #signatureCredit, #signatureCreditAgreement {
+        border: 2px solid #000;
+        width: 400px;
+        height: 200px;
+        cursor: crosshair;
+    }
+</style>
 <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
         <div class="wrapper">
@@ -35,12 +43,6 @@
                                             <label class="label-custom">收貨人地址：郵遞區號</label>
                                             <input type="text" name="consignee_postal_code" class="form-control form-control-custom" placeholder="請填郵遞區號" value="<?=$userdata['zip_dl'];?>" />
                                         </div>
-                                        <!-- <div class="col-sm-6 mb30">
-                                            <div class="form-check form-check mb20">
-                                                <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                <label class="form-check-label" for="inlineRadio4">同公司建檔地址 </label>
-                                            </div>
-                                        </div> -->
                                         <div class="col-sm-12 mb30">
                                             <label class="label-custom">收貨人地址：地址</label>
                                             <input type="text" name="consignee_address" class="form-control form-control-custom" placeholder="請填寫地址" value="<?=$userdata['addr_dl'];?>" />
@@ -86,7 +88,7 @@
                                     </div>
                                 </div>
                             </form>
-                            <form id="eform_credit_card_data">
+                            <form id="credit_card_form" style="display:none">
                                 <div class="row mb-4">
                                     <div class="col-lg-12">
                                         <div class="card bg-light border-danger wow fadeInUp" data-wow-delay=".2s">
@@ -94,64 +96,50 @@
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">消費金額：NT＄ </label>
-                                                        <input type="text">
+                                                        <input type="text" name="credit_card_consumption_amount">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">消費日期： </label>
-                                                        <input type="text" size="6" maxlength="4">
-                                                        年
-                                                        <input type="text" size="4" maxlength="2">
-                                                        月
-                                                        <input type="text" size="4" maxlength="2">
-                                                        日
+                                                        <input type="date" name="credit_card_consumption_date">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">發卡銀行： </label>
-                                                        <input type="text">
+                                                        <input type="text" name="bank_name">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
-                                                        <input type="text" size="4" maxlength="4">
-                                                        -
-                                                        <input type="text" size="4" maxlength="4">
-                                                        -
-                                                        <input type="text" size="4" maxlength="4">
-                                                        -
-                                                        <input type="text" size="4" maxlength="4">
+                                                        <input type="text" name="card_number_1" id="card_number_1" size="4" maxlength="4"> - 
+                                                        <input type="text" name="card_number_2" id="card_number_2" size="4" maxlength="4"> - 
+                                                        <input type="text" name="card_number_3" id="card_number_3" size="4" maxlength="4"> - 
+                                                        <input type="text" name="card_number_4" id="card_number_4" size="4" maxlength="4">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">背面末3碼(信用卡背面簽名處上方)： </label>
-                                                        <input type="text" size="5" maxlength="3">
+                                                        <input type="text" name="creditCardCvv" size="5" maxlength="3">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">有效月年：自西元 </label>
-                                                        <input type="text" size="4" maxlength="2">
-                                                        月
-                                                        <input type="text" size="4" maxlength="2">
-                                                        年
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">至 </label>
-                                                        <input type="text" size="4" maxlength="2">
-                                                        月
-                                                        <input type="text" size="4" maxlength="2">
-                                                        年
+                                                        <label class="form-check-label" for="inlineRadio4">有效期限： </label>
+                                                        <input type="text" name="card_expiry_month" id="card_expiry_month" size="4" maxlength="2">月
+                                                        <input type="text" name="card_expiry_year" id="card_expiry_year" size="4" maxlength="2">年
                                                     </div>
                                                 </div>
                                                 <div class="">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">持卡人簽名(需與信用卡上一致)： </label>
-                                                        <input type="text">
+                                                        <div style="display: flex; flex-direction: column;">
+                                                            <canvas id="signatureCredit" width="400" height="200"></canvas>
+                                                            <button id="clearCreditSignatureBtn" type="button">清除簽名</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -159,7 +147,7 @@
                                     </div>
                                 </div>
                             </form>
-                            <form id="eform_credit_card_statement">
+                            <form id="credit_card_statement_form" style="display:none">
                                 <div class="row mb-4 wow fadeInUp" data-wow-delay=".2s">
                                     <div class="col-lg-12">
                                         <p class="text-danger">★持卡人非訂購會員本人，務必完整填寫信用卡使用同意申明書。</p>
@@ -169,23 +157,23 @@
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">持卡人本人： </label>
-                                                        <input type="text">
+                                                        <input type="text" name="cardholder_name">
                                                         ；
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">身份證字號： </label>
-                                                        <input type="text">
+                                                        <input type="text" name="cardholder_id_card_number" maxlength="10">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">本人授權台灣安露莎公司就訂購會員 </label>
-                                                        <input type="text">
+                                                        <input type="text" name="credit_card_statement_agree_text">
                                                         ；
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">購買產品合計 </label>
-                                                        <input type="text">
+                                                        <input type="text" name="credit_card_statement_agree_total_amount">
                                                         元
                                                     </div>
                                                     <div>得使用本人留存之信用卡資訊，填寫信用卡授權書向銀行請款支付上開消費金額，毋須再與本人電話確認。</div>
@@ -193,19 +181,19 @@
                                                 <div class="">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">持卡人簽名：</label>
-                                                        <input type="text">
-                                                        ；
+                                                        <div style="display: flex; flex-direction: column;">
+                                                            <canvas id="signatureCreditAgreement" width="400" height="200"></canvas>
+                                                            <button id="clearCreditAgreementBtn" type="button">清除簽名</button>
+                                                        </div>
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">日期：</label>
-                                                        <input type="text">
+                                                        <input type="date" name="credit_card_statement_agree_date">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    
                                 </div>
                             </form>
                             <form id="eform_detail">
@@ -402,6 +390,59 @@
     <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
 
     <script>
+        class signature {
+            constructor(canvasId) {
+                this.canvasId = canvasId;
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.drawing = false;
+                this.signatured = false;    // 是否有簽名
+
+                // 設定筆刷樣式
+                this.ctx.lineWidth = 2;
+                this.ctx.lineCap = "round";
+                this.ctx.strokeStyle = "#000";
+            }
+
+            // 監聽滑鼠事件
+            init() {
+                $('#' + this.canvasId).on('mousedown', (e) => {
+                    console.log('mousedown');
+                    this.signatured = true;
+                    this.drawing = true;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(e.offsetX, e.offsetY);
+                });
+
+                $('#' + this.canvasId).on('mousemove', (e) => {
+                    if (this.drawing) {
+                        this.ctx.lineTo(e.offsetX, e.offsetY);
+                        this.ctx.stroke();
+                    }
+                });
+
+                $('#' + this.canvasId).on('mouseup mouseleave', () => {
+                    this.drawing = false;
+                });
+            }
+
+            // 取得簽名 Blob（圖片格式）
+            getSignatureBlob() {
+                return new Promise((resolve, reject) => {
+                    if (!this.signatured) {
+                        reject("請先簽名！");
+                        return;
+                    }
+                    this.canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject("轉換失敗");
+                        }
+                    }, "image/png");
+                });
+            }
+        }
         $(document).ready(function() {
             // init controller
             var controller = new ScrollMagic.Controller();
@@ -419,6 +460,17 @@
                 .addTo(controller);
             
             const eform6 = (function() {
+                $("#clearCreditSignatureBtn").click(function () {
+                    var canvas = document.getElementById("signatureCredit"); // 確保獲取的是 DOM
+                    var ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+                $("#clearCreditAgreementBtn").click(function () {
+                    var canvas = document.getElementById("signatureCreditAgreement"); // 確保獲取的是 DOM
+                    var ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+
                 function getFormData($form, returnData){
                     let data = $form.serializeArray();
                     $.map(data, function(n, i) {
@@ -432,15 +484,94 @@
                 }
 
                 $('input[name="payment_method"]').change(function () {
+                    $('#credit_card_form').hide();
+                    $("#credit_card_form")[0].reset();
+                    $('#credit_card_statement_form').hide();
+                    $("#credit_card_statement_form")[0].reset();
                     if ($('#creditCard').is(':checked')) {
+                        $('#credit_card_form').show();
+                        $('#credit_card_statement_form').show();
                         $('input[name="card_type"]').prop('disabled', false);
                     } else {
                         $('input[name="card_type"]').prop('disabled', true).prop('checked', false);
                     }
                 });
 
-                $('#submit_btn').click(function() {
-                    submitFormData();
+                const signatureCredit = new signature('signatureCredit');
+                const signatureCreditAgreement = new signature('signatureCreditAgreement');
+                signatureCredit.init();
+                signatureCreditAgreement.init();
+
+                $('#submit_btn').on('click', async function() {
+                    if (!checkForm()) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "系統訊息",
+                            text: "請檢查欄位是否皆已填寫",
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                        return;
+                    }
+                    const formData = new FormData();
+                    let mainData = {};
+                    let detailData = {};
+                    let creditData = {};
+                    let creditStatementData = {};
+
+                    mainData = getFormData($('#eform_main_1'), mainData);
+                    mainData = getFormData($('#eform_main_2'), mainData);
+
+                    detailData = getFormData($('#eform_detail'), detailData);
+                    creditData = getFormData($('#credit_card_form'), creditData);
+                    creditStatementData = getFormData($('#credit_card_statement_form'), creditStatementData);
+
+                    // 處理簽名
+                    if (signatureCredit.signatured) {
+                        const blob = await signatureCredit.getSignatureBlob();
+                        formData.append('signatureCredit', blob, 'signatureCredit.png');
+                    }
+                    if (signatureCreditAgreement.signatured) {
+                        const blob = await signatureCreditAgreement.getSignatureBlob();
+                        formData.append('signatureCreditAgreement', blob, 'signatureCreditAgreement.png');
+                    }
+
+                    // 將 JSON 物件轉為字串，然後加入 FormData
+                    formData.append('mainData', JSON.stringify(mainData));
+                    formData.append('creditData', JSON.stringify(creditData));
+                    formData.append('creditStatementData', JSON.stringify(creditStatementData));
+                    formData.append('detailData', JSON.stringify(detailData));
+
+                    $.ajax({
+                        url: '<?=$apiUrl;?>',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,  // 不處理數據
+                        contentType: false,  // 不設置內容類型
+                        success: function(response) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "系統訊息",
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            })
+                            // 3 秒後刷新頁面
+                            // setTimeout(function() {
+                            //     location.reload();
+                            // }, 3000);
+                        },
+                        error: function(xhr, status, error) {
+                            let errorResponse = xhr.responseJSON || { message: "資料新增失敗" };
+                            Swal.fire({
+                                icon: "error",
+                                title: "系統訊息",
+                                text: errorResponse.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }
+                    });
                 });
 
                 function checkForm() {
@@ -456,59 +587,6 @@
                         }
                     }
                     return true;
-                }
-
-                function submitFormData() {
-                    if (!checkForm()) {
-                        Swal.fire({
-                            icon: "error",
-                            title: "系統訊息",
-                            text: "請檢查欄位是否皆已填寫",
-                            showConfirmButton: false,
-                            timer: 3000
-                        })
-                        return;
-                    }
-                    let mainData = {};
-                    let detailData = {};
-
-                    mainData = getFormData($('#eform_main_1'), mainData);
-                    mainData = getFormData($('#eform_main_2'), mainData);
-
-                    detailData = getFormData($('#eform_detail'), detailData);
-
-                    let formData = {
-                        mainData,
-                        detailData
-                    };
-                    $.ajax({
-                        url: '<?=$apiUrl;?>',
-                        type: 'POST',
-                        data: formData,
-                        success: function(response) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "系統訊息",
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 3000
-                            })
-                            // 3 秒後刷新頁面
-                            setTimeout(function() {
-                                location.reload();
-                            }, 3000);
-                        },
-                        error: function(xhr, status, error) {
-                            let errorResponse = xhr.responseJSON || { message: "資料新增失敗" };
-                            Swal.fire({
-                                icon: "error",
-                                title: "系統訊息",
-                                text: errorResponse.message,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                        }
-                    });
                 }
 
                 function calculateTotal() {
