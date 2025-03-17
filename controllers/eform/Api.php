@@ -132,6 +132,10 @@ class Api extends MY_Controller
 
         $form2Model = new Form2Model();
         $postData['credit_id'] = $creditCardId;
+        $postData['signature_id'] = $fileIds['signature'];
+        $postData['signature_post_id'] = $fileIds['signaturePost'];
+        $postData['signature_agreement_id'] = $fileIds['signatureAgreement'];
+        $postData['signature_check_id'] = $fileIds['signatureCheck'];
         $formId = $form2Model->createData($postData);
 
         // 細項
@@ -198,6 +202,10 @@ class Api extends MY_Controller
 
         $form3Model = new Form3Model();
         $postData['credit_id'] = $creditCardId;
+        $postData['signature_id'] = $fileIds['signature'];
+        $postData['signature_post_id'] = $fileIds['signaturePost'];
+        $postData['signature_agreement_id'] = $fileIds['signatureAgreement'];
+        $postData['signature_check_id'] = $fileIds['signatureCheck'];
         $formId = $form3Model->createData($postData);
 
         // 細項

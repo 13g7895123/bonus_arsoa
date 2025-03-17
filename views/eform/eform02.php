@@ -220,7 +220,7 @@
                                                         </div>
                                                         <div class="row mb30">
                                                             <div class="form-check form-check-inline">
-                                                                <label class="form-check-label" for="card_expiry">有效期限：</label>
+                                                                <label class="form-check-label" for="card_expiry_month">有效期限：</label>
                                                                 <input type="text" name="card_expiry_month" id="card_expiry_month" size="6" maxlength="4">月<input type="text" name="card_expiry_year" id="card_expiry_year" size="4" maxlength="2">年
                                                             </div>
                                                         </div>
