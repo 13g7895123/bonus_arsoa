@@ -1,8 +1,8 @@
 <style>
 #signaturePad {
     border: 2px solid #000;
-    width: 400px;
-    height: 200px;
+    width: 300px;
+    height: 150px;
     cursor: crosshair;
 }
 </style>
@@ -117,8 +117,10 @@
                                     <div class="mb30">
                                         <div class="form-check form-check-inline">
                                             <label class="form-check-label" for="signaturePad">持卡人簽名： </label>
-                                            <canvas id="signaturePad" width="400" height="200"></canvas>
-                                            <button id="clearBtn">清除簽名</button>
+                                            <div style="display: flex; flex-direction: column;">
+                                                <canvas id="signaturePad" width="300" height="150"></canvas>
+                                                <button id="clearBtn">清除簽名</button>
+                                            </div>
                                             (與信用卡一致)
                                         </div>
                                     </div>
@@ -495,7 +497,9 @@
                                 text: response.message,
                                 showConfirmButton: false,
                                 timer: 1500
-                            })
+                            }).then(() => {
+                                // window.location.reload();
+                            });
                         }
                     });
                 });
