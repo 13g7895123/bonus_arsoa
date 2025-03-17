@@ -557,9 +557,9 @@
                                 timer: 3000
                             })
                             // 3 秒後刷新頁面
-                            // setTimeout(function() {
-                            //     location.reload();
-                            // }, 3000);
+                            setTimeout(function() {
+                                location.reload();
+                            }, 3000);
                         },
                         error: function(xhr, status, error) {
                             let errorResponse = xhr.responseJSON || { message: "資料新增失敗" };
