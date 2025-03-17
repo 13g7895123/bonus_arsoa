@@ -108,6 +108,17 @@ class Api extends MY_Controller
         }
 
         $postData = $this->input->post();
+        //身分證加密
+        if (!empty($postData['member_id_card_number'])) {
+            $memberEncrypt = $commonModel->encryptID($postData['member_id_card_number']);
+            $postData['member_id_card_number'] = $memberEncrypt['encrypted'];
+            $postData['member_iv'] = $memberEncrypt['iv'];
+        }
+        if (!empty($postData['cardholder_id_card_number'])) {
+            $memberEncrypt = $commonModel->encryptID($postData['cardholder_id_card_number']);
+            $postData['cardholder_id_card_number'] = $memberEncrypt['encrypted'];
+            $postData['cardholder_iv'] = $memberEncrypt['iv'];
+        }
 
         // 寫入信用卡資料
         $creditCardData = array(
