@@ -252,7 +252,7 @@
                                                     <div class="mb30">
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">背面末3碼： </label>
-                                                            <input type="text" size="5" maxlength="3">
+                                                            <input type="text" name="creditCardCvv" size="5" maxlength="3">
                                                         </div>
                                                     </div>
                                                     <div class="mb30">

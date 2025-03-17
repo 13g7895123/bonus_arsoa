@@ -250,6 +250,7 @@ class Api extends MY_Controller
                 'month' => $creditData['card_expiry_month'],
                 'year' => $creditData['card_expiry_year'],
                 'bank' => '',
+                'three_code' => $creditData['creditCardCvv'],
             );
             $creditCardId = $commonModel->insertCreditCardData($creditCardData, 'eform4');
         }
