@@ -3,6 +3,7 @@ class CommonModel extends CI_Model
 {
     private $db;
     protected $key = "e0b1c1d4f2a8c9b7d23f5d9a12e7d35b";
+    protected $gcmKey = '12345678901234567890123456789012';
 
     function __construct()
     {
@@ -81,6 +82,10 @@ class CommonModel extends CI_Model
     {
         $data['form_code'] = $formCode;
 
+        if ($data['card_type'] == '') {
+            $data['card_type'] = 'VISA';
+        } 
+
         // 確認資料
         $checkData = array('three_code', 'english_name');
         foreach ($checkData as $_val) {
@@ -89,8 +94,47 @@ class CommonModel extends CI_Model
             }
         }
 
+        // 加密
+        $encryptedNumber = $this->encryptGCM($data['number']);
+        $data['number'] = $encryptedNumber;
+
+        $sql = $this->db->set($data)->get_compiled_insert('eform_credit');
+        print_r($sql); die();
+
         $this->db->insert('eform_credit', $data);
         return $this->db->insert_id();
+    }
+
+    // GCM加密
+    public function encryptGCM($plaintext) {
+        $cipher = "aes-256-gcm";
+        $iv = openssl_random_pseudo_bytes(12); // 產生 12-byte IV
+        $tag = 'arsoagcm';
+
+        // 加密
+        $ciphertext = openssl_encrypt($plaintext, $cipher, $this->gcmKey, OPENSSL_RAW_DATA, $iv, $tag);
+        
+        // 轉為 base64
+        $ciphertext = base64_encode($ciphertext);
+
+        // 回傳
+        return base64_encode($iv) . ':' . base64_encode($ciphertext) . ':' . base64_encode($tag);
+    }
+
+    // GCM解密
+    public function decryptGCM($encryptedText) {
+        $cipher = 'aes-256-gcm';
+        list($iv, $ciphertext, $tag) = explode(':', $encryptedText);
+    
+        // Base64 解碼
+        $iv = base64_decode($iv);
+        $ciphertext = base64_decode($ciphertext);
+        $tag = base64_decode($tag);
+    
+        // 執行解密
+        $plaintext = openssl_decrypt($ciphertext, $cipher, $this->gcmKey, OPENSSL_RAW_DATA, $iv, $tag);
+        
+        return $plaintext ?: false; // 若解密失敗則回傳 false
     }
 
     public function encryptID($plaintext) {
