@@ -378,10 +378,10 @@ class Api extends MY_Controller
                 'number' => $creditData['card_number_1'].$creditData['card_number_2'].$creditData['card_number_3'].$creditData['card_number_4'],
                 'month' => $creditData['card_expiry_month'],
                 'year' => $creditData['card_expiry_year'],
-                'bank' => '',
+                'bank' => $creditData['bank_name'],
                 'three_code' => $creditData['creditCardCvv'],
             );
-            $creditCardId = $commonModel->insertCreditCardData($creditCardData, 'eform4');
+            $creditCardId = $commonModel->insertCreditCardData($creditCardData, 'eform6');
         }
         
         $form6Model = new Form6Model();

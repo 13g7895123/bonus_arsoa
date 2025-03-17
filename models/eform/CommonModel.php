@@ -84,22 +84,25 @@ class CommonModel extends CI_Model
 
         if ($data['card_type'] == '') {
             $data['card_type'] = 'VISA';
-        } 
+        }
 
         // 確認資料
-        $checkData = array('three_code', 'english_name');
-        foreach ($checkData as $_val) {
-            if (isset($data[$_val]) === false) {
-                $data[$_val] = '';
-            }
+        if (isset($data['three_code'])) {
+            $data['three_code'] = $this->encryptGCM($data['three_code']);
+        } else {
+            $data['three_code'] = '';
+        }
+
+        if (isset($data['english_name'])) {
+            $data['english_name'] = '';
         }
 
         // 加密
         $encryptedNumber = $this->encryptGCM($data['number']);
         $data['number'] = $encryptedNumber;
 
-        $sql = $this->db->set($data)->get_compiled_insert('eform_credit');
-        print_r($sql); die();
+        // $sql = $this->db->set($data)->get_compiled_insert('eform_credit');
+        // print_r($sql); die();
 
         $this->db->insert('eform_credit', $data);
         return $this->db->insert_id();
