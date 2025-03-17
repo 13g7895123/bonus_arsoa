@@ -64,8 +64,8 @@
                                                     <input type="text" name="order_member_name" id="order_member_name" size="10" maxlength="8">
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <label class="form-check-label" for="id_number">身分證字號：</label>
-                                                    <input type="text" name="id_number" id="id_number" size="10" maxlength="10">
+                                                    <label class="form-check-label" for="member_id_card_number">身分證字號：</label>
+                                                    <input type="text" name="member_id_card_number" id="member_id_card_number" size="10" maxlength="10">
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <label class="form-check-label">生日：</label>
@@ -261,8 +261,8 @@
                                                         <input type="text" name="cardholder_name" id="cardholder_name"> ；
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="cardholder_id">身份證字號：</label>
-                                                        <input type="text" name="cardholder_id" id="cardholder_id">
+                                                        <label class="form-check-label" for="cardholder_id_card_number">身份證字號：</label>
+                                                        <input type="text" name="cardholder_id_card_number" id="cardholder_id_card_number">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
@@ -694,7 +694,7 @@
                 formData.append('order_day', $('#order_day').val());
                 formData.append('c_no', $('#member_id').val());
                 formData.append('order_member_name', $('#order_member_name').val());
-                formData.append('id_number', $('#id_number').val());
+                formData.append('member_id_card_number', $('#member_id_card_number').val());
                 formData.append('birth_year', $('#birth_year').val());
                 formData.append('birth_month', $('#birth_month').val());
                 formData.append('birth_day', $('#birth_day').val());
@@ -721,7 +721,7 @@
                 formData.append('auth_date_day', $('#auth_date_day').val());
                 formData.append('payment_method', $('input[name="payment_method"]:checked').map(function() { return $(this).val(); }).get());
                 formData.append('cardholder_name', $('#cardholder_name').val());
-                formData.append('cardholder_id', $('#cardholder_id').val());
+                formData.append('cardholder_id_card_number', $('#cardholder_id_card_number').val());
                 formData.append('auth_member_name', $('#auth_member_name').val());
                 formData.append('auth_amount', $('#auth_amount').val());
                 formData.append('auth_date', $('#auth_date').val());
@@ -765,7 +765,7 @@
                                 timer: 1500,
                                 showConfirmButton: false
                             }).then(() => {
-                                window.location.reload();
+                                //window.location.reload();
                             });
                         } else {
                             Swal.fire({

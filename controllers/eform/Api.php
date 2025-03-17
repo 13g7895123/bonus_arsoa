@@ -189,6 +189,17 @@ class Api extends MY_Controller
         }
 
         $postData = $this->input->post();
+        //身分證加密
+        if (!empty($postData['member_id_card_number'])) {
+            $memberEncrypt = $commonModel->encryptID($postData['member_id_card_number']);
+            $postData['member_id_card_number'] = $memberEncrypt['encrypted'];
+            $postData['member_iv'] = $memberEncrypt['iv'];
+        }
+        if (!empty($postData['cardholder_id_card_number'])) {
+            $memberEncrypt = $commonModel->encryptID($postData['cardholder_id_card_number']);
+            $postData['cardholder_id_card_number'] = $memberEncrypt['encrypted'];
+            $postData['cardholder_iv'] = $memberEncrypt['iv'];
+        }
 
         // 寫入信用卡資料
         $creditCardData = array(
@@ -203,9 +214,9 @@ class Api extends MY_Controller
         $form3Model = new Form3Model();
         $postData['credit_id'] = $creditCardId;
         $postData['signature_id'] = $fileIds['signature'];
-        $postData['signature_post_id'] = $fileIds['signaturePost'];
-        $postData['signature_agreement_id'] = $fileIds['signatureAgreement'];
-        $postData['signature_check_id'] = $fileIds['signatureCheck'];
+        $postData['post_signature_id'] = $fileIds['signaturePost'];
+        $postData['agreement_signature_id'] = $fileIds['signatureAgreement'];
+        $postData['check_signature_id'] = $fileIds['signatureCheck'];
         $formId = $form3Model->createData($postData);
 
         // 細項

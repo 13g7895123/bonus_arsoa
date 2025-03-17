@@ -12,7 +12,7 @@ class Form3Model extends CI_Model
     public function createData($data)
     {
         $data = $this->formatMainData($data);
-        // $sql = $this->db->set($data)->get_compiled_insert('eform2_main');
+        // $sql = $this->db->set($data)->get_compiled_insert('eform3_main');
         // print_r($sql); die();
         $this->db->insert('eform3_main', $data);
         $insertId = $this->db->insert_id(); 
