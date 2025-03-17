@@ -6,7 +6,7 @@
     .underline-text {
         text-decoration: underline;
     }
-    #signaturePad, #signaturePadAgreement {
+    #signatureCredit, #signatureCreditAgreement, #signatureMemberAgreement {
         border: 2px solid #000;
         width: 400px;
         height: 200px;
@@ -125,13 +125,16 @@
                                                     但若您不同意，亦可告知請求本公司停止處理、利用，唯恐將無法提供最完善服務。
                                                 </p>
                                             </div>
-                                            <div class="col-sm-6 mb30">
+                                            <div class="col-sm-8 mb30">
                                                 <label class="label-custom">申請人正楷親筆簽署： </label>
-                                                <input type="text" maxlength="10" class="form-control form-control-custom" placeholder="請填正楷親筆簽署">
+                                                <div style="display: flex; flex-direction: column;">
+                                                    <canvas id="signatureMemberAgreement" width="400" height="200"></canvas>
+                                                    <button id="clearMemberAgreementBtn" type="button">清除簽名</button>
+                                                </div>
                                             </div>
-                                            <div class="col-sm-6 mb30">
+                                            <div class="col-sm-4 mb30">
                                                 <label class="label-custom">日期：</label>
-                                                <input type="text" class="datapicker" class="form-control form-control-custom" placeholder="選擇日期">
+                                                <input type="text" name="member_agree_date" class="datapicker" class="form-control form-control-custom" placeholder="選擇日期">
                                             </div>
                                             <div class="col-sm-12 mb30">
                                                 <div>※申請名簽名同時代表已詳閱所有條文，並承諾各欄填寫資料所提供相關證明文件均屬實無誤，如有虛假願承擔法律責任。</div>
@@ -263,8 +266,8 @@
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">簽名： </label>
                                                             <div style="display: flex; flex-direction: column;">
-                                                                <canvas id="signaturePad" width="400" height="200"></canvas>
-                                                                <button id="clearSignaturePadBtn" type="button">清除簽名</button>
+                                                                <canvas id="signatureCredit" width="400" height="200"></canvas>
+                                                                <button id="clearCreditSignatureBtn" type="button">清除簽名</button>
                                                             </div>
                                                             (與信用卡一致)
                                                         </div>
@@ -282,22 +285,22 @@
                                                     <div class="mb30">
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">持卡人本人： </label>
-                                                            <input type="text" name="member_name">;
+                                                            <input type="text" name="cardholder_name">;
                                                         </div>
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">身份證字號： </label>
-                                                            <input type="text" name="member_id_card_number">
+                                                            <input type="text" name="cardholder_id_card_number" maxlength="10">
                                                         </div>
                                                     </div>
                                                     <div class="mb30">
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">本人授權台灣安露莎公司就訂購會員 </label>
-                                                            <input type="text">
+                                                            <input type="text" name="credit_card_statement_agree_text">
                                                             ；
                                                         </div>
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">購買產品合計 </label>
-                                                            <input type="text" name="credit_card_total_amount">
+                                                            <input type="text" name="credit_card_statement_agree_total_amount">
                                                             元
                                                         </div>
                                                         <div>得使用本人留存之信用卡資訊，填寫信用卡授權書向銀行請款支付上開消費金額，毋須再與本人電話確認。</div>
@@ -306,8 +309,8 @@
                                                         <div class="form-check form-check-inline">
                                                             <label class="form-check-label" for="inlineRadio4">持卡人簽名：</label>
                                                             <div style="display: flex; flex-direction: column;">
-                                                                <canvas id="signaturePadAgreement" width="400" height="200"></canvas>
-                                                                <button id="clearBtnAgreement">清除簽名</button>
+                                                                <canvas id="signatureCreditAgreement" width="400" height="200"></canvas>
+                                                                <button id="clearCreditAgreementBtn" type="button">清除簽名</button>
                                                             </div>
                                                         </div>
                                                         <div class="form-check form-check-inline">
@@ -633,6 +636,23 @@
 
             const eform4 = (function() {
                 const $eform_main_1 = $('#eform_main_1');
+
+                $("#clearCreditSignatureBtn").click(function () {
+                    var canvas = document.getElementById("signatureCredit"); // 確保獲取的是 DOM
+                    var ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+                $("#clearMemberAgreementBtn").click(function () {
+                    var canvas = document.getElementById("signatureMemberAgreement"); // 確保獲取的是 DOM
+                    var ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+                $("#clearCreditAgreementBtn").click(function () {
+                    var canvas = document.getElementById("signatureCreditAgreement"); // 確保獲取的是 DOM
+                    var ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+
                 function getFormData($form, returnData){
                     let data = $form.serializeArray();
                     $.map(data, function(n, i) {
@@ -678,10 +698,12 @@
                     }
                 });
 
-                const signaturePad = new signature('signaturePad');
-                const signaturePadAgreement = new signature('signaturePadAgreement');
-                signaturePad.init();
-                signaturePadAgreement.init();
+                const signatureCredit = new signature('signatureCredit');
+                const signatureCreditAgreement = new signature('signatureCreditAgreement');
+                const signatureMemberAgreement = new signature('signatureMemberAgreement');
+                signatureCredit.init();
+                signatureCreditAgreement.init();
+                signatureMemberAgreement.init();
 
                 $('#submit_btn').on('click', async function() {
                     if (!checkForm()) {
@@ -706,13 +728,17 @@
                     creditData = getFormData($('#credit_card_form'), creditData);
                     creditStatementData = getFormData($('#credit_card_statement_form'), creditStatementData);
                     // 處理簽名
-                    if (signaturePad.signatured) {
-                        const blob = await signaturePad.getSignatureBlob();
-                        formData.append('signature', blob, 'signature.png');
+                    if (signatureCredit.signatured) {
+                        const blob = await signatureCredit.getSignatureBlob();
+                        formData.append('signatureCredit', blob, 'signatureCredit.png');
                     }
-                    if (signaturePadAgreement.signatured) {
-                        const blob = await signaturePadAgreement.getSignatureBlob();
-                        formData.append('signaturePadAgreement', blob, 'signaturePadAgreement.png');
+                    if (signatureCreditAgreement.signatured) {
+                        const blob = await signatureCreditAgreement.getSignatureBlob();
+                        formData.append('signatureCreditAgreement', blob, 'signatureCreditAgreement.png');
+                    }
+                    if (signatureMemberAgreement.signatured) {
+                        const blob = await signatureMemberAgreement.getSignatureBlob();
+                        formData.append('signatureMemberAgreement', blob, 'signatureMemberAgreement.png');
                     }
                     
                     detailData = getFormData($('#eform_detail'), detailData);

@@ -16,10 +16,15 @@ class Form4Model extends CI_Model
         $this->load->model( 'eform/CommonModel' );
     }
 
-    public function createData($data)
+    public function createData($data, $signatureFileIds=array(), $creditCardId=0)
     {
         $commonModel = new CommonModel();
-        $mainData = $data['mainData'];
+        $mainData = json_decode($data['mainData'], true);
+        $detailData = json_decode($data['detailData'], true);
+        $creditStatementData = json_decode($data['creditStatementData'], true);
+        //會員同意簽名
+        $mainData['member_agree_signature_id'] = $signatureFileIds['signatureMemberAgreement'];
+        
         //身分證加密
         $mainData['member_iv'] = ''; //initial
         $mainData['spouse_iv'] = ''; //initial
@@ -33,12 +38,25 @@ class Form4Model extends CI_Model
             $mainData['spouse_id_card_number'] = $memberEncrypt['encrypted'];
             $mainData['spouse_iv'] = $memberEncrypt['iv'];
         }
-        
-
+        if ($mainData['payment_method'] === 'credit_card') {
+            //信用卡資料
+            $mainData['credit_id'] = $creditCardId;
+            $mainData['signature_id'] = $signatureFileIds['signatureCredit'];
+            //信用卡聲明同意
+            $mainData['cardholder_name'] = $creditStatementData['cardholder_name'];
+            if (!empty($creditStatementData['cardholder_id_card_number'])) {
+                $memberEncrypt = $commonModel->encryptID($creditStatementData['cardholder_id_card_number']);
+                $mainData['cardholder_id_card_number'] = $memberEncrypt['encrypted'];
+                $mainData['cardholder_iv'] = $memberEncrypt['iv'];
+            }
+            $mainData['credit_card_statement_agree_text'] = $creditStatementData['credit_card_statement_agree_text'];
+            $mainData['credit_card_statement_agree_total_amount'] = $creditStatementData['credit_card_statement_agree_total_amount'];
+            $mainData['credit_card_statement_agree_date'] = $creditStatementData['credit_card_statement_agree_date'];
+            $mainData['credit_card_statement_agree_signature_id'] = $signatureFileIds['signatureCreditAgreement'];
+        }
         $mainData['create_time'] = date('Y-m-d H:i:s');
         $mainData['update_time'] = date('Y-m-d H:i:s');
 
-        $detailData = $data['detailData'];
         $detailBatchData = array();
         $detilColumn = array(
             'p_no_',
