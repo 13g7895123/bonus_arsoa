@@ -60,15 +60,15 @@
 																	    case 4:
 																	        $colspan_num = 2;
 																	        ?>
-																	        <thead class="thead-dark">
-            									              <tr>
-            									                <th colspan=2>選專案</th>                          
-            									                <th>首簽當期贈品</th>  
-            									                <th>首簽後<br>每滿 6 個月循環總贈品</th>																																
-            									                <th>每月宅配<br>金額</th>
-            									              </tr>
-            									            </thead>
-            									            <tbody> 
+																				<thead class="thead-dark">
+																					<tr>
+																						<th colspan=2>選專案</th>                          
+																						<th>首簽當期贈品</th>  
+																						<th>首簽後<br>每滿 6 個月循環總贈品</th>																																
+																						<th>每月宅配<br>金額</th>
+																					</tr>
+																				</thead>
+																			<tbody> 
 																	        <?php
 																	        break;
 																	    case 5:

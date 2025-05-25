@@ -1,0 +1,53 @@
+.cartnote {display:none;z-index:999;position: fixed; _position: absolute; width: 814px; height: auto; max-height: 600px; left: 50%; top: 40%; margin: 0 0 0 -407px; padding: 10px; overflow: hidden; overflow-y: auto;  }
+.cartnote .content { position: relative; width: 350px; margin: 5px auto; background-color:rgba(0%, 0%, 0%, 0.5)  }
+.group {vertical-align: middle;	border: none; cursor: pointer; font-size:24px; line-height:40px; padding:30px; text-align:center; font-family:微軟正黑體; color:#FFF  }
+#pageUrl {position: absolute;left: -999999px;opacity: 0}
+.adminmenutitle a.active {
+    color: #DC0059;
+}
+
+#error_msg {    
+    color: red;
+    font-weight: normal;
+    text-align: center;
+    font-size:18px;
+    margin-top: -15px;    
+    justify-content: center; 
+    align-items: center; 
+}
+
+#error_msg1 {    
+    color: red;
+    font-weight: normal;
+    text-align: center;
+    font-size:18px;
+    margin-top: -15px;    
+    justify-content: center; 
+    align-items: center; 
+}
+
+#error_msg2 {    
+    color: red;
+    font-weight: normal;
+    text-align: center;
+    font-size:18px;    
+    margin-top: 5px;   
+    justify-content: center; 
+    align-items: center; 
+}
+
+.btn-line-wrap a {
+    display: block;
+    background: #02d534!important;
+    color: #fff!important;
+    text-decoration: none!important;
+    text-align: center;
+    border-radius: 5px;
+    padding: 0.5rem 1rem 0.6rem;
+    white-space: nowrap;
+    font-size: 20px;
+}
+
+.login_line {
+    max-width:570px;
+}

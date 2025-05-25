@@ -64,14 +64,16 @@ if ($active > ''){
 <a href="javascript:;" class="btn btn-outline-secondary btn-block <?=($active == 'online_form')?'active':'';?>">線上表單<i class="icon ion-ios-list"></i></a>
 <div class="card">
   <div class="card-body">
-    <a href="<?php echo base_url( 'online_form/form1' ); ?>" class="btn btn-outline-secondary btn-block text-left">單一產品訂購單</a>
+    <!-- <a href="<?php echo base_url( 'online_form/form1' ); ?>" class="btn btn-outline-secondary btn-block text-left">單一產品訂購單</a>
     <a href="<?php echo base_url( 'online_form/form2' ); ?>" class="btn btn-outline-secondary btn-block text-left">健康宅配訂單暨入會申請表</a>
     <a href="<?php echo base_url( 'online_form/form3' ); ?>" class="btn btn-outline-secondary btn-block text-left">肌能調理宅配訂單暨入會申請書</a>
-    <a href="<?php echo base_url( 'online_form/form4' ); ?>" class="btn btn-outline-secondary btn-block text-left">安露莎-合歡會員協議書</a>
-    <a href="<?php echo base_url( 'online_form/form5' ); ?>" class="btn btn-outline-secondary btn-block text-left">安露莎信用卡付款授權書</a>
-    <a href="<?php echo base_url( 'online_form/form6' ); ?>" class="btn btn-outline-secondary btn-block text-left">產品訂購單(印刷版)</a>
-    <a href="<?php echo base_url( 'online_form/form7' ); ?>" class="btn btn-outline-secondary btn-block text-left">單次宅配單異動申請書</a>
-    <a href="<?php echo base_url( 'online_form/form8' ); ?>" class="btn btn-outline-secondary btn-block text-left">郵局自動轉帳付款授權書</a>
+    <a href="<?php echo base_url( 'online_form/form4' ); ?>" class="btn btn-outline-secondary btn-block text-left">安露莎-合歡會員協議書</a> -->
+    <?php if ($this->session->userdata('member_session')['c_no'] == '000000'): ?>
+      <a href="<?php echo base_url( 'online_form/form5' ); ?>" class="btn btn-outline-secondary btn-block text-left">安露莎信用卡付款授權書</a>
+    <?php endif; ?>
+    <!-- <a href="<?php echo base_url( 'online_form/form6' ); ?>" class="btn btn-outline-secondary btn-block text-left">產品訂購單(印刷版)</a>
+    <a href="<?php echo base_url( 'online_form/form7' ); ?>" class="btn btn-outline-secondary btn-block text-left">單次宅配單異動申請書</a> -->
+    <!-- <a href="<?php echo base_url( 'online_form/form8' ); ?>" class="btn btn-outline-secondary btn-block text-left">郵局自動轉帳付款授權書</a> -->
   </div>
 </div>
 

@@ -53,7 +53,7 @@
 								   $dparams = array(
 			  	                        'TheDateField' => 'bday', 
 			  	                        'TheDateValue' => $params['bday'],
-			  	                        'placeholder'  => '生日 *',
+			  	                        'placeholder'  => '生日* 年年-月月-日日',
 			  	                        'class'        => 'form-control',
 			  	                        'Required'     => 'Y',
 			  	                        'width'        => 0,

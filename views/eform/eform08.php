@@ -315,6 +315,7 @@
                     phone_mobile: $('#phone_mobile').val(),
                     address: $('#address').val(),
                     file: $('#file').val(),
+                    '<?=$this->security->get_csrf_token_name();?>': $('#<?=$this->security->get_csrf_token_name(); ?>_eform08').val()
                 };
 
                 $.ajax({

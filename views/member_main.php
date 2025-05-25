@@ -192,7 +192,7 @@ function report_A(){
   $( "#admin_report" ).show();     
   
   if (platform == "DESKTOP"){ 
-      $('html,body').animate({scrollTop:$('#admin_Form').offset().top}, 1000);              
+      $('html,body').animate({scrollTop:$('#admin_Form').offset().top}, 1000);
   }
 }
 </script>

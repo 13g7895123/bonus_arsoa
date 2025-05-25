@@ -9,10 +9,10 @@ class Front_order_model extends MY_Model {
     }
    
     // 放入暫存車
-    public function i_cart($c_no,$p_no,$p_num = 1)
+    public function i_cart($c_no,$p_no,$p_num = 1, $days = 0)
     {
-        $sql = "INSERT INTO ap_member_cart (c_no,p_no,p_num,crdt) VALUES ('".$c_no."','".$p_no."','".$p_num."',now())
-                            ON DUPLICATE KEY UPDATE p_num='".$p_num."',crdt=now()";
+        $sql = "INSERT INTO ap_member_cart (c_no,p_no,p_num,crdt,days) VALUES ('".$c_no."','".$p_no."','".$p_num."',now(),'".$days."')
+            ON DUPLICATE KEY UPDATE p_num='".$p_num."',crdt=now(),days='".$days."'";
                          //echo $sql;                         
         $this->db->query($sql);
     }
@@ -177,7 +177,7 @@ class Front_order_model extends MY_Model {
     // 判斷車子裡有多少產品
     public function check_cart_num()
     {
-        if (!empty($this->session->userdata('ProductList'))){                            
+        if (!empty($this->session->userdata('ProductList'))){                         
             return count(explode( ',', $this->session->userdata('ProductList')));
         }else{
             return 0;  
@@ -290,23 +290,32 @@ class Front_order_model extends MY_Model {
         if ( $msconn == '' ){          
         }else{  
              
-             // 先刪temp cart 
-             $params = array ($this->session->userdata('temp_no'));  
-             $this->front_mssql_model->delete_data($msconn,"delete from isf_t where temp_no = ? ",$params);
+            // 先刪temp cart
+            $params = array ($this->session->userdata('temp_no'));  
+            $this->front_mssql_model->delete_data($msconn,"delete from isf_t where temp_no = ? ",$params);
              
-             if (!empty($this->session->userdata('ProductList'))){
-                  $aprd = explode( ',', $this->session->userdata('ProductList') );
-                  for ($i=0;$i< count($aprd);$i++){                  	  
-                       $params = array (
-                                        'temp_no' => $this->session->userdata('temp_no'),
-                                        'p_no'    => $aprd[$i],
-                                        'qty'     => $this->check_cart_prd_num($aprd[$i]),
-                                        'in_date' => date('Y-m-d H:i:s')
-                                        );  
-                       $this->front_mssql_model->insert_data($msconn,"isf_t",$params);
-                  }
-             }
-             
+            if (!empty($this->session->userdata('ProductList'))){
+                $aprd = explode( ',', $this->session->userdata('ProductList') );
+
+                // 特定產品需要另外取宅配日
+                $specialProduct = array('A0010', 'A0011', 'B0009', 'C0006', 'Q0001', 'Q0002', 'Q0003', 'Q0004');
+
+                for ($i=0; $i < count($aprd); $i++){  
+                    $days = 0;     
+                    if (in_array($aprd[$i], $specialProduct)){
+                        $days = $this->fetchDeliveryDate($this->session->userdata('member_session')['c_no'], $aprd[$i]);
+                    }
+                    
+                    $params = array (
+                                    'temp_no' => $this->session->userdata('temp_no'),
+                                    'p_no'    => $aprd[$i],
+                                    'qty'     => $this->check_cart_prd_num($aprd[$i]),
+                                    'days'    => $days,
+                                    'in_date' => date('Y-m-d H:i:s')
+                                    );  
+                    $this->front_mssql_model->insert_data($msconn,"isf_t",$params);
+                }
+            }
         }
     }
     
@@ -550,5 +559,24 @@ class Front_order_model extends MY_Model {
              echo '<br>';
          }
          return $ATMNO . $Fna4;
+     }
+
+     /**
+      * 取得宅配日
+      * @param string $c_no 會員編號
+      */
+     public function fetchDeliveryDate($c_no, $p_no)
+     {
+        $cartDate = $this->db->from('ap_member_cart')
+            ->where('c_no', $c_no)
+            ->where('p_no', $p_no)
+            ->get()
+            ->row_array();
+        
+        if ($cartDate) {
+            return $cartDate['days'];
+        }
+
+        return 0;
      }
 }

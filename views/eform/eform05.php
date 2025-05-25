@@ -14,17 +14,19 @@
                 <div class="section-item text-left">
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-8 mb130 mt-lg-5" role="main">
+                            <div class="col-md-8 mb130 mt-lg-5" role="main" id="main_form">
                                 <h1 class="h2-3d font-libre"><strong>《信用卡付款授權書》</strong></h1>
                                 <div class="mb30">
-                                    <div class="wow fadeInUp" data-wow-delay=".2s">
+                                    <!-- <div class="wow fadeInUp" data-wow-delay=".2s"> -->
+                                    <div class="">
                                         <p class="fs20">本人於訂購安露莎產品時，如果選擇以信用卡方式支付貨款，限本人同意授權以本信用卡支付，特立此書，以茲證明。</p>
                                     </div>
                                 </div>
 
                                 <div class="row mb-4">
                                     <div class="col-lg-12">
-                                        <div class="card bg-light border-danger wow fadeInUp" data-wow-delay=".2s">
+                                        <!-- <div class="card bg-light border-danger wow fadeInUp" data-wow-delay=".2s"> -->
+                                        <div class="card bg-light border-danger">
                                             <div class="card-body">
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
@@ -35,7 +37,7 @@
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">會員姓名： </label>
-                                                        <input type="text" value="<?= $userdata['c_name']; ?>">
+                                                        <input type="text" id="c_name" value="<?= $userdata['c_name']; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
@@ -96,13 +98,15 @@
                                     </div>
                                 </div>
 
-                                <div class="row mb30 wow fadeInUp" data-wow-delay=".2s">
+                                <!-- <div class="row mb30 wow fadeInUp" data-wow-delay=".2s"> -->
+                                <div class="row mb30">
                                     <div class="col-lg-12">
                                         <p class="fs20">※詳閱並同意信用卡授權相關說明及注意事項後簽名。</p>
                                     </div>
                                 </div>
 
-                                <div class="mb30 wow fadeInUp d-flex flex-column justify-content-between">
+                                <!-- <div class="mb30 wow fadeInUp d-flex flex-column justify-content-between"> -->
+                                <div class="mb30 d-flex flex-column justify-content-between">
                                     <div class="mb30">
                                         <div class="form-check form-check-inline">
                                             <label class="form-check-label" for="date1">日期： </label>
@@ -126,25 +130,29 @@
                                     </div>
                                 </div>
 
-                                <div class="mb30 wow fadeInUp">
+                                <!-- <div class="mb30 wow fadeInUp"> -->
+                                <div class="mb30">
                                     <div class="form-group mb30">
                                         <label for="creditCardFront">信用卡（正面）</label>
-                                        <input type="file" class="form-control-file" id="creditCardFront" name="creditCardFront">
+                                        <input type="file" class="form-control-file" id="creditCardFront" name="creditCardFront" accept="image/*" onchange="previewImage(this, 'creditCardFrontPreview')">
+                                        <img id="creditCardFrontPreview" src="#" alt="信用卡正面預覽" style="max-width:300px; margin-top:10px; display:none;">
                                     </div>
                                     <div class="form-group mb30">
                                         <label for="creditCardBack">信用卡（背面）</label>
-                                        <input type="file" class="form-control-file" id="creditCardBack" name="creditCardBack">
+                                        <input type="file" class="form-control-file" id="creditCardBack" name="creditCardBack" accept="image/*" onchange="previewImage(this, 'creditCardBackPreview')">
+                                        <img id="creditCardBackPreview" src="#" alt="信用卡背面預覽" style="max-width:300px; margin-top:10px; display:none;">
                                     </div>
                                 </div>
 
                                 <hr class="mt-0 mb-4">
 
-                                <div class="row mb30 wow fadeInUp" data-wow-delay=".2s">
+                                <!-- <div class="row mb30 wow fadeInUp" data-wow-delay=".2s"> -->
+                                <div class="row mb30">
                                     <div class="col-lg-12">
                                         <p class="">注意事項：</p>
                                         <ol>
                                             <li>資料建檔完成後，訂貨時只需在訂單上清楚填寫本人的消費金額、消費日期、發卡銀行，並由持卡人於訂單上簽名（與信用卡之簽名相符）即可。</li>
-                                            <li>信用卡噩失或邁期，請重新填寫授權書，並郵寄或直接遞交至本公司。</li>
+                                            <li>信用卡遺失或過期，請重新填寫授權書，並郵寄或直接遞交至本公司。</li>
                                             <li>每位會員，最多可建檔三張信用卡資料。</li>
                                         </ol>
                                     </div>
@@ -323,6 +331,7 @@
 
     <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
 
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
     class CardType {
         constructor() {
@@ -381,7 +390,115 @@
     }
     </script>
     <script>
+        // 預覽上傳的圖片
+        function previewImage(input, id) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    $(`#${id}`).attr('src', e.target.result);
+                    $(`#${id}`).css('display', 'block');
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        class Signature {
+            constructor(canvasId) {
+                this.canvasId = canvasId;
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.drawing = false;
+                this.signatured = false; // 是否有簽名
+
+                // 設定筆刷樣式
+                this.ctx.lineWidth = 2;
+                this.ctx.lineCap = "round";
+                this.ctx.strokeStyle = "#000";
+
+                // 綁定事件
+                this.init();
+            }
+
+            // 取得相對座標 (適用於滑鼠 & 觸控)
+            getPosition(event) {
+                const rect = this.canvas.getBoundingClientRect();
+                if (event.touches) {
+                    return {
+                        x: event.touches[0].clientX - rect.left,
+                        y: event.touches[0].clientY - rect.top
+                    };
+                } else {
+                    return {
+                        x: event.offsetX,
+                        y: event.offsetY
+                    };
+                }
+            }
+
+            // 監聽滑鼠 & 觸控事件
+            init() {
+                // 滑鼠事件
+                this.canvas.addEventListener('mousedown', (e) => this.startDraw(e));
+                this.canvas.addEventListener('mousemove', (e) => this.draw(e));
+                this.canvas.addEventListener('mouseup', () => this.stopDraw());
+                this.canvas.addEventListener('mouseleave', () => this.stopDraw());
+
+                // 觸控事件
+                this.canvas.addEventListener('touchstart', (e) => this.startDraw(e), { passive: false });
+                this.canvas.addEventListener('touchmove', (e) => this.draw(e), { passive: false });
+                this.canvas.addEventListener('touchend', () => this.stopDraw());
+                this.canvas.addEventListener('touchcancel', () => this.stopDraw());
+            }
+
+            // 開始繪圖
+            startDraw(event) {
+                event.preventDefault(); // 防止手機滾動畫面
+                this.signatured = true;
+                this.drawing = true;
+                const pos = this.getPosition(event);
+                this.ctx.beginPath();
+                this.ctx.moveTo(pos.x, pos.y);
+            }
+
+            // 繪製過程
+            draw(event) {
+                if (!this.drawing) return;
+                event.preventDefault();
+                const pos = this.getPosition(event);
+                this.ctx.lineTo(pos.x, pos.y);
+                this.ctx.stroke();
+            }
+
+            // 停止繪圖
+            stopDraw() {
+                this.drawing = false;
+            }
+
+            // 取得簽名 Blob（圖片格式）
+            getSignatureBlob() {
+                return new Promise((resolve, reject) => {
+                    if (!this.signatured) {
+                        reject("請先簽名！");
+                        return;
+                    }
+                    this.canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject("轉換失敗");
+                        }
+                    }, "image/png");
+                });
+            }
+        }
+
         $(document).ready(function() {
+            $('#date1').val(new Date().getFullYear());
+            $('#date2').val(new Date().getMonth() + 1);
+            $('#date3').val(new Date().getDate());
+
             // init controller
             var controller = new ScrollMagic.Controller();
 
@@ -413,42 +530,15 @@
                 cardType.clearCardType();
             });
 
-            // 簽名
-            let canvas = document.getElementById('signaturePad');
-            let ctx = canvas.getContext('2d');
-            let drawing = false;
-            let signatured = false;     // 是否有簽名
+            const signature = new Signature('signaturePad');
+            signature.init();
 
-            // 設定筆刷樣式
-            ctx.lineWidth = 2;
-            ctx.lineCap = "round";
-            ctx.strokeStyle = "#000";
-
-            // 監聽滑鼠事件
-            $('#signaturePad').on('mousedown', function(e) {
-                signatured = true;
-                drawing = true;
-                ctx.beginPath();
-                ctx.moveTo(e.offsetX, e.offsetY);
-            });
-
-            $('#signaturePad').on('mousemove', function(e) {
-                if (drawing) {
-                    ctx.lineTo(e.offsetX, e.offsetY);
-                    ctx.stroke();
-                }
-            });
-
-            $('#signaturePad').on('mouseup mouseleave', function() {
-                drawing = false;
-            });
-
-            $('#submit').click(function() {
-
+            $('#submit').click(async function() {
                 // 顯示載入中提示
                 Swal.fire({
-                    title: '處理中...',
-                    text: '正在提交您的申請',
+                    icon: 'info',
+                    title: '系統提示',
+                    text: '處理中，請稍候...',
                     allowOutsideClick: false,
                     didOpen: () => {
                         Swal.showLoading();
@@ -458,51 +548,190 @@
                 creditCardData.getcreditCardNumber();
                 creditCardData.getcreditCardData();
 
-                // Convert canvas to blob
-                canvas.toBlob(function(blob) {
-                    // Create FormData and append file
-                    let formData = new FormData();
-                    formData.append('c_name', $('#member_code').val());
-                    formData.append('credit', JSON.stringify(creditCardData.creditCardData));
-                    formData.append('year', $('#date1').val());
-                    formData.append('month', $('#date2').val());
-                    formData.append('day', $('#date3').val());
+                const formElement = document.getElementById('main_form');
+                
+                // 創建表單內容的副本，以便更好地渲染
+                const formClone = formElement.cloneNode(true);
+                const formContainer = document.createElement('div');
+                formContainer.style.position = 'absolute';
+                formContainer.style.top = '-9999px';
+                formContainer.style.left = '-9999px';
+                formContainer.style.width = formElement.offsetWidth + 'px';
+                formContainer.style.background = '#ffffff';
+                formContainer.style.padding = '20px';
+                formContainer.appendChild(formClone);
+                document.body.appendChild(formContainer);
+                
+                // 處理輸入框
+                Array.from(formClone.querySelectorAll('input')).forEach(input => {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        if (input.checked) {
+                            const span = document.createElement('span');
+                            span.textContent = '✓';
+                            span.style.color = 'green';
+                            span.style.fontWeight = 'bold';
+                            input.parentNode.insertBefore(span, input.nextSibling);
+                        }
+                    } else if (input.type !== 'file') {
+                        // 保留輸入框但設置為只讀
+                        input.setAttribute('readonly', 'readonly');
+                        input.style.backgroundColor = '#f8f9fa';
+                        input.style.border = '1px solid #ccc';
+                        
+                        // 確保值顯示在輸入框中
+                        if (input.value) {
+                            input.setAttribute('value', input.value);
+                        }
+                    }
+                });
+                
+                // 處理簽名 - 將原始簽名複製到克隆的表單中
+                const originalCanvas = document.getElementById('signaturePad');
+                const clonedCanvas = formClone.querySelector('#signaturePad');
 
-                    if (signatured) {
-                        formData.append('signature', blob, 'signature.png');
-                    }
+                if (originalCanvas && clonedCanvas && signature.signatured) {
+                    // 確保克隆的 canvas 有正確的尺寸
+                    clonedCanvas.width = originalCanvas.width;
+                    clonedCanvas.height = originalCanvas.height;
+                    
+                    // 複製簽名內容
+                    const clonedCtx = clonedCanvas.getContext('2d');
+                    clonedCtx.drawImage(originalCanvas, 0, 0);
+                }
 
-                    let creditCardFront = $('#creditCardFront')[0].files[0];
-                    let creditCardBack = $('#creditCardBack')[0].files[0];
-                    
-                    // Append credit card files if they exist
-                    if (creditCardFront) {
-                        formData.append('creditCardFront', creditCardFront);
+                // 設定html2canvas選項
+                const html2canvasOptions = {
+                    scale: 2, // 提高解析度
+                    useCORS: true, // 允許跨域圖片
+                    allowTaint: true, // 允許污染
+                    logging: true, // 開啟日誌以便調試
+                    backgroundColor: '#ffffff', // 設定背景色
+                    windowWidth: formElement.offsetWidth,
+                    windowHeight: formElement.offsetHeight,
+                    foreignObjectRendering: false, // 禁用foreignObject渲染，提高兼容性
+                    removeContainer: true, // 自動移除臨時容器
+                    onclone: function(documentClone) {
+                        // 額外處理克隆文檔中的 canvas 元素
+                        const clonedSignaturePad = documentClone.getElementById('signaturePad');
+                        if (clonedSignaturePad) {
+                            // 將原始簽名的圖像數據複製到克隆的 canvas
+                            const originalCanvas = document.getElementById('signaturePad');
+                            const clonedCtx = clonedSignaturePad.getContext('2d');
+                            clonedCtx.drawImage(originalCanvas, 0, 0);
+                        }
                     }
-                    if (creditCardBack) {
-                        formData.append('creditCardBack', creditCardBack); 
+                };
+
+                let imageBlob = null;
+
+                try {
+                    // 等待所有圖片加載完成
+                    await Promise.all(Array.from(formContainer.querySelectorAll('img'))
+                        .filter(img => !img.complete)
+                        .map(img => new Promise(resolve => {
+                            img.onload = img.onerror = resolve;
+                        }))
+                    );
+                    
+                    // 使用html2canvas捕獲表單
+                    const canvas = await html2canvas(formContainer, html2canvasOptions);
+                    
+                    // 檢查canvas是否有內容
+                    if(canvas.width <= 0 || canvas.height <= 0) {
+                        throw new Error('Canvas generation failed - no dimensions');
                     }
                     
-                    // Send file via AJAX
-                    $.ajax({
-                        url: '<?=$apiUrl;?>', 
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '提交成功', 
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                // window.location.reload();
-                            });
+                    // 轉換為blob
+                    imageBlob = await new Promise((resolve, reject) => {
+                        try {
+                            canvas.toBlob(blob => {
+                                if(blob && blob.size > 0) {
+                                    resolve(blob);
+                                } else {
+                                    reject(new Error('Generated blob is empty'));
+                                }
+                            }, 'image/jpeg', 0.95);
+                        } catch(e) {
+                            reject(e);
                         }
                     });
+                } catch (error) {
+                    console.error('Form capture error:', error);
+                    // 創建一個基本的fallback圖像
+                    const fallbackCanvas = document.createElement('canvas');
+                    fallbackCanvas.width = 800;
+                    fallbackCanvas.height = 600;
+                    const ctx = fallbackCanvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, 800, 600);
+                    ctx.fillStyle = '#000000';
+                    ctx.font = '20px Arial';
+                    ctx.fillText('表單內容 (自動生成)', 320, 300);
+                    
+                    imageBlob = await new Promise(resolve => {
+                        fallbackCanvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.95);
+                    });
+                } finally {
+                    // 清理臨時DOM元素
+                    if (document.body.contains(formContainer)) {
+                        document.body.removeChild(formContainer);
+                    }
+                }
+
+                let formData = new FormData();
+                formData.append('c_code', $('#member_code').val());
+                formData.append('c_name', $('#c_name').val());
+                formData.append('credit', JSON.stringify(creditCardData.creditCardData));
+                formData.append('year', $('#date1').val());
+                formData.append('month', $('#date2').val());
+                formData.append('day', $('#date3').val());
+
+                if (imageBlob) {
+                    formData.append('image', imageBlob, 'form.png');
+                }
+
+                if (signature.signatured) {
+                    const blob = await signature.getSignatureBlob();
+                    formData.append('signature', blob, 'signature.png');
+                }
+
+                let creditCardFront = $('#creditCardFront')[0].files[0];
+                let creditCardBack = $('#creditCardBack')[0].files[0];
+                
+                // Append credit card files if they exist
+                if (creditCardFront) {
+                    formData.append('creditCardFront', creditCardFront);
+                }
+                if (creditCardBack) {
+                    formData.append('creditCardBack', creditCardBack); 
+                }
+                
+                // Send file via AJAX
+                $.ajax({
+                    url: '<?=$apiUrl;?>', 
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '提交成功', 
+                            text: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
                 });
+            });
+
+            // 清除簽名
+            $('#clearBtn').click(function() {
+                const canvas = document.getElementById("signaturePad"); // 確保獲取的是 DOM
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
             });
         });
     </script>

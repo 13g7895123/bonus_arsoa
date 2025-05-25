@@ -12,6 +12,7 @@ class Member extends MY_Controller
         $this->load->model( 'front_base_model' );
         $this->load->model( 'front_order_model' );
         $this->load->model( 'front_mssql_model' );
+        $this->load->model( 'front_join_model' );
         $this->load->model( 'Member_login_record' );        
         $this->load->model( 'Member_line_model' );
         
@@ -23,7 +24,6 @@ class Member extends MY_Controller
     
     public function index()
     {
-      
         if ( $this->front_member_model->check_member_login( TRUE ) ) {            
             redirect( 'member/main' );            
         }else{
@@ -179,7 +179,6 @@ class Member extends MY_Controller
         
     }
     
-    
     public function news_data()
     {
         $result = array('status' => 0, 'errcode' => '', 'errmsg' => '');
@@ -278,8 +277,6 @@ class Member extends MY_Controller
      
         $this->layout->view('member_download', $data);
     }
-    
-    
         
     // 忘記密碼
     public function forget()
@@ -756,7 +753,6 @@ class Member extends MY_Controller
         $this->layout->view('member_rights', $data);
     }   
 
-    
     public function logout()
     {
         if (!empty($this->session->userdata('logid'))){
@@ -769,5 +765,75 @@ class Member extends MY_Controller
                        
         alert( '您已成功登出！', base_url('') );   
         exit;        
+    }
+
+    public function product($type = '')
+    {
+        $useful_type = array(4,5);
+        if (!in_array($type, $useful_type)){
+            redirect( 'member/main' );
+        }
+
+        // 確認是否登入確認是否登入
+        if ( !$this->front_member_model->check_member_login( TRUE ) ) {            
+            redirect( 'member/login' );            
+        }
+
+        $msconn = $this->front_mssql_model->ms_connect();
+
+        // 必選
+        $data['pckpro1'] = $this->front_join_model->ms_pckpro(1, $msconn, array('jointype' => $type));
+        
+        $maxamt = 0;          // 需達到金額
+        
+        $data['pckpro1_checkbox'] = false;
+        $data['pckpro1_selcnt'] = 0;
+        if ($data['pckpro1']){
+            $data['pckpro1_count']  = count($data['pckpro1']);  // 筆數
+            if (isset($data['pckpro1'][0]['maxamt']) && $data['pckpro1'][0]['maxamt'] > 0){
+                $maxamt = $data['pckpro1'][0]['maxamt'];
+            }  
+            $sel1cnt = 0;
+            foreach ($data['pckpro1'] as $key => $item){                 						      
+                if ($item['issel']){
+                    $sel1cnt++;            	          	      
+                }
+            }                  
+                            
+            $data['pckpro1_selcnt'] = $data['pckpro1'][0]['selcnt']; // 必選筆數
+            //if ($data['pckpro1_count'] > $data['pckpro1_selcnt']){  // 筆數大於必選,所以要出現勾選
+            if ($sel1cnt != $data['pckpro1_selcnt']){  // 筆數大於必選,所以要出現勾選
+                $data['pckpro1_checkbox'] = true;
+            }
+        }
+
+        // 自選
+        $data['pckpro2'] = $this->front_join_model->ms_pckpro(2, $msconn, array('jointype'=>$this->arsoa_join_data['jointype']));
+        
+        if ($data['pckpro2']){        	  
+            if (empty($data['pckpro1'])){  
+                if (isset($data['pckpro2'][0]['maxamt']) && $data['pckpro2'][0]['maxamt'] > 0){
+                    $maxamt = $data['pckpro2'][0]['maxamt'];
+                }
+            }
+            
+            $data['pckpro2_count']  = count($data['pckpro2']);  // 筆數
+            $data['pckpro2_protype'] = array();
+            $protype = '';
+            foreach ($data['pckpro2'] as $key => $item){
+                if ($protype <> trim($item['protype'])){
+                    $data['pckpro2_protype'][] = trim($item['protype']);
+                    $data['pckpro2_protype_num'][trim($item['protype'])] = 1;
+                }else{
+                    $data['pckpro2_protype_num'][trim($item['protype'])] ++;
+                }
+                $protype = trim($item['protype']);
+            }        	  
+        }
+
+        $data['maxamt'] = $maxamt;
+        $data['useamt'] = 0;
+
+        $this->layout->view('member/step_product', $data);
     }
 } 

@@ -15,9 +15,10 @@ class CommonModel extends CI_Model
      * 上傳檔案
      * @param array $fileData 上傳的檔案資料
      * @param string $name 檔案名稱
+     * @param string $customFileName 自訂檔案名稱
      * @return array 上傳結果，包含是否成功和插入的ID
      */
-    public function uploadFile($fileData, $name)
+    public function uploadFile($fileData, $name, $customFileName = null)
     {
         if (!isset($fileData[$name])) {
             throw new Exception("沒有上傳的檔案");
@@ -30,7 +31,7 @@ class CommonModel extends CI_Model
         // 取得上傳檔案資訊
         $file = $fileData[$name];
         $fileTmpPath = $file['tmp_name'];
-        $fileName = str_replace('.', '', uniqid(rand(), true)) . ".png";
+        $fileName = $customFileName ?? str_replace('.', '', uniqid(rand(), true)) . ".png";
         $destination = $uploadPath . $fileName;
         $originalFileName = $file['name'];      // 取得原始檔名
         $fileType = $file['type'];             // 取得檔案類型 MIME type

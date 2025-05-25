@@ -35,94 +35,94 @@ class Order extends MY_Controller
         $result = array('status' => 0, 'errcode' => '', 'errmsg' => '');  
         
         if ($this->session->userdata('login_type') == 'admin' || $this->session->userdata('login_type') == 'test'){
-        	  $result['errmsg'] = "管理者不能使用會員身份，將產品放入購物車(A90)！";
+            $result['errmsg'] = "管理者不能使用會員身份，將產品放入購物車(A90)！";
             echo json_encode($result);
             exit;
         }
       
         $data_post = $this->input->post();
         if ( is_array( $data_post ) && sizeof( $data_post ) > 0){             
-             $result['p_no']   = $data_post['p_no'];
-             $result['num']    = $data_post['num'];
-             $result['ptype']  = $data_post['ptype'];     
+            $result['p_no']   = $data_post['p_no'];
+            $result['num']    = $data_post['num'];
+            $result['ptype']  = $data_post['ptype'];     
              
-             if ($data_post['ptype'] == 'S'){   // 販促活動
-                 if ($this->session->userdata('use_cart') == 'N'){
-                     $result['errmsg'] = "您只能兌換紅利商品(S01)！";
-                     echo json_encode($result);
-                     exit;
-                 }
+            if ($data_post['ptype'] == 'S'){   // 販促活動
+                if ($this->session->userdata('use_cart') == 'N'){
+                    $result['errmsg'] = "您只能兌換紅利商品(S01)！";
+                    echo json_encode($result);
+                    exit;
+                }
                  
-                 $where  = array ('id' => $data_post['p_no'], 'nshow' => 'Y','begindate <=' => date('Y-m-d H:i:s'),'ifnull(closedate,now()) >=' => date('Y-m-d H:i:s') );             
-                 $list = $this->front_base_model->get_data('ap_sale',$where,array(),1);
-                 if ($list){
-                     if (!(strtotime($list['show_stdt']) <= strtotime(date('Y-m-d H:i:s')) && ($list['show_eddt'] == '' || strtotime($list['show_eddt']) >= strtotime(date('Y-m-d H:i:s'))))){                    
-                 	       $result['errmsg'] = "活動尚未開始(S02)！";
-                         echo json_encode($result);
-                         exit;
-                     }        
+                $where  = array ('id' => $data_post['p_no'], 'nshow' => 'Y','begindate <=' => date('Y-m-d H:i:s'),'ifnull(closedate,now()) >=' => date('Y-m-d H:i:s') );             
+                $list = $this->front_base_model->get_data('ap_sale',$where,array(),1);
+                if ($list){
+                    if (!(strtotime($list['show_stdt']) <= strtotime(date('Y-m-d H:i:s')) && ($list['show_eddt'] == '' || strtotime($list['show_eddt']) >= strtotime(date('Y-m-d H:i:s'))))){                    
+                        $result['errmsg'] = "活動尚未開始(S02)！";
+                        echo json_encode($result);
+                        exit;
+                    }        
                    //  if ($this->session->userdata('member_session')['c_no'] == '000000' || $this->session->userdata('member_session')['c_no'] == '200764'){ 
-                         if ($list['qty'] == 0){
-                         	   $result['errmsg'] = $list['qtext'];
-                             echo json_encode($result);
-                             exit;
-                     	   }
+                    if ($list['qty'] == 0){
+                        $result['errmsg'] = $list['qtext'];
+                        echo json_encode($result);
+                        exit;
+                    }
                    //  }
-                     if ($list['product'] == ''){
-                         $result['errmsg'] = "無此販促活動(S03)！";
-                         echo json_encode($result);
-                         exit;
-                     }
-                     $prddata = json_decode($list['product'], true);
+                    if ($list['product'] == ''){
+                        $result['errmsg'] = "無此販促活動(S03)！";
+                        echo json_encode($result);
+                        exit;
+                    }
+                    $prddata = json_decode($list['product'], true);
                      
-                     $product_num = $prddata;                     
+                    $product_num = $prddata;                     
                      
-	                   $sqlin = array();
-	                   foreach ($prddata as $key => $item){
-	                            $sqlin[] = $key;
-	                   }
-	                   $pid = implode("','",array_unique($sqlin));
-	                   $sql = "select p.p_no,p.p_name,p.is_visual,p.c_price
-                               from product p
-                              where p.p_no in ('".$pid."')  
-                                and (ifnull(p.c_price,0) > 0 or p.is_visual= 1) "; //and p.is_list=1
-                     $pdata = $this->front_base_model->small_query($sql);                  
-                     if ($pdata){                         
-                         if (count($product_num) == count($pdata)){
-                             foreach ($pdata as $key => $prd_data){
-                                       if (empty($this->session->userdata('ProductList'))){
-                                           $this->session->set_userdata( 'ProductList', $prd_data['p_no'] );                                           
-                                       }else{
-                                           if (!$this->front_order_model->check_cart($prd_data['p_no'])){                                                                     
-                                               $this->session->set_userdata( 'ProductList', $this->session->userdata('ProductList').",".$prd_data['p_no'] );                                               
-                                           }
-                                           $prd_session = $this->session->userdata('prd_session');
-                                       } 
-                                       if (empty($prd_session[$prd_data['p_no']])){
-                                       	   $prd_session[$prd_data['p_no']] = 0;
-                                       }
+                    $sqlin = array();
+                    foreach ($prddata as $key => $item){
+                        $sqlin[] = $key;
+                    }
+                    $pid = implode("','",array_unique($sqlin));
+                    $sql = "select p.p_no,p.p_name,p.is_visual,p.c_price
+                            from product p
+                            where p.p_no in ('".$pid."')  
+                            and (ifnull(p.c_price,0) > 0 or p.is_visual= 1) "; //and p.is_list=1
+                    $pdata = $this->front_base_model->small_query($sql);                  
+                    if ($pdata){                         
+                        if (count($product_num) == count($pdata)){
+                            foreach ($pdata as $key => $prd_data){
+                                if (empty($this->session->userdata('ProductList'))){
+                                    $this->session->set_userdata( 'ProductList', $prd_data['p_no'] );                                           
+                                }else{
+                                    if (!$this->front_order_model->check_cart($prd_data['p_no'])){                                                                     
+                                        $this->session->set_userdata( 'ProductList', $this->session->userdata('ProductList').",".$prd_data['p_no'] );                                               
+                                    }
+                                    $prd_session = $this->session->userdata('prd_session');
+                                } 
+                                if (empty($prd_session[$prd_data['p_no']])){
+                                    $prd_session[$prd_data['p_no']] = 0;
+                                }
                                        
-                                       $prd_session[$prd_data['p_no']]  += $product_num[$prd_data['p_no']];                                               
-                                       if ($prd_session[$prd_data['p_no']] > 99){
-                                       	   $prd_session[$prd_data['p_no']] = 99;
-                                       }
-                                       $this->session->set_userdata( 'prd_session', $prd_session );
-                                       
-                                       // 暫存車
-                                       $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'],$prd_data['p_no'],$product_num[$prd_data['p_no']]);                                       
-                             }                             
-                             $result['errmsg'] = "販促活動，已加入購物車！";
-                             $result['status'] = 1;
-                         }else{
-                             $result['errmsg'] = "無此販促活動(S04)！";
-                             echo json_encode($result);
-                             exit;
-                         }
-                     }else{
-                             $result['errmsg'] = "無此販促活動(S05)！";
-                             echo json_encode($result);
-                             exit;
-                     }
+                                $prd_session[$prd_data['p_no']]  += $product_num[$prd_data['p_no']];                                               
+                                if ($prd_session[$prd_data['p_no']] > 99){
+                                    $prd_session[$prd_data['p_no']] = 99;
+                                }
+                                $this->session->set_userdata( 'prd_session', $prd_session );
+                                
+                                // 暫存車
+                                $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'], $prd_data['p_no'], $product_num[$prd_data['p_no']]);                                       
+                            }                             
+                            $result['errmsg'] = "販促活動，已加入購物車！";
+                            $result['status'] = 1;
+                        }else{
+                            $result['errmsg'] = "無此販促活動(S04)！";
+                            echo json_encode($result);
+                            exit;
+                        }
+                    }else{
+                        $result['errmsg'] = "無此販促活動(S05)！";
+                        echo json_encode($result);
+                        exit;
+                    }
                  }else{
                      $result['errmsg'] = "無此販促活動(S99)！";
                      echo json_encode($result);
@@ -294,26 +294,26 @@ class Order extends MY_Controller
         	  $this->session->set_userdata( 'act',array() );
         }
             
-            $sumdetail = $this->front_order_model->ms_get_sumdetail($msconn);            
-            $act_data = array();
-            if (count($sumdetail['comp']) > 0){   // 活動                
-                foreach ($sumdetail['comp'] as $key => $item){ 		                              	   	
-                     	   if ($item['gisgive'] || in_array(trim($item['p_no']),$this->session->userdata( 'act' ))){
-                	        	 $act_data[] = $item;                	        	 
-                	       } 
-                }  
-            }
-            if (count($sumdetail['birth']) > 0){   // 活動                
-                foreach ($sumdetail['birth'] as $key => $item){ 		                              	   	
-                     	   if ($item['gisgive'] || in_array(trim($item['p_no']),$this->session->userdata( 'act' ))){
-                	        	 $act_data[] = $item;                	        	 
-                	       } 
-                }                  
-            }
-            if (count($act_data) > 0){
-                $this->front_order_model->ms_cart_temp_act($msconn,$act_data);    
-                $sumdetail = $this->front_order_model->ms_get_sumdetail($msconn);
-            }
+        $sumdetail = $this->front_order_model->ms_get_sumdetail($msconn);            
+        $act_data = array();
+        if (count($sumdetail['comp']) > 0){   // 活動                
+            foreach ($sumdetail['comp'] as $key => $item){ 		                              	   	
+                if ($item['gisgive'] || in_array(trim($item['p_no']),$this->session->userdata( 'act' ))){
+                    $act_data[] = $item;                	        	 
+                } 
+            }  
+        }
+        if (count($sumdetail['birth']) > 0){   // 活動                
+            foreach ($sumdetail['birth'] as $key => $item){ 		                              	   	
+                if ($item['gisgive'] || in_array(trim($item['p_no']),$this->session->userdata( 'act' ))){
+                    $act_data[] = $item;                	        	 
+                } 
+            }                  
+        }
+        if (count($act_data) > 0){
+            $this->front_order_model->ms_cart_temp_act($msconn,$act_data);    
+            $sumdetail = $this->front_order_model->ms_get_sumdetail($msconn);
+        }
             
         //     echo "<pre>".print_r($sumdetail,true)."</pre>";
         $cart_data = array();
@@ -326,9 +326,9 @@ class Order extends MY_Controller
             	    $p_num = $this->front_order_model->check_cart_prd_num($p_no);                    
             	    if ($item["maxqty"] < $p_num){
             	        $prd_session[$p_no]  = $item["maxqty"] ;
-                      $this->session->set_userdata( 'prd_session', $prd_session );
-                      $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'],$p_no,$item["maxqty"]);    
-                      $change_chk = true;
+                        $this->session->set_userdata( 'prd_session', $prd_session );
+                        $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'],$p_no,$item["maxqty"]);    
+                        $change_chk = true;
                   }
             }          
             if ($change_chk){
@@ -346,6 +346,9 @@ class Order extends MY_Controller
             'sumdetail'   => $sumdetail,
             'cart_data'   => $cart_data
         );
+
+        // print_r($cart_data); die();
+
         $data['meta']['canonical'] = site_url();      
         
         $where  = array ('epostid' => '6101');            
@@ -1568,6 +1571,37 @@ rs.close
           echo $WebATMAcct;
           
           exit;
+    }
+
+    public function inCartNew()
+    {
+        $result = array('success' => false);
+        $postData = $this->input->post();
+        $p_no = $postData['sel_prd'][0];
+        $days = $postData['days'];
+
+        // 確認是否已經在購物車
+        $nowProductList = explode(',', $this->session->userdata('ProductList'));
+        if (in_array($p_no, $nowProductList)){
+            $result['msg'] = '此商品已經在購物車中';
+            
+            $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate');
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+            return;
+        }
+
+        // 加入購物車
+        $this->session->set_userdata('ProductList', $this->session->userdata('ProductList').",".$p_no);
+        $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'], $p_no, 1, $days);                                       
+
+        $result['success'] = true;
+        $result['msg'] = '加入購物車成功';
+
+        $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate');
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($result));
+        return;
     }
           
 }

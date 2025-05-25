@@ -7,6 +7,7 @@ class Member_join extends MY_Controller
     private $arsoa_join_key  = '';  // 暫存車KEY
     private $arsoa_join_jid  = '';
     private $arsoa_join_pckpro  = array();
+    private $lock = true;           // 預設true，特定期間上鎖
         
     public function __construct()
     {
@@ -20,10 +21,13 @@ class Member_join extends MY_Controller
         $this->load->model( 'front_base_model' );        
         $this->load->model( 'front_mssql_model' );
         $this->load->model( 'front_product_model' );  
+        $this->load->model( 'eform/CommonModel' );
+        $this->load->model( 'member_join/CompleteModel');
                 
         $this->load->library( 'user_agent' );
         $this->load->library('layout', array('layout' => '../template/layout'));
         
+        // $this->lock = false;
     }
     
     private function join_data_check()
@@ -32,7 +36,7 @@ class Member_join extends MY_Controller
         $this->arsoa_join_data = array();
          
         if (!empty($this->session->userdata( 'arsoa_join_key' )) && $this->session->userdata( 'arsoa_join_key' ) > ''){
-        	  $this->arsoa_join_key = $this->session->userdata( 'arsoa_join_key' );
+            $this->arsoa_join_key = $this->session->userdata( 'arsoa_join_key' );
         }
         if ($this->arsoa_join_key == ''){
             if (isset($_COOKIE["arsoa_join_key"])){      // 判斷有 cookie id	
@@ -44,11 +48,11 @@ class Member_join extends MY_Controller
         if ($this->arsoa_join_key > ''){      // 判斷有 cookie id
             $this->arsoa_join_data = $this->front_base_model->get_data('ap_member_join_new',array('cookie_key'=>$this->arsoa_join_key,'pay_statue'=>'N'),'',1);            
             if ($this->arsoa_join_data){
-            	  $cookie_key = $this->arsoa_join_key;  
-            	  $this->arsoa_join_jid = $this->arsoa_join_data['jid'];            	  
-            	  for ($i = 1;$i<= 4;$i++){
-            	  	   $this->arsoa_join_pckpro[$i] = json_decode($this->arsoa_join_data['pckpro'.$i], true);  
-            	  }
+                $cookie_key = $this->arsoa_join_key;  
+                $this->arsoa_join_jid = $this->arsoa_join_data['jid'];            	  
+                for ($i = 1;$i<= 4;$i++){
+                    $this->arsoa_join_pckpro[$i] = json_decode($this->arsoa_join_data['pckpro'.$i], true);  
+                }
             }
         }
         
@@ -68,7 +72,6 @@ class Member_join extends MY_Controller
     
     public function index()
     {
-      
         if ( $this->front_member_model->check_member_login( TRUE ) ) {            
             redirect( 'member/main' );            
         }else{
@@ -77,9 +80,9 @@ class Member_join extends MY_Controller
     }
     
     public function test(){
-    	  $this->session->set_userdata( 'arsoa_join_key', 'jtemp_2023-04-21_3e5290fb16cccbb2e294b94802d58d0b' );
-    	  redirect( 'member_join/form' );   
-    	  exit;
+        $this->session->set_userdata( 'arsoa_join_key', 'jtemp_2023-04-21_3e5290fb16cccbb2e294b94802d58d0b' );
+        redirect( 'member_join/form' );   
+        exit;
     }
     
     public function form()
@@ -89,7 +92,9 @@ class Member_join extends MY_Controller
         } 
         
         //--結帳鎖定通知--
-        $this->block_service->dataset('join','form',base_url());            
+        if ($this->lock){
+            $this->block_service->dataset('join','form',base_url());            
+        }         
         //--結帳鎖定通知--  
         
         self::join_data_check();
@@ -109,30 +114,27 @@ class Member_join extends MY_Controller
             $data['town']  = $this->front_base_model->get_data('town',array('cityno' => $params['cityno'] ),array('postal'=>'asc'));            
         }
         
-        
         if (empty($params)){                
             $params = array(
-                      'uname'         => '',
-                      'sex'           => '',
-                      'idno'          => '',
-                      'bday'          => '',
-                      'tel'           => '',
-                      'email'         => '',
-                     // 'spouse_name'   => '',
-                     // 'spouse_idno'   => '',
-                     // 'spouse_bday'   => '',                      
-                      'cityno'        => '',
-                      'postal'        => '',
-                      'address'       => '',
-                      'referrer_name' => '',
-                      'referrer_c_no' => ''
+                'uname'         => '',
+                'sex'           => '',
+                'idno'          => '',
+                'bday'          => '',
+                'tel'           => '',
+                'email'         => '',
+                // 'spouse_name'   => '',
+                // 'spouse_idno'   => '',
+                // 'spouse_bday'   => '',                      
+                'cityno'        => '',
+                'postal'        => '',
+                'address'       => '',
+                'referrer_name' => '',
+                'referrer_c_no' => ''
            );            
         }
         
-        $data['params'] = $params;     
-        
-        $data['arsoa_join_key'] = $this->arsoa_join_key;     
-                
+        $data['params'] = $params;    
+        $data['arsoa_join_key'] = $this->arsoa_join_key;    
         $data['city']  = $this->front_base_model->get_data('city',array('cityshow' => 1),array('cityno'=>'asc'));
                                     
         _timer('*** before layout ***');
@@ -149,33 +151,33 @@ class Member_join extends MY_Controller
         $result = array('status' => 1);                
         $data_post = $this->input->post( NULL, FALSE );
         if ( is_array( $data_post ) && sizeof( $data_post ) > 0){  
-                 $data = array();
-                 if ($this->arsoa_join_pckpro[$jtype]){                                          
-                     // 數量變更
-                     foreach ($this->arsoa_join_pckpro[$jtype] as $key => $item){
-                              for ($k = 1;$k<= $data_post['p_num'];$k++){
-                              			if ($item['p_no'] == trim($data_post['p_no_'.$k])){
-                              			    $data[] = array(
-                              			                    'p_no' => $item['p_no'],
-                              			                    'pid'  => $item['pid'],
-                              			                    'qty'  => $data_post['num_'.$k]
-                              			                   );
-                              			}
-                              }
-                     }                 
-                     // 產品刪除
-                     if (isset($data_post['del_prd']) && $data_post['del_prd']){
-                         foreach ($data_post['del_prd'] as $dprd){                              
-                              foreach ($data as $key => $item){
-                                       if ($item['p_no'] == $dprd){
-                                            unset($data[$key]);
-                                       } 
-                              }
-                         }  
-                         $data=array_values($data);
-                     }   
-                 }                                  
-                 $this->front_join_model->update_pckpro($this->arsoa_join_jid,$jtype,$data);                 
+            $data = array();
+            if ($this->arsoa_join_pckpro[$jtype]){                                          
+                // 數量變更
+                foreach ($this->arsoa_join_pckpro[$jtype] as $key => $item){
+                    for ($k = 1;$k<= $data_post['p_num'];$k++){
+                        if ($item['p_no'] == trim($data_post['p_no_'.$k])){
+                            $data[] = array(
+                                'p_no' => $item['p_no'],
+                                'pid'  => $item['pid'],
+                                'qty'  => $data_post['num_'.$k]
+                            );
+                        }
+                    }
+                }                 
+                // 產品刪除
+                if (isset($data_post['del_prd']) && $data_post['del_prd']){
+                    foreach ($data_post['del_prd'] as $dprd){                              
+                        foreach ($data as $key => $item){
+                            if ($item['p_no'] == $dprd){
+                                unset($data[$key]);
+                            } 
+                        }
+                    }  
+                    $data=array_values($data);
+                }
+            }                               
+            $this->front_join_model->update_pckpro($this->arsoa_join_jid,$jtype,$data);                 
         }
         $this->output->set_content_type('application/json');            
         echo json_encode($result);
@@ -194,423 +196,428 @@ class Member_join extends MY_Controller
         $result = array('status' => 0,'focuskey' => '', 'errmsg' => '操作有誤!');                
         $data_post = $this->input->post( NULL, FALSE );
         if ( is_array( $data_post ) && sizeof( $data_post ) > 0){  
-        	  foreach ($data_post as $key => $val){
-        	  	       if (is_array($val)){
-        	  	       	   $data_post[$key] = $val;
-        	  	       }else{
-        	  	           $data_post[$key] = trim($val);
-        	  	       }
-        	  }
-        	  $check = true;
+            foreach ($data_post as $key => $val){
+                if (is_array($val)){
+                    $data_post[$key] = $val;
+                }else{
+                    $data_post[$key] = trim($val);
+                }
+            }
+            $check = true;
         	  
-        	  switch ($step) {
-                    case 'form':  // 資料填寫頁                         
-     								   	  $data_post['email'] = strtolower($data_post['email']);
-     								   	  if ($data_post['uname'] == '') {      
-     								   	  	  $result['errmsg'] = '姓名未填入！';     
-     								   	  	  $result['focuskey'] = 'uname';                
-     								   	  	  $check = false;
-     								   	  }
-     								   	  if ($data_post['sex'] == '') {      
-     								   	  	  $result['errmsg'] = '性別未選擇！';     
-     								   	  	  $result['focuskey'] = 'sex';                
-     								   	  	  $check = false;
-     								   	  }
-     								   	  
-     								   	  if ($check && $data_post['jointype'] == '3' && $data_post['idno'] == ''){
-     								   	  	   $result['errmsg'] = '圓夢事業組合必須填寫身份證字號！';
-     								           $result['focuskey'] = 'idno';                
-      								   	  	 $check = false; 
-     								   	  }     								   	  	  	  
-     								   	  
-     								   	  if ($check && $data_post['idno'] > '')
-     								   	  {
-     								   	      if (!is_numeric(substr($data_post['idno'],1,1))){  // 第二碼是英文字 居留碼
-     								   	      	  if (!check_idno($data_post['idno'],'R')){
-     								                  $result['errmsg'] = '居留證號有誤(I1)！';
-     								                  $result['focuskey'] = 'idno';                
-     								   	  	          $check = false;
-     								   	          }	
-     								   	      }else{
-     								   	          if (!check_idno($data_post['idno'])){
-     								                  $result['errmsg'] = '身份證字號有誤(I2)！';
-     								                  $result['focuskey'] = 'idno';                
-     								   	  	          $check = false;
-     								   	          }	
-     								   	          if ($check && !(($data_post['sex'] == 'F' && substr($data_post['idno'],1,1) == '2') || ($data_post['sex'] == 'M' && substr($data_post['idno'],1,1) == '1'))){
-     								   	  	  	  	  $result['errmsg'] = '身份證字號有誤(I3)！';
-     								                  $result['focuskey'] = 'idno';                
-     								   	  	          $check = false;     								   	  	  
-     								   	  	      }
-     								   	      }
-     								   	  }
-     								   	  
-     								   	  if ($check && !check_date($data_post['bday'])){
-     								           $result['errmsg'] = '生日日期有誤！';
-     								           $result['focuskey'] = 'bday';                
-     								   	  	  $check = false;
-     								   	  }else{
-     								   	  	  if (!validateAge($data_post['bday'])){
-     								   	  	  	  $result['errmsg'] = '滿20歲才可申請會員！';
-     								               $result['focuskey'] = 'bday';                
-     								   	  	      $check = false;
-     								   	  	  }
-     								   	  }
-     								   	  if ($check && substr($data_post['tel'],0,2) == '09'){
-     								   	  	  if (!ismobile($data_post['tel'])){
-     								   	  	  	  $result['errmsg'] = '手機號碼不符格式！';
-     								               $result['focuskey'] = 'tel';                
-     								   	  	      $check = false;
-     								   	  	  }        	  	
-     								   	  }
-     								   	  
-     								   	  if ($check && $data_post['email'] > '' && !filter_var($data_post['email'],  FILTER_VALIDATE_EMAIL)) {      
-     								   	  	  $result['errmsg'] = 'E-mail 格式有誤！';     
-     								   	  	  $result['focuskey'] = 'email';                
-     								   	  	  $check = false;
-     								   	  }        	  
-     								   	  if ($data_post['postal'] == '' || $data_post['cityno'] == '' || $data_post['address'] == ''){
-     								   	      $result['errmsg'] = '通訊地址有誤！';     
-     								   	  	  $result['focuskey'] = 'cityno';                
-     								   	  	  $check = false;     								   	  
-     								   	  }
-     								   	  /*
-     								   	  if ($check && $data_post['spouse_idno'] > '' && !check_idno($data_post['spouse_idno'])){
-     								   	      $result['errmsg'] = '配偶身份證字號有誤！';     
-     								   	      $result['focuskey'] = 'spouse_idno';                
-     								   	  	  $check = false;
-     								   	  }
-     								   	  if ($check && $data_post['idno'] > '' && $data_post['idno'] == $data_post['spouse_idno']){
-     								           $result['errmsg'] = '二組身份證字號不可重覆！';
-     								           $result['focuskey'] = 'idno';                
-     								   	  	  $check = false;
-     								   	  }
-     								   	  if ($check && $data_post['spouse_bday'] > '' && !check_date($data_post['spouse_bday'])){
-     								           $result['errmsg'] = '配偶生日日期有誤！';
-     								           $result['focuskey'] = 'spouse_bday';                
-     								   	  	  $check = false;
-     								   	  } 
-     								   	  */     
-     								   	  if ($check){  
-     								   	  	  $msconn = $this->front_mssql_model->ms_connect();  
-     								   	  }
-     								   	  if ($check){             								   	  	
-     								   	      $chkdata = $this->front_join_model->ms_chkname($msconn,$data_post['uname'],$data_post['bday']);  // 判斷此會員是否已加入過             	           								   	      
-     								   	      if ($chkdata['errcode']){
-     								   	          $result['errmsg'] = '您已申請過會員，如有問題請洽公司客服 0809-080-608！';
-     								              $result['focuskey'] = 'uname';                
-     								   	  	      $check = false;
-     								   	      }        	      
-     								   	  }
-     								   	  
-     								   	  if ($check && $data_post['idno'] > ''){          	      
-     								   	      $chkdata = $this->front_join_model->ms_chkidno($msconn,$data_post['idno']);  // 判斷入會者身分證號是否重複(有輸入身份證號才做)     
-     								   	      if ($chkdata['errcode']){
-     								   	          $result['errmsg'] = '此身份證字號已申請過會員，如有問題請洽公司客服 0809-080-608！';
-     								               $result['focuskey'] = 'idno';                
-     								   	  	      $check = false;
-     								   	      }        	      
-     								   	  }
-     								   	  
-     								   	  if ($check){          	      
-     								   	      $chkdata = $this->front_join_model->ms_chkdname($msconn,$data_post['referrer_name'],$data_post['referrer_c_no']);  // 檢查推薦人資料是否存在
-     								   	      if ($chkdata['errcode']){
-     								   	          $result['errmsg'] = '推薦人資料有誤，如有問題請洽公司客服 0809-080-608！';
-     								               $result['focuskey'] = 'referrer_name';                
-     								   	  	      $check = false;
-     								   	      }        	      
-     								   	  }
-     								   	  
-     								   	  /*        	  
-     								   	  if ($check){  
-     								   	      $this->db->select( "m.c_no" )
-     								                         ->from( 'member m' )
-     								                         ->join( 'position p', 'm.d_posn = p.d_posn' )
-     								                         ->where( 'ifnull(m.d_posn,999) <=', '100' )
-     								                         ->where( 'm.c_no', $data_post['referrer_c_no'] )
-     								                         ->where( 'm.c_name', $data_post['referrer_name'] );
-     								           $result = $this->db->get()->row_array();              
-     								           if (!$result){     
-     								               $result['errmsg'] = '推薦人資料有誤！';
-     								               $result['focuskey'] = 'referrer_name';                
-     								   	      	   $check = false;
-     								           }
-     								       }
-     								       */
-     								   	  	  
-     								   	  if ($check){        	  
-     								       		$session_id = session_id();
-     								       		$cookie_key = md5($session_id.date('Y-m-d H:i:s'));
-     								       		$data = array(
-     								       		              "jointype" => $data_post['jointype'],
-     								       		              "step"  => $step,
-     								       		              "uname" => $data_post['uname'],
-     								       		              "sex" => $data_post['sex'],
-     								       		              "idno" => $data_post['idno'],
-     								       		              "bday" => $data_post['bday'],
-     								       		              "email" => $data_post['email'],
-     								       		              "tel"   => $data_post['tel'],
-     								       		             // "spouse_name"   => $data_post['spouse_name'],
-     								       		             // "spouse_idno"   => $data_post['spouse_idno'],
-     								       		             // "spouse_bday"   => $data_post['spouse_bday'],
-     								       		              'city' => $this->front_base_model->city_title($data_post['cityno']),
-     								       		              'town' => $this->front_base_model->town_title($data_post['postal']),
-     								       		              "postal" => $data_post['postal'],
-     								       		              "address" => $data_post['address'],
-     								       		              "referrer_name" => $data_post['referrer_name'],
-     								       		              "referrer_c_no" => $data_post['referrer_c_no'],
-     								       		              "ip" => $this->data['tracking']['ip']
-     								       		);
-     								       		
-     								       		if ($this->arsoa_join_data){  // 資料已存在,修改
-     								       			   if ($this->arsoa_join_data['jointype'] <> $data_post['jointype']){  // 選擇的方案不同清空車     								       			       
-     								       			       for ($i = 1;$i<=4;$i++){
-     								       			            $data['pckpro'.$i] = '';     								       			       
-     								       			            $this->arsoa_join_data['pckpro'.$i] = '';
-     								       			       }
-     								       			       $this->front_join_model->ms_jsf_temp($msconn,$this->arsoa_join_jid,'A',1,4);  // mssql 暫存車刪掉      
-     								       			   }else{                                     // 清掉贈品和紅利點數
-     								       			   	   for ($i = 3;$i<=4;$i++){
-     								       			            $data['pckpro'.$i] = '';     								       			       
-     								       			            $this->arsoa_join_data['pckpro'.$i] = '';
-     								       			       }
-     								       			       $this->front_join_model->ms_jsf_temp($msconn,$this->arsoa_join_jid,'S',3,4);  // mssql 暫存車刪掉      
-     								       			   }
-     								       			   $data['updt'] = date('Y-m-d H:i:s');
-     								               $where = array ('jid'=>$this->arsoa_join_data['jid'],'cookie_key'=>$this->arsoa_join_key);                              
-     								               $this->front_base_model->update_table('ap_member_join_new',$data ,$where);     
-     								               
-     								               $jid = $this->arsoa_join_data['jid'];         			
-     								       		}else{            		            		                  
-     								       		    $data['cookie_key'] = $this->arsoa_join_key;
-     								       		    $data['session_id'] = session_id();
-     								       		    $data['pckpro1'] = '';
-     								       			  $data['pckpro2'] = '';
-     								       			  $data['pckpro3'] = '';
-     								       			  $data['pckpro4'] = '';
-     								       			       
-     								       		    $data['crdt'] = date('Y-m-d H:i:s');
-     								       		    $this->db->insert('ap_member_join_new', $data);
-     								       		    
-     								       		    if ($this->db->affected_rows() > 0 ){               
-     								       		        $jid = $this->db->insert_id();                            		        
-     								       		    }
-     								       		}               
-     								       		$result['status']     = 1;
-     								       	  $result['jid']        = $jid;
-     								       		$result['next_url']   = base_url('member_join/product');
-     								       }                        
-                        
-                        break;                
-                    case 'product':    // 資料填寫頁
-                     
+            switch ($step) {
+                case 'form':  // 資料填寫頁                         
+                    $data_post['email'] = strtolower($data_post['email']);
+                    if ($data_post['uname'] == '') {      
+                        $result['errmsg'] = '姓名未填入！';     
+                        $result['focuskey'] = 'uname';                
+                        $check = false;
+                    }
+                    if ($data_post['sex'] == '') {      
+                        $result['errmsg'] = '性別未選擇！';     
+                        $result['focuskey'] = 'sex';                
+                        $check = false;
+                    }
+                    
+                    if ($check && $data_post['jointype'] == '3' && $data_post['idno'] == ''){
+                        $result['errmsg'] = '圓夢事業組合必須填寫身份證字號！';
+                        $result['focuskey'] = 'idno';                
+                        $check = false; 
+                    }     								   	  	  	  
+                    
+                    if ($check && $data_post['idno'] > '')
+                    {
+                        if (!is_numeric(substr($data_post['idno'],1,1))){  // 第二碼是英文字 居留碼
+                            if (!check_idno($data_post['idno'],'R')){
+                                $result['errmsg'] = '居留證號有誤(I1)！';
+                                $result['focuskey'] = 'idno';                
+                                $check = false;
+                            }	
+                        }else{
+                            if (!check_idno($data_post['idno'])){
+                                $result['errmsg'] = '身份證字號有誤(I2)！';
+                                $result['focuskey'] = 'idno';                
+                                $check = false;
+                            }	
+                            if ($check && !(($data_post['sex'] == 'F' && substr($data_post['idno'],1,1) == '2') || ($data_post['sex'] == 'M' && substr($data_post['idno'],1,1) == '1'))){
+                                $result['errmsg'] = '身份證字號有誤(I3)！';
+                                $result['focuskey'] = 'idno';                
+                                $check = false;     								   	  	  
+                            }
+                        }
+                    }
+                    
+                    if ($check && !check_date($data_post['bday'])){
+                        $result['errmsg'] = '生日日期有誤！';
+                        $result['focuskey'] = 'bday';                
+                        $check = false;
+                    }else{
+                        if (!validateAge($data_post['bday'])){
+                            $result['errmsg'] = '滿20歲才可申請會員！';
+                            $result['focuskey'] = 'bday';                
+                            $check = false;
+                        }
+                    }
+                    if ($check && substr($data_post['tel'],0,2) == '09'){
+                        if (!ismobile($data_post['tel'])){
+                            $result['errmsg'] = '手機號碼不符格式！';
+                            $result['focuskey'] = 'tel';                
+                            $check = false;
+                        }        	  	
+                    }
+                    
+                    if ($check && $data_post['email'] > '' && !filter_var($data_post['email'],  FILTER_VALIDATE_EMAIL)) {      
+                        $result['errmsg'] = 'E-mail 格式有誤！';     
+                        $result['focuskey'] = 'email';                
+                        $check = false;
+                    }        	  
+                    if ($data_post['postal'] == '' || $data_post['cityno'] == '' || $data_post['address'] == ''){
+                        $result['errmsg'] = '通訊地址有誤！';     
+                        $result['focuskey'] = 'cityno';                
+                        $check = false;     								   	  
+                    }
+                    /*
+                    if ($check && $data_post['spouse_idno'] > '' && !check_idno($data_post['spouse_idno'])){
+                        $result['errmsg'] = '配偶身份證字號有誤！';     
+                        $result['focuskey'] = 'spouse_idno';                
+                        $check = false;
+                    }
+                    if ($check && $data_post['idno'] > '' && $data_post['idno'] == $data_post['spouse_idno']){
+                        $result['errmsg'] = '二組身份證字號不可重覆！';
+                        $result['focuskey'] = 'idno';                
+                        $check = false;
+                    }
+                    if ($check && $data_post['spouse_bday'] > '' && !check_date($data_post['spouse_bday'])){
+                        $result['errmsg'] = '配偶生日日期有誤！';
+                        $result['focuskey'] = 'spouse_bday';                
+                        $check = false;
+                    } 
+                    */     
+                    if ($check){  
                         $msconn = $this->front_mssql_model->ms_connect();  
-                                
-        								// 必選
-        								$maxamt = 0;          // 需達到金額
-        								$selcnt = 0;          // 需必選產品
-        								$total_price = 0;     // 總金額
-        								$pckpro1_selcnt = 0;  // 已選
-        								$result['errmsg'] = '';
-        							
-        								$pckpro1_selprd = array();    
-        								      								
-                        $data['pckpro1'] = $this->front_join_model->ms_pckpro(1,$msconn,array('jointype'=>$this->arsoa_join_data['jointype']));    
+                    }
+                    if ($check){             								   	  	
+                        $chkdata = $this->front_join_model->ms_chkname($msconn,$data_post['uname'],$data_post['bday']);  // 判斷此會員是否已加入過             	           								   	      
+                        if ($chkdata['errcode']){
+                            $result['errmsg'] = '您已申請過會員，如有問題請洽公司客服 0809-080-608！';
+                            $result['focuskey'] = 'uname';                
+                            $check = false;
+                        }        	      
+                    }
+                    
+                    if ($check && $data_post['idno'] > ''){          	      
+                        $chkdata = $this->front_join_model->ms_chkidno($msconn,$data_post['idno']);  // 判斷入會者身分證號是否重複(有輸入身份證號才做)     
+                        if ($chkdata['errcode']){
+                            $result['errmsg'] = '此身份證字號已申請過會員，如有問題請洽公司客服 0809-080-608！';
+                            $result['focuskey'] = 'idno';                
+                            $check = false;
+                        }        	      
+                    }
+                    
+                    if ($check){          	      
+                        $chkdata = $this->front_join_model->ms_chkdname($msconn,$data_post['referrer_name'],$data_post['referrer_c_no']);  // 檢查推薦人資料是否存在
+                        if ($chkdata['errcode']){
+                            $result['errmsg'] = '推薦人資料有誤，如有問題請洽公司客服 0809-080-608！';
+                            $result['focuskey'] = 'referrer_name';                
+                            $check = false;
+                        }        	      
+                    }
+                    
+                    /*        	  
+                    if ($check){  
+                        $this->db->select( "m.c_no" )
+                                        ->from( 'member m' )
+                                        ->join( 'position p', 'm.d_posn = p.d_posn' )
+                                        ->where( 'ifnull(m.d_posn,999) <=', '100' )
+                                        ->where( 'm.c_no', $data_post['referrer_c_no'] )
+                                        ->where( 'm.c_name', $data_post['referrer_name'] );
+                        $result = $this->db->get()->row_array();              
+                        if (!$result){     
+                            $result['errmsg'] = '推薦人資料有誤！';
+                            $result['focuskey'] = 'referrer_name';                
+                            $check = false;
+                        }
+                    }
+                    */
                         
-                        $this->arsoa_join_pckpro[1] = '';
-                        if ($data['pckpro1']){                                                        
-                            if (isset($data['pckpro1'][0]['maxamt']) && $data['pckpro1'][0]['maxamt'] > 0){
-                                $maxamt = $data['pckpro1'][0]['maxamt'];
-                            }                   
-                             
-                            foreach ($data['pckpro1'] as $key => $item){                 						      
-                                           $item['p_no'] = trim($item['p_no']);
-                                           $prdtotal = $item['price']*$item['qty'];
-                                           if ($selcnt == 0 && (int)$item['selcnt'] > 0){
-                                               $selcnt = (int)$item['selcnt'];
-                                           }                                           
-            									   		       if ($item['issel'] || (isset($data_post['sel_prd']) && in_array($item['p_no'],$data_post['sel_prd']))){
-            									          	      $total_price += $prdtotal;
-            									          	      $pckpro1_selcnt++;
-            									          	      $pckpro1_selprd[] = array( 'p_no' => $item['p_no'],
-            									          	                                 'pid'  => $item['pid'],
-            									          	                                 'qty'  => $item['qty']
-            									          	                                );      
-            									          	                             
-            									          	      $this->front_join_model->in_join_cart($this->arsoa_join_jid,$this->arsoa_join_pckpro,'1',$item['p_no'],$item['pid'],$item['qty']);
-            									          	 }
-                            }                                                        
-                        }    
-                       
-                        $this->arsoa_join_data['pckpro1'] = json_encode($pckpro1_selprd);                  
-                                               
-                        $data['pckpro2'] = $this->front_join_model->ms_pckpro(2,$msconn,array('jointype'=>$this->arsoa_join_data['jointype']));
-                        if ($data['pckpro2']){
-                            if (empty($data['pckpro1'])){  
-                                if (isset($data['pckpro2'][0]['maxamt']) && $data['pckpro2'][0]['maxamt'] > 0){
-                                    $maxamt = $data['pckpro2'][0]['maxamt'];
+                    if ($check){        	  
+                        $session_id = session_id();
+                        $cookie_key = md5($session_id.date('Y-m-d H:i:s'));
+                        $data = array(
+                                        "jointype" => $data_post['jointype'],
+                                        "step"  => $step,
+                                        "uname" => $data_post['uname'],
+                                        "sex" => $data_post['sex'],
+                                        "idno" => $data_post['idno'],
+                                        "bday" => $data_post['bday'],
+                                        "email" => $data_post['email'],
+                                        "tel"   => $data_post['tel'],
+                                        // "spouse_name"   => $data_post['spouse_name'],
+                                        // "spouse_idno"   => $data_post['spouse_idno'],
+                                        // "spouse_bday"   => $data_post['spouse_bday'],
+                                        'city' => $this->front_base_model->city_title($data_post['cityno']),
+                                        'town' => $this->front_base_model->town_title($data_post['postal']),
+                                        "postal" => $data_post['postal'],
+                                        "address" => $data_post['address'],
+                                        "referrer_name" => $data_post['referrer_name'],
+                                        "referrer_c_no" => $data_post['referrer_c_no'],
+                                        "ip" => $this->data['tracking']['ip']
+                        );
+                        
+                        if ($this->arsoa_join_data){  // 資料已存在,修改
+                            if ($this->arsoa_join_data['jointype'] <> $data_post['jointype']){  // 選擇的方案不同清空車     								       			       
+                                for ($i = 1;$i<=4;$i++){
+                                    $data['pckpro'.$i] = '';     								       			       
+                                    $this->arsoa_join_data['pckpro'.$i] = '';
+                                }
+                                $this->front_join_model->ms_jsf_temp($msconn,$this->arsoa_join_jid,'A',1,4);  // mssql 暫存車刪掉      
+                            }else{                                     // 清掉贈品和紅利點數
+                                for ($i = 3;$i<=4;$i++){
+                                    $data['pckpro'.$i] = '';     								       			       
+                                    $this->arsoa_join_data['pckpro'.$i] = '';
+                                }
+                                $this->front_join_model->ms_jsf_temp($msconn,$this->arsoa_join_jid,'S',3,4);  // mssql 暫存車刪掉      
+                            }
+                            $data['updt'] = date('Y-m-d H:i:s');
+                            $where = array ('jid'=>$this->arsoa_join_data['jid'],'cookie_key'=>$this->arsoa_join_key);                              
+                            $this->front_base_model->update_table('ap_member_join_new',$data ,$where);     
+                            
+                            $jid = $this->arsoa_join_data['jid'];         			
+                        }else{            		            		                  
+                            $data['cookie_key'] = $this->arsoa_join_key;
+                            $data['session_id'] = session_id();
+                            $data['pckpro1'] = '';
+                            $data['pckpro2'] = '';
+                            $data['pckpro3'] = '';
+                            $data['pckpro4'] = '';
+                                    
+                            $data['crdt'] = date('Y-m-d H:i:s');
+                            $this->db->insert('ap_member_join_new', $data);
+                            
+                            if ($this->db->affected_rows() > 0 ){               
+                                $jid = $this->db->insert_id();                            		        
+                            }
+                        }               
+                        $result['status']     = 1;
+                        $result['jid']        = $jid;
+                        $result['next_url']   = base_url('member_join/product');
+                    }                        
+                    
+                    break;                
+                case 'product':    // 資料填寫頁
+                    
+                    $msconn = $this->front_mssql_model->ms_connect();  
+                            
+                    // 必選
+                    $maxamt = 0;          // 需達到金額
+                    $selcnt = 0;          // 需必選產品
+                    $total_price = 0;     // 總金額
+                    $pckpro1_selcnt = 0;  // 已選
+                    $result['errmsg'] = '';
+                
+                    $pckpro1_selprd = array();    
+                                                                        
+                    $data['pckpro1'] = $this->front_join_model->ms_pckpro(1,$msconn,array('jointype'=>$this->arsoa_join_data['jointype']));    
+                    
+                    $this->arsoa_join_pckpro[1] = '';
+                    if ($data['pckpro1']){                                                        
+                        if (isset($data['pckpro1'][0]['maxamt']) && $data['pckpro1'][0]['maxamt'] > 0){
+                            $maxamt = $data['pckpro1'][0]['maxamt'];
+                        }                   
+                            
+                        foreach ($data['pckpro1'] as $key => $item){                 						      
+                            $item['p_no'] = trim($item['p_no']);
+                            $prdtotal = $item['price']*$item['qty'];
+                            if ($selcnt == 0 && (int)$item['selcnt'] > 0){
+                                $selcnt = (int)$item['selcnt'];
+                            }                                           
+                            if ($item['issel'] || (isset($data_post['sel_prd']) && in_array($item['p_no'],$data_post['sel_prd']))){
+                                $total_price += $prdtotal;
+                                $pckpro1_selcnt++;
+                                $pckpro1_selprd[] = array(
+                                    'p_no' => $item['p_no'],
+                                    'pid'  => $item['pid'],
+                                    'qty'  => $item['qty']
+                                );      
+                                                        
+                                $this->front_join_model->in_join_cart($this->arsoa_join_jid,$this->arsoa_join_pckpro,'1',$item['p_no'],$item['pid'],$item['qty']);
+                            }
+                        }                                                        
+                    }    
+                    
+                    $this->arsoa_join_data['pckpro1'] = json_encode($pckpro1_selprd);                  
+                                            
+                    $data['pckpro2'] = $this->front_join_model->ms_pckpro(2,$msconn,array('jointype'=>$this->arsoa_join_data['jointype']));
+                    if ($data['pckpro2']){
+                        if (empty($data['pckpro1'])){  
+                            if (isset($data['pckpro2'][0]['maxamt']) && $data['pckpro2'][0]['maxamt'] > 0){
+                                $maxamt = $data['pckpro2'][0]['maxamt'];
+                            }
+                        }
+                    }
+                    
+                    if ($selcnt > $pckpro1_selcnt){
+                        $result['errmsg']   = '尚未選擇 '.$selcnt.' 個專案';     								            
+                        $check = false;
+                    }
+                            
+                    if ($maxamt > 0){                                                        
+                        foreach ($data['pckpro2'] as $key => $item){                 						      
+                            if ($this->front_join_model->check_cart($this->arsoa_join_pckpro,'2',trim($item["p_no"]))){
+                                $p_num = $this->front_join_model->check_cart_prd_num($this->arsoa_join_pckpro,'2',trim($item["p_no"]));
+                                $prdtotal = $item['price']*$p_num;
+                                $total_price += $prdtotal;
+                            }    
+                        }
+                        if ($maxamt > $total_price){                 						    
+                            if ($result['errmsg'] > ''){ $result['errmsg'] .= ","; }
+                            $result['errmsg']   .= '整張單需滿 '.number_format($maxamt).' 元，已選產品金額 '.number_format($total_price).' 元，不足 '.number_format($maxamt - $total_price).' 元';     								            
+                            $check = false;
+                        }
+                    }
+                    if ($result['errmsg'] > ''){ $result['errmsg'] .= "！"; }
+                            
+                        
+                    if ($check){   // 沒問題,到紅利頁                   					
+                        for ($i = 3;$i<=4;$i++){
+                            $udata['pckpro'.$i] = '';     								       			       
+                            $this->arsoa_join_data['pckpro'.$i] = '';
+                        }
+                        $this->front_join_model->ms_jsf_temp($msconn,$this->arsoa_join_jid,'S',1,4);  // mssql 
+                        
+                        $where = array ('jid'=>$this->arsoa_join_data['jid'],'cookie_key'=>$this->arsoa_join_key);                              
+                        $this->front_base_model->update_table('ap_member_join_new',$udata ,$where);     
+                                
+                        $result['status']     = 1;
+                        $result['next_url']   = base_url('member_join/reward');
+                    }
+                            
+                    break;
+                case 'reward':  // 紅利確認頁
+                    $total_mp = 0;
+                    
+                    $msconn = $this->front_mssql_model->ms_connect();  
+                    
+                    // 計算 mp 
+                    $data['pckpro_mp'] = $this->front_join_model->ms_pckpro('mp',$msconn,array('arsoa_join_key'=>$this->arsoa_join_key));
+                    
+                    $data['pckpro3'] = $this->front_join_model->ms_pckpro(3,$msconn,array('arsoa_join_key'=>$this->arsoa_join_key));
+                    
+                    $data['pckpro_total_mp'] = self::pckpro_total_mp($data['pckpro_mp'],$data['pckpro3']);
+                                                
+                    $data['pckpro4'] = $this->front_join_model->ms_pckpro(4,$msconn,array('jointype'=>$this->arsoa_join_data['jointype'],'mp'=>$data['pckpro_total_mp'],'arsoa_join_key' => $this->arsoa_join_key));
+                
+                    if ($data['pckpro4']){
+                        foreach ($data['pckpro4'] as $key => $item){                 						      
+                            if ($this->front_join_model->check_cart($this->arsoa_join_pckpro,'4',trim($item["p_no"]))){
+                                $p_num = $this->front_join_model->check_cart_prd_num($this->arsoa_join_pckpro,'4',trim($item["p_no"]));
+                                $prdtotal = $item['m_mp']*$p_num;
+                                $total_mp += $prdtotal;
+                            }
+                        }
+                        if ($total_mp > $data['pckpro_total_mp']){
+                            $m_mp = $total_mp - $data['pckpro_total_mp'];
+                            $result['errmsg']   = '可兌換紅利點數 '.number_format($data['pckpro_total_mp']).'，您選擇的點數 '.number_format($total_mp).'，已超過 '.number_format($m_mp).' 點！';
+                            $check = false;
+                        }		        								        			
+                    }                 				
+                        
+                    if ($check){   // 沒問題,到確認頁  
+                        $pckpro3_selprd = array();  
+                        if ($data['pckpro3']){                 				      	
+                            foreach ($data['pckpro3'] as $key => $item){            											    
+                                        $pckpro3_selprd[] = array( 'p_no' => $item['p_no'],
+                                                            'pid'  => $item['pid'],
+                                                            'qty'  => $item['qty']
+                                                            );    
+                            }                											    
+                        }
+                        $this->front_join_model->update_pckpro($this->arsoa_join_jid,3,$pckpro3_selprd);
+                                    
+                        $this->front_join_model->ms_jsf_temp($msconn,$this->arsoa_join_jid,'S',1,4);  // 資料存到　mssql
+                    
+                        $result['status']     = 1;
+                        $result['next_url']   = base_url('member_join/confirm');
+                    }     								         								 
+                    break; 
+                case 'confirm':  // 確認頁     
+                    if ($check && isset($data_post['out_day'])){
+                            if ($data_post['out_day'] == '0'){     								    	
+                            $result['errmsg'] = '每期出貨日尚未選擇！';
+                            $result['focuskey'] = 'out_day';                
+                            $check = false;     						
+                        }else{
+                            $data['out_day'] = $data_post['out_day'];     								        
+                        }
+                    }else{		        
+                        $data['out_day'] = '';
+                    }
+                    
+                    $msconn = $this->front_mssql_model->ms_connect();  
+                    $arsoa_join_chkpromo = $this->front_join_model->ms_chkpromo($msconn,$this->arsoa_join_key);
+                    
+                    $data['promo_p_no'] = '';                
+                    $data['promo_p_name'] = '';                
+                    if ($arsoa_join_chkpromo){
+                            if ($check && isset($data_post['promo_sel'])){
+                            if ($data_post['promo_sel'] == ''){     								    	
+                                $result['errmsg'] = $arsoa_join_chkpromo[0]['promomsg'];
+                                $result['focuskey'] = 'promo_sel';                
+                                $check = false;     						
+                            }else{
+                                $data['promo_p_no'] = trim($data_post['promo_sel']);
+                                foreach ($arsoa_join_chkpromo as $item){
+                                if ($data['promo_p_no'] == trim($item['p_no'])){
+                                    $data['promo_p_name'] = trim($item['p_name']);
+                                }
                                 }
                             }
                         }
-                      
-                        if ($selcnt > $pckpro1_selcnt){
-                 				     $result['errmsg']   = '尚未選擇 '.$selcnt.' 個專案';     								            
-  								   	       $check = false;
-                 				}
-                 				
-                        if ($maxamt > 0){                                                        
-        	       						foreach ($data['pckpro2'] as $key => $item){                 						      
-                 						           if ($this->front_join_model->check_cart($this->arsoa_join_pckpro,'2',trim($item["p_no"]))){
-                 						               $p_num = $this->front_join_model->check_cart_prd_num($this->arsoa_join_pckpro,'2',trim($item["p_no"]));
-                 						               $prdtotal = $item['price']*$p_num;
-                 						               $total_price += $prdtotal;
-                 						           }
-                 						      
-                 						}
-                 						if ($maxamt > $total_price){                 						    
-                 						    if ($result['errmsg'] > ''){ $result['errmsg'] .= ","; }
-                 						    $result['errmsg']   .= '整張單需滿 '.number_format($maxamt).' 元，已選產品金額 '.number_format($total_price).' 元，不足 '.number_format($maxamt - $total_price).' 元';     								            
-     								   	      	$check = false;
-                 						}
-                 				}
-                 				if ($result['errmsg'] > ''){ $result['errmsg'] .= "！"; }
-                 				
-                 			
-                 				if ($check){   // 沒問題,到紅利頁                   					
-                 				      for ($i = 3;$i<=4;$i++){
-     								       		     $udata['pckpro'.$i] = '';     								       			       
-     								       		     $this->arsoa_join_data['pckpro'.$i] = '';
-     								       		}
-     								       		$this->front_join_model->ms_jsf_temp($msconn,$this->arsoa_join_jid,'S',1,4);  // mssql 
-     								       		
-     								       		$where = array ('jid'=>$this->arsoa_join_data['jid'],'cookie_key'=>$this->arsoa_join_key);                              
-     								          $this->front_base_model->update_table('ap_member_join_new',$udata ,$where);     
-     								       		
-                 				      $result['status']     = 1;
-     								       	  $result['next_url']   = base_url('member_join/reward');
-     								    }
-     								    
-     								    break;
-     								 case 'reward':  // 紅利確認頁
-     								    $total_mp = 0;
-     								    
-     								    $msconn = $this->front_mssql_model->ms_connect();  
-     								    
-     								    // 計算 mp 
-     								    $data['pckpro_mp'] = $this->front_join_model->ms_pckpro('mp',$msconn,array('arsoa_join_key'=>$this->arsoa_join_key));
-     								    
-     								    $data['pckpro3'] = $this->front_join_model->ms_pckpro(3,$msconn,array('arsoa_join_key'=>$this->arsoa_join_key));
-     								    
-     								    $data['pckpro_total_mp'] = self::pckpro_total_mp($data['pckpro_mp'],$data['pckpro3']);
-     								    						    
-        								$data['pckpro4'] = $this->front_join_model->ms_pckpro(4,$msconn,array('jointype'=>$this->arsoa_join_data['jointype'],'mp'=>$data['pckpro_total_mp'],'arsoa_join_key' => $this->arsoa_join_key));
-         							
-        								if ($data['pckpro4']){
-        	       						foreach ($data['pckpro4'] as $key => $item){                 						      
-                 						           if ($this->front_join_model->check_cart($this->arsoa_join_pckpro,'4',trim($item["p_no"]))){
-                 						               $p_num = $this->front_join_model->check_cart_prd_num($this->arsoa_join_pckpro,'4',trim($item["p_no"]));
-                 						               $prdtotal = $item['m_mp']*$p_num;
-                 						               $total_mp += $prdtotal;
-                 						           }
-                 						      
-                 						}
-                 						if ($total_mp > $data['pckpro_total_mp']){
-		        								    $m_mp = $total_mp - $data['pckpro_total_mp'];
-		                 				    $result['errmsg']   = '可兌換紅利點數 '.number_format($data['pckpro_total_mp']).'，您選擇的點數 '.number_format($total_mp).'，已超過 '.number_format($m_mp).' 點！';
-		     								   	   	$check = false;
-		                 			  }		        								        			
-                 				}                 				
-        								
-     								    if ($check){   // 沒問題,到確認頁  
-                 				      $pckpro3_selprd = array();  
-                 				      if ($data['pckpro3']){                 				      	
-        											    foreach ($data['pckpro3'] as $key => $item){            											    
-        											             $pckpro3_selprd[] = array( 'p_no' => $item['p_no'],
-            									          	                            'pid'  => $item['pid'],
-            									          	                            'qty'  => $item['qty']
-            									          	                           );    
-        											    }                											    
-        											}
-        											$this->front_join_model->update_pckpro($this->arsoa_join_jid,3,$pckpro3_selprd);
-        											     
-        											$this->front_join_model->ms_jsf_temp($msconn,$this->arsoa_join_jid,'S',1,4);  // 資料存到　mssql
-                 				      
-                 				      $result['status']     = 1;
-     								       	  $result['next_url']   = base_url('member_join/confirm');
-     								    }     								         								 
-     								    break; 
-     								 case 'confirm':  // 確認頁         								 
-     								    
-     								    if ($check && isset($data_post['out_day'])){
-     								    	  if ($data_post['out_day'] == '0'){     								    	
-     								            $result['errmsg'] = '每期出貨日尚未選擇！';
-     								            $result['focuskey'] = 'out_day';                
-     								  	        $check = false;     						
-     								  	    }else{
-     								  	    	  $data['out_day']	= $data_post['out_day'];     								        
-     								  	    }
-     								  	}else{		        
-     								        $data['out_day']	= '';
-     								    }
-     								    
-     								    $msconn = $this->front_mssql_model->ms_connect();  
-     								    $arsoa_join_chkpromo = $this->front_join_model->ms_chkpromo($msconn,$this->arsoa_join_key);
-     								   
-     								    $data['promo_p_no'] = '';                
-     								    $data['promo_p_name'] = '';                
-     								    if ($arsoa_join_chkpromo){
-     								    	  if ($check && isset($data_post['promo_sel'])){
-     								    	      if ($data_post['promo_sel'] == ''){     								    	
-     								                $result['errmsg'] = $arsoa_join_chkpromo[0]['promomsg'];
-     								                $result['focuskey'] = 'promo_sel';                
-     								  	            $check = false;     						
-     								  	        }else{
-     								  	        	  $data['promo_p_no'] = trim($data_post['promo_sel']);
-     								  	        	  foreach ($arsoa_join_chkpromo as $item){
-     								  	        	  	       if ($data['promo_p_no'] == trim($item['p_no'])){
-     								  	        	               $data['promo_p_name'] = trim($item['p_name']);
-     								  	        	           }
-     								  	        	  }
-     								  	        }
-     								  	    }
-     								    }     								    
-     								    
-     								    /*
-     								    if ($check && $this->arsoa_join_data['jointype'] == 3 && isset($data_post['is_sample']) && $data_post['is_sample'] == ''){
-     								    	  $result['errmsg'] = '是否要綁定LINE並以此2000紅利兌換3組試用組尚未選擇！';
-     								        $result['focuskey'] = 'is_sample';                
-     								  	    $check = false;     						
-     								    }else{
-     								    	  if (isset($data_post['is_sample']) && $data_post['is_sample'] > ''){
-     								    	  	  $data['is_sample']	= $data_post['is_sample'];
-     								    	  }else{
-     								    	      $data['is_sample']	= '';
-     								    	  }
-     								    }
-     								    */
-     								    $data['is_sample']	= '';
-     								    
-     								    if ($check && !isset($data_post['iagree'])){
-     								        $result['errmsg'] = '會員條款並未閱讀同意！';
-     								          $result['focuskey'] = 'iagree';                
-     								   	  	  $check = false;
-     								    }
-     								    
-     								    if ($check && ( isset($data_post['iagree']) && $data_post['iagree'] != 'Y')){
-     								   	  	  $result['errmsg'] = '會員條款並未閱讀同意！';
-     								          $result['focuskey'] = 'iagree';                
-     								   	  	  $check = false;
-     								   	}
-     								    
-     								    if ($check){   // 沒問題,到付款金流頁       								                           				      
-                 				      $data['remark']		= $data_post['remark'];     								        
-     								          $where = array ('jid'=>$this->arsoa_join_data['jid'],'cookie_key'=>$this->arsoa_join_key);                              
-     								          $this->front_base_model->update_table('ap_member_join_new',$data ,$where);     
-                 				      
-                 				      $result['status']     = 1;
-     								       	  $result['next_url']   = base_url('member_join/pay');
-     								    }     								         								 
-     								    break;
+                    }     								    
+                    
+                    /*
+                    if ($check && $this->arsoa_join_data['jointype'] == 3 && isset($data_post['is_sample']) && $data_post['is_sample'] == ''){
+                        $result['errmsg'] = '是否要綁定LINE並以此2000紅利兌換3組試用組尚未選擇！';
+                        $result['focuskey'] = 'is_sample';                
+                        $check = false;     						
+                    }else{
+                        if (isset($data_post['is_sample']) && $data_post['is_sample'] > ''){
+                            $data['is_sample']	= $data_post['is_sample'];
+                        }else{
+                            $data['is_sample']	= '';
+                        }
+                    }
+                    */
+                    $data['is_sample'] = '';
+                    
+                    if ($check && !isset($data_post['iagree'])){
+                        $result['errmsg'] = '會員條款並未閱讀同意！';
+                        $result['focuskey'] = 'iagree';                
+                        $check = false;
+                    }
+                    
+                    if ($check && ( isset($data_post['iagree']) && $data_post['iagree'] != 'Y')){
+                        $result['errmsg'] = '會員條款並未閱讀同意！';
+                        $result['focuskey'] = 'iagree';                
+                        $check = false;
+                    }
+                    
+                    if ($check){   // 沒問題,到付款金流頁
+                        // 上傳圖片
+
+                        
+                        if (isset($data_post['signature_id']) && $data_post['signature_id'] > ''){
+                            $data['signature_id'] = $data_post['signature_id'];
+                        }
+
+                        $data['remark']	= $data_post['remark'];     								        
+                        $where = array ('jid'=>$this->arsoa_join_data['jid'], 'cookie_key' => $this->arsoa_join_key);                              
+                        $this->front_base_model->update_table('ap_member_join_new', $data , $where);     
+                        
+                        $result['status'] = 1;
+                        $result['next_url'] = base_url('member_join/pay');
+                    }     								         								 
+                    break;
             }
         }  
         
@@ -622,21 +629,21 @@ class Member_join extends MY_Controller
     // 產品選擇
     public function product()
     {
-    	  self::join_data_check();
+        self::join_data_check();
+        
+        if (empty($this->arsoa_join_data)){    	      
+            alert( '操作有誤，請重新登錄會員(J01)！' ,base_url('member_join'));
+            exit;
+        }
     	  
-    	  if (empty($this->arsoa_join_data)){    	      
-    	      alert( '操作有誤，請重新登錄會員(J01)！' ,base_url('member_join'));
-    	      exit;
-    	  }
-    	  
-    	  //--結帳鎖定通知--
-        $this->block_service->dataset('join','pay',base_url());            
+        //--結帳鎖定通知--
+        if ($this->lock){
+            $this->block_service->dataset('join','pay',base_url());            
+        }        
         //--結帳鎖定通知-- 
     	  
-    	  $data['css'] = array('bs-stepper.min');
-    	      	      	  
-        $data['join_name'] = $this->join_name;
-        
+    	$data['css'] = array('bs-stepper.min');
+        $data['join_name'] = $this->join_name;        
         $data['arsoa_join_data'] = $this->arsoa_join_data;
         
         $msconn = $this->front_mssql_model->ms_connect();  
@@ -655,15 +662,15 @@ class Member_join extends MY_Controller
             }  
             $sel1cnt = 0;
             foreach ($data['pckpro1'] as $key => $item){                 						      
-            	   		 if ($item['issel']){
-            	            $sel1cnt++;            	          	      
-            	       }
+                if ($item['issel']){
+                    $sel1cnt++;            	          	      
+                }
             }                  
                             
             $data['pckpro1_selcnt'] = $data['pckpro1'][0]['selcnt']; // 必選筆數
             //if ($data['pckpro1_count'] > $data['pckpro1_selcnt']){  // 筆數大於必選,所以要出現勾選
             if ($sel1cnt != $data['pckpro1_selcnt']){  // 筆數大於必選,所以要出現勾選
-            	  $data['pckpro1_checkbox'] = true;
+                $data['pckpro1_checkbox'] = true;
             }
         }
         
@@ -671,24 +678,24 @@ class Member_join extends MY_Controller
         $data['pckpro2'] = $this->front_join_model->ms_pckpro(2,$msconn,array('jointype'=>$this->arsoa_join_data['jointype']));
         
         if ($data['pckpro2']){        	  
-        	  if (empty($data['pckpro1'])){  
+            if (empty($data['pckpro1'])){  
                 if (isset($data['pckpro2'][0]['maxamt']) && $data['pckpro2'][0]['maxamt'] > 0){
                     $maxamt = $data['pckpro2'][0]['maxamt'];
                 }
             }
             
-        	  $data['pckpro2_count']  = count($data['pckpro2']);  // 筆數
-        	  $data['pckpro2_protype'] = array();
-        	  $protype = '';
-        	  foreach ($data['pckpro2'] as $key => $item){
-        	  	       if ($protype <> trim($item['protype'])){
-        	  	           $data['pckpro2_protype'][] = trim($item['protype']);
-        	  	           $data['pckpro2_protype_num'][trim($item['protype'])] = 1;
-        	  	       }else{
-        	  	       	   $data['pckpro2_protype_num'][trim($item['protype'])] ++;
-        	  	       }
-        	  	       $protype = trim($item['protype']);
-        	  }        	  
+            $data['pckpro2_count']  = count($data['pckpro2']);  // 筆數
+            $data['pckpro2_protype'] = array();
+            $protype = '';
+            foreach ($data['pckpro2'] as $key => $item){
+                if ($protype <> trim($item['protype'])){
+                    $data['pckpro2_protype'][] = trim($item['protype']);
+                    $data['pckpro2_protype_num'][trim($item['protype'])] = 1;
+                }else{
+                    $data['pckpro2_protype_num'][trim($item['protype'])] ++;
+                }
+                $protype = trim($item['protype']);
+            }        	  
         }
         //echo "<pre>".print_r($data ,true)."</pre>";exit;
          
@@ -697,10 +704,9 @@ class Member_join extends MY_Controller
         $data['maxamt'] = $maxamt;
         $data['useamt'] = 0;
                 
-    	  _timer('*** before layout ***');
+        _timer('*** before layout ***');
      
-        $this->layout->view('member_join/step_product', $data);      
-        
+        $this->layout->view('member_join/step_product', $data);
     }
     
     // 選紅利產品
@@ -765,8 +771,10 @@ class Member_join extends MY_Controller
     	      exit;
     	  }
     	  
-    	  //--結帳鎖定通知--
-        $this->block_service->dataset('join','pay',base_url());            
+        //--結帳鎖定通知--
+        if ($this->lock){
+            $this->block_service->dataset('join','pay',base_url());            
+        }        
         //--結帳鎖定通知-- 
     	  
     	  $data['css'] = array('bs-stepper.min');
@@ -816,8 +824,10 @@ class Member_join extends MY_Controller
     	      exit;
     	  }
     	  
-    	  //--結帳鎖定通知--
-        $this->block_service->dataset('join','pay',base_url());            
+        //--結帳鎖定通知--
+        if ($this->lock){
+            $this->block_service->dataset('join','pay',base_url());            
+        }       
         //--結帳鎖定通知--  
     	      	  
     	  $msconn = $this->front_mssql_model->ms_connect();
@@ -1170,20 +1180,32 @@ class Member_join extends MY_Controller
     
     public function complete()
     {
-    	  $data_post = $this->input->post( NULL, true );        
-    	  /*
-    	  $data_post['jd'] = 'J211200019';
-    	  $data_post['cc'] = '61cda0a199439';
-    	  */
+        $data_post = $this->input->post( NULL, true );      
+        
+        // 寫入測試資料
+        $this->db->insert('test_input', ['data' => json_encode($data_post)]);
+        
+        /*
+        $data_post['jd'] = 'J211200019';
+        $data_post['cc'] = '61cda0a199439';
+        */
+        
         if ( is_array( $data_post ) && sizeof( $data_post ) > 0){             
-             $data['jd']   = trim($data_post['jd']);
-             $data['cc']   = trim($data_post['cc']);
-             
-             $msconn = $this->front_mssql_model->ms_connect();  
-             
-             $data['order_detail'] = $this->front_join_model->order_detail($msconn,$data['jd'],$data['cc']);
+            $data['jd']   = trim($data_post['jd']);
+            $data['cc']   = trim($data_post['cc']);
             
-             if ($data['order_detail']){                             
+            $msconn = $this->front_mssql_model->ms_connect();  
+            
+            $data['order_detail'] = $this->front_join_model->order_detail($msconn,$data['jd'],$data['cc']);
+        
+            if ($data['order_detail']){    
+                // 判斷是否有宅配商品，跳轉至另一頁
+                $homeDelivery = array('4', '5');
+                if (in_array($data['order_detail']['main']['jointype'], $homeDelivery)) {
+                    $url = base_url('online_form/form5?code='.$data['order_detail']['main']['c_no'].'&name='.urlencode($data['order_detail']['main']['uname']));
+                    redirect($url);
+                }
+                
                  $data['join_name'] = $this->join_name;
                  
                  $meta['title2'] = '新登錄會員-付款成功資料檢視';
@@ -1202,8 +1224,22 @@ class Member_join extends MY_Controller
                  $data['line_url'] = 'https://liff.line.me/'.$this->config->item('line_liff_url').'/m_'.$data['cc'];
                  
                  $data['platform'] = ($this->agent->is_mobile()) ? 'MOBILE' : 'DESKTOP';
+
+                // 寫入測試資料
+                $this->db->insert('test_input', ['data' => json_encode($data)]);
+
+                // 取得簽名圖片
+                $signaturePath = $this->CompleteModel->getSignatureImage($data['order_detail']['main']['session_id'], $data['order_detail']['main']['cookie_key']);
+                $data['signature'] = $signaturePath;
+
+                // 儲存成PDF
+                $this->CompleteModel->savePdf($data['order_detail']['main']['c_no'], $data);
+
+                // 發送簡訊
+                $message = "歡迎 {$data['order_detail']['main']['uname']} 您成為安露莎會員，您訂購的產品近日即會完成，請留意包裹配送訊息（會員專屬免付費專線：0809-080-608）";
+                $this->CompleteModel->sendSms($data['order_detail']['main']['tel'], $message);
                   
-                 $this->layout->view('member_join/step_complete', $data);               
+                $this->layout->view('member_join/step_complete', $data);               
             }else{
                  alert( '無此登錄會員資訊！',base_url('member_join'));
                  exit;

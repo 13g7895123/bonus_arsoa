@@ -247,7 +247,7 @@ class Block_service extends MY_Service
           ?>
           <div class="row mb-3">   
 					  <div class="col-lg-6 px-0 text-center text-md-left py-2">
-						  <h5>您的總點數為：<span class="text-danger font-weight-bold"><?=number_format($mp)?></span> 點</h5>
+						  <h5>您的前期紅利為：<span class="text-danger font-weight-bold"><?=number_format($mp)?></span> 點</h5>
 					  </div>
 					  <div class="col-lg-6 text-center text-md-right justify-content-center py-2">
 				       <a href="<?=base_url('reward/index/Y')?>" style="color: #e4024b;">紅利點數兌換說明</a> ｜
@@ -1650,14 +1650,98 @@ public function PM_onsubmit($Xmlspec){
    public function class_main()
    {
        ?>
-       <div class="row no-gutters partner-bordered">
-                    <div class="col partner-item"><span class="inside"><img src="<?=base_url()?>public/images/p01.png" alt="肌膚保養系列" /><br><h4 class="my-2">肌膚保養系列</h4><p>專為肌膚而進化的，<br>安露莎系列保養品。</p><a href="<?=base_url('category/skin')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a></span></div>
-                    <div class="col partner-item"><span class="inside"><img src="<?=base_url()?>public/images/p02.png" alt="彩粧系列" /><br><h4 class="my-2">彩粧系列</h4><p>基礎彩粧是肌膚保養的延伸，<br>展現美感造型同時呵護肌膚。</p><a href="<?=base_url('category/makeup')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a></span></div>
-                    <div class="col partner-item"><span class="inside"><img src="<?=base_url()?>public/images/p03.png" alt="保健食品系列" /><br><h4 class="my-2">保健食品系列</h4><p>肌膚是反映健康狀態的明鏡，<br>裡外兼顧創造美與健康。</p><a href="<?=base_url('category/health')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a></span></div>
-					          <div class="col partner-item"><span class="inside"><img src="<?=base_url()?>public/images/p04.png" alt="健康飲用水系列" /><br><h4 class="my-2">健康飲用水系列</h4><p>享受健康、純淨、甘甜的好水，<br>是身體的基本渴求。</p><a href="<?=base_url('category/clean')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a></span></div>
-                    <div class="col partner-item"><span class="inside"><img src="<?=base_url()?>public/images/p05.png" alt="美髮、美體系列" /><br><h4 class="my-2">美髮、美體系列</h4><p>植物性溫泉水及天然香氛、<br>呵護滋潤每一吋肌膚。</p><a href="<?=base_url('category/hair_body')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a></span></div>
-                    <div class="col partner-item"><span class="inside"><img src="<?=base_url()?>public/images/p06.png" alt="輔銷產品" /><br><h4 class="my-2">輔銷產品</h4><p>體驗組、旅行組、產品型錄、<br>會員手冊、販促品</p><a href="<?=base_url('category/other')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a></span></div>
-                  </div>       
+        <div class="row no-gutters partner-bordered">
+            <div class="col partner-item">
+                <span class="inside">
+                    <a href="<?=base_url('category/skin')?>" type="button">
+                        <img src="<?=base_url()?>public/images/p01.png" alt="肌膚保養系列" />
+                    </a>
+                    <br>
+                    <h4 class="my-2">肌膚保養系列</h4>
+                    <p>專為肌膚而進化的，<br>安露莎系列保養品。</p>
+                    <a href="<?=base_url('category/skin')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
+                </span>
+            </div>
+            <?php if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
+                <div class="col partner-item">
+                    <span class="inside">
+                        <a href="<?=base_url('member/product/5')?>" type="button">
+                            <img src="<?=base_url()?>public/images/m05.png" alt="肌能調理宅配專案" />
+                        </a>
+                        <br>
+                        <h4 class="my-2">肌能調理宅配專案</h4>
+                        <a href="<?=base_url('member/product/5')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
+                    </span>
+                </div>
+            <?php endif; ?>
+            <div class="col partner-item">
+                <span class="inside">
+                    <a href="<?=base_url('category/makeup')?>" type="button">
+                        <img src="<?=base_url()?>public/images/p02.png" alt="彩粧系列" />
+                    </a>
+                    <br>
+                    <h4 class="my-2">彩粧系列</h4>
+                    <p>基礎彩粧是肌膚保養的延伸，<br>展現美感造型同時呵護肌膚。</p>
+                    <a href="<?=base_url('category/makeup')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
+                </span>
+            </div>
+            <div class="col partner-item">
+                <span class="inside">
+                    <a href="<?=base_url('category/health')?>" type="button">
+                        <img src="<?=base_url()?>public/images/p03.png" alt="保健食品系列" />
+                    </a>
+                    <br>
+                    <h4 class="my-2">保健食品系列</h4>
+                    <p>肌膚是反映健康狀態的明鏡，<br>裡外兼顧創造美與健康。</p>
+                    <a href="<?=base_url('category/health')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
+                </span>
+            </div>
+            <?php if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
+                <div class="col partner-item">
+                    <span class="inside">
+                        <a href="<?=base_url('member/product/4')?>" type="button">
+                            <img src="<?=base_url()?>public/images/m03.png" alt="健康宅配專案" />
+                        </a>
+                        <br>
+                        <h4 class="my-2">健康宅配專案</h4>
+                        <a href="<?=base_url('member/product/4')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
+                    </span>
+                </div>
+            <?php endif; ?>
+            <div class="col partner-item">
+                <span class="inside">
+                    <a href="<?=base_url('category/clean')?>" type="button">
+                        <img src="<?=base_url()?>public/images/p04.png" alt="健康飲用水系列" />
+                    </a>
+                    <br>
+                    <h4 class="my-2">健康飲用水系列</h4>
+                    <p>享受健康、純淨、甘甜的好水，<br>是身體的基本渴求。</p>
+                    <a href="<?=base_url('category/clean')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
+                </span>
+            </div>
+            <div class="col partner-item">
+                <span class="inside">
+                    <a href="<?=base_url('category/hair_body')?>" type="button">
+                        <img src="<?=base_url()?>public/images/p05.png" alt="美髮、美體系列" />
+                    </a>
+                    <br>
+                    <h4 class="my-2">美髮、美體系列</h4>
+                    <p>植物性溫泉水及天然香氛、<br>呵護滋潤每一吋肌膚。</p>
+                    <a href="<?=base_url('category/hair_body')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
+                </span>
+            </div>
+            <div class="col partner-item">
+                <span class="inside">
+                    <a href="<?=base_url('category/other')?>" type="button">
+                        <img src="<?=base_url()?>public/images/p06.png" alt="輔銷產品" />
+                    </a>
+                    <br>
+                    <h4 class="my-2">輔銷產品</h4>
+                    <p>體驗組、旅行組、產品型錄、<br>會員手冊、販促品</p>
+                    <a href="<?=base_url('category/other')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
+                </span>
+            </div>
+        </div>
        <?php
    }
    

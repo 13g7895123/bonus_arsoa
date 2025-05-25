@@ -8,10 +8,10 @@ class Front_mssql_model extends MY_Model {
         parent::__construct();        
     }
     
-    // ´ú¸Õ¥i¤£¥i¥H³s¨ì¥D¾÷    
+    // ï¿½ï¿½ï¿½Õ¥iï¿½ï¿½ï¿½iï¿½Hï¿½sï¿½ï¿½Dï¿½ï¿½    
     public function ms_test()
     {
-           if ( $_SERVER['HTTP_HOST'] == 'localhost'){   // ¥»¾÷´ú¸Õ 
+           if ( $_SERVER['HTTP_HOST'] == 'localhost'){   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
                 return true;           
            }
            
@@ -220,7 +220,7 @@ class Front_mssql_model extends MY_Model {
     }
     
     /*    
-    $params = array ('¤å¦r´ú¸Õ4','6','¤å¦r´ú¸Õ122',date('Y-m-d H:i:s'),1);  
+    $params = array ('ï¿½ï¿½rï¿½ï¿½ï¿½ï¿½4','6','ï¿½ï¿½rï¿½ï¿½ï¿½ï¿½122',date('Y-m-d H:i:s'),1);  
     $this->front_mssql_model->update_data($msconn,"update test set varc1 = ? ,char1 = ?,nvar1 = ?,date2=? where int1 = ?",$params);
     */
     public function sql_update_data($msconn,$tsql,$params)

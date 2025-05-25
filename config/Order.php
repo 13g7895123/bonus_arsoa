@@ -115,27 +115,27 @@ class Order extends MY_Controller
         
         $data_post = $this->input->post();
         if ( is_array( $data_post ) && sizeof( $data_post ) > 0){                  
-             if ($data_post['edit'] == 'E'){
-                 if ($data_post['sfreight'] == 0 || $data_post['sfreight'] == 1 || $data_post['sfreight'] == 2){
-                     $this->session->set_userdata( 'sfreight',$data_post['sfreight'] );
-                 }   
-                 if (isset($data_post['del_prd']) && $data_post['del_prd']){
-                     foreach ($data_post['del_prd'] as $dprd){
-                              $this->front_order_model->d_cart('D',$this->session->userdata('member_session')['c_no'],$dprd);
-                     }  
-                 }
-                 $aprd = explode( ',', $this->session->userdata('ProductList') );
-                 for ($i=0;$i< count($aprd);$i++){
-                      for ($k = 1;$k<= $data_post['p_num'];$k++){
-                           if ($aprd[$i] == $data_post['p_no_'.$k]){
-                               $prd_session[$aprd[$i]]  = $data_post['num_'.$k];
-                               $this->session->set_userdata( 'prd_session', $prd_session );
-                               
-                               $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'],$aprd[$i],$data_post['num_'.$k]);       
-                           }
-                      }
-                 }
-                 redirect( 'order/cart' );
+            if ($data_post['edit'] == 'E'){
+                if ($data_post['sfreight'] == 0 || $data_post['sfreight'] == 1 || $data_post['sfreight'] == 2){
+                    $this->session->set_userdata( 'sfreight',$data_post['sfreight'] );
+                }   
+                if (isset($data_post['del_prd']) && $data_post['del_prd']){
+                    foreach ($data_post['del_prd'] as $dprd){
+                        $this->front_order_model->d_cart('D',$this->session->userdata('member_session')['c_no'],$dprd);
+                    }  
+                }
+                $aprd = explode( ',', $this->session->userdata('ProductList') );
+                for ($i=0;$i< count($aprd);$i++){
+                    for ($k = 1;$k<= $data_post['p_num'];$k++){
+                        if ($aprd[$i] == $data_post['p_no_'.$k]){
+                            $prd_session[$aprd[$i]]  = $data_post['num_'.$k];
+                            $this->session->set_userdata( 'prd_session', $prd_session );
+                            
+                            $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'],$aprd[$i],$data_post['num_'.$k]);       
+                        }
+                    }
+                }
+                redirect( 'order/cart' );
              }      
              redirect( 'order/checkout' );
              exit;
@@ -144,7 +144,7 @@ class Order extends MY_Controller
         $msconn = $this->front_mssql_model->ms_connect();  
         
         // 將車子的產品放到 mssql isf_t
-        $this->front_order_model->ms_cart_temp($msconn);
+        $this->front_order_model->($msconn);
         
         $sumdetail = $this->front_order_model->ms_get_sumdetail($msconn);
         

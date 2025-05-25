@@ -1,3 +1,11 @@
+<style>
+#signaturePad {
+    border: 2px solid #000;
+    width: 300px;
+    height: 150px;
+    cursor: crosshair;
+}
+</style>
 <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
         <div class="wrapper">
@@ -23,16 +31,16 @@
                                                 <p class="fs20">◆ 申請異動的會員資訊：</p>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">會員編號： </label>
-                                                        <input type="text" size="10" maxlength="6" name="member_code" value="<?= $userdata['c_no']; ?>">
+                                                        <label class="form-check-label" for="c_no">會員編號： </label>
+                                                        <input type="text" size="10" maxlength="6" id="c_no" name="c_no" value="<?= $userdata['c_no']; ?>">
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">會員姓名： </label>
-                                                        <input type="text" value="<?= $userdata['c_name']; ?>">
+                                                        <label class="form-check-label" for="c_name">會員姓名： </label>
+                                                        <input type="text" value="<?= $userdata['c_name'];?>" id="c_name">
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">聯絡電話： </label>
-                                                        <input type="text" size="12" maxlength="10" value="<?= $userdata['cell1']; ?>">
+                                                        <label class="form-check-label" for="member_contact_phone">聯絡電話： </label>
+                                                        <input type="text" size="12" maxlength="10" value="<?= $userdata['cell1']; ?>" id="member_contact_phone">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
@@ -116,67 +124,71 @@
                                             <div class="card-body">
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">會員編號： </label>
-                                                        <input type="text" size="10" maxlength="6">
+                                                        <label class="form-check-label" for="credit_c_no">會員編號： </label>
+                                                        <input type="text" size="10" maxlength="6" id="credit_c_no">
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">會員姓名： </label>
-                                                        <input type="text">
+                                                        <label class="form-check-label" for="credit_c_name">會員姓名： </label>
+                                                        <input type="text" id="credit_c_name">
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">聯絡電話： </label>
-                                                        <input type="text" size="12" maxlength="10">
-                                                    </div>
-                                                </div>
-                                                <div class="mb30">
-                                                    <div class="form-check form-check-inline">信用卡卡別：　
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">VISA </label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">MASTER </label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                                        <label class="form-check-label" for="inlineRadio4">JCB </label>
+                                                        <label class="form-check-label" for="credit_contact_phone">聯絡電話： </label>
+                                                        <input type="text" size="12" maxlength="10" id="credit_contact_phone">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">每月付款金額： </label>
-                                                        <input type="text">
+                                                        信用卡卡別：
+                                                        <input class="form-check-input" type="radio" name="card_type" id="card_type_visa" value="VISA">
+                                                        <label class="form-check-label" for="card_type_visa">VISA</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">發卡銀行： </label>
-                                                        <input type="text">
+                                                        <input class="form-check-input" type="radio" name="card_type" id="card_type_master" value="MASTER">
+                                                        <label class="form-check-label" for="card_type_master">MASTER</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="card_type" id="card_type_jcb" value="JCB">
+                                                        <label class="form-check-label" for="card_type_jcb">JCB</label>
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
-                                                        <input type="text" size="4" maxlength="4">
+                                                        <label class="form-check-label" for="monthly_payment">每月付款金額： </label>
+                                                        <input type="text" id="monthly_payment">
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="bank">發卡銀行： </label>
+                                                        <input type="text" id="bank">
+                                                    </div>
+                                                </div>
+                                                <div class="mb30">
+                                                    <div class="form-check form-check-inline">
+                                                        <label class="form-check-label" for="card_number_1">信用卡卡號（共16碼）：</label>
+                                                        <input type="text" size="4" maxlength="4" id="card_number_1">
                                                         -
-                                                        <input type="text" size="4" maxlength="4">
+                                                        <input type="text" size="4" maxlength="4" id="card_number_2">
                                                         -
-                                                        <input type="text" size="4" maxlength="4">
+                                                        <input type="text" size="4" maxlength="4" id="card_number_3">
                                                         -
-                                                        <input type="text" size="4" maxlength="4">
+                                                        <input type="text" size="4" maxlength="4" id="card_number_4">
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
-                                                        <label class="form-check-label" for="inlineRadio4">有效期限： </label>
-                                                        <input type="text" size="4" maxlength="2">
+                                                        <label class="form-check-label" for="card_expiry_month">有效期限： </label>
+                                                        <input type="text" size="4" maxlength="2" id="card_expiry_month">
                                                         月
-                                                        <input type="text" size="4" maxlength="2">
+                                                        <input type="text" size="4" maxlength="2" id="card_expiry_year">
                                                         年
                                                     </div>
                                                 </div>
                                                 <div class="">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">持卡人簽名： </label>
-                                                        <input type="text">
+                                                        <div style="display: flex; flex-direction: column;">
+                                                            <canvas id="signaturePad" width="300" height="150"></canvas>
+                                                            <button id="clearBtn">清除簽名</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -198,10 +210,10 @@
                                 <div class="row mb-2 wow fadeInUp" data-wow-delay=".2s">
                                     <div class="col-lg-12 mb-2">
                                         <div class="form-check form-check-inline">
-                                            <label class="label-custom">姓名：</label>
-                                            <input type="text">　
-                                            <label class="label-custom">會員編號：</label>
-                                            <input type="text">
+                                            <label class="label-custom" for="name_1">姓名：</label>
+                                            <input type="text" id="name_1">　
+                                            <label class="label-custom" for="member_code_1">會員編號：</label>
+                                            <input type="text" id="member_code_1">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -210,12 +222,12 @@
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">宅配日 & 品項：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="delivery_date_1">宅配日 & 品項：</label>
+                                                            <input type="text" class="w-100 mb-2" id="delivery_date_1"><input type="text" class="w-100 mb-2" id="delivery_item_1">
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">訂購品項 & 兌換紅利商品：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="purchase_item_1">訂購品項 & 兌換紅利商品：</label>
+                                                            <input type="text" class="w-100 mb-2" id="purchase_item_1"><input type="text" class="w-100 mb-2" id="redemption_item_1">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -228,10 +240,10 @@
                                 <div class="row mb-2 wow fadeInUp" data-wow-delay=".2s">
                                     <div class="col-lg-12 mb-2">
                                         <div class="form-check form-check-inline">
-                                            <label class="label-custom">姓名：</label>
-                                            <input type="text">　
-                                            <label class="label-custom">會員編號：</label>
-                                            <input type="text">
+                                            <label class="label-custom" for="name_2">姓名：</label>
+                                            <input type="text" id="name_2">　
+                                            <label class="label-custom" for="member_code_2">會員編號：</label>
+                                            <input type="text" id="member_code_2">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -240,12 +252,12 @@
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">宅配日 & 品項：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="delivery_date_2">宅配日 & 品項：</label>
+                                                            <input type="text" class="w-100 mb-2" id="delivery_date_2"><input type="text" class="w-100 mb-2" id="delivery_item_2">
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">訂購品項 & 兌換紅利商品：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="purchase_item_2">訂購品項 & 兌換紅利商品：</label>
+                                                            <input type="text" class="w-100 mb-2" id="purchase_item_2"><input type="text" class="w-100 mb-2" id="redemption_item_2">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -258,10 +270,10 @@
                                 <div class="row mb-2 wow fadeInUp" data-wow-delay=".2s">
                                     <div class="col-lg-12 mb-2">
                                         <div class="form-check form-check-inline">
-                                            <label class="label-custom">姓名：</label>
-                                            <input type="text">　
-                                            <label class="label-custom">會員編號：</label>
-                                            <input type="text">
+                                            <label class="label-custom" for="name_3">姓名：</label>
+                                            <input type="text" id="name_3">　
+                                            <label class="label-custom" for="member_code_3">會員編號：</label>
+                                            <input type="text" id="member_code_3">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -270,12 +282,12 @@
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">宅配日 & 品項：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="delivery_date_3">宅配日 & 品項：</label>
+                                                            <input type="text" class="w-100 mb-2" id="delivery_date_3"><input type="text" class="w-100 mb-2" id="delivery_item_3">
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">訂購品項 & 兌換紅利商品：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="purchase_item_3">訂購品項 & 兌換紅利商品：</label>
+                                                            <input type="text" class="w-100 mb-2" id="purchase_item_3"><input type="text" class="w-100 mb-2" id="redemption_item_3">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -288,10 +300,10 @@
                                 <div class="row mb-2 wow fadeInUp" data-wow-delay=".2s">
                                     <div class="col-lg-12 mb-2">
                                         <div class="form-check form-check-inline">
-                                            <label class="label-custom">姓名：</label>
-                                            <input type="text">　
-                                            <label class="label-custom">會員編號：</label>
-                                            <input type="text">
+                                            <label class="label-custom" for="name_4">姓名：</label>
+                                            <input type="text" id="name_4">　
+                                            <label class="label-custom" for="member_code_4">會員編號：</label>
+                                            <input type="text" id="member_code_4">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -300,12 +312,12 @@
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">宅配日 & 品項：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="delivery_date_4">宅配日 & 品項：</label>
+                                                            <input type="text" class="w-100 mb-2" id="delivery_date_4"><input type="text" class="w-100 mb-2" id="delivery_item_4">
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">訂購品項 & 兌換紅利商品：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="purchase_item_4">訂購品項 & 兌換紅利商品：</label>
+                                                            <input type="text" class="w-100 mb-2" id="purchase_item_4"><input type="text" class="w-100 mb-2" id="redemption_item_4">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -318,11 +330,11 @@
                                 <div class="row mb-2 wow fadeInUp" data-wow-delay=".2s">
                                     <div class="col-lg-12 mb-2">
                                         <div class="form-check form-check-inline">
-                                            <label class="label-custom">姓名：</label>
-                                            <input type="text">　
-                                            <label class="label-custom">會員編號：</label>
-                                            <input type="text">
-                                        </div>
+                                            <label class="label-custom" for="name_5">姓名：</label>
+                                            <input type="text" id="name_5">　
+                                            <label class="label-custom" for="member_code_5">會員編號：</label>
+                                            <input type="text" id="member_code_5">
+                                        </div>  
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="card bg-light ">
@@ -330,12 +342,12 @@
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">宅配日 & 品項：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="delivery_date_5">宅配日 & 品項：</label>
+                                                            <input type="text" class="w-100 mb-2" id="delivery_date_5"><input type="text" class="w-100 mb-2" id="delivery_item_5">
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">訂購品項 & 兌換紅利商品：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="purchase_item_5">訂購品項 & 兌換紅利商品：</label>
+                                                            <input type="text" class="w-100 mb-2" id="purchase_item_5"><input type="text" class="w-100 mb-2" id="redemption_item_5">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -348,10 +360,10 @@
                                 <div class="row mb-2 wow fadeInUp" data-wow-delay=".2s">
                                     <div class="col-lg-12 mb-2">
                                         <div class="form-check form-check-inline">
-                                            <label class="label-custom">姓名：</label>
-                                            <input type="text">　
-                                            <label class="label-custom">會員編號：</label>
-                                            <input type="text">
+                                            <label class="label-custom" for="name_6">姓名：</label>
+                                            <input type="text" id="name_6">　
+                                            <label class="label-custom" for="member_code_6">會員編號：</label>
+                                            <input type="text" id="member_code_6">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -360,12 +372,12 @@
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">宅配日 & 品項：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="delivery_date_6">宅配日 & 品項：</label>
+                                                            <input type="text" class="w-100 mb-2" id="delivery_date_6"><input type="text" class="w-100 mb-2" id="delivery_item_6">
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">訂購品項 & 兌換紅利商品：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="purchase_item_6">訂購品項 & 兌換紅利商品：</label>
+                                                            <input type="text" class="w-100 mb-2" id="purchase_item_6"><input type="text" class="w-100 mb-2" id="redemption_item_6">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -378,10 +390,10 @@
                                 <div class="row mb-2 wow fadeInUp" data-wow-delay=".2s">
                                     <div class="col-lg-12 mb-2">
                                         <div class="form-check form-check-inline">
-                                            <label class="label-custom">姓名：</label>
-                                            <input type="text">　
-                                            <label class="label-custom">會員編號：</label>
-                                            <input type="text">
+                                            <label class="label-custom" for="name_7">姓名：</label>
+                                            <input type="text" id="name_7">　
+                                            <label class="label-custom" for="member_code_7">會員編號：</label>
+                                            <input type="text" id="member_code_7">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -390,12 +402,12 @@
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">宅配日 & 品項：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="delivery_date_7">宅配日 & 品項：</label>
+                                                            <input type="text" class="w-100 mb-2" id="delivery_date_7"><input type="text" class="w-100 mb-2" id="delivery_item_7">
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <label class="label-custom">訂購品項 & 兌換紅利商品：</label>
-                                                            <input type="text" class="w-100 mb-2"><input type="text" class="w-100 mb-2">
+                                                            <label class="label-custom" for="purchase_item_7">訂購品項 & 兌換紅利商品：</label>
+                                                            <input type="text" class="w-100 mb-2" id="purchase_item_7"><input type="text" class="w-100 mb-2" id="redemption_item_7">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -586,6 +598,98 @@
     <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
 
     <script>
+        class signature {
+            constructor(canvasId) {
+                this.canvasId = canvasId;
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.drawing = false;
+                this.signatured = false; // 是否有簽名
+
+                // 設定筆刷樣式
+                this.ctx.lineWidth = 2;
+                this.ctx.lineCap = "round";
+                this.ctx.strokeStyle = "#000";
+
+                // 綁定事件
+                this.init();
+            }
+
+            // 取得相對座標 (適用於滑鼠 & 觸控)
+            getPosition(event) {
+                const rect = this.canvas.getBoundingClientRect();
+                if (event.touches) {
+                    return {
+                        x: event.touches[0].clientX - rect.left,
+                        y: event.touches[0].clientY - rect.top
+                    };
+                } else {
+                    return {
+                        x: event.offsetX,
+                        y: event.offsetY
+                    };
+                }
+            }
+
+            // 監聽滑鼠 & 觸控事件
+            init() {
+                // 滑鼠事件
+                this.canvas.addEventListener('mousedown', (e) => this.startDraw(e));
+                this.canvas.addEventListener('mousemove', (e) => this.draw(e));
+                this.canvas.addEventListener('mouseup', () => this.stopDraw());
+                this.canvas.addEventListener('mouseleave', () => this.stopDraw());
+
+                // 觸控事件
+                this.canvas.addEventListener('touchstart', (e) => this.startDraw(e), { passive: false });
+                this.canvas.addEventListener('touchmove', (e) => this.draw(e), { passive: false });
+                this.canvas.addEventListener('touchend', () => this.stopDraw());
+                this.canvas.addEventListener('touchcancel', () => this.stopDraw());
+            }
+
+            // 開始繪圖
+            startDraw(event) {
+                event.preventDefault(); // 防止手機滾動畫面
+                this.signatured = true;
+                this.drawing = true;
+                const pos = this.getPosition(event);
+                this.ctx.beginPath();
+                this.ctx.moveTo(pos.x, pos.y);
+            }
+
+            // 繪製過程
+            draw(event) {
+                if (!this.drawing) return;
+                event.preventDefault();
+                const pos = this.getPosition(event);
+                this.ctx.lineTo(pos.x, pos.y);
+                this.ctx.stroke();
+            }
+
+            // 停止繪圖
+            stopDraw() {
+                this.drawing = false;
+            }
+
+            // 取得簽名 Blob（圖片格式）
+            getSignatureBlob() {
+                return new Promise((resolve, reject) => {
+                    if (!this.signatured) {
+                        reject("請先簽名！");
+                        return;
+                    }
+                    this.canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject("轉換失敗");
+                        }
+                    }, "image/png");
+                });
+            }
+        }
+    </script>
+
+    <script>
         $(document).ready(function() {
             // init controller
             var controller = new ScrollMagic.Controller();
@@ -729,34 +833,86 @@
                 changeDeliveryDate.updateRender();
             });
 
-            $('#submit').click(function() {
+            // 簽名
+            const signaturePad = new signature('signaturePad');
+
+            signaturePad.init();
+
+            $('#submit').click(async function() {
                 muscleEenergy.fetchData();
                 healthCare.fetchData();
                 changeDeliveryDate.fetchData();
 
-                const formData = {
-                    change_date: $('input[name="change_date"]').val(),
-                    member_code: $('input[name="member_code"]').val(),
-                    muscle_energy_home_delivery_ten_days: muscleEenergy.isChecked,
-                    five_days: healthCare.fetchFiveDays(),
-                    twenty_days: healthCare.fetchTwentyDays(),
-                    vitality_fermentation_extract: healthCare.fetchVitalityFermentationExtract(),
-                    white_crane_ganoderma_extract: healthCare.fetchWhiteCraneGanodermaExtract(),
-                    beauty_C_tablets: healthCare.fetchBeautyCTablets(),
-                    delivery_date: changeDeliveryDate.date,
-                    postal_code: $('input[name="postal_code"]').val(),
-                    delivery_address: $('input[name="delivery_address"]').val(),
-                    consignee_name: $('input[name="consignee_name"]').val(),
-                    consignee_contact_phone_number: $('input[name="consignee_contact_phone_number"]').val(),
-                    agent_application: $('input[name="agent_application"]').val()
+                const formData = new FormData();
+                formData.append('change_date', $('input[name="change_date"]').val());
+                formData.append('c_no', $('#c_name').val());
+                formData.append('muscle_energy_home_delivery_ten_days', muscleEenergy.isChecked);
+                formData.append('five_days', healthCare.fetchFiveDays());
+                formData.append('twenty_days', healthCare.fetchTwentyDays());
+                formData.append('vitality_fermentation_extract', healthCare.fetchVitalityFermentationExtract());
+                formData.append('white_crane_ganoderma_extract', healthCare.fetchWhiteCraneGanodermaExtract());
+                formData.append('beauty_C_tablets', healthCare.fetchBeautyCTablets());
+                formData.append('delivery_date', changeDeliveryDate.date);
+                formData.append('postal_code', $('input[name="postal_code"]').val());
+                formData.append('delivery_address', $('input[name="delivery_address"]').val());
+                formData.append('consignee_name', $('input[name="consignee_name"]').val());
+                formData.append('consignee_contact_phone_number', $('input[name="consignee_contact_phone_number"]').val());
+
+                // 信用卡
+                formData.append('credit_c_no', $('#credit_c_no').val());
+                formData.append('credit_c_name', $('#credit_c_name').val());
+                formData.append('credit_contact_phone', $('#credit_contact_phone').val());
+                formData.append('card_type', $('input[name="card_type"]:checked').val());
+                formData.append('monthly_payment', $('#monthly_payment').val());
+                formData.append('bank', $('#bank').val());
+                formData.append('card_number', $('#card_number_1').val().toString() + $('#card_number_2').val().toString() + $('#card_number_3').val().toString() + $('#card_number_4').val().toString());
+                formData.append('card_expiry_month', $('#card_expiry_month').val());
+                formData.append('card_expiry_year', $('#card_expiry_year').val());
+                
+                // 處理簽名
+                if (signaturePad.signatured) {
+                    const blob = await signaturePad.getSignatureBlob();
+                    formData.append('signature', blob, 'signature.png');
+                }
+
+                // 代理申請
+                formData.append('agent_application', $('#agent_application').val());
+
+                // 細項
+                for (let i = 1; i <= 7; i++) {
+                    formData.append('name_' + i, $('#name_' + i).val());
+                    formData.append('member_code_' + i, $('#member_code_' + i).val());
+                    formData.append('delivery_date_' + i, $('#delivery_date_' + i).val());
+                    formData.append('delivery_item_' + i, $('#delivery_item_' + i).val());
+                    formData.append('purchase_item_' + i, $('#purchase_item_' + i).val());
+                    formData.append('redemption_item_' + i, $('#redemption_item_' + i).val());
                 }
                 
                 $.ajax({
                     url: '<?=$apiUrl;?>',
                     type: 'POST',
+                    processData: false,  // 不處理數據
+                    contentType: false,  // 不設置內容類型
                     data: formData,
                     success: function(response) {
-                        console.log(response);
+                        if (response.status == '200') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '提交成功', 
+                                text: response.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                // window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '提交失敗',
+                                text: response.message || '提交過程中發生錯誤，請稍後再試',
+                                confirmButtonText: '確定'
+                            });
+                        }
                     }
                 });
             });

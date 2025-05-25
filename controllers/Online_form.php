@@ -19,10 +19,16 @@ class Online_form extends MY_Controller
                       
         $this->load->library( 'user_agent' );
         $this->load->library('layout', array('layout' => '../template/layout'));
-        if ( !$this->front_member_model->check_member_login( TRUE ) ) {
-            redirect( 'member/login' );
+
+        // Get current function name
+        $nowFunction = $this->router->fetch_method();
+
+        if ($nowFunction != 'form5') {
+            if ( !$this->front_member_model->check_member_login( TRUE ) ) {
+                redirect( 'member/login' );
+            }
+            $this->userdata = $this->session->userdata['member_session'];
         }
-        $this->userdata = $this->session->userdata['member_session'];
 
         // api url
         $this->apiBaseUrl = base_url() . 'eform/api/';
@@ -90,6 +96,13 @@ class Online_form extends MY_Controller
             'userdata' => $this->userdata,
             'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
         );
+
+        // 如果有宅配的話，會帶入會員編號和姓名
+        $getData = $this->input->get();
+        if (isset($getData['code']) && isset($getData['name'])) {
+            $data['userdata']['c_no'] = $getData['code'];
+            $data['userdata']['c_name'] = urldecode($getData['name']);
+        }
 
         $this->layout->view('./eform/eform05', $data);
     }

@@ -190,8 +190,8 @@ class Front_join_model extends MY_Model {
         	  	  $data = $data[0];
         	  }        	
         }
-        return $data;
-    	  
+        
+        return $data;    	  
     }  
     
      // 我要結帳 前檢查

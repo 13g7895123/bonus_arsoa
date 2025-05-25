@@ -28,6 +28,15 @@
 						</div>
 						<div class="col-md-6 text-center text-md-right">
 			<select name="prdtype" id="prdtype" class="orderby hasCustomSelect border" aria-label="Shop order" style="-webkit-appearance: menulist-button; width: 198px; opacity: 1; height: 29px; font-size: 14px;">					
+        <?php
+          // 移除指定項目
+          $removeItem = array('health', 'clean');
+          foreach ($wp1 as $key => $item){
+            if (in_array($item['wp1_en_name'], $removeItem)){
+              unset($wp1[$key]);
+            }
+          }
+        ?>
 					<?php foreach ($wp1 as $key => $item){ ?>
 					         <option value="<?=$item['wp1_en_name']?>"><?=$item['wp1_na']?></option>
 					<?php } ?>

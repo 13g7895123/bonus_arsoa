@@ -634,34 +634,70 @@
                 this.canvas = document.getElementById(canvasId);
                 this.ctx = this.canvas.getContext('2d');
                 this.drawing = false;
-                this.signatured = false;    // 是否有簽名
+                this.signatured = false; // 是否有簽名
 
                 // 設定筆刷樣式
                 this.ctx.lineWidth = 2;
                 this.ctx.lineCap = "round";
                 this.ctx.strokeStyle = "#000";
+
+                // 綁定事件
+                this.init();
             }
 
-            // 監聽滑鼠事件
+            // 取得相對座標 (適用於滑鼠 & 觸控)
+            getPosition(event) {
+                const rect = this.canvas.getBoundingClientRect();
+                if (event.touches) {
+                    return {
+                        x: event.touches[0].clientX - rect.left,
+                        y: event.touches[0].clientY - rect.top
+                    };
+                } else {
+                    return {
+                        x: event.offsetX,
+                        y: event.offsetY
+                    };
+                }
+            }
+
+            // 監聽滑鼠 & 觸控事件
             init() {
-                $('#' + this.canvasId).on('mousedown', (e) => {
-                    console.log('mousedown');
-                    this.signatured = true;
-                    this.drawing = true;
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(e.offsetX, e.offsetY);
-                });
+                // 滑鼠事件
+                this.canvas.addEventListener('mousedown', (e) => this.startDraw(e));
+                this.canvas.addEventListener('mousemove', (e) => this.draw(e));
+                this.canvas.addEventListener('mouseup', () => this.stopDraw());
+                this.canvas.addEventListener('mouseleave', () => this.stopDraw());
 
-                $('#' + this.canvasId).on('mousemove', (e) => {
-                    if (this.drawing) {
-                        this.ctx.lineTo(e.offsetX, e.offsetY);
-                        this.ctx.stroke();
-                    }
-                });
+                // 觸控事件
+                this.canvas.addEventListener('touchstart', (e) => this.startDraw(e), { passive: false });
+                this.canvas.addEventListener('touchmove', (e) => this.draw(e), { passive: false });
+                this.canvas.addEventListener('touchend', () => this.stopDraw());
+                this.canvas.addEventListener('touchcancel', () => this.stopDraw());
+            }
 
-                $('#' + this.canvasId).on('mouseup mouseleave', () => {
-                    this.drawing = false;
-                });
+            // 開始繪圖
+            startDraw(event) {
+                event.preventDefault(); // 防止手機滾動畫面
+                this.signatured = true;
+                this.drawing = true;
+                const pos = this.getPosition(event);
+                this.ctx.beginPath();
+                this.ctx.moveTo(pos.x, pos.y);
+            }
+
+            // 繪製過程
+            draw(event) {
+                if (!this.drawing) return;
+                event.preventDefault();
+                const pos = this.getPosition(event);
+                this.ctx.lineTo(pos.x, pos.y);
+                this.ctx.stroke();
+            }
+
+            // 停止繪圖
+            stopDraw() {
+                this.drawing = false;
             }
 
             // 取得簽名 Blob（圖片格式）
@@ -829,6 +865,12 @@
                         console.error('Error:', error);
                     }
                 });
+            });
+
+            $('#clearBtnCheck').click(function() {
+                const canvas = document.getElementById("signaturePadCheck"); // 確保獲取的是 DOM
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
             });
         });
     </script>
