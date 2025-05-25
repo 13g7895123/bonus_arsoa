@@ -32,12 +32,14 @@
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">會員編號： </label>
                                                         <input type="text" size="10" maxlength="6" id="member_code" name="member_code" value="<?= $userdata['c_no']; ?>">
+                                                        <label class="preview" id="preview_member_code" style="display: none;"></label>
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">會員姓名： </label>
                                                         <input type="text" id="c_name" value="<?= $userdata['c_name']; ?>">
+                                                        <label class="preview" id="preview_c_name" style="display: none;"></label>
                                                     </div>
                                                 </div>
                                                 <div class="mb30">
@@ -53,45 +55,51 @@
                                                         <input class="card_type form-check-input" type="checkbox" id="jcb" value="JCB">
                                                         <label class="form-check-label" for="jcb">JCB</label>
                                                     </div>
+                                                    <label class="preview" id="preview_card_type" style="display: none;"></label>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
-                                                        <input type="text" size="4" maxlength="4" name="creditCardNumber1" id="creditCardNumber1">
+                                                        <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardNumber2" name="creditCardNumber1" id="creditCardNumber1">
                                                         -
-                                                        <input type="text" size="4" maxlength="4" name="creditCardNumber2" id="creditCardNumber2">
+                                                        <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardNumber3" name="creditCardNumber2" id="creditCardNumber2">
                                                         -
-                                                        <input type="text" size="4" maxlength="4" name="creditCardNumber3" id="creditCardNumber3">
+                                                        <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardNumber4" name="creditCardNumber3" id="creditCardNumber3">
                                                         -
-                                                        <input type="text" size="4" maxlength="4" name="creditCardNumber4" id="creditCardNumber4">
+                                                        <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardExpireMonth" name="creditCardNumber4" id="creditCardNumber4">
                                                     </div>
+                                                    <label class="preview" id="preview_creditCardNumber" style="display: none;"></label>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">有效月年： </label>
-                                                        <input type="text" size="2" maxlength="2" name="creditCardExpireMonth" id="creditCardExpireMonth">
+                                                        <input type="text" size="2" maxlength="2" class="autotab" data-next="creditCardExpireYear" name="creditCardExpireMonth" id="creditCardExpireMonth">
                                                         月
-                                                        <input type="text" size="2" maxlength="2" name="creditCardExpireYear" id="creditCardExpireYear">
+                                                        <input type="text" size="2" maxlength="2" class="autotab" data-next="creditCardBank" name="creditCardExpireYear" id="creditCardExpireYear">
                                                         年
                                                     </div>
+                                                    <label class="preview" id="preview_creditCardExpire" style="display: none;"></label>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="creditCardBank">發卡銀行： </label>
                                                         <input type="text" name="creditCardBank" id="creditCardBank">
                                                     </div>
+                                                    <label class="preview" id="preview_creditCardBank" style="display: none;"></label>
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="creditCardCvv">背面末3碼： </label>
-                                                        <input type="text" size="3" maxlength="3" name="creditCardCvv" id="creditCardCvv">
+                                                        <input type="text" size="3" maxlength="3" class="autotab" data-next="creditCardName" name="creditCardCvv" id="creditCardCvv">
                                                     </div>
+                                                    <label class="preview" id="preview_creditCardCvv" style="display: none;"></label>
                                                 </div>
                                                 <div class="">
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="creditCardName">信用卡英文姓名： </label>
                                                         <input type="text" name="creditCardName" id="creditCardName">
                                                     </div>
+                                                    <label class="preview" id="preview_creditCardName" style="display: none;"></label>
                                                 </div>
                                             </div>
                                         </div>
@@ -117,15 +125,21 @@
                                             <input type="text" size="2" maxlength="2" name="date3" id="date3">
                                             日
                                         </div>
+                                        <label class="preview" id="preview_date" style="display: none;"></label>
                                     </div>
                                     <div class="mb30">
                                         <div class="form-check form-check-inline">
                                             <label class="form-check-label" for="signaturePad">持卡人簽名： </label>
-                                            <div style="display: flex; flex-direction: column;">
-                                                <canvas id="signaturePad" width="300" height="150"></canvas>
-                                                <button id="clearBtn">清除簽名</button>
+                                            <div class="d-flex">
+                                                <div style="display: flex; flex-direction: column;">
+                                                    <canvas id="signaturePad" width="300" height="150"></canvas>
+                                                    <button id="clearBtn">清除簽名</button>
+                                                </div>
+                                                <div>
+                                                    (與信用卡一致)
+                                                </div>
                                             </div>
-                                            (與信用卡一致)
+                                            <label class="preview" id="preview_signature" style="display: none;"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -494,6 +508,60 @@
             }
         }
 
+        class Preview {
+            constructor() {
+                this.ids = [
+                    'member_code',
+                    'c_name',
+                    'creditCardBank',
+                    'creditCardCvv',
+                    'creditCardName',
+                ];
+            }
+
+            showPreview() {
+                $('input').hide();
+                $('.preview').show();
+            }
+
+            hidePreview() {
+                $('input').show();
+                $('.preview').hide();
+            }
+
+            setValue()
+            {
+                this.ids.forEach(id => {
+                    $(`#preview_${id}`).val($(`#${id}`).val());
+                });
+
+                let selectedCardType = $('.card_type:checked').val() || '';
+                $('#preview_card_type').text(selectedCardType);
+
+                let creditCardNumber = '';
+                for (let i = 0; i < 4; i++) {
+                    creditCardNumber += String($(`#creditCardNumber${i + 1}`).val());
+                }
+                $('#preview_creditCardNumber').text(creditCardNumber);
+                
+                let creditCardExpireMonth = $('#creditCardExpireMonth').val() || '';
+                let creditCardExpireYear = $('#creditCardExpireYear').val() || '';
+                $('#preview_creditCardExpire').text(`${creditCardExpireMonth} / ${creditCardExpireYear}`);
+
+                let date = $('#date1').val() + '/' + $('#date2').val() + '/' + $('#date3').val();
+                $('#preview_date').text(date);
+
+                // Get signature image and show preview
+                let $signatureCanvas = $('#signaturePad');
+                if ($signatureCanvas.length) {
+                    let signatureImage = $signatureCanvas[0].toDataURL('image/png');
+                    if (signatureImage !== 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACWCAYAAABkW7XSAAAAAXNSR0IArs4c6QAABGJJREFUeF7t1AEJAAAMAsHZv/RyPNwSyDncOQIECEQEFskpJgECBM5geQICBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAAYPlBwgQyAgYrExVghIgYLD8AAECGQGDlalKUAIEDJYfIEAgI2CwMlUJSoCAwfIDBAhkBAxWpipBCRAwWH6AAIGMgMHKVCUoAQIGyw8QIJARMFiZqgQlQMBg+QECBDICBitTlaAECBgsP0CAQEbAYGWqEpQAgQdWMQCX4yW9owAAAABJRU5ErkJggg==') {
+                        $('#preview_signature').html(`<img src="${signatureImage}" width="300" height="150">`);
+                    }
+                }
+            }
+        }
+
         $(document).ready(function() {
             $('#date1').val(new Date().getFullYear());
             $('#date2').val(new Date().getMonth() + 1);
@@ -732,6 +800,34 @@
                 const canvas = document.getElementById("signaturePad"); // 確保獲取的是 DOM
                 const ctx = canvas.getContext("2d");
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+
+            // 自動跳轉功能
+            $('.autotab').on('input', function() {
+                var maxLength = $(this).attr('maxlength');
+                var currentLength = $(this).val().length;
+                
+                // 檢查是否只輸入數字
+                var value = $(this).val();
+                if (!/^\d*$/.test(value)) {
+                    $(this).val(value.replace(/\D/g, ''));
+                    return;
+                }
+
+                // 當達到最大長度時自動跳到下一個輸入框
+                if (currentLength >= maxLength) {
+                    var nextElement = $(this).data('next');
+                    if (nextElement) {
+                        $('#' + nextElement).focus();
+                    }
+                }
+            });
+
+            // 防止非數字輸入
+            $('.autotab').on('keypress', function(e) {
+                if (e.which < 48 || e.which > 57) {
+                    e.preventDefault();
+                }
             });
         });
     </script>
