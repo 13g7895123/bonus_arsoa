@@ -91,10 +91,13 @@ class Order extends MY_Controller
                         if (count($product_num) == count($pdata)){
                             foreach ($pdata as $key => $prd_data){
                                 if (empty($this->session->userdata('ProductList'))){
-                                    $this->session->set_userdata( 'ProductList', $prd_data['p_no'] );                                           
+                                    $this->session->set_userdata( 'ProductList', $prd_data['p_no'] );   
+                                    $this->front_order_model->setDatabaseCart($prd_data['p_no']);
                                 }else{
-                                    if (!$this->front_order_model->check_cart($prd_data['p_no'])){                                                                     
-                                        $this->session->set_userdata( 'ProductList', $this->session->userdata('ProductList').",".$prd_data['p_no'] );                                               
+                                    if (!$this->front_order_model->check_cart($prd_data['p_no'])){       
+                                        $cartString = $this->session->userdata('ProductList').",".$prd_data['p_no'];
+                                        $this->session->set_userdata( 'ProductList', $cartString );    
+                                        $this->front_order_model->setDatabaseCart($cartString);
                                     }
                                     $prd_session = $this->session->userdata('prd_session');
                                 } 
@@ -188,6 +191,7 @@ class Order extends MY_Controller
                                           
                      if (empty($this->session->userdata('ProductList'))){
                          $this->session->set_userdata( 'ProductList', $prd_data['p_no'] );
+                         $this->front_order_model->setDatabaseCart($prd_data['p_no']);
                          
                          $result['errmsg'] = "已加入購物車！";
                          $result['status'] = 1;
@@ -195,8 +199,10 @@ class Order extends MY_Controller
                          if ($this->front_order_model->check_cart($prd_data['p_no'])){                          
                              $result['errmsg'] = "已存在購物車！";
                          }else{
-                             $this->session->set_userdata( 'ProductList', $this->session->userdata('ProductList').",".$prd_data['p_no'] );
-                             $result['status'] = 1;
+                            $cartString = $this->session->userdata('ProductList').",".$prd_data['p_no'];
+                            $this->session->set_userdata( 'ProductList', $cartString );
+                            $this->front_order_model->setDatabaseCart($cartString);
+                            $result['status'] = 1;
                          }
                          $prd_session = $this->session->userdata('prd_session');
                      } 
@@ -241,43 +247,61 @@ class Order extends MY_Controller
         $msconn = $this->front_mssql_model->ms_connect();  
         
         $data_post = $this->input->post();
+
+        // 當購物車沒有資料時，確認資料庫是否有
+        if ($this->session->userdata('ProductList') == ''){
+            $cartData = $this->db->from('ap_member_cart')
+                ->where('c_no',$this->session->userdata('member_session')['c_no'])
+                ->get()
+                ->result_array();
+
+            if ($cartData){
+                $pNoData = array_column($cartData, 'p_no');
+                $sessionData = implode(',',$pNoData);
+                $this->session->set_userdata('ProductList', $sessionData);
+                $this->front_order_model->setDatabaseCart($sessionData);
+
+                $this->db->insert('check_use_db_cart', array('data' => $sessionData));
+            }
+        }
+
         if ( is_array( $data_post ) && sizeof( $data_post ) > 0){                  
              if ($data_post['edit'] == 'E'){
-             	
-                 if ($data_post['sfreight'] == 0 || $data_post['sfreight'] == 1 || $data_post['sfreight'] == 2){
-                     $this->session->set_userdata( 'sfreight',$data_post['sfreight'] );
-                 }   
-                 if (isset($data_post['del_prd']) && $data_post['del_prd']){
-                     foreach ($data_post['del_prd'] as $dprd){
-                              $this->front_order_model->d_cart('D',$this->session->userdata('member_session')['c_no'],$dprd);
-                     }  
-                 }
-                 $aprd = explode( ',', $this->session->userdata('ProductList') );
-                 for ($i=0;$i< count($aprd);$i++){
-                      for ($k = 1;$k<= $data_post['p_num'];$k++){
-                           if ($aprd[$i] == $data_post['p_no_'.$k]){
-                               $prd_session[$aprd[$i]]  = $data_post['num_'.$k];
-                               $this->session->set_userdata( 'prd_session', $prd_session );
-                               
-                               $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'],$aprd[$i],$data_post['num_'.$k]);       
-                           }
-                      }
-                 }
+                if ($data_post['sfreight'] == 0 || $data_post['sfreight'] == 1 || $data_post['sfreight'] == 2){
+                    $this->session->set_userdata( 'sfreight',$data_post['sfreight'] );
+                }   
+                // 移除購物車
+                if (isset($data_post['del_prd']) && $data_post['del_prd']){
+                    foreach ($data_post['del_prd'] as $dprd){
+                        $this->front_order_model->d_cart('D',$this->session->userdata('member_session')['c_no'],$dprd);
+                    }  
+                }
+                $aprd = explode( ',', $this->session->userdata('ProductList') );
+                for ($i=0;$i< count($aprd);$i++){
+                    for ($k = 1;$k<= $data_post['p_num'];$k++){
+                        if ($aprd[$i] == $data_post['p_no_'.$k]){
+                            $prd_session[$aprd[$i]]  = $data_post['num_'.$k];
+                            $this->session->set_userdata( 'prd_session', $prd_session );
+                            
+                            $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'],$aprd[$i],$data_post['num_'.$k]);       
+                        }
+                    }
+                }
                  
                  // -- 活動加購 -- S
-                 $act_p_no = array();                
-                 foreach ($data_post as $key => $item){
-                 	        if (substr_count($key,'act_comp_')){
-                 	        	  foreach ($item as $key1 => $item1){ 		                              	   	
-                 	        	  	       $act_p_no[] = $item1;
-                 	        	  }
-                 	        }
-                 	        if (substr_count($key,'act_birth_')){
-                 	        	  foreach ($item as $key1 => $item1){ 		                              	   	
-                 	        	  	       $act_p_no[] = $item1;
-                 	        	  }
-                 	        }
-                 }                 
+                $act_p_no = array();                
+                foreach ($data_post as $key => $item){
+                if (substr_count($key,'act_comp_')){
+                    foreach ($item as $key1 => $item1){ 		                              	   	
+                        $act_p_no[] = $item1;
+                    }
+                }
+                if (substr_count($key,'act_birth_')){
+                    foreach ($item as $key1 => $item1){ 		                              	   	
+                        $act_p_no[] = $item1;
+                    }
+                }
+                }                 
                  $this->session->set_userdata( 'act' , $act_p_no );
                  // -- 活動加購 -- E
                  
@@ -316,20 +340,25 @@ class Order extends MY_Controller
         }
             
         //     echo "<pre>".print_r($sumdetail,true)."</pre>";
+        // print_r('test cart:::');
+        // print_r($this->session->userdata('ProductList'));
+        
+        // log_message('debug', 'My variable: ' . print_r($this->session->userdata('ProductList'), true));
+        
         $cart_data = array();
         if (!empty($this->session->userdata('ProductList'))){
             $cart_data = $this->front_order_model->ms_cart_list($msconn);      
             $change_chk = false;
             $prd_session = $this->session->userdata('prd_session');	
             foreach ($cart_data as $key => $item){                    
-            	    $p_no   = trim($item["p_no"]);
-            	    $p_num = $this->front_order_model->check_cart_prd_num($p_no);                    
-            	    if ($item["maxqty"] < $p_num){
-            	        $prd_session[$p_no]  = $item["maxqty"] ;
-                        $this->session->set_userdata( 'prd_session', $prd_session );
-                        $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'],$p_no,$item["maxqty"]);    
-                        $change_chk = true;
-                  }
+                $p_no   = trim($item["p_no"]);
+                $p_num = $this->front_order_model->check_cart_prd_num($p_no);                    
+                if ($item["maxqty"] < $p_num){
+                    $prd_session[$p_no]  = $item["maxqty"] ;
+                    $this->session->set_userdata( 'prd_session', $prd_session );
+                    $this->front_order_model->i_cart($this->session->userdata('member_session')['c_no'],$p_no,$item["maxqty"]);    
+                    $change_chk = true;
+                }
             }          
             if ($change_chk){
                 $this->front_order_model->ms_cart_temp($msconn);
@@ -429,7 +458,7 @@ class Order extends MY_Controller
       //  );             
                                
         _timer('*** before layout ***');
-        
+        // print_r($this->session->userdata('ProductList')); die();
         $this->layout->view('checkout', $data);
     }
     

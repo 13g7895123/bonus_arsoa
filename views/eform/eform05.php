@@ -5,6 +5,10 @@
     height: 150px;
     cursor: crosshair;
 }
+
+.preview {
+    margin: 0px;
+}
 </style>
 <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
@@ -45,15 +49,15 @@
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline"> 信用卡卡別：
                                                         <input class="card_type form-check-input" type="checkbox" id="visa" value="VISA">
-                                                        <label class="form-check-label" for="visa">VISA</label>
+                                                        <label class="form-check-label card_type_text" for="visa">VISA</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <input class="card_type form-check-input" type="checkbox" id="master" value="MASTER">
-                                                        <label class="form-check-label" for="master">MASTER</label>
+                                                        <label class="form-check-label card_type_text" for="master">MASTER</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <input class="card_type form-check-input" type="checkbox" id="jcb" value="JCB">
-                                                        <label class="form-check-label" for="jcb">JCB</label>
+                                                        <label class="form-check-label card_type_text" for="jcb">JCB</label>
                                                     </div>
                                                     <label class="preview" id="preview_card_type" style="display: none;"></label>
                                                 </div>
@@ -61,11 +65,11 @@
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">信用卡卡號（共16碼）：</label>
                                                         <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardNumber2" name="creditCardNumber1" id="creditCardNumber1">
-                                                        -
+                                                        <span class="credit_card_signal">-</span>
                                                         <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardNumber3" name="creditCardNumber2" id="creditCardNumber2">
-                                                        -
+                                                        <span class="credit_card_signal">-</span>
                                                         <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardNumber4" name="creditCardNumber3" id="creditCardNumber3">
-                                                        -
+                                                        <span class="credit_card_signal">-</span>
                                                         <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardExpireMonth" name="creditCardNumber4" id="creditCardNumber4">
                                                     </div>
                                                     <label class="preview" id="preview_creditCardNumber" style="display: none;"></label>
@@ -74,9 +78,9 @@
                                                     <div class="form-check form-check-inline">
                                                         <label class="form-check-label" for="inlineRadio4">有效月年： </label>
                                                         <input type="text" size="2" maxlength="2" class="autotab" data-next="creditCardExpireYear" name="creditCardExpireMonth" id="creditCardExpireMonth">
-                                                        月
+                                                        <span class="effective_date">月</span>
                                                         <input type="text" size="2" maxlength="2" class="autotab" data-next="creditCardBank" name="creditCardExpireYear" id="creditCardExpireYear">
-                                                        年
+                                                        <span class="effective_date">年</span>
                                                     </div>
                                                     <label class="preview" id="preview_creditCardExpire" style="display: none;"></label>
                                                 </div>
@@ -130,7 +134,7 @@
                                     <div class="mb30">
                                         <div class="form-check form-check-inline">
                                             <label class="form-check-label" for="signaturePad">持卡人簽名： </label>
-                                            <div class="d-flex">
+                                            <div class="d-flex signature_pad">
                                                 <div style="display: flex; flex-direction: column;">
                                                     <canvas id="signaturePad" width="300" height="150"></canvas>
                                                     <button id="clearBtn">清除簽名</button>
@@ -174,7 +178,9 @@
 
 
                                 <hr class="my-4">
-                                <button id="submit" class="btn btn-outline-danger btn-block">送出表單</button>
+                                <button id="confirm" class="btn btn-outline-info btn-block">前往確認</button>
+                                <button id="submit" class="btn btn-outline-danger btn-block d-none">送出表單</button>
+                                <button id="back" class="btn btn-outline-secondary btn-block d-none">回上頁</button>
 
 
 
@@ -522,31 +528,70 @@
             showPreview() {
                 $('input').hide();
                 $('.preview').show();
+
+                $('.card_type_text').hide();
+                $('.credit_card_signal').hide();
+                $('.effective_date').hide();
+
+                $('#confirm').hide();
+                $('#submit').removeClass('d-none');
+                $('#back').removeClass('d-none');
+
+                $('#preview_signature').show();
+                $('.signature_pad').removeClass('d-flex');
+                $('.signature_pad').addClass('d-none');
             }
 
             hidePreview() {
                 $('input').show();
                 $('.preview').hide();
-            }
 
+                $('.card_type_text').show();
+                $('.credit_card_signal').show();
+                $('.effective_date').show();
+
+                $('#confirm').show();
+                $('#submit').addClass('d-none');
+                $('#back').addClass('d-none');
+
+                $('#preview_signature').hide();
+                $('.signature_pad').addClass('d-flex');
+                $('.signature_pad').removeClass('d-none');                
+            }
+            
             setValue()
             {
                 this.ids.forEach(id => {
-                    $(`#preview_${id}`).val($(`#${id}`).val());
+                    $(`#preview_${id}`).text($(`#${id}`).val());
                 });
 
                 let selectedCardType = $('.card_type:checked').val() || '';
                 $('#preview_card_type').text(selectedCardType);
 
                 let creditCardNumber = '';
+                let valueEffective = false;
                 for (let i = 0; i < 4; i++) {
-                    creditCardNumber += String($(`#creditCardNumber${i + 1}`).val());
+                    if ($(`#creditCardNumber${i + 1}`).val() === '') {
+                        valueEffective = false;
+                    }
                 }
-                $('#preview_creditCardNumber').text(creditCardNumber);
+
+                if (valueEffective) {
+                    for (let i = 0; i < 4; i++) {
+                        if (i < 3) {
+                            creditCardNumber += String($(`#creditCardNumber${i + 1}`).val()) + '-';
+                        } else {
+                            creditCardNumber += String($(`#creditCardNumber${i + 1}`).val());
+                        }
+                    }
+                    $('#preview_creditCardNumber').text(creditCardNumber);
+                }
                 
                 let creditCardExpireMonth = $('#creditCardExpireMonth').val() || '';
                 let creditCardExpireYear = $('#creditCardExpireYear').val() || '';
-                $('#preview_creditCardExpire').text(`${creditCardExpireMonth} / ${creditCardExpireYear}`);
+                if (creditCardExpireMonth !== '' && creditCardExpireYear !== '') {
+                    $('#preview_creditCardExpire').text(`${creditCardExpireMonth} / ${creditCardExpireYear}`);
+                }
 
                 let date = $('#date1').val() + '/' + $('#date2').val() + '/' + $('#date3').val();
                 $('#preview_date').text(date);
@@ -563,6 +608,8 @@
         }
 
         $(document).ready(function() {
+            const preview = new Preview();
+
             $('#date1').val(new Date().getFullYear());
             $('#date2').val(new Date().getMonth() + 1);
             $('#date3').val(new Date().getDate());
@@ -793,6 +840,15 @@
                         });
                     }
                 });
+            });
+
+            $('#confirm').click(function() {
+                preview.setValue();
+                preview.showPreview();
+            });
+
+            $('#back').click(function() {
+                preview.hidePreview();
             });
 
             // 清除簽名

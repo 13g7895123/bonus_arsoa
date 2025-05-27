@@ -1,7 +1,11 @@
 <?php
 $prd_num = 0;
 if (!empty($this->session->userdata('ProductList'))){
-    $prd_num = count(explode( ',', $this->session->userdata('ProductList') ));
+  $cartData = explode(',',$this->session->userdata('ProductList'));
+  $cartData = array_filter($cartData, function($item){
+    return $item !== '';
+  }); 
+  $prd_num = count($cartData);
 }
 if ($active > ''){
     ?>

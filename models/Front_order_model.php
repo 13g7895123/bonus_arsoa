@@ -11,6 +11,19 @@ class Front_order_model extends MY_Model {
     // 放入暫存車
     public function i_cart($c_no,$p_no,$p_num = 1, $days = 0)
     {
+        // 如果days為0，則從ap_member_cart中取得days
+        if ($days == 0){
+            $cartData = $this->db->from('ap_member_cart')
+                ->where('c_no',$c_no)
+                ->where('p_no',$p_no)
+                ->get()
+                ->row_array();
+
+            if ($cartData){
+                $days = $cartData['days'];
+            }
+        }
+
         $sql = "INSERT INTO ap_member_cart (c_no,p_no,p_num,crdt,days) VALUES ('".$c_no."','".$p_no."','".$p_num."',now(),'".$days."')
             ON DUPLICATE KEY UPDATE p_num='".$p_num."',crdt=now(),days='".$days."'";
                          //echo $sql;                         
@@ -22,11 +35,16 @@ class Front_order_model extends MY_Model {
     {
         if ($ctype == 'A'){
             $this->session->unset_userdata( 'ProductList' );
+            $this->clearDatabaseCart();
             $this->session->unset_userdata( 'prd_session' );
             return $this->db->delete('ap_member_cart' ,array('c_no' => $c_no));
         }else{
             $p_nostr = '';
             $aprd = explode( ',', $this->session->userdata('ProductList') );
+            $aprd = array_filter($aprd, function($item){
+                return $item !== '';
+            });
+
             for ($i=0;$i< count($aprd);$i++){
                  if ($aprd[$i] <>  $p_no){
                      if ($p_nostr > ''){ $p_nostr .= ","; }
@@ -35,9 +53,11 @@ class Front_order_model extends MY_Model {
             }      
             if ($p_nostr == ''){
                 $this->session->unset_userdata( 'ProductList' );
+                $this->clearDatabaseCart();
                 $this->session->unset_userdata( 'prd_session' );
             }else{
                 $this->session->set_userdata( 'ProductList', $p_nostr );
+                $this->setDatabaseCart($p_nostr);
                 $this->session->unset_userdata( 'prd_session' )[$p_no];
             }            
             return $this->db->delete('ap_member_cart' ,array('c_no' => $c_no,'p_no' => $p_no));
@@ -159,6 +179,7 @@ class Front_order_model extends MY_Model {
         
         if ($p_nostr > ''){
             $this->session->set_userdata( 'ProductList', $p_nostr );
+            $this->setDatabaseCart($p_nostr);
             $this->session->set_userdata( 'prd_session', $prd_session );
         }
     }
@@ -169,6 +190,9 @@ class Front_order_model extends MY_Model {
       
         if (!empty($this->session->userdata('ProductList'))){
             $Fpl = explode( ',', $this->session->userdata('ProductList') );
+            $Fpl = array_filter($Fpl, function($item){
+                return $item !== '';
+            });
             return in_array($p_no, $Fpl);
         }
         return false;
@@ -177,8 +201,12 @@ class Front_order_model extends MY_Model {
     // 判斷車子裡有多少產品
     public function check_cart_num()
     {
-        if (!empty($this->session->userdata('ProductList'))){                         
-            return count(explode( ',', $this->session->userdata('ProductList')));
+        if (!empty($this->session->userdata('ProductList'))){
+            $cartItmes = explode( ',', $this->session->userdata('ProductList'));
+            $cartItmes = array_filter($cartItmes, function($item) {
+                return $item !== '';
+            });
+            return count($cartItmes);
         }else{
             return 0;  
         }        
@@ -218,8 +246,8 @@ class Front_order_model extends MY_Model {
             }   
             
             if ($this->session->userdata('member_session')['c_no'] == '000000'){
-                $this->front_base_model->delete_table('ap_ms_data',array('c_no'=>$this->session->userdata('member_session')['c_no'],'spkey' => $spkey));                        
-                $this->db->insert('ap_ms_data', array('c_no'=>$this->session->userdata('member_session')['c_no'],'spkey' => $spkey,'data' => json_encode($cart_data),'crdt' => date('Y-m-d')));            
+                // $this->front_base_model->delete_table('ap_ms_data',array('c_no'=>$this->session->userdata('member_session')['c_no'],'spkey' => $spkey));                        
+                // $this->db->insert('ap_ms_data', array('c_no'=>$this->session->userdata('member_session')['c_no'],'spkey' => $spkey,'data' => json_encode($cart_data),'crdt' => date('Y-m-d')));            
             }
         }
         
@@ -296,6 +324,9 @@ class Front_order_model extends MY_Model {
              
             if (!empty($this->session->userdata('ProductList'))){
                 $aprd = explode( ',', $this->session->userdata('ProductList') );
+                $aprd = array_filter($aprd, function($item){
+                    return $item !== '';
+                });
 
                 // 特定產品需要另外取宅配日
                 $specialProduct = array('A0010', 'A0011', 'B0009', 'C0006', 'Q0001', 'Q0002', 'Q0003', 'Q0004');
@@ -305,6 +336,8 @@ class Front_order_model extends MY_Model {
                     if (in_array($aprd[$i], $specialProduct)){
                         $days = $this->fetchDeliveryDate($this->session->userdata('member_session')['c_no'], $aprd[$i]);
                     }
+
+                    // print_r($days); die();
                     
                     $params = array (
                                     'temp_no' => $this->session->userdata('temp_no'),
@@ -443,25 +476,21 @@ class Front_order_model extends MY_Model {
     // 付款完成清掉車
     public function clear_cart($msconn)
     {
-         $this->session->unset_userdata( 'ProductList' );        // 產品
-         $this->session->unset_userdata( 'prd_session' );        // 數量
-         $this->session->unset_userdata( 'sfreight' );           // 運費選擇
-         $this->session->unset_userdata( 'act' );                // 活動
-         
-         if (!empty($this->session->userdata('temp_no'))){
-             if ($msconn){             
-                 // 先刪temp cart 
-                 $params = array ($this->session->userdata('temp_no'));  
-                 $this->front_mssql_model->delete_data($msconn,"delete from isf_t where temp_no = ? ",$params);
-                 
-                 $this->session->unset_userdata( 'temp_no' );  
-             }
-         }
-         
-         if ($this->session->userdata('member_session')['c_no'] > ''){
-             $this->front_base_model->delete_table('ap_member_cart',array('c_no'=>$this->session->userdata('member_session')['c_no']));                        
-         }
+        $this->session->unset_userdata( 'ProductList' );        // 產品
+        $this->clearDatabaseCart();
+        $this->session->unset_userdata( 'prd_session' );        // 數量
+        $this->session->unset_userdata( 'sfreight' );           // 運費選擇
+        $this->session->unset_userdata( 'act' );                // 活動
         
+        if (!empty($this->session->userdata('temp_no'))){
+            if ($msconn){             
+                // 先刪temp cart 
+                $params = array ($this->session->userdata('temp_no'));  
+                $this->front_mssql_model->delete_data($msconn,"delete from isf_t where temp_no = ? ",$params);
+                
+                $this->session->unset_userdata( 'temp_no' );  
+            }
+        }
     }
         
     // 中信 虛擬 ATM 帳號產生
@@ -579,4 +608,34 @@ class Front_order_model extends MY_Model {
 
         return 0;
      }
+
+    // 將購物車存入資料庫
+    public function setDatabaseCart($string)
+    {
+        
+        if (strpos($string, ',') !== false) {
+            $cart = explode(',',$string);
+            $cart = array_filter($cart, function($item){
+                return $item !== '';
+            });
+        }else{
+            $cart = $string;
+        }        
+
+        foreach ($cart as $_val){
+
+            $insertData = array(
+                'c_no' => $this->session->userdata('member_session')['c_no'],
+                'p_no' => $_val,
+            );
+            $this->db->insert('ap_member_cart',$insertData);
+        }
+    }
+
+    public function clearDatabaseCart()
+    {
+        if ($this->session->userdata('member_session')['c_no'] != ''){
+            $this->db->where('c_no', $this->session->userdata('member_session')['c_no'])->delete('ap_member_cart');
+        }
+    }
 }

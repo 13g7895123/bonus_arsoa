@@ -53,6 +53,7 @@ class Front_member_model extends MY_Model {
         $this->session->unset_userdata( 'is_read_reward' );     
         $this->session->unset_userdata( 'member_session' );
         $this->session->unset_userdata( 'ProductList' );
+        $this->front_order_model->clearDatabaseCart();
         $this->session->unset_userdata( 'prd_session' );
         $this->session->unset_userdata( 'pwdlen' );
         $this->session->unset_userdata( 'login_type' );        

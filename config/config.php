@@ -289,12 +289,14 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-if ( $_SERVER['HTTP_HOST'] == 'localhost'){   // 本機測試          
+if ( $_SERVER['HTTP_HOST'] == 'localhost'){   // 本機測試   
      $config['log_threshold'] = 1;
      $config['log_path'] = APPPATH . 'logs/';
 }else{
-     $config['log_threshold'] = 0;
-     $config['log_path'] = '';
+    //  $config['log_threshold'] = 0;
+    //  $config['log_path'] = '';
+    $config['log_threshold'] = 2;
+    $config['log_path'] = APPPATH . 'logs/';
 }     
 
 /*
