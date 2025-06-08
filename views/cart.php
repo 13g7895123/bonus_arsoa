@@ -56,7 +56,8 @@
                    $p_num = $this->front_order_model->check_cart_prd_num(trim($item["p_no"]));                                      
               ?>
               <tr>
-                <td nowrap="nowrap" class="text-left"><?=$item['p_name']?></td>
+                <!-- 紅利點數不足 字體轉紅 -->
+                <td <?php if ($sumdetail['mp'] < 0): ?> style="color: red; font-weight: 800;"<?php endif; ?>><?=$item['p_name']?></td>
                 <td><?php
                 if ($item['c_price'] > 0){
                     echo number_format($item['c_price']);
@@ -80,7 +81,8 @@
                     $total_pv = $item['pv'] * $p_num;
                     echo number_format($total_pv);
                 }?></td>
-                <td><?php
+                <td <?php if ($sumdetail['mp'] < 0): ?> style="color: red; font-weight: 800;"<?php endif; ?>>
+                <?php
                 if ($item['m_mp'] > 0){
                     $total_m_mp = $item['m_mp'] * $p_num;
                     echo number_format($total_m_mp);
@@ -258,7 +260,10 @@ if ($sumdetail['is_freight'] <> '0'){  // 抓運費
 				    </div>
 					<div class="text-right">
 						<div class="btn-group" role="group" aria-label="Basic example">
-						  <a href="<?=base_url('reward')?>" class="btn btn-outline-secondary">兌換紅利商品　<i class="icon ion-pricetags"></i></a>
+						  <a href="<?=base_url('reward')?>" class="btn btn-outline-secondary" <?php if ($sumdetail['mp'] < 0): ?> style="color: red; font-weight: 800;"<?php endif; ?>>
+                <span>兌換紅利商品</span>
+                <i class="icon ion-pricetags"></i>
+              </a>
 							<a href="<?=base_url('#products')?>" class="btn btn-outline-secondary"><i class="icon ion-ios-cart"></i>　繼續選購</a>
               <button type="button" onclick="document.form1.edit.value='E';chg_token('<?php echo $this->security->get_csrf_token_name(); ?>_cart');Form_check('N');" class="btn btn-outline-secondary">更改數量</button>
               <?php if ($sumdetail['mp'] < 0){ ?>

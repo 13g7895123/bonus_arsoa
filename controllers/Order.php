@@ -1481,9 +1481,23 @@ rs.close
            $msconn = $this->front_mssql_model->ms_connect();  
            
            $order_detail = $this->front_order_model->order_detail($msconn,$this->session->userdata('member_session')['c_no'],$web_no,$order);
+
+            // 判斷是否為宅配
+            $p_no = array_column($order_detail['prd'], 'p_no');
+
+            $homeDelivery = false;
+            foreach ($p_no as $item) {
+                if (strlen(trim($item)) == 5) {
+                    $homeDelivery = true;
+                    break;
+                }
+            }
+
+            $url = ($homeDelivery) ? base_url('online_form/form5?code='.$order_detail['main']['c_no'].'&name='.$order_detail['main']['c_name']) : '';
+            $data['homeDelivery'] = $homeDelivery;
+            $data['homeDelivery_url'] = $url;
            
-           if ($order_detail){
-                             
+           if ($order_detail){                             
                $meta['title2'] = '訂單檢視';
                $meta['title1'] = FC_Web.' - '.$meta['title2'];
                $data['meta']['canonical'] = site_url();      

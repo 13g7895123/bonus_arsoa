@@ -100,8 +100,8 @@ class Online_form extends MY_Controller
         // 如果有宅配的話，會帶入會員編號和姓名
         $getData = $this->input->get();
         if (isset($getData['code']) && isset($getData['name'])) {
-            $data['userdata']['c_no'] = $getData['code'];
-            $data['userdata']['c_name'] = urldecode($getData['name']);
+            $data['userdata']['c_no'] = trim($getData['code']);
+            $data['userdata']['c_name'] = trim($getData['name']);
         }
 
         $this->layout->view('./eform/eform05', $data);

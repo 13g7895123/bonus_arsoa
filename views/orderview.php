@@ -53,6 +53,10 @@
 </div>
 
 <script>
+  <?php if ($homeDelivery): ?>
+  	window.open('<?=$homeDelivery_url?>', '_blank');
+  <?php endif; ?>
+
 //列印功能
 function printHtml(html) {
 var bodyHtml = document.body.innerHTML;
