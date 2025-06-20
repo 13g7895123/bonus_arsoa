@@ -820,6 +820,10 @@
                 if (creditCardBack) {
                     formData.append('creditCardBack', creditCardBack); 
                 }
+
+                // 宅配判斷
+                formData.append('web_no', '<?=$userdata['web_no'];?>'); 
+                formData.append('join_no', '<?=$userdata['join_no'];?>'); 
                 
                 // Send file via AJAX
                 $.ajax({

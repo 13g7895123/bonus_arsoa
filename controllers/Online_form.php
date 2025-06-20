@@ -104,6 +104,9 @@ class Online_form extends MY_Controller
             $data['userdata']['c_name'] = trim($getData['name']);
         }
 
+        $data['userdata']['web_no'] = (isset($getData['web_no'])) ? trim($getData['web_no']) : '';
+        $data['userdata']['join_no'] = (isset($getData['join_no'])) ? trim($getData['join_no']) : '';
+
         $this->layout->view('./eform/eform05', $data);
     }
 

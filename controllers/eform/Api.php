@@ -322,10 +322,10 @@ class Api extends MY_Controller
 
         foreach ($files as $_val) {
             if (isset($_FILES[$_val])) {
-                // $uploadResult = $commonModel->uploadFile($_FILES, $_val);
-                if ($_val == 'image') {
+                if ($_val == 'image') {     // 頁面截圖
                     // 自訂檔案名稱
-                    $customFileName = $postData['c_code'] . '_' . date('YmdHis') . substr(microtime(), 2, 3) . '.jpg';
+                    $serialNumber = $form5Model->fetchLatestForm5SerialNumber();
+                    $customFileName = $postData['c_code'] . '-' . $serialNumber . '.jpg';
                     $uploadResult = $commonModel->uploadFile($_FILES, $_val, $customFileName);
                 }else{
                     $uploadResult = $commonModel->uploadFile($_FILES, $_val);
@@ -350,6 +350,17 @@ class Api extends MY_Controller
             $creditCardData = json_decode($postData['credit'], true);
             $creditCardData = $form5Model->fetchCreditCardDataFormat($creditCardData);
             $creditCardId = $commonModel->insertCreditCardData($creditCardData, 'eform5');
+        }
+
+        // 宅配更新
+        if (isset($postData['web_no']) && !empty($postData['web_no'])) {    // 一般入會
+            $msconn = $this->front_mssql_model->ms_connect(); 
+            $this->front_mssql_model->update_data($msconn, 'isf_h', array('isvcard' => 1), array('web_no' => $postData['web_no']));
+        }
+
+        if (isset($postData['join_no']) && !empty($postData['join_no'])) {    // 新入會
+            $msconn = $this->front_mssql_model->ms_connect(); 
+            $this->front_mssql_model->update_data($msconn, 'jsf_h', array('isvcard' => 1), array('join_no' => $postData['join_no']));
         }
 
         // 寫入資料        

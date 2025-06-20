@@ -158,9 +158,25 @@
 
       <?=$this->block_service->load_html_footer(); ?>  
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 <?php if ($homeDelivery): ?>
-  	window.open('<?=$homeDelivery_url?>', '_blank');
+	Swal.fire({
+      title: '系統提示', 
+      text: '請選擇是否需要填寫信用卡資料',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: '開啟表單',
+      cancelButtonText: '我之前填過了',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // 點擊開啟表單 - 在新分頁開啟宅配表單
+        window.open('<?=$homeDelivery_url?>', '_blank');
+      }
+      // 點擊我之前填過了或關閉 - 關閉 alert
+    });
 <?php endif; ?>
 
 //列印功能

@@ -640,364 +640,373 @@ class Order extends MY_Controller
     // 付款囉 產生訂單
     public function pay()
     {
-          if ( !$this->front_member_model->check_member_login( TRUE ) ) {
-               redirect( 'member/login' );
-          }
+        if ( !$this->front_member_model->check_member_login( TRUE ) ) {
+            redirect( 'member/login' );
+        }
         
-          //--結帳鎖定通知--
-          $this->block_service->dataset('member','pay');            
-          //--結帳鎖定通知--  
-          
-          if ($this->front_order_model->check_cart_num() <= 0){
-              alert('您尚未將產品放入購物車！');
-              exit;
-          }
+        //--結帳鎖定通知--
+        $this->block_service->dataset('member','pay');            
+        //--結帳鎖定通知--  
             
-          $data_post = $this->input->post();
-          if ( is_array( $data_post ) && sizeof( $data_post ) > 0)
-          {                         
-               $web_no = $this->front_order_model->web_no(); // 訂單單號
-              
-               $web_data = $this->front_base_model->get_data('web_base',array('1'=>1),'',1);        
-               if ($web_data){
-                   $bv_date = trim($web_data["bv_date"]);
-               }
-               // 抓地址               
-               if (isset($data_post['set_addr'])){
-                   $recv_data = $this->front_base_model->get_data('ap_member_address',array('c_no'=>$this->session->userdata('member_session')['c_no'],'aid'=>$data_post['set_addr']),'',1);               
-                   if (!$recv_data){
-                       alert('收件人資訊，設定有誤！');
-                       exit;
-                   }
-               }else{
-               	   alert('收件人資訊，設定有誤！');
-                   exit;
-               }   
-               
-               $msconn = $this->front_mssql_model->ms_connect();
-               
-               $chkordererrmsg = $this->front_order_model->ms_chkorder($msconn);
-               if ($chkordererrmsg > ''){
-                   alert($chkordererrmsg,base_url('order/cart'));
-                   exit;
-               }
-               
-               $sumdetail = $this->front_order_model->ms_get_sumdetail($msconn);
-               
-               $add_p_no  = '';                              
-               if ($sumdetail['is_freight'] <> '0'){  // 抓運費
-                   if ($this->session->userdata( 'sfreight') == '2'){
-                       $add_p_no = ",A000000";
-                       $sumdetail['m_mp'] += $this->session->userdata('FC_freight_mp');                       
-                       $sumdetail['mp'] -= $this->session->userdata('FC_freight_mp');
-                   }else{
-                       $add_p_no = ",0000000";
-                       $sumdetail['amt'] += $this->session->userdata('FC_freight');
-                   }
-               }
-               
-               if ($sumdetail['mp'] < 0){
-                   alert('紅利點數不足，請至購物車調整！',base_url('order/cart'));
-               }
-               $CheckCode = uniqid();
-               
-               if (isset($data_post['save_email']) && $data_post['save_email'] == 'Y' && $data_post['email'] > ''){
-               	   $this->front_member_model->member_save_data($this->session->userdata('member_session')['c_no'],'email',$data_post['email']); 
-               }
-               
-               //　訂單主檔　
-               $paramsh = array(
-                             'success'    => '0',
-                             'web_no'     => $web_no,
-                             'c_no'       => $this->session->userdata('member_session')['c_no'],
-                             'c_name'     => $this->session->userdata('member_session')['c_name'],
-                             'd_posn'     => $this->session->userdata('member_session')['d_posn'],
-                             'bv_date'    => $bv_date,
-                             'recv_name'  => $recv_data['c_name'],
-                             'zip_dl'     => $recv_data['postal'],
-                             'addr_dl'    => $recv_data['address'],
-                             'cell1'      => $recv_data['tel'],                             
-                             'e_mail'     => $data_post['email'],
-                          //   'idno'       => $data_post['idno'],
-                             'pay_type'   => $data_post['paytype'],
-                             'send_type'  => '貨運',                             
-                             'amt'        => 0,
-                             'a_pv'       => 0,
-                             'b_pv'       => 0,
-                             'a_amt'      => 0,
-                             'b_amt'      => 0,
-                             'u_amt'      => 0,
-                             'pay_amt'    => 0,                             
-                             'mp_amt'     => 0,
-                             'bf_mp'      => 0,
-                             'r_mp'       => 0,
-                             'p_mp'       => 0,
-                             'm_mp'       => 0,                             
-                             'ord_statue' => '付款未完成',
-                             'CheckCode'  => $CheckCode,
-                             'or_date'    => date('Y-m-d H:i:s')
-                         );
-               
-               $this->front_mssql_model->insert_data($msconn,"isf_h",$paramsh);
-               
-               $cart_data = $this->front_order_model->ms_cart_list($msconn);
-               
-               if ($add_p_no > ''){  // 運費
-                   // 訂單單身產品
-                   //$scart_data = $this->front_order_model->cart_list($this->session->userdata('ProductList').$add_p_no);                           
-                   $scart_data = $this->front_order_model->cart_list($add_p_no)[0];
-                   array_push($cart_data, $scart_data);
-               }
-               
-               foreach ($cart_data as $key => $item){             
-                        if ($item["p_no"] == 'A000000' || $item["p_no"] == '0000000'){  //  運費
-                            $qty = 1; 
-                        }else{
-                            $qty = $this->front_order_model->check_cart_prd_num(trim($item["p_no"]));
-                        }
+        if ($this->front_order_model->check_cart_num() <= 0){
+            alert('您尚未將產品放入購物車！');
+            exit;
+        }
+            
+        $data_post = $this->input->post();
+        if ( is_array( $data_post ) && sizeof( $data_post ) > 0)
+        {
+            // ### 測試用
+            $this->db->insert('test_input', array('data' => json_encode($data_post)));        
+
+            $web_no = $this->front_order_model->web_no(); // 訂單單號
+
+            // ### 測試用
+            $this->db->insert('test_input', array('data' => $web_no));        
+            
+            $web_data = $this->front_base_model->get_data('web_base',array('1'=>1),'',1);        
+            if ($web_data){
+                $bv_date = trim($web_data["bv_date"]);
+            }
+            // 抓地址               
+            if (isset($data_post['set_addr'])){
+                $recv_data = $this->front_base_model->get_data('ap_member_address',array('c_no'=>$this->session->userdata('member_session')['c_no'],'aid'=>$data_post['set_addr']),'',1);               
+                if (!$recv_data){
+                    alert('收件人資訊，設定有誤！');
+                    exit;
+                }
+            }else{
+                alert('收件人資訊，設定有誤！');
+                exit;
+            }   
+            
+            $msconn = $this->front_mssql_model->ms_connect();
+            
+            $chkordererrmsg = $this->front_order_model->ms_chkorder($msconn);
+            if ($chkordererrmsg > ''){
+                alert($chkordererrmsg,base_url('order/cart'));
+                exit;
+            }
+            
+            $sumdetail = $this->front_order_model->ms_get_sumdetail($msconn);
+            
+            $add_p_no  = '';                              
+            if ($sumdetail['is_freight'] <> '0'){  // 抓運費
+                if ($this->session->userdata( 'sfreight') == '2'){
+                    $add_p_no = ",A000000";
+                    $sumdetail['m_mp'] += $this->session->userdata('FC_freight_mp');                       
+                    $sumdetail['mp'] -= $this->session->userdata('FC_freight_mp');
+                }else{
+                    $add_p_no = ",0000000";
+                    $sumdetail['amt'] += $this->session->userdata('FC_freight');
+                }
+            }
+            
+            if ($sumdetail['mp'] < 0){
+                alert('紅利點數不足，請至購物車調整！',base_url('order/cart'));
+            }
+            $CheckCode = uniqid();
+            
+            if (isset($data_post['save_email']) && $data_post['save_email'] == 'Y' && $data_post['email'] > ''){
+                $this->front_member_model->member_save_data($this->session->userdata('member_session')['c_no'],'email',$data_post['email']); 
+            }
+            
+            //　訂單主檔　
+            $paramsh = array(
+                'success'    => '0',
+                'web_no'     => $web_no,
+                'c_no'       => $this->session->userdata('member_session')['c_no'],
+                'c_name'     => $this->session->userdata('member_session')['c_name'],
+                'd_posn'     => $this->session->userdata('member_session')['d_posn'],
+                'bv_date'    => $bv_date,
+                'recv_name'  => $recv_data['c_name'],
+                'zip_dl'     => $recv_data['postal'],
+                'addr_dl'    => $recv_data['address'],
+                'cell1'      => $recv_data['tel'],                             
+                'e_mail'     => $data_post['email'],
+                'pay_type'   => $data_post['paytype'],
+                'send_type'  => '貨運',                             
+                'amt'        => 0,
+                'a_pv'       => 0,
+                'b_pv'       => 0,
+                'a_amt'      => 0,
+                'b_amt'      => 0,
+                'u_amt'      => 0,
+                'pay_amt'    => 0,                             
+                'mp_amt'     => 0,
+                'bf_mp'      => 0,
+                'r_mp'       => 0,
+                'p_mp'       => 0,
+                'm_mp'       => 0,                             
+                'ord_statue' => '付款未完成',
+                'CheckCode'  => $CheckCode,
+                'or_date'    => date('Y-m-d H:i:s')
+            );
+            
+            $this->front_mssql_model->insert_data($msconn,"isf_h",$paramsh);
+            
+            $cart_data = $this->front_order_model->ms_cart_list($msconn);
+
+            // ### 測試用
+            $this->db->insert('test_input', array('data' => json_encode($cart_data)));        
+            
+            if ($add_p_no > ''){  // 運費
+                // 訂單單身產品
+                //$scart_data = $this->front_order_model->cart_list($this->session->userdata('ProductList').$add_p_no);                           
+                $scart_data = $this->front_order_model->cart_list($add_p_no)[0];
+                array_push($cart_data, $scart_data);
+            }
+            
+            foreach ($cart_data as $key => $item){             
+                if ($item["p_no"] == 'A000000' || $item["p_no"] == '0000000'){  //  運費
+                    $qty = 1; 
+                }else{
+                    $qty = $this->front_order_model->check_cart_prd_num(trim($item["p_no"]));
+                }
+                $paramsb = array(
+                                'web_no'     => $web_no,
+                                'p_no'       => trim($item['p_no']), 
+                                'p_name'     => trim($item['p_name']), 
+                                'r_price'    => trim($item['r_price']),                                          
+                                'c_price'    => trim($item['c_price']),                                          
+                                'pv'         => trim($item['pv']), 
+                                'p_mp'       => trim($item['p_mp']), 
+                                'm_mp'       => trim($item['m_mp']), 
+                                'mp_amt'     => trim($item['mp_amt']), 
+                                'qty'        => $qty, 
+                                'a_pv'       => trim($item['a_pv']), 
+                                'b_pv'       => trim($item['b_pv']), 
+                                'opv'        => trim($item['opv']),
+                                'opv_h'      => trim($item['opv_h']), 
+                                'a_amt'      => trim($item['a_amt']), 
+                                'b_amt'      => trim($item['b_amt'])
+                        );                               
+                $this->front_mssql_model->insert_data($msconn,"isf_b",$paramsb);
+            }            
+            
+            if (count($sumdetail['comp']) > 0){   // 活動                
+                foreach ($sumdetail['comp'] as $key => $item){ 		     
+                    if ($item['qty'] > 0 && ($item['gisgive'] || (!empty($this->session->userdata( 'act' )) && in_array(trim($item['p_no']),$this->session->userdata( 'act' ))))){  
                         $paramsb = array(
-                                         'web_no'     => $web_no,
-                                         'p_no'       => trim($item['p_no']), 
-                                         'p_name'     => trim($item['p_name']), 
-                                         'r_price'    => trim($item['r_price']),                                          
-                                         'c_price'    => trim($item['c_price']),                                          
-                                         'pv'         => trim($item['pv']), 
-                                         'p_mp'       => trim($item['p_mp']), 
-                                         'm_mp'       => trim($item['m_mp']), 
-                                         'mp_amt'     => trim($item['mp_amt']), 
-                                         'qty'        => $qty, 
-                                         'a_pv'       => trim($item['a_pv']), 
-                                         'b_pv'       => trim($item['b_pv']), 
-                                         'opv'        => trim($item['opv']),
-                                         'opv_h'      => trim($item['opv_h']), 
-                                         'a_amt'      => trim($item['a_amt']), 
-                                         'b_amt'      => trim($item['b_amt'])
-                                   );                               
-                        $this->front_mssql_model->insert_data($msconn,"isf_b",$paramsb);
-               }            
-               
-               if (count($sumdetail['comp']) > 0){   // 活動                
-                   foreach ($sumdetail['comp'] as $key => $item){ 		     
-	          	 	   	        if ($item['qty'] > 0 && ($item['gisgive'] || (!empty($this->session->userdata( 'act' )) && in_array(trim($item['p_no']),$this->session->userdata( 'act' ))))){  
-	          	 	   	        	  $paramsb = array(
-                                         'web_no'     => $web_no,
-                                         'p_no'       => trim($item['p_no']), 
-                                         'p_name'     => trim($item['p_name']), 
-                                         'r_price'    => 0,                                          
-                                         'c_price'    => $item['c_price'], 
-                                         'pv'         => 0, 
-                                         'p_mp'       => $item['p_mp'], 
-                                         'm_mp'       => 0, 
-                                         'mp_amt'     => 0, 
-                                         'qty'        => $item['qty'], 
-                                         'a_pv'       => 0, 
-                                         'opv'        => trim($item['opv']),
-                                         'opv_h'      => trim($item['opv_h']), 
-                                         'a_amt'      => 0, 
-                                         'b_amt'      => 0
-                                   );                               
-                                $this->front_mssql_model->insert_data($msconn,"isf_b",$paramsb);    	          	 	   	        	
-	          	 	   	        }
-	          	 	   }
-               }
-	          	 if (count($sumdetail['birth']) > 0){	          	 	  
-	          	 	   foreach ($sumdetail['birth'] as $key => $item){ 		     
-	          	 	   	        if ($item['qty'] > 0 && ($item['gisgive'] || (!empty($this->session->userdata( 'act' )) && in_array(trim($item['p_no']),$this->session->userdata( 'act' ))))){  
-	          	 	   	        	  $paramsb = array(
-                                         'web_no'     => $web_no,
-                                         'p_no'       => trim($item['p_no']), 
-                                         'p_name'     => trim($item['p_name']), 
-                                         'r_price'    => 0,                                          
-                                         'c_price'    => $item['c_price'], 
-                                         'pv'         => 0, 
-                                         'p_mp'       => $item['p_mp'], 
-                                         'm_mp'       => 0, 
-                                         'mp_amt'     => 0, 
-                                         'qty'        => $item['qty'], 
-                                         'a_pv'       => 0, 
-                                         'opv'        => trim($item['opv']),
-                                         'opv_h'      => trim($item['opv_h']), 
-                                         'a_amt'      => 0, 
-                                         'b_amt'      => 0
-                                   );                               
-                                $this->front_mssql_model->insert_data($msconn,"isf_b",$paramsb);    	          	 	   	        	
-	          	 	   	        }
-	          	 	   }
-	          	 } 
-               
-              // if ($data_post['paytype'] == 'A' && $this->session->userdata('member_session')['c_no'] == '000000'){  // ATM 測試
-                 //  $sumdetail['amt'] = 1;	   
-              // }
-               
-               $purchAmt = $sumdetail['amt'];
-                                                                           
-               $uparams = array (
-                          'amt'     => $sumdetail['amt'],    // 總金額+運費
-                          'a_amt'   => $sumdetail['a_amt'],
-                          'b_amt'   => $sumdetail['b_amt'],
-                          'u_amt'   => $sumdetail['u_amt'],
-                          'a_pv'    => $sumdetail['a_pv'],
-                          'b_pv'    => $sumdetail['b_pv'],
-                          'mp_amt'  => $sumdetail['mp_amt'],
-                          'r_mp'    => $sumdetail['r_mp'],
-                          'p_mp'    => $sumdetail['p_mp'],                          
-                          'm_mp'    => $sumdetail['m_mp']    // 使用的紅利
-                       );               
-               // -- 主檔 UPDATE -- 
-               
-               if ($sumdetail['amt'] == 0 && $data_post['paytype'] == 'F'){   // 紅利積點兌換
-                   $uparams['ord_statue'] = trim('付款成功 ');
-                   $uparams['success']    = 1;
-                   $uparams['pay_date']   = date('Y-m-d H:i:s');
-               }
-               $this->front_mssql_model->update_data($msconn,"isf_h",$uparams,array('web_no'=>$web_no));
-               
-               if ($sumdetail['amt'] == 0 && $data_post['paytype'] == 'F'){   // 紅利積點兌換
-                   
-                   $this->send_order_mail($msconn,$this->session->userdata('member_session')['c_no'],$web_no);  // 寄信通知
-                   
-                   $this->front_order_model->clear_cart($msconn);  // 成功清空購物車
-                   
-                   redirect( 'order/orderview/'.$web_no.'/Y' );
-                   
-                   exit;
-               }
-               
-               $MerchantName = mb_convert_encoding($this->config->item('pay')['MerchantName'], 'BIG-5', "UTF-8");   // 設定特店網站或公司名稱
-          
-               if ( ENVIRONMENT == 'production' ){
-                    $OrderDetail = '訂單';
-               }else{
-                    $OrderDetail = '測試訂單'; 
-               }
-               $OrderDetail = mb_convert_encoding($OrderDetail, 'BIG-5', "UTF-8").":".$web_no;  
-                                       
-               $action = '';
-                   
-               if ($data_post['paytype'] == 'C'){  // 信用卡            
-                   include APPPATH.'libraries/auth_mpi_mac.php';
-                   
-                   $MerchantID = $this->config->item('pay')['card_MerchantID'];        
-                   $TerminalID = $this->config->item('pay')['card_TerminalID'];     
-                   /*
-                   txType
-                   交易方式，長度為一碼數字： 0 ：一般交易， 1 ：分期交易， 2 ：紅利折抵一般交易。 4 ：紅利折抵分期交易
-                   */
-                   $txType="0"; 
-                   /*
-                   Option
-                   產品代碼、分期期數或產品代碼加分期期數，純數字。 (1) 一般特店請填「1」。 
-                   (2) 分期特店請填長度為一到兩碼的分期期數。 (3) 紅利特店請填長度為固定兩碼的產品代碼。 (4) 紅利分期特店長度為三到四碼，前兩碼固定為產品代碼，後 一碼或兩碼為分期期數。
-                   */
-                   $Option="1"; 
-                   $Key = $this->config->item('pay')['card_key'];   // 壓碼字串               
-                   $AuthResURL = $this->config->item('pay')['card_AuthResURL'];  // 回傳網址              
-                   /*
-                   AutoCap
-                   是否自動請款。 0–不自動請款 1–自動請款
-                   */
-                   $AutoCap="0"; 
-                   /*
-                   Customize
-                   設定刷卡頁顯示特定語系或客制化頁面。 1–繁體中文 2–簡體中文 3–英文 5–客制化頁面 
-                   */
-                   $Customize="1"; 
-                   
-                   $debug="0"; /* debug 預設(進行交易時)請填 0，偵錯時請填 1。*/
-                                 
-                   $MACString=auth_in_mac($MerchantID,$TerminalID,$web_no,$purchAmt,$txType,$Option,$Key,$MerchantName,$AuthResURL,$OrderDetail,$AutoCap,$Customize,$debug); 
-                       
-                   //   echo"InMac=$MACString\n<br><br>"; 
-                   
-                   $URLEnc=get_auth_urlenc($MerchantID,$TerminalID,$web_no,$purchAmt,$txType,$Option,$Key,$MerchantName,$AuthResURL,$OrderDetail,$AutoCap,$Customize,$MACString,$debug); 
-                   
-                   //  echo"UrlEnc=$URLEnc\n"; 
-                   
-                   $action = $this->config->item('pay')['card_action'];
-                   
-                   $merID = $this->config->item('pay')['card_merID'];
-              
-               }else{
-                   $MerchantID = $this->config->item('pay')['webatm_MerchantID'];        
-                   $TerminalID = $this->config->item('pay')['webatm_TerminalID'];   
-                   
-                   $txType="9"; 
-                   $Option=""; 
-                   $Key=$this->config->item('pay')['webatm_key'];
-                   $AuthResURL=$this->config->item('pay')['webatm_AuthResURL'];          
-                   $AutoCap=""; 
-                   $Customize="1";               
-                   $debug="0"; /* debug 預設(進行交易時)請填 0，偵錯時請填 1。*/                   
-                   $billShortDesc="";  // 訂單摘要
-                   
-                   $atmdate = date('Y-m-d',strtotime('+1 day')); // + 3 天
-                   
-                   $WebATMAcct = $this->front_order_model->WebATMAcct($this->config->item('pay')['webatm_acct'],$web_no ,$purchAmt,$atmdate,"N");  //轉入帳號
-                   
-                   $uparams['WebATMAcct']   = $WebATMAcct;
-                   $uparams['ord_statue']   = '等待付款';
-                   
-                   $this->front_mssql_model->update_data($msconn,"isf_h",$uparams,array('web_no'=>$web_no));
-                   
-                   $this->front_order_model->clear_cart($msconn);  // 成功清空購物車
-                   
-                   redirect( 'order/orderview/'.$web_no );
-                   
-                   exit;
-                   
-                   $MACString=auth_in_mac($MerchantID,$TerminalID,$web_no,$purchAmt,$txType,$Option,$Key,$MerchantName,$AuthResURL,$OrderDetail,$AutoCap,$Customize,$debug);     
-                   
-                   $storeName = $MerchantName; 
-                   
-                   $AuthResURL = $this->config->item('pay')['webatm_AuthResURL']; 
+                            'web_no'     => $web_no,
+                            'p_no'       => trim($item['p_no']), 
+                            'p_name'     => trim($item['p_name']), 
+                            'r_price'    => 0,                                          
+                            'c_price'    => $item['c_price'], 
+                            'pv'         => 0, 
+                            'p_mp'       => $item['p_mp'], 
+                            'm_mp'       => 0, 
+                            'mp_amt'     => 0, 
+                            'qty'        => $item['qty'], 
+                            'a_pv'       => 0, 
+                            'opv'        => trim($item['opv']),
+                            'opv_h'      => trim($item['opv_h']), 
+                            'a_amt'      => 0, 
+                            'b_amt'      => 0
+                        );                               
+                        $this->front_mssql_model->insert_data($msconn,"isf_b",$paramsb);    	          	 	   	        	
+                    }
+                }
+            }
+
+            if (count($sumdetail['birth']) > 0){	          	 	  
+                foreach ($sumdetail['birth'] as $key => $item){ 		     
+                    if ($item['qty'] > 0 && ($item['gisgive'] || (!empty($this->session->userdata( 'act' )) && in_array(trim($item['p_no']),$this->session->userdata( 'act' ))))){  
+                        $paramsb = array(
+                            'web_no'     => $web_no,
+                            'p_no'       => trim($item['p_no']), 
+                            'p_name'     => trim($item['p_name']), 
+                            'r_price'    => 0,                                          
+                            'c_price'    => $item['c_price'], 
+                            'pv'         => 0, 
+                            'p_mp'       => $item['p_mp'], 
+                            'm_mp'       => 0, 
+                            'mp_amt'     => 0, 
+                            'qty'        => $item['qty'], 
+                            'a_pv'       => 0, 
+                            'opv'        => trim($item['opv']),
+                            'opv_h'      => trim($item['opv_h']), 
+                            'a_amt'      => 0, 
+                            'b_amt'      => 0
+                        );                               
+                        $this->front_mssql_model->insert_data($msconn,"isf_b",$paramsb);    	          	 	   	        	
+                    }
+                }
+            } 
+            
+            // if ($data_post['paytype'] == 'A' && $this->session->userdata('member_session')['c_no'] == '000000'){  // ATM 測試
+                //  $sumdetail['amt'] = 1;	   
+            // }
+            
+            $purchAmt = $sumdetail['amt'];
+                                                                        
+            $uparams = array (
+                'amt'     => $sumdetail['amt'],    // 總金額+運費
+                'a_amt'   => $sumdetail['a_amt'],
+                'b_amt'   => $sumdetail['b_amt'],
+                'u_amt'   => $sumdetail['u_amt'],
+                'a_pv'    => $sumdetail['a_pv'],
+                'b_pv'    => $sumdetail['b_pv'],
+                'mp_amt'  => $sumdetail['mp_amt'],
+                'r_mp'    => $sumdetail['r_mp'],
+                'p_mp'    => $sumdetail['p_mp'],                          
+                'm_mp'    => $sumdetail['m_mp']    // 使用的紅利
+            );               
+            // -- 主檔 UPDATE -- 
+            
+            if ($sumdetail['amt'] == 0 && $data_post['paytype'] == 'F'){   // 紅利積點兌換
+                $uparams['ord_statue'] = trim('付款成功 ');
+                $uparams['success']    = 1;
+                $uparams['pay_date']   = date('Y-m-d H:i:s');
+            }
+            $this->front_mssql_model->update_data($msconn,"isf_h",$uparams,array('web_no'=>$web_no));
+            
+            if ($sumdetail['amt'] == 0 && $data_post['paytype'] == 'F'){   // 紅利積點兌換
+                
+                $this->send_order_mail($msconn,$this->session->userdata('member_session')['c_no'],$web_no);  // 寄信通知
+                
+                $this->front_order_model->clear_cart($msconn);  // 成功清空購物車
+                
+                redirect( 'order/orderview/'.$web_no.'/Y' );
+                
+                exit;
+            }
+            
+            $MerchantName = mb_convert_encoding($this->config->item('pay')['MerchantName'], 'BIG-5', "UTF-8");   // 設定特店網站或公司名稱
+        
+            if ( ENVIRONMENT == 'production' ){
+                $OrderDetail = '訂單';
+            }else{
+                $OrderDetail = '測試訂單'; 
+            }
+            $OrderDetail = mb_convert_encoding($OrderDetail, 'BIG-5', "UTF-8").":".$web_no;  
+                                    
+            $action = '';
+                
+            if ($data_post['paytype'] == 'C'){  // 信用卡            
+                include APPPATH.'libraries/auth_mpi_mac.php';
+                
+                $MerchantID = $this->config->item('pay')['card_MerchantID'];        
+                $TerminalID = $this->config->item('pay')['card_TerminalID'];     
+                /*
+                txType
+                交易方式，長度為一碼數字： 0 ：一般交易， 1 ：分期交易， 2 ：紅利折抵一般交易。 4 ：紅利折抵分期交易
+                */
+                $txType="0"; 
+                /*
+                Option
+                產品代碼、分期期數或產品代碼加分期期數，純數字。 (1) 一般特店請填「1」。 
+                (2) 分期特店請填長度為一到兩碼的分期期數。 (3) 紅利特店請填長度為固定兩碼的產品代碼。 (4) 紅利分期特店長度為三到四碼，前兩碼固定為產品代碼，後 一碼或兩碼為分期期數。
+                */
+                $Option="1"; 
+                $Key = $this->config->item('pay')['card_key'];   // 壓碼字串               
+                $AuthResURL = $this->config->item('pay')['card_AuthResURL'];  // 回傳網址              
+                /*
+                AutoCap
+                是否自動請款。 0–不自動請款 1–自動請款
+                */
+                $AutoCap="0"; 
+                /*
+                Customize
+                設定刷卡頁顯示特定語系或客制化頁面。 1–繁體中文 2–簡體中文 3–英文 5–客制化頁面 
+                */
+                $Customize="1"; 
+                
+                $debug="0"; /* debug 預設(進行交易時)請填 0，偵錯時請填 1。*/
+                                
+                $MACString=auth_in_mac($MerchantID,$TerminalID,$web_no,$purchAmt,$txType,$Option,$Key,$MerchantName,$AuthResURL,$OrderDetail,$AutoCap,$Customize,$debug); 
                     
-                   $ATMEnc=get_auth_atmurlenc($MerchantID,$TerminalID,$web_no,$purchAmt,$txType,$Option,$Key,$storeName,$AuthResURL,$billShortDesc,$WebATMAcct,$note,$MACString,$debug);       
-                   
-                   $uparams = array();                   
-                   $uparams['WebATMAcct']  = $WebATMAcct;               
-                   
-                   if ($data_post['paytype'] == 'A'){  // 虛擬 ATM
-                       $uparams['ord_statue']  = '等待付款';
-                   }else{                 // WEBATM
-                       $action = $this->config->item('pay')['webatm_action'];
-                       $merID = $this->config->item('pay')['webatm_merID'];
-                       $URLEnc = $ATMEnc;
-                   }
-                   $this->front_mssql_model->update_data($msconn,"isf_h",$uparams,array('web_no'=>$web_no));
-                   
-                   if ($data_post['paytype'] == 'A'){  // 虛擬 ATM                        
-                       $this->front_order_model->clear_cart($msconn);  // 成功清空購物車
-                   
-                       redirect( 'order/orderview/'.$web_no );
-                   }
-               }
-                              
-               if ($action > ''){
-                ?><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-                 <title>arsoa pay</title></head><body bgcolor="#FFFFFF">   
-                  <form id="keyinorder" name="keyinorder" method="post" action="<?=$action?>">
-                     <table width="540" bgcolor="#999999" style="display:none">     
-                        <tr>      
-                           <td width="100%">       
-                             網路特店編號(MerID)：<input type="hidden" name="merID" value="<?=$merID?>" >      
-                           </td>     
-                        </tr>     
-                        <tr>      
-                           <td width="100%">加密值： <input type="hidden" name="URLEnc" value="<?=$URLEnc?>">      </td>  
-                       </tr>    
-                       <tr bgColor=#aedcff>               
-                           <td align="middle">      
-                              <input name="imageField" type="submit" value="Pay by credit card" border=0 height="32" width="161">    
-                           </td>     
-                       </tr>      
-                     </table>   
-                  </form>  
-                  </body>
-                </html> 
-                <script>document.keyinorder.submit();</script>
-                <?php          
-               }
-          }
+                //   echo"InMac=$MACString\n<br><br>"; 
+                
+                $URLEnc=get_auth_urlenc($MerchantID,$TerminalID,$web_no,$purchAmt,$txType,$Option,$Key,$MerchantName,$AuthResURL,$OrderDetail,$AutoCap,$Customize,$MACString,$debug); 
+                
+                //  echo"UrlEnc=$URLEnc\n"; 
+                
+                $action = $this->config->item('pay')['card_action'];
+                
+                $merID = $this->config->item('pay')['card_merID'];
+            
+            }else{
+                $MerchantID = $this->config->item('pay')['webatm_MerchantID'];        
+                $TerminalID = $this->config->item('pay')['webatm_TerminalID'];   
+                
+                $txType="9"; 
+                $Option=""; 
+                $Key=$this->config->item('pay')['webatm_key'];
+                $AuthResURL=$this->config->item('pay')['webatm_AuthResURL'];          
+                $AutoCap=""; 
+                $Customize="1";               
+                $debug="0"; /* debug 預設(進行交易時)請填 0，偵錯時請填 1。*/                   
+                $billShortDesc="";  // 訂單摘要
+                
+                $atmdate = date('Y-m-d',strtotime('+1 day')); // + 3 天
+                
+                $WebATMAcct = $this->front_order_model->WebATMAcct($this->config->item('pay')['webatm_acct'],$web_no ,$purchAmt,$atmdate,"N");  //轉入帳號
+                
+                $uparams['WebATMAcct']   = $WebATMAcct;
+                $uparams['ord_statue']   = '等待付款';
+                
+                $this->front_mssql_model->update_data($msconn,"isf_h",$uparams,array('web_no'=>$web_no));
+                
+                $this->front_order_model->clear_cart($msconn);  // 成功清空購物車
+                
+                redirect( 'order/orderview/'.$web_no );
+                
+                exit;
+                
+                $MACString=auth_in_mac($MerchantID,$TerminalID,$web_no,$purchAmt,$txType,$Option,$Key,$MerchantName,$AuthResURL,$OrderDetail,$AutoCap,$Customize,$debug);     
+                
+                $storeName = $MerchantName; 
+                
+                $AuthResURL = $this->config->item('pay')['webatm_AuthResURL']; 
+                
+                $ATMEnc=get_auth_atmurlenc($MerchantID,$TerminalID,$web_no,$purchAmt,$txType,$Option,$Key,$storeName,$AuthResURL,$billShortDesc,$WebATMAcct,$note,$MACString,$debug);       
+                
+                $uparams = array();                   
+                $uparams['WebATMAcct']  = $WebATMAcct;               
+                
+                if ($data_post['paytype'] == 'A'){  // 虛擬 ATM
+                    $uparams['ord_statue']  = '等待付款';
+                }else{                 // WEBATM
+                    $action = $this->config->item('pay')['webatm_action'];
+                    $merID = $this->config->item('pay')['webatm_merID'];
+                    $URLEnc = $ATMEnc;
+                }
+                $this->front_mssql_model->update_data($msconn,"isf_h",$uparams,array('web_no'=>$web_no));
+                
+                if ($data_post['paytype'] == 'A'){  // 虛擬 ATM                        
+                    $this->front_order_model->clear_cart($msconn);  // 成功清空購物車
+                
+                    redirect( 'order/orderview/'.$web_no );
+                }
+            }
+                            
+            if ($action > ''){
+            ?><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <title>arsoa pay</title></head><body bgcolor="#FFFFFF">   
+                <form id="keyinorder" name="keyinorder" method="post" action="<?=$action?>">
+                    <table width="540" bgcolor="#999999" style="display:none">     
+                    <tr>      
+                        <td width="100%">       
+                            網路特店編號(MerID)：<input type="hidden" name="merID" value="<?=$merID?>" >      
+                        </td>     
+                    </tr>     
+                    <tr>      
+                        <td width="100%">加密值： <input type="hidden" name="URLEnc" value="<?=$URLEnc?>">      </td>  
+                    </tr>    
+                    <tr bgColor=#aedcff>               
+                        <td align="middle">      
+                            <input name="imageField" type="submit" value="Pay by credit card" border=0 height="32" width="161">    
+                        </td>     
+                    </tr>      
+                    </table>   
+                </form>  
+                </body>
+            </html> 
+            <script>document.keyinorder.submit();</script>
+            <?php          
+            }
+        }
     }
     
     /*
@@ -1493,7 +1502,7 @@ rs.close
                 }
             }
 
-            $url = ($homeDelivery) ? base_url('online_form/form5?code='.$order_detail['main']['c_no'].'&name='.$order_detail['main']['c_name']) : '';
+            $url = ($homeDelivery) ? base_url('online_form/form5?code='.$order_detail['main']['c_no'].'&name='.$order_detail['main']['c_name'].'&web_no='.$web_no) : '';
             $data['homeDelivery'] = $homeDelivery;
             $data['homeDelivery_url'] = $url;
            

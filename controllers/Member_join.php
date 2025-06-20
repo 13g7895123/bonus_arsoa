@@ -1202,7 +1202,7 @@ class Member_join extends MY_Controller
                 // 判斷是否有宅配商品，跳轉至另一頁
                 $homeDelivery = array('4', '5');
                 if (in_array($data['order_detail']['main']['jointype'], $homeDelivery)) {
-                    $url = base_url('online_form/form5?code='.$data['order_detail']['main']['c_no'].'&name='.$data['order_detail']['main']['uname']);
+                    $url = base_url('online_form/form5?code='.$data['order_detail']['main']['c_no'].'&name='.$data['order_detail']['main']['uname'].'&join_no='.$data['jd']);
                     $data['homeDelivery'] = true;
                     $data['homeDelivery_url'] = $url;
                 }
