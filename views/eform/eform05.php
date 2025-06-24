@@ -71,8 +71,8 @@
                                                         <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardNumber4" name="creditCardNumber3" id="creditCardNumber3">
                                                         <span class="credit_card_signal">-</span>
                                                         <input type="text" size="4" maxlength="4" class="autotab"  data-next="creditCardExpireMonth" name="creditCardNumber4" id="creditCardNumber4">
-                                                    </div>
-                                                    <label class="preview" id="preview_creditCardNumber" style="display: none;"></label>
+                                                        <label class="preview" id="preview_creditCardNumber" style="display: none;"></label>
+                                                    </div>                                                    
                                                 </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline">
@@ -170,7 +170,6 @@
                                         <p class="">注意事項：</p>
                                         <ol>
                                             <li>資料建檔完成後，訂貨時只需在訂單上清楚填寫本人的消費金額、消費日期、發卡銀行，並由持卡人於訂單上簽名（與信用卡之簽名相符）即可。</li>
-                                            <li>信用卡遺失或過期，請重新填寫授權書，並郵寄或直接遞交至本公司。</li>
                                             <li>每位會員，最多可建檔三張信用卡資料。</li>
                                         </ol>
                                     </div>
@@ -569,7 +568,7 @@
                 $('#preview_card_type').text(selectedCardType);
 
                 let creditCardNumber = '';
-                let valueEffective = false;
+                let valueEffective = true;
                 for (let i = 0; i < 4; i++) {
                     if ($(`#creditCardNumber${i + 1}`).val() === '') {
                         valueEffective = false;
@@ -649,6 +648,18 @@
             signature.init();
 
             $('#submit').click(async function() {
+                if (signature.signatured === false) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '系統提示',
+                        text: '請先簽名！',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    return;
+                }
+
                 // 顯示載入中提示
                 Swal.fire({
                     icon: 'info',
@@ -835,12 +846,10 @@
                     success: function(response) {
                         Swal.fire({
                             icon: 'success',
-                            title: '提交成功', 
+                            title: '系統提示',
                             text: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => {
-                            window.location.reload();
+                            showConfirmButton: true,
+                            confirmButtonText: '確定'
                         });
                     }
                 });

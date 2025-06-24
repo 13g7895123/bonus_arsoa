@@ -164,11 +164,11 @@
 <?php if ($homeDelivery): ?>
 	Swal.fire({
       title: '系統提示', 
-      text: '請選擇是否需要填寫信用卡資料',
+      text: '請選擇是否需要填寫信用卡授權書',
       icon: 'info',
-      showCancelButton: true,
+      showCancelButton: false,
       confirmButtonText: '開啟表單',
-      cancelButtonText: '我之前填過了',
+    //   cancelButtonText: '我之前填過了',
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {

@@ -57,7 +57,7 @@
   	// 使用 SweetAlert 顯示選項對話框
     Swal.fire({
       title: '系統提示', 
-      text: '請選擇是否需要填寫信用卡資料',
+      text: '請選擇是否需要填寫信用卡授權書',
       icon: 'info',
       showCancelButton: true,
       confirmButtonText: '開啟表單',
