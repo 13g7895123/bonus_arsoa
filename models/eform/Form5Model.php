@@ -34,16 +34,22 @@ class Form5Model extends CI_Model
 
     /**
      * 取得最新的序號
+     * @param string $c_code 會員編號
      * @return void
      */
-    public function fetchLatestForm5SerialNumber()
+    public function fetchLatestForm5SerialNumber($c_code = '')
     {
         $form5Data = $this->db->from('eform5_main as m')
             ->join('eform_file as f', 'm.image_id = f.id')
+            ->where('m.c_name', $c_code)
             ->order_by('m.image_id', 'desc')
             ->limit(1)
             ->get()
             ->row_array();
+
+        if (empty($form5Data)) {
+            return 1;
+        }
 
         $path = $form5Data['path'];
 

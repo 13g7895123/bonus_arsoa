@@ -311,6 +311,7 @@ class Api extends MY_Controller
 
         // 取得表單資料
         $postData = $this->input->post();
+        $cCode = $postData['c_code'];   // 會員編號
 
         // 引用模型
         $commonModel = new CommonModel();
@@ -324,8 +325,8 @@ class Api extends MY_Controller
             if (isset($_FILES[$_val])) {
                 if ($_val == 'image') {     // 頁面截圖
                     // 自訂檔案名稱
-                    $serialNumber = $form5Model->fetchLatestForm5SerialNumber();
-                    $customFileName = $postData['c_code'] . '-' . $serialNumber . '.jpg';
+                    $serialNumber = $form5Model->fetchLatestForm5SerialNumber($cCode);
+                    $customFileName = $cCode . '-' . $serialNumber . '.jpg';
                     $uploadResult = $commonModel->uploadFile($_FILES, $_val, $customFileName);
                 }else{
                     $uploadResult = $commonModel->uploadFile($_FILES, $_val);
