@@ -74,15 +74,15 @@ if ($web_page == 'index'){
 		    <li><a href="<?=base_url()?>wake" class="animsition-link" data-animsition-out-class="fade-out" data-text="喚醒肌膚的力量">喚醒肌膚的力量</a></li>
 		    <?php } ?>
           <li><a href="<?=base_url()?>category/skin" class="animsition-link" data-animsition-out-class="fade-out" data-text="肌膚保養系列">肌膚保養系列</a></li>
-          <?php if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
+          <?php //if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
             <li><a href="<?=base_url()?>member/product/5" class="animsition-link" data-animsition-out-class="fade-out" data-text="肌能調理宅配專案">肌能調理宅配專案</a></li>
-          <?php endif; ?>
+          <?php //endif; ?>
           <li><a href="<?=base_url()?>category/makeup" class="animsition-link" data-animsition-out-class="fade-out" data-text="彩粧系列">彩粧系列</a></li>
           <li><a href="<?=base_url()?>category/hair_body" class="animsition-link" data-animsition-out-class="fade-out" data-text="美髮、美體系列">美髮、美體系列</a></li>
           <li><a href="<?=base_url()?>category/health" class="animsition-link" data-animsition-out-class="fade-out" data-text="保健食品系列">保健食品系列</a></li>
-          <?php if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
+          <?php //if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
             <li><a href="<?=base_url()?>member/product/4" class="animsition-link" data-animsition-out-class="fade-out" data-text="健康宅配專案">健康宅配專案</a></li>
-          <?php endif; ?>
+          <?php //endif; ?>
           <li><a href="<?=base_url()?>category/clean" class="animsition-link" data-animsition-out-class="fade-out" data-text="健康飲用水系列">健康飲用水系列</a></li>                    
           <?php if (isset($member_session['c_no']) && $member_session['c_no'] > '' && $this->session->userdata('member_session')['d_posn'] <= 50) {      ?>
             <li><a href="<?=base_url()?>category/other" class="animsition-link" data-animsition-out-class="fade-out" data-text="輔銷產品">輔銷產品</a></li>          

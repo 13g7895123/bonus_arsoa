@@ -39,6 +39,8 @@ class Form5Model extends CI_Model
      */
     public function fetchLatestForm5SerialNumber($c_code = '')
     {
+        $defaultSerialNumber = 10;
+
         $form5Data = $this->db->from('eform5_main as m')
             ->join('eform_file as f', 'm.image_id = f.id')
             ->where('m.c_name', $c_code)
@@ -48,7 +50,7 @@ class Form5Model extends CI_Model
             ->row_array();
 
         if (empty($form5Data)) {
-            return 1;
+            return $defaultSerialNumber;
         }
 
         $path = $form5Data['path'];
@@ -65,7 +67,7 @@ class Form5Model extends CI_Model
         // 取會員編號後的字串為序號
         $serialNumber = explode($separator, $fileNameExceptExt)[1];
 
-        $serialNumber = (strlen($serialNumber) == 17) ? 1 : $serialNumber + 1;
+        $serialNumber = (strlen($serialNumber) == 17) ? $defaultSerialNumber : $serialNumber + 1;
         
         return $serialNumber;
     }

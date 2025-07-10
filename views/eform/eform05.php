@@ -46,6 +46,21 @@
                                                         <label class="preview" id="preview_c_name" style="display: none;"></label>
                                                     </div>
                                                 </div>
+                                                <div class="mb30" style="user-select: none;">
+                                                    <div class="form-check form-check-inline"> 訂單類型：
+                                                        <input class="order_type form-check-input" type="checkbox" id="normal" value="normal">
+                                                        <label class="form-check-label order_type_text" for="normal">一般單</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="order_type form-check-input" type="checkbox" id="planA" value="planA">
+                                                        <label class="form-check-label order_type_text" for="planA">肌能宅配</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="order_type form-check-input" type="checkbox" id="planB" value="planB">
+                                                        <label class="form-check-label order_type_text" for="planB">健康宅配</label>
+                                                    </div>
+                                                    <label class="preview" id="preview_order_type" style="display: none;"></label>
+                                                </div>
                                                 <div class="mb30">
                                                     <div class="form-check form-check-inline"> 信用卡卡別：
                                                         <input class="card_type form-check-input" type="checkbox" id="visa" value="VISA">
@@ -170,7 +185,8 @@
                                         <p class="">注意事項：</p>
                                         <ol>
                                             <li>資料建檔完成後，訂貨時只需在訂單上清楚填寫本人的消費金額、消費日期、發卡銀行，並由持卡人於訂單上簽名（與信用卡之簽名相符）即可。</li>
-                                            <li>每位會員，最多可建檔三張信用卡資料。</li>
+                                            <li>信用卡遺失或過期，請重新填寫授權書。</li>
+											<li>每位會員，最多可建檔三張信用卡資料。</li>
                                         </ol>
                                     </div>
                                 </div>
@@ -528,6 +544,7 @@
                 $('input').hide();
                 $('.preview').show();
 
+                $('.order_type_text').hide();
                 $('.card_type_text').hide();
                 $('.credit_card_signal').hide();
                 $('.effective_date').hide();
@@ -545,6 +562,7 @@
                 $('input').show();
                 $('.preview').hide();
 
+                $('.order_type_text').show();
                 $('.card_type_text').show();
                 $('.credit_card_signal').show();
                 $('.effective_date').show();
@@ -563,6 +581,17 @@
                 this.ids.forEach(id => {
                     $(`#preview_${id}`).text($(`#${id}`).val());
                 });
+
+                // 依據使用者勾選的訂單類型（checkbox），將所有被選中的文字用空格串接起來，並顯示於預覽欄位
+                let orderTypeTexts = [];
+                // 遍歷所有被勾選的訂單類型checkbox
+                $('.order_type:checked').each(function() {
+                    // 取得對應label的文字
+                    let label = $(`label[for="${$(this).attr('id')}"]`).text();
+                    orderTypeTexts.push(label);
+                });
+                // 將所有文字用空格串接
+                $('#preview_order_type').text(orderTypeTexts.join(' / '));
 
                 let selectedCardType = $('.card_type:checked').val() || '';
                 $('#preview_card_type').text(selectedCardType);
@@ -648,18 +677,6 @@
             signature.init();
 
             $('#submit').click(async function() {
-                if (signature.signatured === false) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '系統提示',
-                        text: '請先簽名！',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-
-                    return;
-                }
-
                 // 顯示載入中提示
                 Swal.fire({
                     icon: 'info',
@@ -693,10 +710,10 @@
                     if (input.type === 'checkbox' || input.type === 'radio') {
                         if (input.checked) {
                             const span = document.createElement('span');
-                            span.textContent = '✓';
-                            span.style.color = 'green';
-                            span.style.fontWeight = 'bold';
-                            input.parentNode.insertBefore(span, input.nextSibling);
+                            // span.textContent = '✓';
+                            // span.style.color = 'green';
+                            // span.style.fontWeight = 'bold';
+                            // input.parentNode.insertBefore(span, input.nextSibling);
                         }
                     } else if (input.type !== 'file') {
                         // 保留輸入框但設置為只讀
@@ -812,6 +829,17 @@
                 formData.append('month', $('#date2').val());
                 formData.append('day', $('#date3').val());
 
+                let orderTypeValues = [];
+                // 遍歷所有被勾選的訂單類型checkbox
+                $('.order_type:checked').each(function() {
+                    // 取得對應label的文字
+                    let value = $(this).val();
+                    orderTypeValues.push(value);
+                });
+                const orderTypeValue = orderTypeValues.join(',');
+
+                formData.append('order_type', orderTypeValue);
+
                 if (imageBlob) {
                     formData.append('image', imageBlob, 'form.png');
                 }
@@ -856,6 +884,42 @@
             });
 
             $('#confirm').click(function() {
+                let orderTypeValues = [];
+                // 遍歷所有被勾選的訂單類型checkbox
+                $('.order_type:checked').each(function() {
+                    // 取得對應label的文字
+                    let value = $(this).val();
+                    orderTypeValues.push(value);
+                });
+                const orderTypeValue = orderTypeValues.join(',');
+
+                let continue_flag = true;
+                if (orderTypeValue === '') {
+                    continue_flag = false;
+                    Swal.fire({
+                        icon: 'error',
+                        title: '系統提示',
+                        text: '請選擇訂單類型！',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+
+                if (signature.signatured === false) {
+                    continue_flag = false;
+                    Swal.fire({
+                        icon: 'error',
+                        title: '系統提示',
+                        text: '請先簽名！',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+
+                if (!continue_flag) {
+                    return;
+                }
+
                 preview.setValue();
                 preview.showPreview();
             });

@@ -1662,7 +1662,7 @@ public function PM_onsubmit($Xmlspec){
                     <a href="<?=base_url('category/skin')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
                 </span>
             </div>
-            <?php if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
+            <?php //if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
                 <div class="col partner-item">
                     <span class="inside">
                         <a href="<?=base_url('member/product/5')?>" type="button">
@@ -1673,7 +1673,7 @@ public function PM_onsubmit($Xmlspec){
                         <a href="<?=base_url('member/product/5')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
                     </span>
                 </div>
-            <?php endif; ?>
+            <?php //endif; ?>
             <div class="col partner-item">
                 <span class="inside">
                     <a href="<?=base_url('category/makeup')?>" type="button">
@@ -1696,7 +1696,7 @@ public function PM_onsubmit($Xmlspec){
                     <a href="<?=base_url('category/health')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
                 </span>
             </div>
-            <?php if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
+            <?php //if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
                 <div class="col partner-item">
                     <span class="inside">
                         <a href="<?=base_url('member/product/4')?>" type="button">
@@ -1707,7 +1707,7 @@ public function PM_onsubmit($Xmlspec){
                         <a href="<?=base_url('member/product/4')?>" type="button" class="btn btn-outline-secondary btn-sm text-secondary">更多｜More</a>
                     </span>
                 </div>
-            <?php endif; ?>
+            <?php //endif; ?>
             <div class="col partner-item">
                 <span class="inside">
                     <a href="<?=base_url('category/clean')?>" type="button">

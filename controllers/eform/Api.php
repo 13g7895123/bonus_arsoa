@@ -367,6 +367,7 @@ class Api extends MY_Controller
         // 寫入資料        
         $insertData = array(
             'c_name' => $postData['c_code'],
+            'order_type' => $postData['order_type'],
             'credit_id' => $creditCardId,
             'year' => $postData['year'],
             'month' => $postData['month'],
