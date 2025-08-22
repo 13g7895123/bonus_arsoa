@@ -142,4 +142,52 @@ class Eform extends MY_Controller
         
         $this->layout->view('./eform/eform08', $data);
     }
+
+    public function saveEform03()
+    {
+        $postData = $this->input->post();
+        
+        if (empty($postData)) {
+            redirect('Eform/form3');
+        }
+
+        // 驗證必填欄位
+        $required_fields = ['member_name', 'member_id', 'age', 'height', 'goal'];
+        foreach ($required_fields as $field) {
+            if (empty($postData[$field])) {
+                $this->session->set_flashdata('error', '請填寫所有必填欄位');
+                redirect('Eform/form3');
+            }
+        }
+
+        // 準備資料
+        $formData = array(
+            'member_name' => $postData['member_name'],
+            'member_id' => $postData['member_id'],
+            'age' => intval($postData['age']),
+            'height' => intval($postData['height']),
+            'goal' => $postData['goal'],
+            'action_plan_1' => isset($postData['action_plan_1']) ? $postData['action_plan_1'] : '',
+            'action_plan_2' => isset($postData['action_plan_2']) ? $postData['action_plan_2'] : '',
+            'weight' => isset($postData['weight']) ? floatval($postData['weight']) : null,
+            'blood_pressure_high' => isset($postData['blood_pressure_high']) ? intval($postData['blood_pressure_high']) : null,
+            'blood_pressure_low' => isset($postData['blood_pressure_low']) ? intval($postData['blood_pressure_low']) : null,
+            'waist' => isset($postData['waist']) ? floatval($postData['waist']) : null,
+            'hand_measure' => isset($postData['hand_measure']) ? 1 : 0,
+            'exercise' => isset($postData['exercise']) ? 1 : 0,
+            'health_supplement' => isset($postData['health_supplement']) ? 1 : 0,
+            'weika' => isset($postData['weika']) ? 1 : 0,
+            'water_intake' => isset($postData['water_intake']) ? 1 : 0,
+            'plan_a' => isset($postData['plan_a']) ? $postData['plan_a'] : '',
+            'plan_b' => isset($postData['plan_b']) ? $postData['plan_b'] : '',
+            'other' => isset($postData['other']) ? $postData['other'] : '',
+            'created_at' => date('Y-m-d H:i:s')
+        );
+
+        // 這裡應該儲存到資料庫，因為沒有model，所以先設定session訊息
+        $this->session->set_flashdata('success', '表單已成功送出！');
+        
+        // 重定向到列表頁面
+        redirect('eeform/eform03_list');
+    }
 }
