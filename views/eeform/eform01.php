@@ -116,40 +116,40 @@
 						  <div class="col-sm-12 mb30">
 							  <div class="form-check form-check-inline">戶外日曬時間：</div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">1~2小時　</label>
+                              <input class="form-check-input" type="checkbox" name="sunlight_1_2h" id="sunlight_1_2h" value="1">
+                              <label class="form-check-label" for="sunlight_1_2h">1~2小時　</label>
                             </div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">3~4小時　</label>
+                              <input class="form-check-input" type="checkbox" name="sunlight_3_4h" id="sunlight_3_4h" value="1">
+                              <label class="form-check-label" for="sunlight_3_4h">3~4小時　</label>
                             </div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">5~6小時　</label>
+                              <input class="form-check-input" type="checkbox" name="sunlight_5_6h" id="sunlight_5_6h" value="1">
+                              <label class="form-check-label" for="sunlight_5_6h">5~6小時　</label>
                             </div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">8小時以上　</label>
+                              <input class="form-check-input" type="checkbox" name="sunlight_8h_plus" id="sunlight_8h_plus" value="1">
+                              <label class="form-check-label" for="sunlight_8h_plus">8小時以上　</label>
                             </div>
                           </div>
 							
 						  <div class="col-sm-12 mb30">
 							  <div class="form-check form-check-inline">待在空調環境：</div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">1小時內　</label>
+                              <input class="form-check-input" type="checkbox" name="aircondition_1h" id="aircondition_1h" value="1">
+                              <label class="form-check-label" for="aircondition_1h">1小時內　</label>
                             </div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">2~4小時　</label>
+                              <input class="form-check-input" type="checkbox" name="aircondition_2_4h" id="aircondition_2_4h" value="1">
+                              <label class="form-check-label" for="aircondition_2_4h">2~4小時　</label>
                             </div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">5~8小時　</label>
+                              <input class="form-check-input" type="checkbox" name="aircondition_5_8h" id="aircondition_5_8h" value="1">
+                              <label class="form-check-label" for="aircondition_5_8h">5~8小時　</label>
                             </div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">8小時以上　</label>
+                              <input class="form-check-input" type="checkbox" name="aircondition_8h_plus" id="aircondition_8h_plus" value="1">
+                              <label class="form-check-label" for="aircondition_8h_plus">8小時以上　</label>
                             </div>
                           </div>
 							
@@ -295,15 +295,15 @@
 							<div class="row">
                               <div class="col-sm-6 mb30">
                                 <label class="label-custom">化妝水：</label>
-                                <input type="text" class="form-control form-control-custom" placeholder="" />
+                                <input type="text" name="toner_suggestion" class="form-control form-control-custom" placeholder="" />
                               </div>
                               <div class="col-sm-6 mb30">
                                 <label class="label-custom">精華液：</label>
-                                <input type="text" class="form-control form-control-custom" placeholder="" />
+                                <input type="text" name="serum_suggestion" class="form-control form-control-custom" placeholder="" />
                               </div>
 							  <div class="col-sm-12 mb30">
                                 <label class="label-custom">建議內容</label>
-                                <input type="text" class="form-control form-control-custom" placeholder="請填寫建議內容…" />
+                                <input type="text" name="suggestion_content" class="form-control form-control-custom" placeholder="請填寫建議內容…" />
                               </div>
 							</div>
                             </div>
@@ -317,30 +317,30 @@
 									<div class="col-sm-8 mb30">
 										<div class="form-check form-check-inline">肌膚類型：</div>
 										<div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                        <label class="form-check-label" for="inlineRadio4">中性 </label>
+                                        <input class="form-check-input" type="radio" name="skin_type" id="skin_normal" value="normal">
+                                        <label class="form-check-label" for="skin_normal">中性 </label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                        <label class="form-check-label" for="inlineRadio4">混合性 </label>
+                                        <input class="form-check-input" type="radio" name="skin_type" id="skin_combination" value="combination">
+                                        <label class="form-check-label" for="skin_combination">混合性 </label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                        <label class="form-check-label" for="inlineRadio4">油性 </label>
+                                        <input class="form-check-input" type="radio" name="skin_type" id="skin_oily" value="oily">
+                                        <label class="form-check-label" for="skin_oily">油性 </label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                        <label class="form-check-label" for="inlineRadio4">乾性 </label>
+                                        <input class="form-check-input" type="radio" name="skin_type" id="skin_dry" value="dry">
+                                        <label class="form-check-label" for="skin_dry">乾性 </label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                        <label class="form-check-label" for="inlineRadio4">敏感性 </label>
+                                        <input class="form-check-input" type="radio" name="skin_type" id="skin_sensitive" value="sensitive">
+                                        <label class="form-check-label" for="skin_sensitive">敏感性 </label>
                                       </div>
                                     </div>
 									<div class="col-sm-4 mb30">
                                       <div class="form-check form-check-inline">
-                                        <label class="form-check-label" for="inlineRadio4">肌膚年齡： </label>
-                                        <input type="text" style="width: 80%;">
+                                        <label class="form-check-label" for="skin_age">肌膚年齡： </label>
+                                        <input type="number" name="skin_age" id="skin_age" style="width: 80%;">
                                       </div>
                                     </div>
 									  
@@ -1164,14 +1164,132 @@
     
     // 填入測試資料的函數
     function fillTestData() {
+      // 基本資料
       document.querySelector('input[name="member_name"]').value = '王小華';
       document.querySelector('select[name="birth_year"]').value = '2003';
       document.querySelector('select[name="birth_month"]').value = '5';
       document.querySelector('input[name="phone"]').value = '0912345678';
       
-      // 選中一些職業選項
+      // 職業選擇
       document.querySelector('input[name="occupation_service"]').checked = true;
       document.querySelector('input[name="occupation_office"]').checked = true;
+      
+      // 戶外日曬時間
+      document.querySelector('input[name="sunlight_3_4h"]').checked = true;
+      
+      // 空調環境時間
+      document.querySelector('input[name="aircondition_5_8h"]').checked = true;
+      
+      // 建議內容
+      if (document.querySelector('input[name="toner_suggestion"]')) {
+        document.querySelector('input[name="toner_suggestion"]').value = '麗蓓思朵化妝水';
+      }
+      if (document.querySelector('input[name="serum_suggestion"]')) {
+        document.querySelector('input[name="serum_suggestion"]').value = '保濕亮采肌底液';
+      }
+      if (document.querySelector('input[name="suggestion_content"]')) {
+        document.querySelector('input[name="suggestion_content"]').value = '建議加強保濕護理，每日使用面膜2-3次';
+      }
+      
+      // 肌膚類型
+      if (document.querySelector('input[name="skin_type"][value="combination"]')) {
+        document.querySelector('input[name="skin_type"][value="combination"]').checked = true;
+      }
+      
+      // 肌膚年齡
+      if (document.querySelector('input[name="skin_age"]')) {
+        document.querySelector('input[name="skin_age"]').value = '25';
+      }
+      
+      // 評分欄位（水潤）
+      if (document.querySelector('input[name="moisture_severe"]')) {
+        document.querySelector('input[name="moisture_severe"]').value = '0';
+      }
+      if (document.querySelector('input[name="moisture_warning"]')) {
+        document.querySelector('input[name="moisture_warning"]').value = '6';
+      }
+      if (document.querySelector('input[name="moisture_healthy"]')) {
+        document.querySelector('input[name="moisture_healthy"]').value = '8';
+      }
+      
+      // 填入其他可能存在的評分欄位
+      var scoreFields = [
+        'complexion_severe', 'complexion_warning', 'complexion_healthy',
+        'texture_severe', 'texture_warning', 'texture_healthy',
+        'sensitivity_severe', 'sensitivity_warning', 'sensitivity_healthy',
+        'oil_severe', 'oil_warning', 'oil_healthy',
+        'pigment_severe', 'pigment_warning', 'pigment_healthy',
+        'wrinkle_severe', 'wrinkle_warning', 'wrinkle_healthy',
+        'pore_severe', 'pore_warning', 'pore_healthy'
+      ];
+      
+      scoreFields.forEach(function(fieldName) {
+        var field = document.querySelector('input[name="' + fieldName + '"]');
+        if (field) {
+          if (fieldName.includes('severe')) {
+            field.value = '1';
+          } else if (fieldName.includes('warning')) {
+            field.value = '6';
+          } else if (fieldName.includes('healthy')) {
+            field.value = '9';
+          }
+        }
+      });
+      
+      // 日期欄位（如果存在）
+      var dateFields = document.querySelectorAll('input[placeholder*="請填日期"]');
+      dateFields.forEach(function(field, index) {
+        field.value = '2025-0' + ((index % 9) + 1) + '-15';
+      });
+      
+      // 數字欄位（如果存在）
+      var numberFields = document.querySelectorAll('input[placeholder*="限填數字…"]');
+      numberFields.forEach(function(field, index) {
+        field.value = (index % 10) + 1;
+      });
+      
+      // 睡眠狀況checkbox（選擇其中幾個）
+      var sleepCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+      sleepCheckboxes.forEach(function(checkbox, index) {
+        // 隨機選中一些checkbox，但不要全選
+        if (index % 3 === 0) {
+          checkbox.checked = true;
+        }
+      });
+      
+      // 現在使用產品checkbox（選擇幾個常用的）
+      var productCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+      productCheckboxes.forEach(function(checkbox, index) {
+        if (index % 4 === 1) {
+          checkbox.checked = true;
+        }
+      });
+      
+      // 肌膚困擾checkbox（選擇幾個常見問題）
+      var skinIssueCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+      skinIssueCheckboxes.forEach(function(checkbox, index) {
+        if (index % 5 === 2) {
+          checkbox.checked = true;
+        }
+      });
+      
+      // 其他text input欄位
+      var otherTextInputs = document.querySelectorAll('input[type="text"]:not([name])');
+      otherTextInputs.forEach(function(input, index) {
+        if (input.style.width === '80%') {
+          input.value = '其他備註' + (index + 1);
+        } else {
+          input.value = '測試內容' + (index + 1);
+        }
+      });
+      
+      // 所有沒有name屬性的number類型input
+      var otherNumberInputs = document.querySelectorAll('input[type="number"]:not([name])');
+      otherNumberInputs.forEach(function(input, index) {
+        input.value = (index % 10) + 1;
+      });
+      
+      console.log('測試資料已填入完成');
     }
 
     function showConfirmModal() {
