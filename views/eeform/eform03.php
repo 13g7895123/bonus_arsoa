@@ -303,25 +303,25 @@
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-3 mb-3">
-                    <div class="text-center p-3 border rounded bg-light">
+                    <div class="text-center p-3 border bg-light">
                       <div class="text-info font-weight-bold mb-1">體重</div>
                       <div class="h5 font-weight-bold text-dark" id="confirm-weight"></div>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
-                    <div class="text-center p-3 border rounded bg-light">
+                    <div class="text-center p-3 border bg-light">
                       <div class="text-info font-weight-bold mb-1">血壓(收)</div>
                       <div class="h5 font-weight-bold text-dark" id="confirm-blood-pressure-high"></div>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
-                    <div class="text-center p-3 border rounded bg-light">
+                    <div class="text-center p-3 border bg-light">
                       <div class="text-info font-weight-bold mb-1">血壓(舒)</div>
                       <div class="h5 font-weight-bold text-dark" id="confirm-blood-pressure-low"></div>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
-                    <div class="text-center p-3 border rounded bg-light">
+                    <div class="text-center p-3 border bg-light">
                       <div class="text-info font-weight-bold mb-1">腰圍</div>
                       <div class="h5 font-weight-bold text-dark" id="confirm-waist"></div>
                     </div>
@@ -588,11 +588,11 @@
     }
     
     .modal-content {
-      border-radius: 15px;
+      border-radius: 0px;
     }
     
     .card {
-      border-radius: 10px;
+      border-radius: 0px;
       transition: transform 0.2s ease-in-out;
     }
     
@@ -621,12 +621,12 @@
     
     .modal-body::-webkit-scrollbar-track {
       background: #f1f1f1;
-      border-radius: 10px;
+      border-radius: 0px;
     }
     
     .modal-body::-webkit-scrollbar-thumb {
       background: #c1c1c1;
-      border-radius: 10px;
+      border-radius: 0px;
     }
     
     .modal-body::-webkit-scrollbar-thumb:hover {
