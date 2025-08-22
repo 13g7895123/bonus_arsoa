@@ -909,15 +909,96 @@
               </div>
             </div>
 
+            <!-- 生活習慣 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  生活習慣
+                </h6>
+              </div>
+              <div class="p-3">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                      <span class="text-muted mr-3" style="min-width: 100px;">戶外日曬：</span>
+                      <span class="text-dark" id="confirm-sunlight"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                      <span class="text-muted mr-3" style="min-width: 100px;">空調環境：</span>
+                      <span class="text-dark" id="confirm-aircondition"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 建議內容 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  建議內容
+                </h6>
+              </div>
+              <div class="p-3">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                      <span class="text-muted mr-3" style="min-width: 80px;">化妝水：</span>
+                      <span class="text-dark" id="confirm-toner-suggestion"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-start">
+                      <span class="text-muted mr-3" style="min-width: 80px;">精華液：</span>
+                      <span class="text-dark" id="confirm-serum-suggestion"></span>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="d-flex align-items-start">
+                      <span class="text-muted mr-3" style="min-width: 80px;">建議內容：</span>
+                      <span class="text-dark" id="confirm-suggestion-content"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 肌膚評估 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  肌膚評估
+                </h6>
+              </div>
+              <div class="p-3">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 80px;">肌膚類型：</span>
+                      <span class="text-dark" id="confirm-skin-type"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 80px;">肌膚年齡：</span>
+                      <span class="text-dark" id="confirm-skin-age"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- 其他資訊 -->
             <div class="border mb-4">
               <div class="bg-light p-3 border-bottom">
                 <h6 class="m-0 font-weight-bold text-dark">
-                  其他填寫資訊
+                  其他資訊
                 </h6>
               </div>
               <div class="p-3">
-                <div class="text-muted">由於表單內容較多，僅顯示基本必填資訊。請確認基本資料無誤後送出。</div>
+                <div class="text-muted">表單包含詳細的肌膚評估數據和其他選項，上述為主要填寫內容的確認。</div>
               </div>
             </div>
 
@@ -1332,6 +1413,78 @@
       } else {
         occupationContainer.innerHTML = '<span class="text-muted">未選擇</span>';
       }
+      
+      // 戶外日曬時間
+      var sunlightOptions = [
+        {name: 'sunlight_1_2h', label: '1~2小時'},
+        {name: 'sunlight_3_4h', label: '3~4小時'},
+        {name: 'sunlight_5_6h', label: '5~6小時'},
+        {name: 'sunlight_8h_plus', label: '8小時以上'}
+      ];
+      var sunlightContainer = document.getElementById('confirm-sunlight');
+      var checkedSunlight = [];
+      
+      sunlightOptions.forEach(function(item) {
+        var checkbox = document.querySelector('input[name="' + item.name + '"]');
+        if (checkbox && checkbox.checked) {
+          checkedSunlight.push(item.label);
+        }
+      });
+      
+      sunlightContainer.innerHTML = checkedSunlight.length > 0 ? 
+        '<span class="text-dark">' + checkedSunlight.join('、') + '</span>' : 
+        '<span class="text-muted">未選擇</span>';
+      
+      // 空調環境時間
+      var airconditionOptions = [
+        {name: 'aircondition_1h', label: '1小時內'},
+        {name: 'aircondition_2_4h', label: '2~4小時'},
+        {name: 'aircondition_5_8h', label: '5~8小時'},
+        {name: 'aircondition_8h_plus', label: '8小時以上'}
+      ];
+      var airconditionContainer = document.getElementById('confirm-aircondition');
+      var checkedAircondition = [];
+      
+      airconditionOptions.forEach(function(item) {
+        var checkbox = document.querySelector('input[name="' + item.name + '"]');
+        if (checkbox && checkbox.checked) {
+          checkedAircondition.push(item.label);
+        }
+      });
+      
+      airconditionContainer.innerHTML = checkedAircondition.length > 0 ? 
+        '<span class="text-dark">' + checkedAircondition.join('、') + '</span>' : 
+        '<span class="text-muted">未選擇</span>';
+      
+      // 建議內容
+      var tonerSuggestion = document.querySelector('input[name="toner_suggestion"]');
+      document.getElementById('confirm-toner-suggestion').textContent = 
+        tonerSuggestion ? (tonerSuggestion.value || '(未填寫)') : '(未填寫)';
+        
+      var serumSuggestion = document.querySelector('input[name="serum_suggestion"]');
+      document.getElementById('confirm-serum-suggestion').textContent = 
+        serumSuggestion ? (serumSuggestion.value || '(未填寫)') : '(未填寫)';
+        
+      var suggestionContent = document.querySelector('input[name="suggestion_content"]');
+      document.getElementById('confirm-suggestion-content').textContent = 
+        suggestionContent ? (suggestionContent.value || '(未填寫)') : '(未填寫)';
+      
+      // 肌膚類型
+      var skinTypeRadio = document.querySelector('input[name="skin_type"]:checked');
+      var skinTypeLabels = {
+        'normal': '中性',
+        'combination': '混合性',
+        'oily': '油性',
+        'dry': '乾性',
+        'sensitive': '敏感性'
+      };
+      document.getElementById('confirm-skin-type').textContent = 
+        skinTypeRadio ? skinTypeLabels[skinTypeRadio.value] || skinTypeRadio.value : '(未選擇)';
+      
+      // 肌膚年齡
+      var skinAge = document.querySelector('input[name="skin_age"]');
+      document.getElementById('confirm-skin-age').textContent = 
+        skinAge ? (skinAge.value ? skinAge.value + '歲' : '(未填寫)') : '(未填寫)';
       
       // 顯示模態視窗
       $('#confirmModal').modal('show');
