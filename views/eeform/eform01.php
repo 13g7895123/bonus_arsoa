@@ -60,56 +60,56 @@
                   <h1 class="h2-3d font-libre"><strong>肌膚諮詢記錄表</strong></h1>
                   <div class="mb30">
                     <div class="container">
-                      <form action="#" class="text-left">
+                      <form action="<?php echo base_url('Eform/saveEform01'); ?>" method="POST" class="text-left" id="eform01">
                         <div class="row">
 							<div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
 							
                           <div class="col-sm-4 mb30">
                             <label class="label-custom">會員姓名</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="請填會員姓名" />
+                            <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" required />
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">出生西元年</label>
-                            <select class="form-control form-control-custom" id="SeleteBYear">
-                              <option>請選擇</option>
-                              <option>2005</option>
-                              <option>2004</option>
-                              <option>2003</option>
-                              <option>2002</option>
+                            <select name="birth_year" class="form-control form-control-custom" required>
+                              <option value="">請選擇</option>
+                              <option value="2005">2005</option>
+                              <option value="2004">2004</option>
+                              <option value="2003">2003</option>
+                              <option value="2002">2002</option>
                             </select>
                           </div>
                           <div class="col-sm-2 mb30">
                             <label class="label-custom">出生西元月</label>
-                            <select class="form-control form-control-custom" id="SeleteBYear">
-                              <option>請選擇</option>
-                              <option>1月</option>
-                              <option>2月</option>
-                              <option>3月</option>
-                              <option>4月</option>
+                            <select name="birth_month" class="form-control form-control-custom" required>
+                              <option value="">請選擇</option>
+                              <option value="1">1月</option>
+                              <option value="2">2月</option>
+                              <option value="3">3月</option>
+                              <option value="4">4月</option>
                             </select>
                           </div>
 						  <div class="col-sm-3 mb30">
                             <label class="label-custom">電話</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" />
+                            <input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" required />
                           </div>
 							
                           <div class="col-sm-12 mb30">
 							  <div class="form-check form-check-inline">職業：</div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">服務業　</label>
+                              <input class="form-check-input" type="checkbox" name="occupation_service" id="occupation_service" value="1">
+                              <label class="form-check-label" for="occupation_service">服務業　</label>
                             </div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">上班族　</label>
+                              <input class="form-check-input" type="checkbox" name="occupation_office" id="occupation_office" value="1">
+                              <label class="form-check-label" for="occupation_office">上班族　</label>
                             </div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">餐飲業　</label>
+                              <input class="form-check-input" type="checkbox" name="occupation_restaurant" id="occupation_restaurant" value="1">
+                              <label class="form-check-label" for="occupation_restaurant">餐飲業　</label>
                             </div>
 							  <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">家管 </label>
+                              <input class="form-check-input" type="checkbox" name="occupation_housewife" id="occupation_housewife" value="1">
+                              <label class="form-check-label" for="occupation_housewife">家管 </label>
                             </div>
                           </div>
 							
@@ -752,7 +752,12 @@
 							
 						  <div class="col-sm-12 mb30">
 							  <hr class="my-4">
-							  <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
+							  <div id="testDataButton" style="display: none;" class="mb-3">
+								<button type="button" class="btn btn-outline-info btn-sm" onclick="fillTestData()">
+								  <i class="fas fa-flask mr-1"></i>填入測試資料
+								</button>
+							  </div>
+							  <button type="button" class="btn btn-outline-danger btn-block" onclick="showConfirmModal()">送出表單</button>
 							</div>
 							
                         </div>
@@ -839,6 +844,97 @@
       <?php include("includes/footer.php"); ?>
 
     </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content border">
+        <div class="modal-header bg-white border-bottom">
+          <h5 class="modal-title text-dark" id="confirmModalLabel">
+            確認表單內容
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
+          <div class="container-fluid">
+            
+            <!-- 基本資料 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  基本資料
+                </h6>
+              </div>
+              <div class="p-3">
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 80px;">會員姓名：</span>
+                      <span class="text-dark" id="confirm-member-name"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 80px;">出生年：</span>
+                      <span class="text-dark" id="confirm-birth-year"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 80px;">出生月：</span>
+                      <span class="text-dark" id="confirm-birth-month"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-2 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 60px;">電話：</span>
+                      <span class="text-dark" id="confirm-phone"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 職業選擇 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  職業選擇
+                </h6>
+              </div>
+              <div class="p-3">
+                <div id="confirm-occupation"></div>
+              </div>
+            </div>
+
+            <!-- 其他資訊 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  其他填寫資訊
+                </h6>
+              </div>
+              <div class="p-3">
+                <div class="text-muted">由於表單內容較多，僅顯示基本必填資訊。請確認基本資料無誤後送出。</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer border-top bg-white">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            取消
+          </button>
+          <button type="button" class="btn btn-danger" onclick="submitForm()">
+            確認送出
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <!-- Modal -->
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -1032,6 +1128,102 @@
 
       });
     </script>
+  <!-- Simple CSS for clean UI -->
+  <style>
+    .modal-content {
+      border-radius: 0px;
+    }
+    
+    .modal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .modal-body::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    .modal-body::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+    }
+    
+    .modal-body::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  </style>
+
+  <script>
+    // 控制測試按鈕顯示的變數
+    var showTestButton = true; // 設為 false 可隱藏測試按鈕
+    
+    // 頁面載入時檢查是否顯示測試按鈕
+    $(document).ready(function() {
+      if (showTestButton) {
+        document.getElementById('testDataButton').style.display = 'block';
+      }
+    });
+    
+    // 填入測試資料的函數
+    function fillTestData() {
+      document.querySelector('input[name="member_name"]').value = '王小華';
+      document.querySelector('select[name="birth_year"]').value = '2003';
+      document.querySelector('select[name="birth_month"]').value = '5';
+      document.querySelector('input[name="phone"]').value = '0912345678';
+      
+      // 選中一些職業選項
+      document.querySelector('input[name="occupation_service"]').checked = true;
+      document.querySelector('input[name="occupation_office"]').checked = true;
+    }
+
+    function showConfirmModal() {
+      // 驗證必填欄位
+      var memberName = document.querySelector('input[name="member_name"]').value;
+      var birthYear = document.querySelector('select[name="birth_year"]').value;
+      var birthMonth = document.querySelector('select[name="birth_month"]').value;
+      var phone = document.querySelector('input[name="phone"]').value;
+
+      if (!memberName || !birthYear || !birthMonth || !phone) {
+        alert('請填寫所有必填欄位');
+        return;
+      }
+
+      // 填入確認視窗的內容
+      document.getElementById('confirm-member-name').textContent = memberName;
+      document.getElementById('confirm-birth-year').textContent = birthYear + '年';
+      document.getElementById('confirm-birth-month').textContent = birthMonth + '月';
+      document.getElementById('confirm-phone').textContent = phone;
+      
+      // 職業選擇
+      var occupations = [
+        {name: 'occupation_service', label: '服務業'},
+        {name: 'occupation_office', label: '上班族'},
+        {name: 'occupation_restaurant', label: '餐飲業'},
+        {name: 'occupation_housewife', label: '家管'}
+      ];
+      var occupationContainer = document.getElementById('confirm-occupation');
+      var checkedOccupations = [];
+      
+      occupations.forEach(function(item) {
+        var checkbox = document.querySelector('input[name="' + item.name + '"]');
+        if (checkbox && checkbox.checked) {
+          checkedOccupations.push(item.label);
+        }
+      });
+      
+      if (checkedOccupations.length > 0) {
+        occupationContainer.innerHTML = '<span class="text-dark">' + checkedOccupations.join('、') + '</span>';
+      } else {
+        occupationContainer.innerHTML = '<span class="text-muted">未選擇</span>';
+      }
+      
+      // 顯示模態視窗
+      $('#confirmModal').modal('show');
+    }
+
+    function submitForm() {
+      document.getElementById('eform01').submit();
+    }
+  </script>
+
 	<script>
 	  /*Scroll to top when arrow up clicked BEGIN*/
 $(window).scroll(function() {
