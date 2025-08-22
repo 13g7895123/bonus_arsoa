@@ -136,6 +136,12 @@ class CompleteModel extends CI_Model
         $html .= '</tr>';
         $html .= '</table>';
 
+        $html .= '<table cellpadding="4">';
+        $html .= '<tr>';
+        $html .= "<td colspan='4'>備註: {$data['order_detail']['main']['remark']}</td>";
+        $html .= '</tr>';
+        $html .= '</table>';
+
         return $html;
     }
 

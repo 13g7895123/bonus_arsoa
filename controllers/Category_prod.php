@@ -62,7 +62,7 @@ class Category_prod extends MY_Controller
             exit;
         }
 
-        $list_data = $this->front_product_model->prd_list(3, $cat_data['wp3_no']);
+        $list_data = $this->front_product_model->prd_list(3,$cat_data['wp3_no']);
         
         $meta['title2'] = $cat_data['wp3_na'];
         $meta['title1'] = FC_Web.' - '.$meta['title2'];   

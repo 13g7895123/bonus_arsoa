@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
+    <meta name="description" content="Arsoa 安露莎化粧品">
+    <meta name="author" content="Paul, Logan Cee">
+
+    <title>Arsoa 安露莎化粧品 - Single Post With Sidebar</title>
+
+    <!-- CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/animsition.min.css" rel="stylesheet">
+    <link href="css/owl.carousel.min.css" rel="stylesheet">
+    <link href="css/owl.theme.default.min.css" rel="stylesheet">
+    <link href="css/socicon.css" rel="stylesheet">
+    <link href="css/ionicons.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/jquery.fancybox.min.css" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+  </head>
+
+  <body class="theme-orange fixed-footer fixed-footer-lg">
+    <div class="animsition">
+      <div class="wrapper">
+        <?php include("includes/header.php"); ?>
+		  
+		  
+        <div class="section-mini">
+
+          <!--<div class="section-item text-left">
+            <div class="article-promo">
+              <div class="article-promo-item" style="background:url(img/love_bg.jpg); min-height: 20.375rem;">
+              </div>
+            </div>
+			  
+			  <div class="breadcrumb"><div class="container">
+				  <a href="index.html" title="首頁">首頁</a>　<i class="icon ion-ios-arrow-right"></i>　<a href="javascript:;" title="會員專區">會員專區</a>　<i class="icon ion-ios-arrow-right"></i>　<a href="love.html" title="ARSOA Ai">ARSOA Ai</a></div>
+				  </div>
+			  
+          </div>-->
+			
+			
+
+          <div class="section-item text-left">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-9 mb130 mt-lg-5 wow fadeInUp" role="main" data-wow-delay=".2s">
+                  <h1 class="h2-3d font-libre"><strong>會員服務追蹤管理表(肌膚)</strong></h1>
+                  <div class="mb30">
+                    <div class="container">
+                      <form action="#" class="text-left">
+                        <div class="row">
+							<div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
+							
+                          <div class="col-sm-4 mb30">
+                            <label class="label-custom">姓名</label>
+                            <input type="text" class="form-control form-control-custom" placeholder="請填姓名" />
+                          </div>
+                          <div class="col-sm-3 mb30">
+                            <label class="label-custom">入會日</label>
+                            <input type="text" class="form-control form-control-custom" placeholder="將使用datepicker" />
+                          </div>
+                          <div class="col-sm-2 mb30">
+                            <label class="label-custom">性別</label>
+                            <select class="form-control form-control-custom" id="SeleteBYear">
+                              <option>請選擇</option>
+                              <option>女</option>
+                              <option>男</option>
+                            </select>
+                          </div>
+						  <div class="col-sm-3 mb30">
+                            <label class="label-custom">年齡</label>
+                            <input type="text" class="form-control form-control-custom" placeholder="限填數字" />
+                          </div>
+						  <div class="col-sm-12 mb30">
+                            <label class="label-custom">肌膚/健康狀況</label>
+                            <input type="text" class="form-control form-control-custom" placeholder="請填寫肌膚/健康狀況…" />
+                          </div>
+							
+						  <div class="col-sm-12 mb30">
+							  <h5>訂購產品</h5>
+                            <div class="card bg-light ">
+                              <div class="card-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">淨白活膚蜜皂</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">AP柔敏潔顏皂</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">活顏泥膜</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">安露莎化粧水I</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+									<div class="col-sm-3 mb20">
+                                      <label class="label-custom">安露莎化粧水II</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">安露莎活膚化粧水</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">柔敏化粧水</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">安露莎精華液I</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+									<div class="col-sm-3 mb20">
+                                      <label class="label-custom">安露莎精華液II</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">安露莎活膚精華液</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">美白精華液</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">保濕潤膚液</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+									<div class="col-sm-3 mb20">
+                                      <label class="label-custom">美容防皺油</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">保濕凝膠</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">亮采晶萃</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">防曬隔離液</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+									<div class="col-sm-3 mb20">
+                                      <label class="label-custom">保濕粉底液</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">絲柔粉餅</label>
+                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                    </div>
+
+									  
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+							
+                          <div class="col-sm-12 mb30">
+                            <label class="label-custom">LINE</label>
+                            <input type="text" class="form-control form-control-custom" placeholder="請填寫LINE聯絡狀況，300字元內…" />
+                          </div>
+							
+						  <div class="col-sm-12 mb30">
+                            <label class="label-custom">TEL</label>
+                            <input type="text" class="form-control form-control-custom" placeholder="請填寫電話聯絡狀況，300字元內…" />
+                          </div>
+							
+						<div class="col-sm-12 mb30">
+                            <label class="label-custom">見面日</label>
+                            <input type="text" class="form-control form-control-custom" placeholder="將使用datepicker" />
+                          </div>
+							
+						  <div class="col-sm-12 mb30">
+							  <hr class="my-4">
+							  <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
+							</div>
+							
+                        </div>
+						</form>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!--<div class="col-lg-1 d-none d-xl-block"></div>-->
+
+                <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
+					
+				  <div class="mb75">
+<h4><strong>電子表單</strong></h4>
+<a href="eform01.php" class="btn btn-outline-secondary btn-block">肌膚諮詢記錄表</a>
+<a href="eform02.php" class="btn btn-outline-secondary btn-block active">會員服務追蹤表(肌膚)</a>
+<a href="eform03.php" class="btn btn-outline-secondary btn-block">微微卡日記</a>
+<a href="eform04.php" class="btn btn-outline-secondary btn-block">會員服務追蹤表(保健)</a>
+<a href="eform05.php" class="btn btn-outline-secondary btn-block">健康諮詢表</a>
+</div>
+
+                  <!--<div class="mb65">
+                    <h4>產品分類</h4>
+
+                    <div class="article-list-mini">
+                      <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p01.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">肌膚保養系列</a></h5>
+                        </div>
+                      </div>
+                      <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p02.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">彩妝系列</a></h5>
+                        </div>
+                      </div>
+                      <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p04.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
+                        </div>
+                      </div>
+                      <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p05.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">美髮、美體系列</a></h5>
+                        </div>
+                      </div>
+					  <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p03.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>-->
+
+                  
+				  
+				  
+                </aside>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+
+      <?php include("includes/footer.php"); ?>
+
+    </div>
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">訂單內容</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+			．訂單編號：W191015005<br>
+			．訂購日期：2019/10/15 14:50<br>
+			．付款狀態：付款未完成<br>
+			．訂購會員：000000  公司<br>
+			．收件人姓名：公司<br>
+			．收件人地址：106 台北市大安區信義路三段149號9樓(台灣安露莎) <br>
+			．收件人聯絡電話：02-2706-3111 <br>
+			．電子郵件信箱：abc@qbc.com<br>
+			．付款人身份證字號：A123456789 
+		  </p>
+		  <table class="table table-striped table-responsive mb-2">
+  <thead class="thead-dark">
+    <tr>
+      <th>#</th>
+      <th>產品編號</th>
+      <th>產品名稱</th>
+      <th>建議售價</th>
+      <th>銷售折扣</th>
+      <th>BP</th>
+      <th style="width: 10%">訂購<br>數量</th>
+      <th>應付小計</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>00421628 </td>
+      <td>安露莎淨白活膚蜜皂環保精裝135g</td>
+      <td>1,600 元</td>
+      <td>60%</td>
+      <td>28</td>
+      <td>1</td>
+      <td>960 元</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>00401555</td>
+      <td>麗蓓思朵-化粧液</td>
+      <td>1,500 元</td>
+      <td>60%</td>
+      <td>28</td>
+      <td>1</td>
+      <td>900 元</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>00401563</td>
+      <td>麗蓓思朵-保濕亮采肌底液</td>
+      <td>1,750 元</td>
+      <td>60%</td>
+      <td>37</td>
+      <td>1</td>
+      <td>1,050 元</td>
+    </tr>
+	<tr>
+      <th scope="row">4</th>
+      <td>0385769</td>
+      <td>可佳媽媽淨活水器-CJ230 ST</td>
+      <td>29,500 元</td>
+      <td>無折扣</td>
+      <td>600</td>
+      <td>1</td>
+      <td>29,500 元</td>
+    </tr>
+  </tbody>
+</table>
+		  <div class="row">
+	<div class="col-md-6">
+		<p>
+			備註：<br>
+			<ol><li>請您於交易完成時，記下網購單號，以便追蹤查詢進度。</li>
+				<li>本公司保留出貨與否權利。</li>
+				<li>購滿建議售價 2,000 元，免付運費 100 元。</li>
+				<li>為保障會員用卡安全，本公司僅接受訂貨人本人持有之信用卡。</li>
+				<li>一但確定您要的贈品數量後，請按更改數量確認；否則將會造成資料的遺失。</li>
+		</ol>
+		</p>
+	</div>
+	<div class="col-md-6">
+		<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">&nbsp;</th>
+      <th scope="col">BP</th>
+      <th scope="col">建議售價</th>
+      <th scope="col">優惠價</th>
+      <th scope="col">&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">A類</th>
+      <td>93</td>
+      <td>4,850</td>
+      <td>2,910</td>
+      <td>元</td>
+    </tr>
+    <tr>
+      <th scope="row">B類</th>
+      <td>600</td>
+      <td>29,500</td>
+      <td>29,500</td>
+      <td>元</td>
+    </tr>
+    <tr>
+      <th scope="row">合計</th>
+      <td>693</td>
+      <td>34,350</td>
+      <td>32,410</td>
+      <td>元</td>
+    </tr>
+    <tr>
+      <th scope="row">取件方式</th>
+      <td>貨運</td>
+      <td>運費：</td>
+      <td>0</td>
+      <td>元</td>
+    </tr>
+    <tr>
+      <th scope="row">&nbsp;</th>
+      <td>&nbsp;</td>
+      <td>應付總計：</td>
+      <td>32,410</td>
+      <td>元</td>
+    </tr>
+  </tbody>
+</table>
+	</div>
+	
+				    </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+      </div>
+    </div>
+  </div>
+</div>
+	
+	<a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
+
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+    <script src="js/smoothscroll.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/animsition.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/jquery.pagepiling.min.js"></script>
+    <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/jquery.fancybox.min.js"></script>
+    <script src="js/TweenMax.min.js"></script>
+    <script src="js/ScrollMagic.min.js"></script>
+    <script src="js/animation.gsap.min.js"></script>
+    <script src="js/jquery.viewport.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/script.js"></script>
+
+
+    <script>
+      $(document).ready(function() {
+        // init controller
+        var controller = new ScrollMagic.Controller();
+
+        // build scenes
+        new ScrollMagic.Scene({triggerElement: '.section-mini', triggerHook: 1, duration: '200%'})
+              .setTween('.article-promo-item', {backgroundPosition: '50% 100%', ease: Linear.easeNone})
+              .addTo(controller);
+
+      });
+    </script>
+	<script>
+	  /*Scroll to top when arrow up clicked BEGIN*/
+$(window).scroll(function() {
+    var height = $(window).scrollTop();
+    if (height > 100) {
+        $('#back2Top').fadeIn();
+    } else {
+        $('#back2Top').fadeOut();
+    }
+});
+$(document).ready(function() {
+    $("#back2Top").click(function(event) {
+        event.preventDefault();
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        return false;
+    });
+
+});
+ /*Scroll to top when arrow up clicked END*/
+	  </script>
+
+  </body>
+</html>
