@@ -36,7 +36,7 @@
                         </div>
 
                         <div class="col-sm-12 mb20">
-                          <div class="alert alert-danger" role="alert"> 共同行動計畫：<br>
+                          <div class="alert alert-danger" role="alert" style="border-radius: 0 !important;"> 共同行動計畫：<br>
                             <ol>
                               <li>用手測量飲食</li>
                               <li>運動</li>
@@ -47,7 +47,7 @@
                         </div>
 
                         <div class="col-sm-12 mb30">
-                          <div class="alert alert-warning" role="alert">
+                          <div class="alert alert-warning" role="alert" style="border-radius: 0 !important;">
                             <div class="col-sm-12 mb30">
                               <label class="label-custom">自身行動計畫1.</label>
                               <input type="text" name="action_plan_1" class="form-control form-control-custom" placeholder="請填寫目標…" />
@@ -213,79 +213,79 @@
   <!-- Confirm Modal -->
   <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
-      <div class="modal-content border-0 shadow-lg">
-        <div class="modal-header bg-gradient-primary text-white border-0">
-          <h5 class="modal-title" id="confirmModalLabel">
-            <i class="fas fa-clipboard-check mr-2"></i>確認表單內容
+      <div class="modal-content border">
+        <div class="modal-header bg-white border-bottom">
+          <h5 class="modal-title text-dark" id="confirmModalLabel">
+            確認表單內容
           </h5>
-          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
           <div class="container-fluid">
             
-            <!-- 基本資料卡片 -->
-            <div class="card mb-4 border-left-primary shadow-sm">
-              <div class="card-header bg-light">
-                <h6 class="m-0 font-weight-bold text-primary">
-                  <i class="fas fa-user mr-2"></i>基本資料
+            <!-- 基本資料 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  基本資料
                 </h6>
               </div>
-              <div class="card-body">
+              <div class="p-3">
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <div class="d-flex align-items-center">
-                      <span class="badge badge-light mr-2">姓名</span>
-                      <span class="text-dark font-weight-bold" id="confirm-member-name"></span>
+                      <span class="text-muted mr-3" style="min-width: 60px;">姓名：</span>
+                      <span class="text-dark" id="confirm-member-name"></span>
                     </div>
                   </div>
                   <div class="col-md-6 mb-3">
                     <div class="d-flex align-items-center">
-                      <span class="badge badge-light mr-2">編號</span>
-                      <span class="text-dark font-weight-bold" id="confirm-member-id"></span>
+                      <span class="text-muted mr-3" style="min-width: 60px;">編號：</span>
+                      <span class="text-dark" id="confirm-member-id"></span>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
                     <div class="d-flex align-items-center">
-                      <span class="badge badge-light mr-2">年齡</span>
-                      <span class="text-dark font-weight-bold" id="confirm-age"></span> 歲
+                      <span class="text-muted mr-3" style="min-width: 60px;">年齡：</span>
+                      <span class="text-dark" id="confirm-age"></span> 歲
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
                     <div class="d-flex align-items-center">
-                      <span class="badge badge-light mr-2">身高</span>
-                      <span class="text-dark font-weight-bold" id="confirm-height"></span> cm
+                      <span class="text-muted mr-3" style="min-width: 60px;">身高：</span>
+                      <span class="text-dark" id="confirm-height"></span> cm
                     </div>
                   </div>
                   <div class="col-12">
                     <div class="d-flex align-items-start">
-                      <span class="badge badge-light mr-2">目標</span>
-                      <span class="text-dark font-weight-bold" id="confirm-goal"></span>
+                      <span class="text-muted mr-3" style="min-width: 60px;">目標：</span>
+                      <span class="text-dark" id="confirm-goal"></span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- 行動計畫卡片 -->
-            <div class="card mb-4 border-left-warning shadow-sm">
-              <div class="card-header bg-light">
-                <h6 class="m-0 font-weight-bold text-warning">
-                  <i class="fas fa-tasks mr-2"></i>自身行動計畫
+            <!-- 行動計畫 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  自身行動計畫
                 </h6>
               </div>
-              <div class="card-body">
+              <div class="p-3">
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <div class="d-flex align-items-start">
-                      <span class="badge badge-warning mr-2">計畫1</span>
+                      <span class="text-muted mr-3" style="min-width: 60px;">計畫1：</span>
                       <span class="text-dark" id="confirm-action-plan-1"></span>
                     </div>
                   </div>
                   <div class="col-md-6 mb-3">
                     <div class="d-flex align-items-start">
-                      <span class="badge badge-warning mr-2">計畫2</span>
+                      <span class="text-muted mr-3" style="min-width: 60px;">計畫2：</span>
                       <span class="text-dark" id="confirm-action-plan-2"></span>
                     </div>
                   </div>
@@ -293,79 +293,79 @@
               </div>
             </div>
 
-            <!-- 身體數據卡片 -->
-            <div class="card mb-4 border-left-info shadow-sm">
-              <div class="card-header bg-light">
-                <h6 class="m-0 font-weight-bold text-info">
-                  <i class="fas fa-heartbeat mr-2"></i>身體數據
+            <!-- 身體數據 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  身體數據
                 </h6>
               </div>
-              <div class="card-body">
+              <div class="p-3">
                 <div class="row">
                   <div class="col-md-3 mb-3">
-                    <div class="text-center p-3 border bg-light">
-                      <div class="text-info font-weight-bold mb-1">體重</div>
-                      <div class="h5 font-weight-bold text-dark" id="confirm-weight"></div>
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 60px;">體重：</span>
+                      <span class="text-dark" id="confirm-weight"></span>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
-                    <div class="text-center p-3 border bg-light">
-                      <div class="text-info font-weight-bold mb-1">血壓(收)</div>
-                      <div class="h5 font-weight-bold text-dark" id="confirm-blood-pressure-high"></div>
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 80px;">血壓(收)：</span>
+                      <span class="text-dark" id="confirm-blood-pressure-high"></span>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
-                    <div class="text-center p-3 border bg-light">
-                      <div class="text-info font-weight-bold mb-1">血壓(舒)</div>
-                      <div class="h5 font-weight-bold text-dark" id="confirm-blood-pressure-low"></div>
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 80px;">血壓(舒)：</span>
+                      <span class="text-dark" id="confirm-blood-pressure-low"></span>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
-                    <div class="text-center p-3 border bg-light">
-                      <div class="text-info font-weight-bold mb-1">腰圍</div>
-                      <div class="h5 font-weight-bold text-dark" id="confirm-waist"></div>
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 60px;">腰圍：</span>
+                      <span class="text-dark" id="confirm-waist"></span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- 執行項目卡片 -->
-            <div class="card mb-4 border-left-success shadow-sm">
-              <div class="card-header bg-light">
-                <h6 class="m-0 font-weight-bold text-success">
-                  <i class="fas fa-check-circle mr-2"></i>執行項目
+            <!-- 執行項目 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  執行項目
                 </h6>
               </div>
-              <div class="card-body">
+              <div class="p-3">
                 <div id="confirm-checkboxes-container"></div>
               </div>
             </div>
 
-            <!-- 其他計畫卡片 -->
-            <div class="card mb-4 border-left-secondary shadow-sm">
-              <div class="card-header bg-light">
-                <h6 class="m-0 font-weight-bold text-secondary">
-                  <i class="fas fa-clipboard-list mr-2"></i>其他計畫
+            <!-- 其他計畫 -->
+            <div class="border mb-4">
+              <div class="bg-light p-3 border-bottom">
+                <h6 class="m-0 font-weight-bold text-dark">
+                  其他計畫
                 </h6>
               </div>
-              <div class="card-body">
+              <div class="p-3">
                 <div class="row">
                   <div class="col-md-4 mb-3">
                     <div class="d-flex align-items-start">
-                      <span class="badge badge-secondary mr-2">計畫a</span>
+                      <span class="text-muted mr-3" style="min-width: 70px;">計畫a：</span>
                       <span class="text-dark" id="confirm-plan-a"></span>
                     </div>
                   </div>
                   <div class="col-md-4 mb-3">
                     <div class="d-flex align-items-start">
-                      <span class="badge badge-secondary mr-2">計畫b</span>
+                      <span class="text-muted mr-3" style="min-width: 70px;">計畫b：</span>
                       <span class="text-dark" id="confirm-plan-b"></span>
                     </div>
                   </div>
                   <div class="col-md-4 mb-3">
                     <div class="d-flex align-items-start">
-                      <span class="badge badge-secondary mr-2">其他</span>
+                      <span class="text-muted mr-3" style="min-width: 70px;">其他：</span>
                       <span class="text-dark" id="confirm-other"></span>
                     </div>
                   </div>
@@ -375,12 +375,12 @@
 
           </div>
         </div>
-        <div class="modal-footer border-0 bg-light">
-          <button type="button" class="btn btn-outline-secondary btn-lg px-4" data-dismiss="modal">
-            <i class="fas fa-times mr-2"></i>取消
+        <div class="modal-footer border-top bg-white">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            取消
           </button>
-          <button type="button" class="btn btn-danger btn-lg px-4 shadow-sm" onclick="submitForm()">
-            <i class="fas fa-paper-plane mr-2"></i>確認送出
+          <button type="button" class="btn btn-danger" onclick="submitForm()">
+            確認送出
           </button>
         </div>
       </div>
@@ -561,58 +561,10 @@
   <script src="js/jquery.countdown.min.js"></script>
   <script src="js/script.js"></script>
   
-  <!-- Custom CSS for enhanced UI -->
+  <!-- Simple CSS for clean UI -->
   <style>
-    .bg-gradient-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    .border-left-primary {
-      border-left: 4px solid #4e73df !important;
-    }
-    
-    .border-left-warning {
-      border-left: 4px solid #f6c23e !important;
-    }
-    
-    .border-left-info {
-      border-left: 4px solid #36b9cc !important;
-    }
-    
-    .border-left-success {
-      border-left: 4px solid #1cc88a !important;
-    }
-    
-    .border-left-secondary {
-      border-left: 4px solid #858796 !important;
-    }
-    
     .modal-content {
       border-radius: 0px;
-    }
-    
-    .card {
-      border-radius: 0px;
-      transition: transform 0.2s ease-in-out;
-    }
-    
-    .card:hover {
-      transform: translateY(-2px);
-    }
-    
-    .badge {
-      font-size: 0.85rem;
-      min-width: 60px;
-      text-align: center;
-    }
-    
-    .btn-lg {
-      transition: all 0.3s ease;
-    }
-    
-    .btn-lg:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
     }
     
     .modal-body::-webkit-scrollbar {
@@ -621,12 +573,10 @@
     
     .modal-body::-webkit-scrollbar-track {
       background: #f1f1f1;
-      border-radius: 0px;
     }
     
     .modal-body::-webkit-scrollbar-thumb {
       background: #c1c1c1;
-      border-radius: 0px;
     }
     
     .modal-body::-webkit-scrollbar-thumb:hover {
@@ -730,14 +680,14 @@
       checkboxes.forEach(function(item) {
         var checkbox = document.querySelector('input[name="' + item.name + '"]');
         if (checkbox && checkbox.checked) {
-          checkedItems.push('<span class="badge badge-success mr-2 mb-2 p-2"><i class="fas ' + item.icon + ' mr-1"></i>' + item.label + '</span>');
+          checkedItems.push(item.label);
         }
       });
       
       if (checkedItems.length > 0) {
-        checkboxesContainer.innerHTML = checkedItems.join('');
+        checkboxesContainer.innerHTML = '<span class="text-dark">' + checkedItems.join('、') + '</span>';
       } else {
-        checkboxesContainer.innerHTML = '<span class="text-muted"><i class="fas fa-info-circle mr-2"></i>無選擇項目</span>';
+        checkboxesContainer.innerHTML = '<span class="text-muted">無選擇項目</span>';
       }
       
       // 其他計畫
