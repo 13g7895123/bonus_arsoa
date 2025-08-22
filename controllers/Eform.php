@@ -41,7 +41,7 @@ class Eform extends MY_Controller
         echo '</pre>';
     }
 
-    public function form1()
+    public function eform1()
     {
         $data = array(
             'userdata' => $this->userdata,
@@ -51,17 +51,17 @@ class Eform extends MY_Controller
         $this->layout->view('./eeform/eform01', $data);
     }
 
-    public function form2()
+    public function eform2()
     {
         $data = array(
             'userdata' => $this->userdata,
             'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
         );
 
-        $this->layout->view('./eform/eform02', $data);
+        $this->layout->view('./eeform/eform02', $data);
     }
 
-    public function form3()
+    public function eform3()
     {
         $data = array(
             'userdata' => $this->userdata,

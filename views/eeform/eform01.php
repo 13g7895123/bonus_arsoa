@@ -165,54 +165,54 @@
                           <div class="col-sm-12 mb30">
                             <div class="form-check form-check-inline">睡眠狀況：</div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">晚上9:00~10:59就寢　</label>
+                              <input class="form-check-input" type="checkbox" name="sleep_9_10" id="sleep_9_10" value="1">
+                              <label class="form-check-label" for="sleep_9_10">晚上9:00~10:59就寢　</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">晚上11:00~12:59就寢　</label>
+                              <input class="form-check-input" type="checkbox" name="sleep_11_12" id="sleep_11_12" value="1">
+                              <label class="form-check-label" for="sleep_11_12">晚上11:00~12:59就寢　</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">凌晨1點之後就寢　</label>
+                              <input class="form-check-input" type="checkbox" name="sleep_after_1" id="sleep_after_1" value="1">
+                              <label class="form-check-label" for="sleep_after_1">凌晨1點之後就寢　</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">其他： </label>
-                              <input type="text">
+                              <input class="form-check-input" type="checkbox" name="sleep_other" id="sleep_other" value="1">
+                              <label class="form-check-label" for="sleep_other">其他： </label>
+                              <input type="text" name="sleep_other_text">
                             </div>
                           </div>
 
                           <div class="col-sm-12 mb30">
                             <div class="form-check form-check-inline">現在使用產品：</div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">蜜皂　</label>
+                              <input class="form-check-input" type="checkbox" name="product_honey_soap" id="product_honey_soap" value="1">
+                              <label class="form-check-label" for="product_honey_soap">蜜皂　</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">泥膜　</label>
+                              <input class="form-check-input" type="checkbox" name="product_mud_mask" id="product_mud_mask" value="1">
+                              <label class="form-check-label" for="product_mud_mask">泥膜　</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">化妝水　</label>
+                              <input class="form-check-input" type="checkbox" name="product_toner" id="product_toner" value="1">
+                              <label class="form-check-label" for="product_toner">化妝水　</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">精華液　</label>
+                              <input class="form-check-input" type="checkbox" name="product_serum" id="product_serum" value="1">
+                              <label class="form-check-label" for="product_serum">精華液　</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">極緻系列　</label>
+                              <input class="form-check-input" type="checkbox" name="product_premium" id="product_premium" value="1">
+                              <label class="form-check-label" for="product_premium">極緻系列　</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">防曬　</label>
+                              <input class="form-check-input" type="checkbox" name="product_sunscreen" id="product_sunscreen" value="1">
+                              <label class="form-check-label" for="product_sunscreen">防曬　</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">其他： </label>
-                              <input type="text">
+                              <input class="form-check-input" type="checkbox" name="product_other" id="product_other" value="1">
+                              <label class="form-check-label" for="product_other">其他： </label>
+                              <input type="text" name="product_other_text">
                             </div>
                           </div>
 
@@ -225,53 +225,53 @@
                                   </div>
                                   <div class="row mb30">
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">沒有彈性 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_elasticity" id="skin_issue_elasticity" value="1">
+                                      <label class="form-check-label" for="skin_issue_elasticity">沒有彈性 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">沒有光澤 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_luster" id="skin_issue_luster" value="1">
+                                      <label class="form-check-label" for="skin_issue_luster">沒有光澤 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">暗沉 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_dull" id="skin_issue_dull" value="1">
+                                      <label class="form-check-label" for="skin_issue_dull">暗沉 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">斑點 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_spots" id="skin_issue_spots" value="1">
+                                      <label class="form-check-label" for="skin_issue_spots">斑點 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">毛孔粗大 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_pores" id="skin_issue_pores" value="1">
+                                      <label class="form-check-label" for="skin_issue_pores">毛孔粗大 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">痘痘粉刺 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_acne" id="skin_issue_acne" value="1">
+                                      <label class="form-check-label" for="skin_issue_acne">痘痘粉刺 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">皺紋細紋 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_wrinkles" id="skin_issue_wrinkles" value="1">
+                                      <label class="form-check-label" for="skin_issue_wrinkles">皺紋細紋 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">粗糙 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_rough" id="skin_issue_rough" value="1">
+                                      <label class="form-check-label" for="skin_issue_rough">粗糙 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">癢、紅腫 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_irritation" id="skin_issue_irritation" value="1">
+                                      <label class="form-check-label" for="skin_issue_irritation">癢、紅腫 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">乾燥 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_dry" id="skin_issue_dry" value="1">
+                                      <label class="form-check-label" for="skin_issue_dry">乾燥 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">上妝不服貼 </label>
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_makeup" id="skin_issue_makeup" value="1">
+                                      <label class="form-check-label" for="skin_issue_makeup">上妝不服貼 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">其他： </label>
-                                      <input type="text">
+                                      <input class="form-check-input" type="checkbox" name="skin_issue_other" id="skin_issue_other" value="1">
+                                      <label class="form-check-label" for="skin_issue_other">其他： </label>
+                                      <input type="text" name="skin_issue_other_text">
                                     </div>
                                   </div>
                                   <div class="row">
@@ -279,16 +279,16 @@
                                   </div>
                                   <div class="row">
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">經常 </label>
+                                      <input class="form-check-input" type="checkbox" name="allergy_frequent" id="allergy_frequent" value="1">
+                                      <label class="form-check-label" for="allergy_frequent">經常 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">偶爾(換季時) </label>
+                                      <input class="form-check-input" type="checkbox" name="allergy_seasonal" id="allergy_seasonal" value="1">
+                                      <label class="form-check-label" for="allergy_seasonal">偶爾(換季時) </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">不會 </label>
+                                      <input class="form-check-input" type="checkbox" name="allergy_never" id="allergy_never" value="1">
+                                      <label class="form-check-label" for="allergy_never">不會 </label>
                                     </div>
                                   </div>
                                 </div>
@@ -1356,27 +1356,20 @@
           $(this).val((index % 10) + 1);
         });
 
-        // 睡眠狀況checkbox（選擇其中幾個） - jQuery版本
-        $('input[type="checkbox"]').each(function(index) {
-          // 隨機選中一些checkbox，但不要全選
-          if (index % 3 === 0) {
-            $(this).prop('checked', true);
-          }
-        });
+        // 睡眠狀況
+        $('input[name="sleep_11_12"]').prop('checked', true);
 
-        // 現在使用產品checkbox（選擇幾個常用的） - jQuery版本
-        $('input[type="checkbox"]').each(function(index) {
-          if (index % 4 === 1) {
-            $(this).prop('checked', true);
-          }
-        });
+        // 現在使用產品
+        $('input[name="product_toner"]').prop('checked', true);
+        $('input[name="product_serum"]').prop('checked', true);
 
-        // 肌膚困擾checkbox（選擇幾個常見問題） - jQuery版本
-        $('input[type="checkbox"]').each(function(index) {
-          if (index % 5 === 2) {
-            $(this).prop('checked', true);
-          }
-        });
+        // 肌膚困擾
+        $('input[name="skin_issue_dull"]').prop('checked', true);
+        $('input[name="skin_issue_spots"]').prop('checked', true);
+        $('input[name="skin_issue_dry"]').prop('checked', true);
+
+        // 過敏狀況
+        $('input[name="allergy_seasonal"]').prop('checked', true);
 
         // 其他text input欄位 - jQuery版本
         $('input[type="text"]:not([name])').each(function(index) {
