@@ -389,14 +389,16 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-sm-4 mb20" id="water-status-section">
-                                          <div class="row">
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
-                                            </div>
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                      <div id="water-date-container">
+                                        <div class="row">
+                                          <div class="col-sm-4 mb20 date-input-group">
+                                            <div class="row">
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                              </div>
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -439,14 +441,16 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-sm-4 mb20" id="water-status-section">
-                                          <div class="row">
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
-                                            </div>
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                      <div id="complexion-date-container">
+                                        <div class="row">
+                                          <div class="col-sm-4 mb20 date-input-group">
+                                            <div class="row">
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                              </div>
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -489,14 +493,16 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-sm-4 mb20" id="water-status-section">
-                                          <div class="row">
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
-                                            </div>
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                      <div id="texture-date-container">
+                                        <div class="row">
+                                          <div class="col-sm-4 mb20 date-input-group">
+                                            <div class="row">
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                              </div>
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -539,14 +545,16 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-sm-4 mb20" id="water-status-section">
-                                          <div class="row">
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
-                                            </div>
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                      <div id="sensitivity-date-container">
+                                        <div class="row">
+                                          <div class="col-sm-4 mb20 date-input-group">
+                                            <div class="row">
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                              </div>
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -589,14 +597,16 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-sm-4 mb20" id="water-status-section">
-                                          <div class="row">
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
-                                            </div>
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                      <div id="oil-date-container">
+                                        <div class="row">
+                                          <div class="col-sm-4 mb20 date-input-group">
+                                            <div class="row">
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                              </div>
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -639,14 +649,16 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-sm-4 mb20" id="water-status-section">
-                                          <div class="row">
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
-                                            </div>
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                      <div id="pigment-date-container">
+                                        <div class="row">
+                                          <div class="col-sm-4 mb20 date-input-group">
+                                            <div class="row">
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                              </div>
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -689,14 +701,16 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-sm-4 mb20" id="water-status-section">
-                                          <div class="row">
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
-                                            </div>
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                      <div id="wrinkle-date-container">
+                                        <div class="row">
+                                          <div class="col-sm-4 mb20 date-input-group">
+                                            <div class="row">
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                              </div>
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -739,14 +753,16 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-sm-4 mb20" id="water-status-section">
-                                          <div class="row">
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
-                                            </div>
-                                            <div class="col-lg-6">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                      <div id="pore-date-container">
+                                        <div class="row">
+                                          <div class="col-sm-4 mb20 date-input-group">
+                                            <div class="row">
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                              </div>
+                                              <div class="col-lg-6">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -1199,12 +1215,44 @@
 
 
     <script>
-      // 點擊「新增」按鈕時 - jQuery版本
+      // 新增日期功能 - jQuery版本，支援最多3組，達到上限時隱藏按鈕
       $(document).ready(function() {
-        $('#add-button1').on('click', function() {
-          var $section = $('#water-status-section');
-          var $newSection = $section.clone(); // 複製現有區塊
-          $section.parent().append($newSection); // 把複製的區塊加到原來區塊的下方
+        // 定義所有容器和按鈕的對應關係
+        var addButtonConfigs = [
+          { buttonId: '#add-button1', containerId: '#water-date-container' },
+          { buttonId: '#add-button2', containerId: '#complexion-date-container' },
+          { buttonId: '#add-button3', containerId: '#texture-date-container' },
+          { buttonId: '#add-button4', containerId: '#sensitivity-date-container' },
+          { buttonId: '#add-button5', containerId: '#oil-date-container' },
+          { buttonId: '#add-button6', containerId: '#pigment-date-container' },
+          { buttonId: '#add-button7', containerId: '#wrinkle-date-container' },
+          { buttonId: '#add-button8', containerId: '#pore-date-container' }
+        ];
+
+        // 為每個按鈕設置點擊事件
+        $.each(addButtonConfigs, function(index, config) {
+          $(config.buttonId).on('click', function() {
+            var $container = $(config.containerId);
+            var currentGroups = $container.find('.date-input-group').length;
+            
+            // 檢查是否已達到最大數量（3組）
+            if (currentGroups < 3) {
+              // 複製第一個日期輸入組
+              var $newGroup = $container.find('.date-input-group:first').clone();
+              
+              // 清空複製組的輸入值
+              $newGroup.find('input').val('');
+              
+              // 將新組添加到容器中（包裝在row中）
+              var $newRow = $('<div class="row"></div>').append($newGroup);
+              $container.append($newRow);
+              
+              // 檢查是否達到3組，如果是則隱藏按鈕
+              if (currentGroups + 1 >= 3) {
+                $(config.buttonId).hide();
+              }
+            }
+          });
         });
       });
     </script>
