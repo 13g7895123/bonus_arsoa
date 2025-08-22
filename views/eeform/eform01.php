@@ -1243,9 +1243,9 @@
               // 清空複製組的輸入值
               $newGroup.find('input').val('');
               
-              // 將新組添加到容器中（包裝在row中）
-              var $newRow = $('<div class="row"></div>').append($newGroup);
-              $container.append($newRow);
+              // 將新組添加到現有的row中（橫向排列）
+              var $firstRow = $container.find('.row:first');
+              $firstRow.append($newGroup);
               
               // 檢查是否達到3組，如果是則隱藏按鈕
               if (currentGroups + 1 >= 3) {
