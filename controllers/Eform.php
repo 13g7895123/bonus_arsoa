@@ -48,12 +48,7 @@ class Eform extends MY_Controller
             'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
         );
         
-        $blockNum = 10;
-        for($index=1;$index<=$blockNum;$index++) {
-            $subView['index'] = $index;
-            $data['subView'] .= $this->load->view('eform/sub_eform01', $subView, true);
-        }
-        $this->layout->view('./eform/eform01', $data);
+        $this->layout->view('./eeform/eform01', $data);
     }
 
     public function form2()
