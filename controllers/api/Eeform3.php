@@ -299,6 +299,25 @@ class Eeform3 extends MY_Controller
                 return;
             }
 
+            // Add debugging for the member_id received
+            $debug_info = [
+                'member_id_received' => $member_id,
+                'member_id_length' => strlen($member_id),
+                'member_id_type' => gettype($member_id)
+            ];
+
+            // Check if database tables exist
+            try {
+                $tables_exist = $this->_check_database_tables();
+                $debug_info['tables_check'] = $tables_exist;
+            } catch (Exception $e) {
+                $this->_send_error('Database tables check failed: ' . $e->getMessage(), 500, [
+                    'debug_info' => $debug_info,
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return;
+            }
+
             // 取得查詢參數
             $page = (int)$this->input->get('page') ?: 1;
             $limit = (int)$this->input->get('limit') ?: 10;
@@ -316,7 +335,12 @@ class Eeform3 extends MY_Controller
             $this->_send_success('取得提交記錄成功', $submissions);
 
         } catch (Exception $e) {
-            $this->_send_error('取得提交記錄失敗: ' . $e->getMessage(), 500);
+            $this->_send_error('取得提交記錄失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'debug_info' => $debug_info ?? null
+            ]);
         }
     }
 
@@ -456,5 +480,185 @@ class Eeform3 extends MY_Controller
         $this->output
             ->set_status_header($code)
             ->set_output(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
+    /**
+     * Check if required database tables exist
+     * @return array
+     */
+    private function _check_database_tables() {
+        $required_tables = [
+            'eeform3_submissions',
+            'eeform3_body_data', 
+            'eeform3_activity_items',
+            'eeform3_activity_records',
+            'eeform3_plans'
+        ];
+        
+        $table_status = [];
+        $missing_tables = [];
+        
+        foreach ($required_tables as $table) {
+            try {
+                $this->db->select('1');
+                $this->db->from($table);
+                $this->db->limit(1);
+                $query = $this->db->get();
+                $table_status[$table] = 'exists';
+            } catch (Exception $e) {
+                $table_status[$table] = 'missing';
+                $missing_tables[] = $table;
+            }
+        }
+        
+        // If tables are missing, try to create them
+        if (!empty($missing_tables)) {
+            $create_result = $this->_create_database_tables($missing_tables);
+            foreach ($create_result as $table => $result) {
+                $table_status[$table] = $result;
+            }
+        }
+        
+        return $table_status;
+    }
+
+    /**
+     * Create missing database tables
+     * @param array $missing_tables
+     * @return array
+     */
+    private function _create_database_tables($missing_tables) {
+        $results = [];
+        
+        // Table creation SQL statements
+        $table_sqls = [
+            'eeform3_submissions' => "
+                CREATE TABLE eeform3_submissions (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    member_name VARCHAR(100) NOT NULL COMMENT '會員姓名',
+                    member_id VARCHAR(50) NOT NULL COMMENT '會員編號',
+                    age TINYINT UNSIGNED NOT NULL COMMENT '年齡',
+                    height SMALLINT UNSIGNED NOT NULL COMMENT '身高(cm)',
+                    goal TEXT NOT NULL COMMENT '目標',
+                    action_plan_1 TEXT NULL COMMENT '自身行動計畫1',
+                    action_plan_2 TEXT NULL COMMENT '自身行動計畫2',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
+                    status ENUM('draft', 'submitted', 'reviewed') DEFAULT 'submitted' COMMENT '狀態',
+                    submission_date DATE NOT NULL COMMENT '填寫日期',
+                    
+                    INDEX idx_member_id (member_id),
+                    INDEX idx_submission_date (submission_date),
+                    INDEX idx_status (status),
+                    INDEX idx_created_at (created_at)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='微微卡日記表單主表'
+            ",
+            'eeform3_body_data' => "
+                CREATE TABLE eeform3_body_data (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    submission_id INT NOT NULL COMMENT '表單提交ID',
+                    weight DECIMAL(5,2) NULL COMMENT '體重(公斤)',
+                    blood_pressure_high SMALLINT UNSIGNED NULL COMMENT '收縮壓',
+                    blood_pressure_low SMALLINT UNSIGNED NULL COMMENT '舒張壓',
+                    waist DECIMAL(5,2) NULL COMMENT '腰圍(公分)',
+                    measurement_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '測量時間',
+                    
+                    FOREIGN KEY (submission_id) REFERENCES eeform3_submissions(id) ON DELETE CASCADE,
+                    INDEX idx_submission_id (submission_id),
+                    INDEX idx_measurement_time (measurement_time)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='身體數據記錄表'
+            ",
+            'eeform3_activity_items' => "
+                CREATE TABLE eeform3_activity_items (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    item_key VARCHAR(50) NOT NULL UNIQUE COMMENT '活動項目鍵值',
+                    item_name VARCHAR(100) NOT NULL COMMENT '活動項目名稱',
+                    description TEXT NULL COMMENT '項目描述',
+                    is_active BOOLEAN DEFAULT TRUE COMMENT '是否啟用',
+                    sort_order INT DEFAULT 0 COMMENT '排序順序',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    
+                    INDEX idx_item_key (item_key),
+                    INDEX idx_is_active (is_active),
+                    INDEX idx_sort_order (sort_order)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='活動項目主表'
+            ",
+            'eeform3_activity_records' => "
+                CREATE TABLE eeform3_activity_records (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    submission_id INT NOT NULL COMMENT '表單提交ID',
+                    activity_item_id INT NOT NULL COMMENT '活動項目ID',
+                    is_completed BOOLEAN DEFAULT FALSE COMMENT '是否完成',
+                    completion_time TIMESTAMP NULL COMMENT '完成時間',
+                    notes TEXT NULL COMMENT '備註',
+                    
+                    FOREIGN KEY (submission_id) REFERENCES eeform3_submissions(id) ON DELETE CASCADE,
+                    FOREIGN KEY (activity_item_id) REFERENCES eeform3_activity_items(id) ON DELETE CASCADE,
+                    UNIQUE KEY uk_submission_activity (submission_id, activity_item_id),
+                    INDEX idx_submission_id (submission_id),
+                    INDEX idx_activity_item_id (activity_item_id),
+                    INDEX idx_is_completed (is_completed)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='活動完成記錄表'
+            ",
+            'eeform3_plans' => "
+                CREATE TABLE eeform3_plans (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    submission_id INT NOT NULL COMMENT '表單提交ID',
+                    plan_type ENUM('plan_a', 'plan_b', 'other') NOT NULL COMMENT '計畫類型',
+                    plan_content TEXT NOT NULL COMMENT '計畫內容',
+                    priority TINYINT DEFAULT 1 COMMENT '優先順序',
+                    status ENUM('pending', 'in_progress', 'completed', 'cancelled') DEFAULT 'pending' COMMENT '執行狀態',
+                    target_date DATE NULL COMMENT '目標完成日期',
+                    actual_completion_date DATE NULL COMMENT '實際完成日期',
+                    
+                    FOREIGN KEY (submission_id) REFERENCES eeform3_submissions(id) ON DELETE CASCADE,
+                    INDEX idx_submission_id (submission_id),
+                    INDEX idx_plan_type (plan_type),
+                    INDEX idx_status (status),
+                    INDEX idx_target_date (target_date)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='個人計畫記錄表'
+            "
+        ];
+        
+        foreach ($missing_tables as $table) {
+            if (isset($table_sqls[$table])) {
+                try {
+                    $this->db->query($table_sqls[$table]);
+                    $results[$table] = 'created';
+                    
+                    // Insert initial data for activity_items table
+                    if ($table === 'eeform3_activity_items') {
+                        $this->_insert_initial_activity_items();
+                    }
+                } catch (Exception $e) {
+                    $results[$table] = 'create_failed: ' . $e->getMessage();
+                }
+            } else {
+                $results[$table] = 'no_sql_found';
+            }
+        }
+        
+        return $results;
+    }
+
+    /**
+     * Insert initial activity items data
+     */
+    private function _insert_initial_activity_items() {
+        $items = [
+            ['item_key' => 'hand_measure', 'item_name' => '用手測量', 'sort_order' => 1],
+            ['item_key' => 'exercise', 'item_name' => '運動(30分)', 'sort_order' => 2],
+            ['item_key' => 'health_supplement', 'item_name' => '保健食品', 'sort_order' => 3],
+            ['item_key' => 'weika', 'item_name' => '微微卡', 'sort_order' => 4],
+            ['item_key' => 'water_intake', 'item_name' => '飲水量', 'sort_order' => 5]
+        ];
+        
+        foreach ($items as $item) {
+            try {
+                $this->db->insert('eeform3_activity_items', $item);
+            } catch (Exception $e) {
+                // Ignore duplicate key errors
+            }
+        }
     }
 }

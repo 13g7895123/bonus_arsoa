@@ -31,3 +31,6 @@
 28. 再來把eeform03改成eeform3
 29. 幫我針對views/eeform/eform03_list.php進行修改，她會是eform03.php的上一層，資料在這兩層會是有相關的，幫我讀取該兩個頁面，完成eform03_list.php的部分，同時，如果有超連結失效的地方也幫我改成正確的
 30. 請幫我把標題改回來，不要任意修改標題
+31. eform03_list請幫我重新確認，如果要走API的部分請幫我走API，不要看到任何假資料，我記得user資料是有透過controller傳入view的
+32. eform03_list最下方的表格，如果沒有資料請幫我顯示對應的錯誤
+33. 幫我找出/api/eeform3/submissions/000000這個API錯誤的原因，她只有報500錯誤，這樣查不出錯誤的原因
