@@ -303,10 +303,16 @@ class Block_service extends MY_Service
     public function member_right_menu($active = '')
     {
         $data = array(
-                  'active' => $active
-                );
+            'active' => $active
+        );
         
         return $this->load->view('helper/member_right_menu', $data, TRUE);
+    }
+
+    public function electronic_form_right_menu()
+    {
+        $data = array();
+        return $this->load->view('helper/electronic_form_right_menu', $data, TRUE);
     }
     
     // 會員登入後右邊的分類
