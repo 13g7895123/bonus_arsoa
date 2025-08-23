@@ -41,7 +41,7 @@ class Eeform3 extends MY_Controller
             
             // Load eform03 specific models and services with error handling
             try {
-                $this->load->model('eeform/eeform3', 'eform3_model');
+                $this->load->model('eeform/Eeform3Model', 'eform3_model');
             } catch (Exception $e) {
                 $this->_send_error('Failed to load eform3 model: ' . $e->getMessage(), 500, [
                     'trace' => $e->getTraceAsString(),
@@ -52,7 +52,7 @@ class Eeform3 extends MY_Controller
             }
             
             try {
-                $this->load->service('eeform/eeform3', 'eform3_service');
+                $this->load->service('eeform/Eeform3Service', NULL, 'eform3_service');
             } catch (Exception $e) {
                 $this->_send_error('Failed to load eform3 service: ' . $e->getMessage(), 500, [
                     'trace' => $e->getTraceAsString(),
@@ -132,7 +132,8 @@ class Eeform3 extends MY_Controller
                 'memory_usage' => memory_get_usage(true),
                 'loaded_services' => [
                     'eform3_model' => isset($this->eform3_model),
-                    'eform3_service' => isset($this->eform3_service)
+                    'eform3_service' => isset($this->eform3_service),
+                    'all_properties' => array_keys(get_object_vars($this))
                 ],
                 'service_tests' => [
                     'model_test' => $model_test,
@@ -143,8 +144,12 @@ class Eeform3 extends MY_Controller
                 'database_connection' => $this->db ? 'connected' : 'not connected',
                 'file_structure' => [
                     'controller_file' => __FILE__,
-                    'model_file' => file_exists(APPPATH . 'models/eeform/eeform3.php') ? 'exists' : 'missing',
-                    'service_file' => file_exists(APPPATH . 'service/eeform/eeform3.php') ? 'exists' : 'missing'
+                    'model_file' => file_exists(APPPATH . 'models/eeform/Eeform3Model.php') ? 'exists' : 'missing',
+                    'service_file' => file_exists(APPPATH . 'service/eeform/Eeform3Service.php') ? 'exists' : 'missing'
+                ],
+                'class_info' => [
+                    'model_class_exists' => class_exists('Eeform3Model') ? 'yes' : 'no',
+                    'service_class_exists' => class_exists('Eeform3Service') ? 'yes' : 'no'
                 ],
                 'request_info' => [
                     'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
