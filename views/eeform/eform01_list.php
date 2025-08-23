@@ -1,41 +1,8 @@
-<!doctype html>
-<html lang="zh-Hant-TW">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
-    <meta name="description" content="Arsoa 安露莎化粧品">
-    <meta name="author" content="Paul, Logan Cee">
-
-    <title>Arsoa 安露莎化粧品 - Single Post With Sidebar</title>
-
-    <!-- CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!--<link href="css/animsition.min.css" rel="stylesheet">
-    <link href="css/owl.carousel.min.css" rel="stylesheet">
-    <link href="css/owl.theme.default.min.css" rel="stylesheet">-->
-    <link href="css/socicon.css" rel="stylesheet">
-    <link href="css/ionicons.min.css" rel="stylesheet">
-    <link href="css/animate.min.css" rel="stylesheet">
-    <!--<link href="css/jquery.fancybox.min.css" rel="stylesheet">-->
-
-    <!-- Main CSS -->
-    <link href="css/style.css" rel="stylesheet">
-
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-    <link rel="manifest" href="favicon/site.webmanifest">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-
-  </head>
 
   <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
       <div class="wrapper">
-        <?php include("includes/header.php"); ?>
+      <?= $this->block_service->load_html_header(); ?>
 		  
 		  
         <div class="section-mini">
@@ -371,67 +338,8 @@
                 <!--<div class="col-lg-1 d-none d-xl-block"></div>-->
 
                 <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
-					
-				  <div class="mb75">
-<h4><strong>電子表單</strong></h4>
-<a href="eform01_list.php" class="btn btn-outline-secondary btn-block active">肌膚諮詢記錄表</a>
-<div class="card d-none">
-  <div class="card-body">
-    <a href="eform01_list.php" class="btn btn-outline-secondary btn-block text-left">填寫紀錄</a>
-    <a href="eform01.php" class="btn btn-outline-secondary btn-block text-left">我要填寫</a>
-  </div>
-</div>
-<a href="eform02.php" class="btn btn-outline-secondary btn-block">會員服務追蹤表(肌膚)</a>
-<a href="eform03.php" class="btn btn-outline-secondary btn-block">微微卡日記</a>
-<a href="eform04.php" class="btn btn-outline-secondary btn-block">會員服務追蹤表(保健)</a>
-<a href="eform05.php" class="btn btn-outline-secondary btn-block">健康諮詢表</a>
-</div>
-
-                  <!--<div class="mb65">
-                    <h4>產品分類</h4>
-
-                    <div class="article-list-mini">
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p01.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">肌膚保養系列</a></h5>
-                        </div>
-                      </div>
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p02.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">彩妝系列</a></h5>
-                        </div>
-                      </div>
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p04.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
-                        </div>
-                      </div>
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p05.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">美髮、美體系列</a></h5>
-                        </div>
-                      </div>
-					  <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p03.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>-->
-
-                  
-				  
-				  
+                  <!-- 側邊欄清單 -->
+                  <?= $this->block_service->electronic_form_right_menu(); ?>
                 </aside>
 				  
 				  
@@ -444,7 +352,7 @@
 		
 		
 
-      <?php include("includes/footer.php"); ?>
+      <?= $this->block_service->load_html_footer(); ?>
 
     </div>
 

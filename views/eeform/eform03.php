@@ -145,55 +145,8 @@
               <!--<div class="col-lg-1 d-none d-xl-block"></div>-->
 
               <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
-
                 <!-- 側邊欄清單 -->
                 <?= $this->block_service->electronic_form_right_menu(); ?>
-
-                <!--<div class="mb65">
-                    <h4>產品分類</h4>
-
-                    <div class="article-list-mini">
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p01.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">肌膚保養系列</a></h5>
-                        </div>
-                      </div>
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p02.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">彩妝系列</a></h5>
-                        </div>
-                      </div>
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p04.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
-                        </div>
-                      </div>
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p05.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">美髮、美體系列</a></h5>
-                        </div>
-                      </div>
-					  <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p03.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>-->
-
-
-
-
               </aside>
             </div>
           </div>

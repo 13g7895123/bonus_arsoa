@@ -29,3 +29,5 @@
 26. 幫我把eform3用到的表單列出來，寫入docs\sql\eeform3.md的最下面
 27. 幫我把sql\eeform3.md的表單改名eform03的地方改成eeform03，並同步修改專案用用到eeform3用到的地方，確認一下是不是只要有改models\eeform\Eeform3Model.php這支檔案即可
 28. 再來把eeform03改成eeform3
+29. 幫我針對views/eeform/eform03_list.php進行修改，她會是eform03.php的上一層，資料在這兩層會是有相關的，幫我讀取該兩個頁面，完成eform03_list.php的部分，同時，如果有超連結失效的地方也幫我改成正確的
+30. 請幫我把標題改回來，不要任意修改標題

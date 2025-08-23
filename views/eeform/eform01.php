@@ -797,67 +797,8 @@
                 <!--<div class="col-lg-1 d-none d-xl-block"></div>-->
 
                 <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
-
-                  <div class="mb75">
-                    <h4><strong>電子表單</strong></h4>
-                    <a href="eform1_list" class="btn btn-outline-secondary btn-block active">肌膚諮詢記錄表</a>
-                    <div class="card d-none">
-                      <div class="card-body">
-                        <a href="eform1_listhp" class="btn btn-outline-secondary btn-block text-left">填寫紀錄</a>
-                        <a href="eform1" class="btn btn-outline-secondary btn-block text-left">我要填寫</a>
-                      </div>
-                    </div>
-                    <a href="eform02.php" class="btn btn-outline-secondary btn-block">會員服務追蹤表(肌膚)</a>
-                    <a href="eform03_list.php" class="btn btn-outline-secondary btn-block">微微卡日記</a>
-                    <a href="eform04.php" class="btn btn-outline-secondary btn-block">會員服務追蹤表(保健)</a>
-                    <a href="eform05.php" class="btn btn-outline-secondary btn-block">健康諮詢表</a>
-                  </div>
-
-                  <!--<div class="mb65">
-                    <h4>產品分類</h4>
-
-                    <div class="article-list-mini">
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p01.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">肌膚保養系列</a></h5>
-                        </div>
-                      </div>
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p02.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">彩妝系列</a></h5>
-                        </div>
-                      </div>
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p04.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
-                        </div>
-                      </div>
-                      <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p05.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">美髮、美體系列</a></h5>
-                        </div>
-                      </div>
-					  <div class="media article-item-mini">
-                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
-							<img src="img/p03.png" alt="" /></a></div>
-                        <div class="media-body align-self-center">
-                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>-->
-
-
-
-
+                  <!-- 側邊欄清單 -->
+                  <?= $this->block_service->electronic_form_right_menu(); ?>
                 </aside>
               </div>
             </div>
