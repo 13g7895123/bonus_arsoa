@@ -7,7 +7,7 @@
   <meta name="description" content="Arsoa 安露莎化粧品">
   <meta name="author" content="Paul, Logan Cee">
 
-  <title>Arsoa 安露莎化粧品 - 微微卡日記列表</title>
+  <title>Arsoa 安露莎化粧品 - Single Post With Sidebar</title>
 
   <!-- CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -58,7 +58,7 @@
           <div class="container">
             <div class="row">
               <div class="col-md-9 mb130 mt-lg-5 wow fadeInUp" role="main" data-wow-delay=".2s">
-                <h1 class="h2-3d font-libre"><strong>微微卡日記管理</strong></h1>
+                <h1 class="h2-3d font-libre"><strong>公司 微微卡日記</strong></h1>
                 <div class="mb30">
                   <div class="container">
                     <form action="#" class="text-left">
@@ -169,7 +169,7 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">檢視微微卡日記</h5>
+          <h5 class="modal-title">訂單內容</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -314,7 +314,7 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">編輯微微卡日記</h5>
+          <h5 class="modal-title">訂單內容</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
