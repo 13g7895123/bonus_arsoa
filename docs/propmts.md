@@ -34,3 +34,6 @@
 31. eform03_list請幫我重新確認，如果要走API的部分請幫我走API，不要看到任何假資料，我記得user資料是有透過controller傳入view的
 32. eform03_list最下方的表格，如果沒有資料請幫我顯示對應的錯誤
 33. 幫我找出/api/eeform3/submissions/000000這個API錯誤的原因，她只有報500錯誤，這樣查不出錯誤的原因
+34. 承33，我找到錯誤原因是因為controllers\api\Eeform3.php這支檔案的$this->load->service('eeform/Eeform3Service', NULL, 'eform3_service');這一行載入錯誤導致的，幫我確認相關檔案，並修復這個錯誤
+35. 針對你前面提出的結果，如果我把她檔案改成小寫了，再幫我檢查一次，為甚麼還是500
+36. 問題是我根本連除錯的地方都沒跑出來，你可以用心再檢查一次嗎
