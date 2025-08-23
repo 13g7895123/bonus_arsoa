@@ -605,44 +605,44 @@
   </script>
   <script>
     // 控制測試按鈕顯示的變數
-    var showTestButton = false; // 設為 false 可隱藏測試按鈕
+    var showTestButton = true; // 設為 false 可隱藏測試按鈕
     
     // 頁面載入時檢查是否顯示測試按鈕
     $(document).ready(function() {
       if (showTestButton) {
-        document.getElementById('testDataButton').style.display = 'block';
+        $('#testDataButton').show();
       }
     });
     
     // 填入測試資料的函數
     function fillTestData() {
-      document.querySelector('input[name="member_name"]').value = '張小明';
-      document.querySelector('input[name="member_id"]').value = 'M001234';
-      document.querySelector('input[name="age"]').value = '35';
-      document.querySelector('input[name="height"]').value = '170';
-      document.querySelector('input[name="goal"]').value = '減重5公斤並維持健康體態';
-      document.querySelector('input[name="action_plan_1"]').value = '每天早上做30分鐘瑜珈';
-      document.querySelector('input[name="action_plan_2"]').value = '晚餐後散步1小時';
-      document.querySelector('input[name="weight"]').value = '70.5';
-      document.querySelector('input[name="blood_pressure_high"]').value = '120';
-      document.querySelector('input[name="blood_pressure_low"]').value = '80';
-      document.querySelector('input[name="waist"]').value = '85.0';
-      document.querySelector('input[name="hand_measure"]').checked = true;
-      document.querySelector('input[name="exercise"]').checked = true;
-      document.querySelector('input[name="weika"]').checked = true;
-      document.querySelector('input[name="water_intake"]').checked = true;
-      document.querySelector('input[name="plan_a"]').value = '每日記錄飲食內容';
-      document.querySelector('input[name="plan_b"]').value = '每週量體重2次';
-      document.querySelector('input[name="other"]').value = '保持充足睡眠';
+      $('input[name="member_name"]').val('張小明');
+      $('input[name="member_id"]').val('M001234');
+      $('input[name="age"]').val('35');
+      $('input[name="height"]').val('170');
+      $('input[name="goal"]').val('減重5公斤並維持健康體態');
+      $('input[name="action_plan_1"]').val('每天早上做30分鐘瑜珈');
+      $('input[name="action_plan_2"]').val('晚餐後散步1小時');
+      $('input[name="weight"]').val('70.5');
+      $('input[name="blood_pressure_high"]').val('120');
+      $('input[name="blood_pressure_low"]').val('80');
+      $('input[name="waist"]').val('85.0');
+      $('input[name="hand_measure"]').prop('checked', true);
+      $('input[name="exercise"]').prop('checked', true);
+      $('input[name="weika"]').prop('checked', true);
+      $('input[name="water_intake"]').prop('checked', true);
+      $('input[name="plan_a"]').val('每日記錄飲食內容');
+      $('input[name="plan_b"]').val('每週量體重2次');
+      $('input[name="other"]').val('保持充足睡眠');
     }
 
     function showConfirmModal() {
       // 驗證必填欄位
-      var memberName = document.querySelector('input[name="member_name"]').value;
-      var memberId = document.querySelector('input[name="member_id"]').value;
-      var age = document.querySelector('input[name="age"]').value;
-      var height = document.querySelector('input[name="height"]').value;
-      var goal = document.querySelector('input[name="goal"]').value;
+      var memberName = $('input[name="member_name"]').val();
+      var memberId = $('input[name="member_id"]').val();
+      var age = $('input[name="age"]').val();
+      var height = $('input[name="height"]').val();
+      var goal = $('input[name="goal"]').val();
 
       if (!memberName || !memberId || !age || !height || !goal) {
         alert('請填寫所有必填欄位');
@@ -650,21 +650,21 @@
       }
 
       // 填入確認視窗的內容
-      document.getElementById('confirm-member-name').textContent = memberName;
-      document.getElementById('confirm-member-id').textContent = memberId;
-      document.getElementById('confirm-age').textContent = age;
-      document.getElementById('confirm-height').textContent = height;
-      document.getElementById('confirm-goal').textContent = goal;
+      $('#confirm-member-name').text(memberName);
+      $('#confirm-member-id').text(memberId);
+      $('#confirm-age').text(age);
+      $('#confirm-height').text(height);
+      $('#confirm-goal').text(goal);
       
       // 自身行動計畫
-      document.getElementById('confirm-action-plan-1').textContent = document.querySelector('input[name="action_plan_1"]').value || '(未填寫)';
-      document.getElementById('confirm-action-plan-2').textContent = document.querySelector('input[name="action_plan_2"]').value || '(未填寫)';
+      $('#confirm-action-plan-1').text($('input[name="action_plan_1"]').val() || '(未填寫)');
+      $('#confirm-action-plan-2').text($('input[name="action_plan_2"]').val() || '(未填寫)');
       
       // 身體數據
-      document.getElementById('confirm-weight').textContent = document.querySelector('input[name="weight"]').value || '(未填寫)';
-      document.getElementById('confirm-blood-pressure-high').textContent = document.querySelector('input[name="blood_pressure_high"]').value || '(未填寫)';
-      document.getElementById('confirm-blood-pressure-low').textContent = document.querySelector('input[name="blood_pressure_low"]').value || '(未填寫)';
-      document.getElementById('confirm-waist').textContent = document.querySelector('input[name="waist"]').value || '(未填寫)';
+      $('#confirm-weight').text($('input[name="weight"]').val() || '(未填寫)');
+      $('#confirm-blood-pressure-high').text($('input[name="blood_pressure_high"]').val() || '(未填寫)');
+      $('#confirm-blood-pressure-low').text($('input[name="blood_pressure_low"]').val() || '(未填寫)');
+      $('#confirm-waist').text($('input[name="waist"]').val() || '(未填寫)');
       
       // 執行項目 (checkbox)
       var checkboxes = [
@@ -674,33 +674,32 @@
         {name: 'weika', label: '微微卡', icon: 'fa-apple-alt'},
         {name: 'water_intake', label: '飲水量', icon: 'fa-tint'}
       ];
-      var checkboxesContainer = document.getElementById('confirm-checkboxes-container');
       var checkedItems = [];
       
-      checkboxes.forEach(function(item) {
-        var checkbox = document.querySelector('input[name="' + item.name + '"]');
-        if (checkbox && checkbox.checked) {
+      $.each(checkboxes, function(index, item) {
+        var checkbox = $('input[name="' + item.name + '"]');
+        if (checkbox.is(':checked')) {
           checkedItems.push(item.label);
         }
       });
       
       if (checkedItems.length > 0) {
-        checkboxesContainer.innerHTML = '<span class="text-dark">' + checkedItems.join('、') + '</span>';
+        $('#confirm-checkboxes-container').html('<span class="text-dark">' + checkedItems.join('、') + '</span>');
       } else {
-        checkboxesContainer.innerHTML = '<span class="text-muted">無選擇項目</span>';
+        $('#confirm-checkboxes-container').html('<span class="text-muted">無選擇項目</span>');
       }
       
       // 其他計畫
-      document.getElementById('confirm-plan-a').textContent = document.querySelector('input[name="plan_a"]').value || '(未填寫)';
-      document.getElementById('confirm-plan-b').textContent = document.querySelector('input[name="plan_b"]').value || '(未填寫)';
-      document.getElementById('confirm-other').textContent = document.querySelector('input[name="other"]').value || '(未填寫)';
+      $('#confirm-plan-a').text($('input[name="plan_a"]').val() || '(未填寫)');
+      $('#confirm-plan-b').text($('input[name="plan_b"]').val() || '(未填寫)');
+      $('#confirm-other').text($('input[name="other"]').val() || '(未填寫)');
       
       // 顯示模態視窗
       $('#confirmModal').modal('show');
     }
 
     function submitForm() {
-      document.getElementById('eform03').submit();
+      $('#eform03').submit();
     }
 
     /*Scroll to top when arrow up clicked BEGIN*/
