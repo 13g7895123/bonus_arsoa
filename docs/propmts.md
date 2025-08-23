@@ -23,3 +23,9 @@
     2. docs\sql\eeform3.md這支檔案，取得資料表結構
 設計出針對這個功能的api，Controller的話請寫入controllers\api\Eeform.php，Model的話寫入models\eeform\eform3.php，Service寫入service\eeform\eform3.php，請幫我用這幾個服務撰寫，完成後需要同步更新views\eeform\eform03.php，讓他吃到正確的API
 22. 21點的api送出後，她出現500錯誤，但是沒有錯誤訊息我無法查錯，幫我讓api回復可以顯示錯誤
+23. 幫我從頭到尾檢查一遍功能，依據目前調整的檔名與class更新所有有用到的地方
+24. 錯誤請用"error_reporting(-1); ini_set('display_errors', 1);"這個呈現，移除所有用log的方式
+25. 幫我針對eeform3檢查當前的code，從controller、models、service一路檢查下來，確認為甚麼會出錯，"Service not available in controller"
+26. 幫我把eform3用到的表單列出來，寫入docs\sql\eeform3.md的最下面
+27. 幫我把sql\eeform3.md的表單改名eform03的地方改成eeform03，並同步修改專案用用到eeform3用到的地方，確認一下是不是只要有改models\eeform\Eeform3Model.php這支檔案即可
+28. 再來把eeform03改成eeform3

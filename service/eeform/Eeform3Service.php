@@ -1,13 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Eform3 extends MY_Service {
+class Eeform3Service extends MY_Service {
 
     protected $eform3_model;
     protected $ci;
 
     public function __construct() {
         parent::__construct();
+        
+        // Enable error reporting for debugging
+        error_reporting(-1);
+        ini_set('display_errors', 1);
         
         try {
             $this->ci = &get_instance();
@@ -16,7 +20,7 @@ class Eform3 extends MY_Service {
                 throw new Exception('Cannot get CodeIgniter instance');
             }
             
-            $this->ci->load->model('eeform/eform3', 'eform3_model');
+            $this->ci->load->model('eeform/Eeform3Model', 'eform3_model');
             
             if (!isset($this->ci->eform3_model)) {
                 throw new Exception('Failed to load eform3_model');
@@ -28,7 +32,6 @@ class Eform3 extends MY_Service {
             $this->eform3_model->initialize_activity_items();
             
         } catch (Exception $e) {
-            log_message('error', 'Eform3 Service constructor error: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -461,8 +464,7 @@ class Eform3 extends MY_Service {
             'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
         ];
         
-        // 實際的日誌寫入邏輯
-        // log_message('info', 'EForm03 Operation: ' . json_encode($log_data));
+        // 實際的日誌寫入邏輯可在此處實現
     }
 
     /**
@@ -480,8 +482,7 @@ class Eform3 extends MY_Service {
             'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
         ];
         
-        // 實際的錯誤日誌寫入邏輯
-        // log_message('error', 'EForm03 Error: ' . json_encode($error_data));
+        // 實際的錯誤日誌寫入邏輯可在此處實現
     }
 
     /**
