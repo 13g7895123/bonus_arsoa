@@ -4,14 +4,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Eform3 extends MY_Service {
 
     protected $eform3_model;
+    protected $ci;
 
     public function __construct() {
         parent::__construct();
-        $this->ci->load->model('eeform/eform3', 'eform3_model');
-        $this->eform3_model = $this->ci->eform3_model;
         
-        // 初始化活動項目資料
-        $this->eform3_model->initialize_activity_items();
+        try {
+            $this->ci = &get_instance();
+            
+            if (!isset($this->ci)) {
+                throw new Exception('Cannot get CodeIgniter instance');
+            }
+            
+            $this->ci->load->model('eeform/eform3', 'eform3_model');
+            
+            if (!isset($this->ci->eform3_model)) {
+                throw new Exception('Failed to load eform3_model');
+            }
+            
+            $this->eform3_model = $this->ci->eform3_model;
+            
+            // 初始化活動項目資料
+            $this->eform3_model->initialize_activity_items();
+            
+        } catch (Exception $e) {
+            log_message('error', 'Eform3 Service constructor error: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     /**

@@ -723,18 +723,23 @@
       };
 
       // 發送API請求
+      console.log('準備發送API請求:', formData);
+      console.log('API URL:', '<?php echo base_url("api/eeform3/submit"); ?>');
+      
       $.ajax({
-        url: '<?php echo base_url("api/eeform/submit"); ?>',
+        url: '<?php echo base_url("api/eeform3/submit"); ?>',
         method: 'POST',
         data: JSON.stringify(formData),
         contentType: 'application/json',
         dataType: 'json',
         beforeSend: function() {
           // 顯示載入狀態
+          console.log('開始發送API請求');
           $('#confirmModal .modal-footer button').prop('disabled', true);
           $('#confirmModal .modal-footer button').text('提交中...');
         },
         success: function(response) {
+          console.log('API請求成功:', response);
           if (response.success) {
             alert('表單提交成功！');
             $('#confirmModal').modal('hide');
@@ -747,8 +752,16 @@
             alert('提交失敗：' + response.message);
           }
         },
-        error: function(xhr) {
+        error: function(xhr, status, error) {
+          console.error('API請求失敗:', {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            responseText: xhr.responseText,
+            error: error
+          });
+          
           var errorMessage = '提交失敗，請稍後再試';
+          var debugInfo = '';
           
           try {
             var response = JSON.parse(xhr.responseText);
@@ -758,11 +771,19 @@
             if (response.errors && response.errors.length > 0) {
               errorMessage += '：\n' + response.errors.join('\n');
             }
+            if (response.debug || response.trace) {
+              debugInfo = '\n\n調試資訊:\n' + JSON.stringify(response, null, 2);
+              console.error('詳細錯誤資訊:', response);
+            }
           } catch (e) {
             // JSON解析失敗，使用預設錯誤訊息
+            errorMessage += '\n錯誤代碼: ' + xhr.status + ' ' + xhr.statusText;
+            if (xhr.responseText) {
+              debugInfo = '\n響應內容: ' + xhr.responseText;
+            }
           }
           
-          alert(errorMessage);
+          alert(errorMessage + debugInfo);
         },
         complete: function() {
           // 恢復按鈕狀態
