@@ -6,9 +6,8 @@ class Eeform3 extends MY_Controller
     public function __construct()
     {
         // Enable error reporting for debugging
+        error_reporting(-1);
         ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
         
         // Set JSON response headers early
         header('Content-Type: application/json');
@@ -188,13 +187,6 @@ class Eeform3 extends MY_Controller
      */
     public function submit() {
         try {
-            // Log request for debugging
-            log_message('info', 'API Submit Request: ' . json_encode([
-                'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
-                'uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
-                'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'unknown'
-            ]));
-            
             if ($this->input->method(TRUE) !== 'POST') {
                 $this->_send_error('Method not allowed', 405);
                 return;
@@ -203,20 +195,20 @@ class Eeform3 extends MY_Controller
             // 檢查服務是否正確載入
             if (!isset($this->eform3_service)) {
                 $this->_send_error('eform3_service not loaded', 500, [
-                    'debug' => 'Service not available in controller'
+                    'debug' => 'Service not available in controller',
+                    'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
+                    'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
+                    'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'unknown'
                 ]);
                 return;
             }
 
             // 取得POST資料
             $raw_input = $this->input->raw_input_stream;
-            log_message('info', 'Raw input: ' . $raw_input);
-            
             $input_data = json_decode($raw_input, true);
             
             if (!$input_data) {
                 $input_data = $this->input->post();
-                log_message('info', 'Using POST data instead of JSON');
             }
             
             if (empty($input_data)) {
@@ -228,8 +220,6 @@ class Eeform3 extends MY_Controller
                 ]);
                 return;
             }
-            
-            log_message('info', 'Input data received: ' . json_encode($input_data));
 
             // 驗證必填欄位
             try {
