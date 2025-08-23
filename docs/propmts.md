@@ -16,3 +16,10 @@
 16. 幫我針對最下方的新增日期的功能實作，在他上面預設會有一組填日期與填數字，按下新增日期的時候會多一組，當總共有三組的時候，請隱藏新增日期的按鈕
 17. 新增的部分幫我維持橫向，不要變成直的
 18. 幫我確認所有的checkbox都可以用文字點選
+19. 針對views\eeform\eform03.php的部分，js的功能幫我改成jquery
+20. 針對views\eeform\eform03.php的部分，設計一個優秀且可擴充的資料表結構，寫入docs\sql\eeform3.md中
+21. 這是一個ci3的專案，因為我沒有migration的權限，請讀取
+    1. views\eeform\eform03.php，取得當前的表單功能
+    2. docs\sql\eeform3.md這支檔案，取得資料表結構
+設計出針對這個功能的api，Controller的話請寫入controllers\api\Eeform.php，Model的話寫入models\eeform\eform3.php，Service寫入service\eeform\eform3.php，請幫我用這幾個服務撰寫，完成後需要同步更新views\eeform\eform03.php，讓他吃到正確的API
+22. 21點的api送出後，她出現500錯誤，但是沒有錯誤訊息我無法查錯，幫我讓api回復可以顯示錯誤

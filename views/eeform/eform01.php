@@ -800,11 +800,11 @@
 
                   <div class="mb75">
                     <h4><strong>電子表單</strong></h4>
-                    <a href="eform01_list.php" class="btn btn-outline-secondary btn-block active">肌膚諮詢記錄表</a>
+                    <a href="eform1_list" class="btn btn-outline-secondary btn-block active">肌膚諮詢記錄表</a>
                     <div class="card d-none">
                       <div class="card-body">
-                        <a href="eform01_list.php" class="btn btn-outline-secondary btn-block text-left">填寫紀錄</a>
-                        <a href="eform01.php" class="btn btn-outline-secondary btn-block text-left">我要填寫</a>
+                        <a href="eform1_listhp" class="btn btn-outline-secondary btn-block text-left">填寫紀錄</a>
+                        <a href="eform1" class="btn btn-outline-secondary btn-block text-left">我要填寫</a>
                       </div>
                     </div>
                     <a href="eform02.php" class="btn btn-outline-secondary btn-block">會員服務追蹤表(肌膚)</a>
