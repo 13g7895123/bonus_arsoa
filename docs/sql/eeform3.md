@@ -5,9 +5,9 @@
 
 ## 主要資料表
 
-### 1. eform03_submissions (表單提交主表)
+### 1. eeeform03_submissions (表單提交主表)
 ```sql
-CREATE TABLE eform03_submissions (
+CREATE TABLE eeeform03_submissions (
     id INT PRIMARY KEY AUTO_INCREMENT,
     member_name VARCHAR(100) NOT NULL COMMENT '會員姓名',
     member_id VARCHAR(50) NOT NULL COMMENT '會員編號',
@@ -28,9 +28,9 @@ CREATE TABLE eform03_submissions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='微微卡日記表單主表';
 ```
 
-### 2. eform03_body_data (身體數據表)
+### 2. eeeform03_body_data (身體數據表)
 ```sql
-CREATE TABLE eform03_body_data (
+CREATE TABLE eeeform03_body_data (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '表單提交ID',
     weight DECIMAL(5,2) NULL COMMENT '體重(公斤)',
@@ -39,15 +39,15 @@ CREATE TABLE eform03_body_data (
     waist DECIMAL(5,2) NULL COMMENT '腰圍(公分)',
     measurement_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '測量時間',
     
-    FOREIGN KEY (submission_id) REFERENCES eform03_submissions(id) ON DELETE CASCADE,
+    FOREIGN KEY (submission_id) REFERENCES eeeform03_submissions(id) ON DELETE CASCADE,
     INDEX idx_submission_id (submission_id),
     INDEX idx_measurement_time (measurement_time)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='身體數據記錄表';
 ```
 
-### 3. eform03_activity_items (活動項目主表)
+### 3. eeform03_activity_items (活動項目主表)
 ```sql
-CREATE TABLE eform03_activity_items (
+CREATE TABLE eeform03_activity_items (
     id INT PRIMARY KEY AUTO_INCREMENT,
     item_key VARCHAR(50) NOT NULL UNIQUE COMMENT '活動項目鍵值',
     item_name VARCHAR(100) NOT NULL COMMENT '活動項目名稱',
@@ -62,9 +62,9 @@ CREATE TABLE eform03_activity_items (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='活動項目主表';
 ```
 
-### 4. eform03_activity_records (活動記錄表)
+### 4. eeform03_activity_records (活動記錄表)
 ```sql
-CREATE TABLE eform03_activity_records (
+CREATE TABLE eeform03_activity_records (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '表單提交ID',
     activity_item_id INT NOT NULL COMMENT '活動項目ID',
@@ -72,8 +72,8 @@ CREATE TABLE eform03_activity_records (
     completion_time TIMESTAMP NULL COMMENT '完成時間',
     notes TEXT NULL COMMENT '備註',
     
-    FOREIGN KEY (submission_id) REFERENCES eform03_submissions(id) ON DELETE CASCADE,
-    FOREIGN KEY (activity_item_id) REFERENCES eform03_activity_items(id) ON DELETE CASCADE,
+    FOREIGN KEY (submission_id) REFERENCES eeeform03_submissions(id) ON DELETE CASCADE,
+    FOREIGN KEY (activity_item_id) REFERENCES eeform03_activity_items(id) ON DELETE CASCADE,
     UNIQUE KEY uk_submission_activity (submission_id, activity_item_id),
     INDEX idx_submission_id (submission_id),
     INDEX idx_activity_item_id (activity_item_id),
@@ -81,9 +81,9 @@ CREATE TABLE eform03_activity_records (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='活動完成記錄表';
 ```
 
-### 5. eform03_plans (計畫記錄表)
+### 5. eeform03_plans (計畫記錄表)
 ```sql
-CREATE TABLE eform03_plans (
+CREATE TABLE eeform03_plans (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '表單提交ID',
     plan_type ENUM('plan_a', 'plan_b', 'other') NOT NULL COMMENT '計畫類型',
@@ -93,7 +93,7 @@ CREATE TABLE eform03_plans (
     target_date DATE NULL COMMENT '目標完成日期',
     actual_completion_date DATE NULL COMMENT '實際完成日期',
     
-    FOREIGN KEY (submission_id) REFERENCES eform03_submissions(id) ON DELETE CASCADE,
+    FOREIGN KEY (submission_id) REFERENCES eeeform03_submissions(id) ON DELETE CASCADE,
     INDEX idx_submission_id (submission_id),
     INDEX idx_plan_type (plan_type),
     INDEX idx_status (status),
@@ -105,7 +105,7 @@ CREATE TABLE eform03_plans (
 
 ### 活動項目基礎資料
 ```sql
-INSERT INTO eform03_activity_items (item_key, item_name, description, sort_order) VALUES
+INSERT INTO eeform03_activity_items (item_key, item_name, description, sort_order) VALUES
 ('hand_measure', '用手測量', '使用手部測量飲食份量', 1),
 ('exercise', '運動(30分)', '每日至少30分鐘運動', 2),
 ('health_supplement', '保健食品', '按時服用保健食品', 3),
@@ -117,7 +117,7 @@ INSERT INTO eform03_activity_items (item_key, item_name, description, sort_order
 
 ### 1. 完整表單資料視圖
 ```sql
-CREATE VIEW v_eform03_complete_data AS
+CREATE VIEW v_eeform03_complete_data AS
 SELECT 
     s.id,
     s.member_name,
@@ -141,10 +141,10 @@ SELECT
     ) as completed_activities,
     COUNT(ar.id) as total_activity_count,
     SUM(CASE WHEN ar.is_completed = 1 THEN 1 ELSE 0 END) as completed_activity_count
-FROM eform03_submissions s
-LEFT JOIN eform03_body_data bd ON s.id = bd.submission_id
-LEFT JOIN eform03_activity_records ar ON s.id = ar.submission_id
-LEFT JOIN eform03_activity_items ai ON ar.activity_item_id = ai.id
+FROM eeform03_submissions s
+LEFT JOIN eeform03_body_data bd ON s.id = bd.submission_id
+LEFT JOIN eeform03_activity_records ar ON s.id = ar.submission_id
+LEFT JOIN eeform03_activity_items ai ON ar.activity_item_id = ai.id
 GROUP BY s.id, bd.id;
 ```
 
@@ -157,15 +157,15 @@ SELECT
     COUNT(*) as total_submissions,
     MAX(submission_date) as last_submission_date,
     AVG(
-        (SELECT COUNT(*) FROM eform03_activity_records ar2 
+        (SELECT COUNT(*) FROM eeform03_activity_records ar2 
          WHERE ar2.submission_id = s.id AND ar2.is_completed = 1)
     ) as avg_completed_activities,
     AVG(bd.weight) as avg_weight,
     AVG(bd.blood_pressure_high) as avg_bp_high,
     AVG(bd.blood_pressure_low) as avg_bp_low,
     AVG(bd.waist) as avg_waist
-FROM eform03_submissions s
-LEFT JOIN eform03_body_data bd ON s.id = bd.submission_id
+FROM eeform03_submissions s
+LEFT JOIN eeform03_body_data bd ON s.id = bd.submission_id
 GROUP BY member_id, member_name;
 ```
 
@@ -174,16 +174,16 @@ GROUP BY member_id, member_name;
 ### 1. 複合索引
 ```sql
 -- 會員ID + 提交日期的複合索引，用於查詢特定會員的歷史記錄
-CREATE INDEX idx_member_date ON eform03_submissions (member_id, submission_date DESC);
+CREATE INDEX idx_member_date ON eeform03_submissions (member_id, submission_date DESC);
 
 -- 提交日期 + 狀態的複合索引，用於管理介面篩選
-CREATE INDEX idx_date_status ON eform03_submissions (submission_date DESC, status);
+CREATE INDEX idx_date_status ON eeform03_submissions (submission_date DESC, status);
 ```
 
 ### 2. 部分索引 (MySQL 8.0+)
 ```sql
 -- 只對已提交的表單建立索引
-CREATE INDEX idx_submitted_date ON eform03_submissions (submission_date DESC) 
+CREATE INDEX idx_submitted_date ON eeform03_submissions (submission_date DESC) 
 WHERE status = 'submitted';
 ```
 
@@ -192,12 +192,12 @@ WHERE status = 'submitted';
 ### 1. 水平分表策略
 當資料量大時，可考慮按年度分表：
 ```sql
--- 例：eform03_submissions_2024, eform03_submissions_2025
+-- 例：eeform03_submissions_2024, eeform03_submissions_2025
 ```
 
 ### 2. 歷史資料歸檔
 ```sql
-CREATE TABLE eform03_submissions_archive LIKE eform03_submissions;
+CREATE TABLE eeform03_submissions_archive LIKE eeform03_submissions;
 -- 定期將舊資料移至歷史表
 ```
 
@@ -211,13 +211,13 @@ CREATE TABLE eform03_submissions_archive LIKE eform03_submissions;
 ### 1. 資料加密
 ```sql
 -- 敏感資料可考慮加密儲存
-ALTER TABLE eform03_submissions 
+ALTER TABLE eeform03_submissions 
 ADD COLUMN encrypted_member_id VARBINARY(255) COMMENT '加密會員編號';
 ```
 
 ### 2. 審計日誌
 ```sql
-CREATE TABLE eform03_audit_log (
+CREATE TABLE eeform03_audit_log (
     id INT PRIMARY KEY AUTO_INCREMENT,
     table_name VARCHAR(50) NOT NULL,
     record_id INT NOT NULL,
@@ -242,7 +242,7 @@ SELECT
     ROUND(((data_length + index_length) / 1024 / 1024), 2) AS 'DB Size (MB)'
 FROM information_schema.tables 
 WHERE table_schema = DATABASE() 
-AND table_name LIKE 'eform03_%'
+AND table_name LIKE 'eeform03_%'
 ORDER BY (data_length + index_length) DESC;
 ```
 
