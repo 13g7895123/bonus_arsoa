@@ -51,19 +51,7 @@ class Eeform3 extends MY_Controller
                 exit();
             }
             
-            try {
-                echo "About to load service...\n";
-                $this->load->service('eeform/Eeform3Service', NULL, 'eform3_service');
-                echo "Service loaded successfully!\n";
-                echo "Service object: " . (isset($this->eform3_service) ? 'exists' : 'does not exist') . "\n";
-            } catch (Exception $e) {
-                $this->_send_error('Failed to load eform3 service: ' . $e->getMessage(), 500, [
-                    'trace' => $e->getTraceAsString(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine()
-                ]);
-                exit();
-            }
+            // Service layer removed - all functionality moved to model
             
             $this->load->library( 'user_agent' );
             $this->load->helper('url');
@@ -112,19 +100,19 @@ class Eeform3 extends MY_Controller
                 $model_error = 'Model error: ' . $e->getMessage();
             }
             
-            // Test service loading
-            $service_test = null;
-            $service_error = null;
+            // Test model validation functionality
+            $validation_test = null;
+            $validation_error = null;
             try {
-                if (isset($this->eform3_service)) {
+                if (isset($this->eform3_model)) {
                     $test_data = ['member_name' => 'test', 'member_id' => 'test', 'age' => 25, 'height' => 170, 'goal' => 'test'];
-                    $validation = $this->eform3_service->validate_submission_data($test_data);
-                    $service_test = 'Service working - validation result: ' . ($validation['valid'] ? 'valid' : 'invalid');
+                    $validation = $this->eform3_model->validate_submission_data($test_data);
+                    $validation_test = 'Model validation working - result: ' . ($validation['valid'] ? 'valid' : 'invalid');
                 } else {
-                    $service_error = 'Service not loaded';
+                    $validation_error = 'Model validation not available';
                 }
             } catch (Exception $e) {
-                $service_error = 'Service error: ' . $e->getMessage();
+                $validation_error = 'Model validation error: ' . $e->getMessage();
             }
             
             $health_data = [
@@ -135,24 +123,21 @@ class Eeform3 extends MY_Controller
                 'memory_usage' => memory_get_usage(true),
                 'loaded_services' => [
                     'eform3_model' => isset($this->eform3_model),
-                    'eform3_service' => isset($this->eform3_service),
                     'all_properties' => array_keys(get_object_vars($this))
                 ],
-                'service_tests' => [
-                    'model_test' => $model_test,
-                    'model_error' => $model_error,
-                    'service_test' => $service_test,
-                    'service_error' => $service_error
+                'model_tests' => [
+                    'activity_items_test' => $model_test,
+                    'activity_items_error' => $model_error,
+                    'validation_test' => $validation_test,
+                    'validation_error' => $validation_error
                 ],
                 'database_connection' => $this->db ? 'connected' : 'not connected',
                 'file_structure' => [
                     'controller_file' => __FILE__,
-                    'model_file' => file_exists(APPPATH . 'models/eeform/Eeform3Model.php') ? 'exists' : 'missing',
-                    'service_file' => file_exists(APPPATH . 'service/eeform/Eeform3Service.php') ? 'exists' : 'missing'
+                    'model_file' => file_exists(APPPATH . 'models/eeform/Eeform3Model.php') ? 'exists' : 'missing'
                 ],
                 'class_info' => [
-                    'model_class_exists' => class_exists('Eeform3Model') ? 'yes' : 'no',
-                    'service_class_exists' => class_exists('Eeform3Service') ? 'yes' : 'no'
+                    'model_class_exists' => class_exists('Eeform3Model') ? 'yes' : 'no'
                 ],
                 'request_info' => [
                     'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
@@ -182,7 +167,7 @@ class Eeform3 extends MY_Controller
                 return;
             }
 
-            $items = $this->eform3_service->get_activity_items();
+            $items = $this->eform3_model->get_activity_items();
             $this->_send_success('取得活動項目成功', $items);
         } catch (Exception $e) {
             $this->_send_error('取得活動項目失敗: ' . $e->getMessage(), 500);
@@ -200,10 +185,10 @@ class Eeform3 extends MY_Controller
                 return;
             }
 
-            // 檢查服務是否正確載入
-            if (!isset($this->eform3_service)) {
-                $this->_send_error('eform3_service not loaded', 500, [
-                    'debug' => 'Service not available in controller',
+            // 檢查model是否正確載入
+            if (!isset($this->eform3_model)) {
+                $this->_send_error('eform3_model not loaded', 500, [
+                    'debug' => 'Model not available in controller',
                     'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
                     'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
                     'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'unknown'
@@ -231,9 +216,9 @@ class Eeform3 extends MY_Controller
 
             // 驗證必填欄位
             try {
-                $validation_result = $this->eform3_service->validate_submission_data($input_data);
+                $validation_result = $this->eform3_model->validate_submission_data($input_data);
             } catch (Exception $e) {
-                $this->_send_error('驗證服務錯誤: ' . $e->getMessage(), 500, [
+                $this->_send_error('驗證錯誤: ' . $e->getMessage(), 500, [
                     'trace' => $e->getTraceAsString(),
                     'file' => $e->getFile(),
                     'line' => $e->getLine()
@@ -248,7 +233,7 @@ class Eeform3 extends MY_Controller
 
             // 提交表單資料
             try {
-                $submission_id = $this->eform3_service->create_submission($input_data);
+                $submission_id = $this->eform3_model->create_submission($input_data);
             } catch (Exception $e) {
                 $this->_send_error('建立提交記錄失敗: ' . $e->getMessage(), 500, [
                     'trace' => $e->getTraceAsString(),
@@ -327,7 +312,7 @@ class Eeform3 extends MY_Controller
             $start_date = $this->input->get('start_date');
             $end_date = $this->input->get('end_date');
 
-            $submissions = $this->eform3_service->get_member_submissions(
+            $submissions = $this->eform3_model->get_member_submissions_enhanced(
                 $member_id, 
                 $page, 
                 $limit, 
@@ -363,7 +348,7 @@ class Eeform3 extends MY_Controller
                 return;
             }
 
-            $submission = $this->eform3_service->get_submission_detail($id);
+            $submission = $this->eform3_model->get_submission_detail_enhanced($id);
             
             if ($submission) {
                 $this->_send_success('取得表單詳細資料成功', $submission);
@@ -400,7 +385,7 @@ class Eeform3 extends MY_Controller
                 return;
             }
 
-            $result = $this->eform3_service->update_submission_status($id, $status);
+            $result = $this->eform3_model->update_submission_status_enhanced($id, $status);
             
             if ($result) {
                 $this->_send_success('狀態更新成功');
@@ -429,7 +414,7 @@ class Eeform3 extends MY_Controller
                 return;
             }
 
-            $stats = $this->eform3_service->get_member_stats($member_id);
+            $stats = $this->eform3_model->get_member_stats_enhanced($member_id);
             $this->_send_success('取得統計資料成功', $stats);
 
         } catch (Exception $e) {

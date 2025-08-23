@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Eeform3Service extends MY_Service {
+class Eeform3_service extends MY_Service {
 
     protected $eform3_model;
     protected $ci;
