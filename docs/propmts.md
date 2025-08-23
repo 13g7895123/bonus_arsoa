@@ -37,3 +37,4 @@
 34. 承33，我找到錯誤原因是因為controllers\api\Eeform3.php這支檔案的$this->load->service('eeform/Eeform3Service', NULL, 'eform3_service');這一行載入錯誤導致的，幫我確認相關檔案，並修復這個錯誤
 35. 針對你前面提出的結果，如果我把她檔案改成小寫了，再幫我檢查一次，為甚麼還是500
 36. 問題是我根本連除錯的地方都沒跑出來，你可以用心再檢查一次嗎
+37. 似乎不是路由的問題，因為我在controller是有跑到的，只是她在引入service的時候出錯了

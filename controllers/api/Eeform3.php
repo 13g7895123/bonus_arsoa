@@ -52,7 +52,10 @@ class Eeform3 extends MY_Controller
             }
             
             try {
+                echo "About to load service...\n";
                 $this->load->service('eeform/Eeform3Service', NULL, 'eform3_service');
+                echo "Service loaded successfully!\n";
+                echo "Service object: " . (isset($this->eform3_service) ? 'exists' : 'does not exist') . "\n";
             } catch (Exception $e) {
                 $this->_send_error('Failed to load eform3 service: ' . $e->getMessage(), 500, [
                     'trace' => $e->getTraceAsString(),
