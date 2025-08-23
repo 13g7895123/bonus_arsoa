@@ -126,7 +126,10 @@
                                 </thead>
                                 <tbody id="submissions-table-body">
                                   <tr>
-                                    <td colspan="7" class="text-center">載入中...</td>
+                                    <td colspan="7" class="text-center text-muted p-4">
+                                      <div><i class="icon ion-loading-c" style="font-size: 2rem; animation: spin 1s linear infinite;"></i></div>
+                                      <div class="mt-2">載入中，請稍候...</div>
+                                    </td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -136,7 +139,7 @@
 
                         <div class="col-sm-12 mb30">
                           <hr class="my-4">
-                          <a href="<?php echo base_url('eeform/eform3'); ?>" class="btn btn-outline-danger btn-block">填寫微微卡日記</a>
+                          <a href="<?php echo base_url('eform/eform3'); ?>" class="btn btn-outline-danger btn-block">填寫微微卡日記</a>
                         </div>
 
                       </div>
@@ -476,7 +479,26 @@
   <script src="js/jquery.viewport.js"></script>
   <script src="js/jquery.countdown.min.js"></script>
   <script src="js/script.js"></script>
-
+  
+  <!-- Custom styles for enhanced error states -->
+  <style>
+    /* Loading spinner animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Table empty state styles */
+    #submissions-table-body td {
+      vertical-align: middle;
+    }
+    
+    /* Enhanced error state button */
+    .retry-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
 
   <script>
     $(document).ready(function() {
@@ -507,7 +529,13 @@
       if (currentMemberId) {
         loadSubmissions();
       } else {
-        $('#submissions-table-body').html('<tr><td colspan="7" class="text-center text-warning">請先登入會員帳號</td></tr>');
+        $('#submissions-table-body').html(
+          '<tr><td colspan="7" class="text-center text-warning p-4">' +
+          '<div><i class="icon ion-person" style="font-size: 2rem;"></i></div>' +
+          '<div class="mt-2">請先登入會員帳號</div>' +
+          '<div class="small mt-1">登入後即可查看您的微微卡日記記錄</div>' +
+          '</td></tr>'
+        );
       }
     });
     
@@ -524,7 +552,13 @@
             renderSubmissionsTable(submissions);
           } else {
             var errorMsg = response && response.message ? response.message : '未知錯誤';
-            $('#submissions-table-body').html('<tr><td colspan="7" class="text-center text-danger">載入失敗: ' + errorMsg + '</td></tr>');
+            $('#submissions-table-body').html(
+              '<tr><td colspan="7" class="text-center text-warning p-4">' +
+              '<div><i class="icon ion-alert-circled" style="font-size: 2rem;"></i></div>' +
+              '<div class="mt-2">載入失敗: ' + errorMsg + '</div>' +
+              '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
+              '</td></tr>'
+            );
           }
         },
         error: function(xhr, status, error) {
@@ -535,31 +569,65 @@
             error: error
           });
           
-          var errorMessage = '載入失敗，請稍後再試';
-          if (xhr.status === 404) {
-            errorMessage = 'API端點不存在';
+          var errorMessage = '';
+          var errorIcon = 'ion-alert-circled';
+          
+          if (xhr.status === 0) {
+            errorMessage = '無法連接到服務器，請檢查網路連線';
+            errorIcon = 'ion-wifi';
+          } else if (xhr.status === 401) {
+            errorMessage = '登入已過期，請重新登入';
+            errorIcon = 'ion-person';
+          } else if (xhr.status === 403) {
+            errorMessage = '沒有權限訪問此資源';
+            errorIcon = 'ion-locked';
+          } else if (xhr.status === 404) {
+            errorMessage = 'API服務不存在或路徑錯誤';
+            errorIcon = 'ion-help-circled';
           } else if (xhr.status === 500) {
-            errorMessage = '服務器錯誤';
+            errorMessage = '服務器內部錯誤，請稍後再試';
+            errorIcon = 'ion-bug';
           } else if (xhr.responseText) {
             try {
               var errorResponse = JSON.parse(xhr.responseText);
               if (errorResponse.message) {
                 errorMessage = errorResponse.message;
+              } else {
+                errorMessage = '載入失敗 (錯誤代碼: ' + xhr.status + ')';
               }
             } catch (e) {
-              errorMessage += ' (錯誤代碼: ' + xhr.status + ')';
+              errorMessage = '載入失敗，響應格式錯誤 (錯誤代碼: ' + xhr.status + ')';
             }
+          } else {
+            errorMessage = '載入失敗，請稍後再試 (錯誤代碼: ' + xhr.status + ')';
           }
           
-          $('#submissions-table-body').html('<tr><td colspan="7" class="text-center text-danger">' + errorMessage + '</td></tr>');
+          $('#submissions-table-body').html(
+            '<tr><td colspan="7" class="text-center text-danger p-4">' +
+            '<div><i class="icon ' + errorIcon + '" style="font-size: 2rem;"></i></div>' +
+            '<div class="mt-2">' + errorMessage + '</div>' +
+            '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
+            '</td></tr>'
+          );
         }
       });
     }
     
     // 渲染提交記錄表格
     function renderSubmissionsTable(submissions) {
-      if (!submissions || submissions.length === 0) {
-        $('#submissions-table-body').html('<tr><td colspan="7" class="text-center">尚無記錄</td></tr>');
+      if (!submissions) {
+        $('#submissions-table-body').html('<tr><td colspan="7" class="text-center text-warning"><i class="icon ion-information-circled mr-2"></i>資料格式錯誤</td></tr>');
+        return;
+      }
+      
+      if (submissions.length === 0) {
+        $('#submissions-table-body').html(
+          '<tr><td colspan="7" class="text-center text-muted p-4">' +
+          '<div><i class="icon ion-document-text" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
+          '<div class="mt-2">目前尚無微微卡日記記錄</div>' +
+          '<div class="small mt-1">點擊下方按鈕開始填寫您的第一筆記錄</div>' +
+          '</td></tr>'
+        );
         return;
       }
       
