@@ -42,7 +42,7 @@ class Eeform3 extends MY_Controller
             
             // Load eform03 specific models and services with error handling
             try {
-                $this->load->model('eeform/eform3', 'eform3_model');
+                $this->load->model('eeform/eeform3', 'eform3_model');
             } catch (Exception $e) {
                 $this->_send_error('Failed to load eform3 model: ' . $e->getMessage(), 500, [
                     'trace' => $e->getTraceAsString(),
@@ -53,7 +53,7 @@ class Eeform3 extends MY_Controller
             }
             
             try {
-                $this->load->service('eeform/eform3', 'eform3_service');
+                $this->load->service('eeform/eeform3', 'eform3_service');
             } catch (Exception $e) {
                 $this->_send_error('Failed to load eform3 service: ' . $e->getMessage(), 500, [
                     'trace' => $e->getTraceAsString(),
@@ -96,6 +96,35 @@ class Eeform3 extends MY_Controller
      */
     public function health() {
         try {
+            // Test model loading
+            $model_test = null;
+            $model_error = null;
+            try {
+                if (isset($this->eform3_model)) {
+                    $activity_items = $this->eform3_model->get_activity_items();
+                    $model_test = 'Model working - found ' . count($activity_items) . ' activity items';
+                } else {
+                    $model_error = 'Model not loaded';
+                }
+            } catch (Exception $e) {
+                $model_error = 'Model error: ' . $e->getMessage();
+            }
+            
+            // Test service loading
+            $service_test = null;
+            $service_error = null;
+            try {
+                if (isset($this->eform3_service)) {
+                    $test_data = ['member_name' => 'test', 'member_id' => 'test', 'age' => 25, 'height' => 170, 'goal' => 'test'];
+                    $validation = $this->eform3_service->validate_submission_data($test_data);
+                    $service_test = 'Service working - validation result: ' . ($validation['valid'] ? 'valid' : 'invalid');
+                } else {
+                    $service_error = 'Service not loaded';
+                }
+            } catch (Exception $e) {
+                $service_error = 'Service error: ' . $e->getMessage();
+            }
+            
             $health_data = [
                 'status' => 'OK',
                 'timestamp' => date('Y-m-d H:i:s'),
@@ -106,7 +135,18 @@ class Eeform3 extends MY_Controller
                     'eform3_model' => isset($this->eform3_model),
                     'eform3_service' => isset($this->eform3_service)
                 ],
+                'service_tests' => [
+                    'model_test' => $model_test,
+                    'model_error' => $model_error,
+                    'service_test' => $service_test,
+                    'service_error' => $service_error
+                ],
                 'database_connection' => $this->db ? 'connected' : 'not connected',
+                'file_structure' => [
+                    'controller_file' => __FILE__,
+                    'model_file' => file_exists(APPPATH . 'models/eeform/eeform3.php') ? 'exists' : 'missing',
+                    'service_file' => file_exists(APPPATH . 'service/eeform/eeform3.php') ? 'exists' : 'missing'
+                ],
                 'request_info' => [
                     'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
                     'uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
@@ -117,7 +157,9 @@ class Eeform3 extends MY_Controller
             $this->_send_success('API Health Check', $health_data);
         } catch (Exception $e) {
             $this->_send_error('Health check failed: ' . $e->getMessage(), 500, [
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ]);
         }
     }
