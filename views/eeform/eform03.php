@@ -10,7 +10,7 @@
                 <h1 class="h2-3d font-libre"><strong>微微卡日記</strong></h1>
                 <div class="mb30">
                   <div class="container">
-                    <form action="<?php echo base_url('Eform/saveEform03'); ?>" method="POST" class="text-left" id="eform03">
+                    <form action="#" method="POST" class="text-left" id="eform03">
                       <div class="row">
                         <div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
 
@@ -699,7 +699,77 @@
     }
 
     function submitForm() {
-      $('#eform03').submit();
+      // 收集表單資料
+      var formData = {
+        member_name: $('input[name="member_name"]').val(),
+        member_id: $('input[name="member_id"]').val(),
+        age: $('input[name="age"]').val(),
+        height: $('input[name="height"]').val(),
+        goal: $('input[name="goal"]').val(),
+        action_plan_1: $('input[name="action_plan_1"]').val(),
+        action_plan_2: $('input[name="action_plan_2"]').val(),
+        weight: $('input[name="weight"]').val(),
+        blood_pressure_high: $('input[name="blood_pressure_high"]').val(),
+        blood_pressure_low: $('input[name="blood_pressure_low"]').val(),
+        waist: $('input[name="waist"]').val(),
+        hand_measure: $('input[name="hand_measure"]').is(':checked') ? 1 : 0,
+        exercise: $('input[name="exercise"]').is(':checked') ? 1 : 0,
+        health_supplement: $('input[name="health_supplement"]').is(':checked') ? 1 : 0,
+        weika: $('input[name="weika"]').is(':checked') ? 1 : 0,
+        water_intake: $('input[name="water_intake"]').is(':checked') ? 1 : 0,
+        plan_a: $('input[name="plan_a"]').val(),
+        plan_b: $('input[name="plan_b"]').val(),
+        other: $('input[name="other"]').val()
+      };
+
+      // 發送API請求
+      $.ajax({
+        url: '<?php echo base_url("api/eeform/submit"); ?>',
+        method: 'POST',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        dataType: 'json',
+        beforeSend: function() {
+          // 顯示載入狀態
+          $('#confirmModal .modal-footer button').prop('disabled', true);
+          $('#confirmModal .modal-footer button').text('提交中...');
+        },
+        success: function(response) {
+          if (response.success) {
+            alert('表單提交成功！');
+            $('#confirmModal').modal('hide');
+            
+            // 可以選擇重新載入頁面或清空表單
+            if (confirm('是否要清空表單重新填寫？')) {
+              location.reload();
+            }
+          } else {
+            alert('提交失敗：' + response.message);
+          }
+        },
+        error: function(xhr) {
+          var errorMessage = '提交失敗，請稍後再試';
+          
+          try {
+            var response = JSON.parse(xhr.responseText);
+            if (response.message) {
+              errorMessage = response.message;
+            }
+            if (response.errors && response.errors.length > 0) {
+              errorMessage += '：\n' + response.errors.join('\n');
+            }
+          } catch (e) {
+            // JSON解析失敗，使用預設錯誤訊息
+          }
+          
+          alert(errorMessage);
+        },
+        complete: function() {
+          // 恢復按鈕狀態
+          $('#confirmModal .modal-footer button').prop('disabled', false);
+          $('#confirmModal .modal-footer .btn-danger').text('確認送出');
+        }
+      });
     }
 
     /*Scroll to top when arrow up clicked BEGIN*/
