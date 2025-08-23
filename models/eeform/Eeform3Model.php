@@ -3,11 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Eeform3Model extends MY_Model {
 
-    protected $table_submissions = 'eeform03_submissions';
-    protected $table_body_data = 'eeform03_body_data';
-    protected $table_activity_items = 'eeform03_activity_items';
-    protected $table_activity_records = 'eeform03_activity_records';
-    protected $table_plans = 'eeform03_plans';
+    protected $table_submissions = 'eeform3_submissions';
+    protected $table_body_data = 'eeform3_body_data';
+    protected $table_activity_items = 'eeform3_activity_items';
+    protected $table_activity_records = 'eeform3_activity_records';
+    protected $table_plans = 'eeform3_plans';
 
     public function __construct() {
         parent::__construct();
