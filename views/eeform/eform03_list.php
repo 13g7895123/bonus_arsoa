@@ -66,23 +66,23 @@
 
                         <div class="col-sm-4 mb30">
                           <label class="label-custom">會員姓名</label>
-                          <p id="member-name">載入中...</p>
+                          <p id="member-name"><?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : '未設定'; ?></p>
                         </div>
                         <div class="col-sm-4 mb30">
                           <label class="label-custom">會員編號</label>
-                          <p id="member-id">載入中...</p>
+                          <p id="member-id"><?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : '未設定'; ?></p>
                         </div>
                         <div class="col-sm-2 mb30">
                           <label class="label-custom">年齡</label>
-                          <p id="member-age">-</p>
+                          <p id="member-age"><?php echo isset($userdata['age']) ? htmlspecialchars($userdata['age']) : '-'; ?></p>
                         </div>
                         <div class="col-sm-2 mb30">
                           <label class="label-custom">身高</label>
-                          <p id="member-height">-</p>
+                          <p id="member-height"><?php echo isset($userdata['height']) ? htmlspecialchars($userdata['height']) : '-'; ?></p>
                         </div>
                         <div class="col-sm-12 mb30">
                           <label class="label-custom">目標</label>
-                          <p id="member-goal">載入中...</p>
+                          <p id="member-goal"><?php echo isset($userdata['goal']) ? htmlspecialchars($userdata['goal']) : '未設定'; ?></p>
                         </div>
 
                         <div class="col-sm-12 mb20">
@@ -100,11 +100,11 @@
                           <div class="alert alert-warning" role="alert">
                             <div class="col-sm-12 mb30">
                               <label class="label-custom">自身行動計畫1.</label>
-                              <p id="action-plan-1">載入中...</p>
+                              <p id="action-plan-1"><?php echo isset($userdata['action_plan_1']) ? htmlspecialchars($userdata['action_plan_1']) : '未設定'; ?></p>
                             </div>
                             <div class="col-sm-12 mb30">
                               <label class="label-custom">自身行動計畫2.</label>
-                              <p id="action-plan-2">載入中...</p>
+                              <p id="action-plan-2"><?php echo isset($userdata['action_plan_2']) ? htmlspecialchars($userdata['action_plan_2']) : '未設定'; ?></p>
                             </div>
                           </div>
                         </div>
@@ -136,7 +136,7 @@
 
                         <div class="col-sm-12 mb30">
                           <hr class="my-4">
-                          <a href="<?php echo base_url('eeform/eform03'); ?>" class="btn btn-outline-danger btn-block">填寫微微卡日記</a>
+                          <a href="<?php echo base_url('eeform/eform3'); ?>" class="btn btn-outline-danger btn-block">填寫微微卡日記</a>
                         </div>
 
                       </div>
@@ -499,26 +499,17 @@
   </script>
   <script>
     // 全域變數
-    var currentMemberId = 'M001234'; // 假設的會員ID，實際應該從登入狀態取得
+    var currentMemberId = '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>'; // 從控制器取得會員ID
     var currentSubmissionId = null; // 當前選中的提交記錄ID
     
     // 頁面載入時初始化
     $(document).ready(function() {
-      loadMemberData();
-      loadSubmissions();
+      if (currentMemberId) {
+        loadSubmissions();
+      } else {
+        $('#submissions-table-body').html('<tr><td colspan="7" class="text-center text-warning">請先登入會員帳號</td></tr>');
+      }
     });
-    
-    // 載入會員基本資料
-    function loadMemberData() {
-      // 這裡應該從API獲取會員資料，暫時使用假資料
-      $('#member-name').text('張小明');
-      $('#member-id').text(currentMemberId);
-      $('#member-age').text('35');
-      $('#member-height').text('170');
-      $('#member-goal').text('減重5公斤並維持健康體態');
-      $('#action-plan-1').text('每天早上做30分鐘瑜珈');
-      $('#action-plan-2').text('晚餐後散步1小時');
-    }
     
     // 載入提交記錄列表
     function loadSubmissions() {
@@ -527,15 +518,40 @@
         method: 'GET',
         dataType: 'json',
         success: function(response) {
-          if (response.success) {
-            renderSubmissionsTable(response.data.data);
+          console.log('API響應:', response);
+          if (response && response.success) {
+            var submissions = response.data && response.data.data ? response.data.data : response.data;
+            renderSubmissionsTable(submissions);
           } else {
-            $('#submissions-table-body').html('<tr><td colspan="7" class="text-center text-danger">載入失敗: ' + response.message + '</td></tr>');
+            var errorMsg = response && response.message ? response.message : '未知錯誤';
+            $('#submissions-table-body').html('<tr><td colspan="7" class="text-center text-danger">載入失敗: ' + errorMsg + '</td></tr>');
           }
         },
         error: function(xhr, status, error) {
-          console.error('載入提交記錄失敗:', error);
-          $('#submissions-table-body').html('<tr><td colspan="7" class="text-center text-danger">載入失敗，請稍後再試</td></tr>');
+          console.error('載入提交記錄失敗:', {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            responseText: xhr.responseText,
+            error: error
+          });
+          
+          var errorMessage = '載入失敗，請稍後再試';
+          if (xhr.status === 404) {
+            errorMessage = 'API端點不存在';
+          } else if (xhr.status === 500) {
+            errorMessage = '服務器錯誤';
+          } else if (xhr.responseText) {
+            try {
+              var errorResponse = JSON.parse(xhr.responseText);
+              if (errorResponse.message) {
+                errorMessage = errorResponse.message;
+              }
+            } catch (e) {
+              errorMessage += ' (錯誤代碼: ' + xhr.status + ')';
+            }
+          }
+          
+          $('#submissions-table-body').html('<tr><td colspan="7" class="text-center text-danger">' + errorMessage + '</td></tr>');
         }
       });
     }
@@ -604,17 +620,59 @@
     // 檢視提交記錄
     function viewSubmission(submissionId) {
       currentSubmissionId = submissionId;
-      // 載入並顯示特定提交記錄的詳細資料
-      // 這裡應該調用API獲取詳細資料並填入檢視模態視窗
-      console.log('檢視提交記錄:', submissionId);
+      
+      $.ajax({
+        url: '<?php echo base_url("api/eeform3/submission/"); ?>' + submissionId,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          if (response && response.success && response.data) {
+            populateViewModal(response.data);
+          } else {
+            alert('載入資料失敗：' + (response.message || '未知錯誤'));
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('載入詳細資料失敗:', error);
+          alert('載入詳細資料失敗，請稍後再試');
+        }
+      });
     }
     
     // 編輯提交記錄
     function editSubmission(submissionId) {
       currentSubmissionId = submissionId;
-      // 載入並顯示特定提交記錄的詳細資料到編輯表單
-      // 這裡應該調用API獲取詳細資料並填入編輯模態視窗
-      console.log('編輯提交記錄:', submissionId);
+      
+      $.ajax({
+        url: '<?php echo base_url("api/eeform3/submission/"); ?>' + submissionId,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          if (response && response.success && response.data) {
+            populateEditModal(response.data);
+          } else {
+            alert('載入資料失敗：' + (response.message || '未知錯誤'));
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('載入編輯資料失敗:', error);
+          alert('載入編輯資料失敗，請稍後再試');
+        }
+      });
+    }
+    
+    // 填入檢視模態視窗
+    function populateViewModal(data) {
+      // 這裡可以根據實際的模態視窗結構填入資料
+      console.log('檢視資料:', data);
+      // 實際實作需要根據模態視窗的HTML結構來填入對應的資料
+    }
+    
+    // 填入編輯模態視窗
+    function populateEditModal(data) {
+      // 這裡可以根據實際的模態視窗結構填入資料
+      console.log('編輯資料:', data);
+      // 實際實作需要根據模態視窗的HTML結構來填入對應的資料到表單欄位
     }
     
     // 更新提交記錄
@@ -624,13 +682,68 @@
         return;
       }
       
-      // 收集編輯表單的資料並提交更新
-      // 這裡應該實作表單資料收集和API調用
-      console.log('更新提交記錄:', currentSubmissionId);
+      // 收集編輯表單的資料
+      var formData = collectEditFormData();
       
-      // 更新完成後重新載入列表並關閉模態視窗
-      $('#form03edit').modal('hide');
-      loadSubmissions();
+      if (!validateFormData(formData)) {
+        return;
+      }
+      
+      $.ajax({
+        url: '<?php echo base_url("api/eeform3/submission/"); ?>' + currentSubmissionId,
+        method: 'PUT',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        dataType: 'json',
+        beforeSend: function() {
+          $('button[onclick="updateSubmission()"]').prop('disabled', true).text('更新中...');
+        },
+        success: function(response) {
+          if (response && response.success) {
+            alert('更新成功');
+            $('#form03edit').modal('hide');
+            loadSubmissions();
+          } else {
+            alert('更新失敗：' + (response.message || '未知錯誤'));
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('更新失敗:', error);
+          alert('更新失敗，請稍後再試');
+        },
+        complete: function() {
+          $('button[onclick="updateSubmission()"]').prop('disabled', false).text('更新表單');
+        }
+      });
+    }
+    
+    // 收集編輯表單資料
+    function collectEditFormData() {
+      // 這裡需要根據實際的編輯表單結構來收集資料
+      // 暫時返回一個空物件，實際使用時需要實作
+      return {
+        // 基本資料
+        member_name: $('#form03edit input[name="member_name"]').val() || '',
+        member_id: $('#form03edit input[name="member_id"]').val() || '',
+        age: $('#form03edit input[name="age"]').val() || '',
+        height: $('#form03edit input[name="height"]').val() || '',
+        goal: $('#form03edit input[name="goal"]').val() || ''
+        // 其他欄位...
+      };
+    }
+    
+    // 驗證表單資料
+    function validateFormData(data) {
+      var requiredFields = ['member_name', 'member_id', 'age', 'height', 'goal'];
+      
+      for (var i = 0; i < requiredFields.length; i++) {
+        if (!data[requiredFields[i]] || data[requiredFields[i]].trim() === '') {
+          alert('請填寫所有必填欄位');
+          return false;
+        }
+      }
+      
+      return true;
     }
     
     /*Scroll to top when arrow up clicked BEGIN*/
