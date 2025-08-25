@@ -726,25 +726,13 @@
           if (response.success) {
             Swal.fire({
               title: '提交成功！',
-              text: '表單已成功提交',
+              text: '表單已成功提交，將返回列表頁面',
               icon: 'success',
               confirmButtonText: '確定'
             }).then(() => {
               $('#confirmModal').modal('hide');
-            });
-            
-            // 可以選擇重新載入頁面或清空表單
-            Swal.fire({
-              title: '是否要清空表單？',
-              text: '是否要清空表單重新填寫？',
-              icon: 'question',
-              showCancelButton: true,
-              confirmButtonText: '是，清空表單',
-              cancelButtonText: '不，保持現狀'
-            }).then((result) => {
-              if (result.isConfirmed) {
-                location.reload();
-              }
+              // 直接跳轉到 eform3_list 頁面
+              window.location.href = '<?php echo base_url("eform/eform3_list"); ?>';
             });
           } else {
             Swal.fire({
