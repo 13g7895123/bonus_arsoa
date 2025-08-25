@@ -553,7 +553,7 @@
   </script>
   <script>
     // 控制測試按鈕顯示的變數
-    var showTestButton = false; // 設為 false 可隱藏測試按鈕
+    var showTestButton = true; // 設為 true 顯示測試按鈕
     
     // 頁面載入時檢查是否顯示測試按鈕
     $(document).ready(function() {
@@ -595,8 +595,7 @@
     
     // 填入測試資料的函數
     function fillTestData() {
-      $('input[name="member_name"]').val('張小明');
-      $('input[name="member_id"]').val('M001234');
+      // 會員姓名與編號已自動填入，不需要在測試資料中覆蓋
       $('input[name="age"]').val('35');
       $('input[name="height"]').val('170');
       $('input[name="goal"]').val('減重5公斤並維持健康體態');
