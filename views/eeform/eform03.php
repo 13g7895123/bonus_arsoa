@@ -16,11 +16,11 @@
 
                         <div class="col-sm-4 mb30">
                           <label class="label-custom">會員姓名</label>
-                          <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" required />
+                          <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
                         </div>
                         <div class="col-sm-4 mb30">
                           <label class="label-custom">會員編號</label>
-                          <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" required />
+                          <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" required />
                         </div>
                         <div class="col-sm-2 mb30">
                           <label class="label-custom">年齡</label>
@@ -559,7 +559,29 @@
       if (showTestButton) {
         $('#testDataButton').show();
       }
+      
+      // 驗證會員資料
+      validateMemberData();
     });
+    
+    // 驗證會員姓名和編號
+    function validateMemberData() {
+      var memberName = $('input[name="member_name"]').val();
+      var memberId = $('input[name="member_id"]').val();
+      
+      // 檢查會員姓名或編號是否為空或預設值
+      if (!memberName || !memberId || memberName === '未設定' || memberId === '未設定' || memberName.trim() === '' || memberId.trim() === '') {
+        alert('會員姓名或編號有誤，請先完善會員資料');
+        // 返回上一頁（eform3_list）
+        if (document.referrer && document.referrer.indexOf('eform3_list') !== -1) {
+          window.history.back();
+        } else {
+          window.location.href = '<?php echo base_url("eform/eform3_list"); ?>';
+        }
+        return false;
+      }
+      return true;
+    }
     
     // 填入測試資料的函數
     function fillTestData() {
