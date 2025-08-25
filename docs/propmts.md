@@ -59,3 +59,6 @@
 51. 完成以下功能
     - editSubmission時，目標、自身行動計畫1、自身行動計畫2，幫我改為readonly不可調整
     - viewSubmission、editSubmission執行後，計畫A、計畫B與其他的資料沒有帶出來
+52. 完成以下功能
+    - 從viewSubmission的我要修改點下去後，那個訂單內容的視窗會無法往下滑
+    - editSubmission點更新表單後會顯示更新失敗，且不是用sweet alert

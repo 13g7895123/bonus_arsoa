@@ -297,7 +297,7 @@
 
                   <div class="col-sm-12 mb30">
                     <hr class="my-4">
-                    <a href="javascript:;" class="btn btn-outline-danger btn-block" data-dismiss="modal" data-toggle="modal" data-target="#form03edit">我要修改</a>
+                    <a href="javascript:;" class="btn btn-outline-danger btn-block" onclick="switchToEditModal()">我要修改</a>
                   </div>
 
                 </div>
@@ -762,12 +762,22 @@
           if (response && response.success && response.data) {
             populateViewModal(response.data);
           } else {
-            alert('載入資料失敗：' + (response.message || '未知錯誤'));
+            Swal.fire({
+              title: '載入失敗',
+              text: response.message || '未知錯誤',
+              icon: 'error',
+              confirmButtonText: '確定'
+            });
           }
         },
         error: function(xhr, status, error) {
           console.error('載入詳細資料失敗:', error);
-          alert('載入詳細資料失敗，請稍後再試');
+          Swal.fire({
+            title: '載入失敗',
+            text: '載入詳細資料失敗，請稍後再試',
+            icon: 'error',
+            confirmButtonText: '確定'
+          });
         }
       });
     }
@@ -784,12 +794,41 @@
           if (response && response.success && response.data) {
             populateEditModal(response.data);
           } else {
-            alert('載入資料失敗：' + (response.message || '未知錯誤'));
+            Swal.fire({
+              title: '載入失敗',
+              text: response.message || '未知錯誤',
+              icon: 'error',
+              confirmButtonText: '確定'
+            });
           }
         },
         error: function(xhr, status, error) {
           console.error('載入編輯資料失敗:', error);
-          alert('載入編輯資料失敗，請稍後再試');
+          Swal.fire({
+            title: '載入失敗',
+            text: '載入編輯資料失敗，請稍後再試',
+            icon: 'error',
+            confirmButtonText: '確定'
+          });
+        }
+      });
+    }
+    
+    // 從檢視模態視窗切換到編輯模態視窗
+    function switchToEditModal() {
+      // 先關閉檢視模態視窗
+      $('#form03view').modal('hide');
+      
+      // 等待檢視模態視窗完全關閉後再開啟編輯模態視窗
+      $('#form03view').on('hidden.bs.modal', function() {
+        // 移除事件監聽器避免重複綁定
+        $(this).off('hidden.bs.modal');
+        
+        // 確保當前有選中的提交記錄
+        if (currentSubmissionId) {
+          // 開啟編輯模態視窗並載入資料
+          editSubmission(currentSubmissionId);
+          $('#form03edit').modal('show');
         }
       });
     }
@@ -849,14 +888,9 @@
         if (data.water_intake == 1 || data.water_intake === true) $('#form03view .form-check-input').eq(4).prop('checked', true);
       }
       
-      // 其他計畫 - 使用更精確的選擇器（注意標籤包含點號）
-      console.log('populateViewModal - plan_a:', data.plan_a);
-      console.log('populateViewModal - plan_b:', data.plan_b);
-      console.log('populateViewModal - other:', data.other);
-      
-      $('#form03view .card .row .col-sm-12:has(label:contains("計畫a.")) p').text(data.plan_a || '未填寫');
-      $('#form03view .card .row .col-sm-12:has(label:contains("計畫b.")) p').text(data.plan_b || '未填寫');
-      $('#form03view .card .row .col-sm-12:has(label:contains("其他")) p').text(data.other || '未填寫');
+      $('#form03view .card .row .col-sm-12:has(label:contains("計畫a.")) p').text(data.plans[0].plan_content || '未填寫');
+      $('#form03view .card .row .col-sm-12:has(label:contains("計畫b.")) p').text(data.plans[1].plan_content || '未填寫');
+      $('#form03view .card .row .col-sm-12:has(label:contains("其他")) p').text(data.plans[2].plan_content || '未填寫');
     }
     
     // 填入編輯模態視窗
@@ -919,15 +953,10 @@
         if (data.weika == 1 || data.weika === true) $('#form03edit .form-check-input').eq(3).prop('checked', true);
         if (data.water_intake == 1 || data.water_intake === true) $('#form03edit .form-check-input').eq(4).prop('checked', true);
       }
-      
-      // 其他計畫 - 使用更精確的選擇器（注意標籤包含點號）
-      console.log('populateEditModal - plan_a:', data.plan_a);
-      console.log('populateEditModal - plan_b:', data.plan_b);
-      console.log('populateEditModal - other:', data.other);
-      
-      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a.")) input').val(data.plan_a || '');
-      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b.")) input').val(data.plan_b || '');
-      $('#form03edit .card .row .col-sm-12:has(label:contains("其他")) input').val(data.other || '');
+            
+      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a.")) input').val(data.plans[0].plan_content || '');
+      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b.")) input').val(data.plans[1].plan_content || '');
+      $('#form03edit .card .row .col-sm-12:has(label:contains("其他")) input').val(data.plans[2].plan_content || '');
     }
     
     // 更新提交記錄
@@ -955,16 +984,33 @@
         },
         success: function(response) {
           if (response && response.success) {
-            alert('更新成功');
-            $('#form03edit').modal('hide');
-            loadSubmissions();
+            Swal.fire({
+              title: '更新成功',
+              text: '資料已成功更新',
+              icon: 'success',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              $('#form03edit').modal('hide');
+              loadSubmissions();
+            });
           } else {
-            alert('更新失敗：' + (response.message || '未知錯誤'));
+            Swal.fire({
+              title: '更新失敗',
+              text: response.message || '未知錯誤',
+              icon: 'error',
+              confirmButtonText: '確定'
+            });
           }
         },
         error: function(xhr, status, error) {
           console.error('更新失敗:', error);
-          alert('更新失敗，請稍後再試');
+          Swal.fire({
+            title: '更新失敗',
+            text: '請稍後再試',
+            icon: 'error',
+            confirmButtonText: '確定'
+          });
         },
         complete: function() {
           $('button[onclick="updateSubmission()"]').prop('disabled', false).text('更新表單');
