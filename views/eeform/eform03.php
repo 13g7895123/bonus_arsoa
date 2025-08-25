@@ -726,9 +726,12 @@
           if (response.success) {
             Swal.fire({
               title: '提交成功！',
-              text: '表單已成功提交，將返回列表頁面',
+              text: '表單已成功提交，1.5秒後自動返回列表頁面',
               icon: 'success',
-              confirmButtonText: '確定'
+              timer: 1500,
+              showConfirmButton: false,
+              allowOutsideClick: false,
+              allowEscapeKey: false
             }).then(() => {
               $('#confirmModal').modal('hide');
               // 直接跳轉到 eform3_list 頁面
