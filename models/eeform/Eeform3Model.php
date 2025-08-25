@@ -226,6 +226,124 @@ class Eeform3Model extends MY_Model {
     }
 
     /**
+     * 更新表單提交記錄
+     * @param int $id 表單ID
+     * @param array $data 表單資料
+     * @return bool
+     */
+    public function update_submission($id, $data) {
+        try {
+            $this->db->trans_start();
+            
+            // 清理和準備主表資料
+            $cleaned_data = $this->clean_submission_data($data);
+            
+            // 檢查記錄是否存在
+            $existing = $this->db->get_where($this->table_submissions, ['id' => $id])->row();
+            if (!$existing) {
+                throw new Exception('找不到指定的表單記錄');
+            }
+            
+            // 更新主表資料
+            $main_data = [
+                'member_name' => $cleaned_data['member_name'],
+                'member_id' => $cleaned_data['member_id'],
+                'age' => $cleaned_data['age'],
+                'height' => $cleaned_data['height'],
+                'goal' => $cleaned_data['goal'],
+                'action_plan_1' => $cleaned_data['action_plan_1'],
+                'action_plan_2' => $cleaned_data['action_plan_2'],
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+            
+            $this->db->where('id', $id);
+            $this->db->update($this->table_submissions, $main_data);
+            
+            // 更新身體數據
+            $body_data = [
+                'weight' => $cleaned_data['weight'],
+                'blood_pressure_high' => $cleaned_data['blood_pressure_high'],
+                'blood_pressure_low' => $cleaned_data['blood_pressure_low'],
+                'waist' => $cleaned_data['waist']
+            ];
+            
+            // 檢查是否已有身體數據記錄
+            $existing_body = $this->db->get_where($this->table_body_data, ['submission_id' => $id])->row();
+            if ($existing_body) {
+                $this->db->where('submission_id', $id);
+                $this->db->update($this->table_body_data, $body_data);
+            } else {
+                $body_data['submission_id'] = $id;
+                $this->db->insert($this->table_body_data, $body_data);
+            }
+            
+            // 更新活動記錄
+            $activity_items = ['hand_measure', 'exercise', 'health_supplement', 'weika', 'water_intake'];
+            
+            // 先刪除舊的活動記錄
+            $this->db->where('submission_id', $id);
+            $this->db->delete($this->table_activity_records);
+            
+            // 插入新的活動記錄
+            foreach ($activity_items as $activity_key) {
+                if (isset($cleaned_data[$activity_key]) && $cleaned_data[$activity_key]) {
+                    $activity_item = $this->db->get_where($this->table_activity_items, ['item_key' => $activity_key])->row();
+                    if ($activity_item) {
+                        $this->db->insert($this->table_activity_records, [
+                            'submission_id' => $id,
+                            'activity_item_id' => $activity_item->id,
+                            'is_completed' => 1,
+                            'completion_time' => date('Y-m-d H:i:s')
+                        ]);
+                    }
+                }
+            }
+            
+            // 更新計畫資料
+            $plans = [
+                'plan_a' => $cleaned_data['plan_a'],
+                'plan_b' => $cleaned_data['plan_b'],
+                'other' => $cleaned_data['other']
+            ];
+            
+            // 先刪除舊的計畫記錄
+            $this->db->where('submission_id', $id);
+            $this->db->delete($this->table_plans);
+            
+            // 插入新的計畫記錄
+            foreach ($plans as $plan_type => $plan_content) {
+                if (!empty($plan_content)) {
+                    $this->db->insert($this->table_plans, [
+                        'submission_id' => $id,
+                        'plan_type' => $plan_type,
+                        'plan_content' => $plan_content
+                    ]);
+                }
+            }
+            
+            $this->db->trans_complete();
+            
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('資料更新失敗');
+            }
+            
+            // 記錄操作日誌
+            if (method_exists($this, 'log_operation')) {
+                $this->log_operation('update_submission', $id, $cleaned_data);
+            }
+            
+            return true;
+            
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            if (method_exists($this, 'log_error')) {
+                $this->log_error('update_submission_error', $e->getMessage(), $data);
+            }
+            throw $e;
+        }
+    }
+
+    /**
      * 取得會員提交記錄
      * @param string $member_id 會員編號
      * @param int $page 頁數
