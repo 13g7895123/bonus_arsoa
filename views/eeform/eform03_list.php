@@ -528,6 +528,7 @@
     $(document).ready(function() {
       if (currentMemberId) {
         loadSubmissions();
+        loadLatestSubmissionForProfile(); // 載入最新提交記錄更新個人資料區域
       } else {
         $('#submissions-table-body').html(
           '<tr><td colspan="7" class="text-center text-warning p-4">' +
@@ -538,6 +539,41 @@
         );
       }
     });
+    
+    // 載入最新提交記錄更新個人資料區域
+    function loadLatestSubmissionForProfile() {
+      $.ajax({
+        url: '<?php echo base_url("api/eeform3/submissions/"); ?>' + currentMemberId,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          if (response && response.success) {
+            var submissions = response.data && response.data.data ? response.data.data : response.data;
+            if (submissions && submissions.length > 0) {
+              // 取得最新的提交記錄（第一個）
+              var latestSubmission = submissions[0];
+              updateProfileFromLatestSubmission(latestSubmission);
+            }
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('載入最新提交記錄失敗:', error);
+          // 如果載入失敗，保持現有的 userdata 顯示
+        }
+      });
+    }
+    
+    // 使用最新提交記錄更新個人資料區域
+    function updateProfileFromLatestSubmission(data) {
+      // 更新年齡、身高、目標
+      if (data.age) $('#member-age').text(data.age);
+      if (data.height) $('#member-height').text(data.height);
+      if (data.goal) $('#member-goal').text(data.goal);
+      
+      // 更新自身行動計畫
+      if (data.action_plan_1) $('#action-plan-1').text(data.action_plan_1);
+      if (data.action_plan_2) $('#action-plan-2').text(data.action_plan_2);
+    }
     
     // 載入提交記錄列表
     function loadSubmissions() {
@@ -660,28 +696,55 @@
     // 取得活動標記
     function getActivityBadges(submission) {
       var badges = [];
+      
+      // 除錯日誌
+      console.log('getActivityBadges - submission data:', submission);
+      
+      // 檢查不同可能的資料結構
       var activities = submission.activities || [];
       
-      activities.forEach(function(activity) {
-        switch(activity.item_key) {
-          case 'hand_measure':
-            badges.push('<span class="badge badge-primary">手</span>');
-            break;
-          case 'exercise':
-            badges.push('<span class="badge badge-warning">運</span>');
-            break;
-          case 'health_supplement':
-            badges.push('<span class="badge badge-success">健</span>');
-            break;
-          case 'weika':
-            badges.push('<span class="badge badge-info">微</span>');
-            break;
-          case 'water_intake':
-            badges.push('<span class="badge badge-secondary">水</span>');
-            break;
+      // 如果 activities 是空的，嘗試直接從 submission 物件檢查活動欄位
+      if (activities.length === 0) {
+        // 直接檢查 submission 中的活動欄位
+        if (submission.hand_measure == 1 || submission.hand_measure === true) {
+          badges.push('<span class="badge badge-primary">手</span>');
         }
-      });
+        if (submission.exercise == 1 || submission.exercise === true) {
+          badges.push('<span class="badge badge-warning">運</span>');
+        }
+        if (submission.health_supplement == 1 || submission.health_supplement === true) {
+          badges.push('<span class="badge badge-success">健</span>');
+        }
+        if (submission.weika == 1 || submission.weika === true) {
+          badges.push('<span class="badge badge-info">微</span>');
+        }
+        if (submission.water_intake == 1 || submission.water_intake === true) {
+          badges.push('<span class="badge badge-secondary">水</span>');
+        }
+      } else {
+        // 使用原來的 activities 陣列處理方式
+        activities.forEach(function(activity) {
+          switch(activity.item_key) {
+            case 'hand_measure':
+              badges.push('<span class="badge badge-primary">手</span>');
+              break;
+            case 'exercise':
+              badges.push('<span class="badge badge-warning">運</span>');
+              break;
+            case 'health_supplement':
+              badges.push('<span class="badge badge-success">健</span>');
+              break;
+            case 'weika':
+              badges.push('<span class="badge badge-info">微</span>');
+              break;
+            case 'water_intake':
+              badges.push('<span class="badge badge-secondary">水</span>');
+              break;
+          }
+        });
+      }
       
+      console.log('getActivityBadges - badges result:', badges);
       return badges.join(' ');
     }
     
