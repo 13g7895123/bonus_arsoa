@@ -733,9 +733,6 @@
     function populateViewModal(data) {
       console.log('檢視資料:', data);
       
-      // 更新模態視窗標題
-      $('#form03view .modal-title').text('微微卡日記內容');
-      
       // 填寫日期
       $('#form03view .col-sm-12.text-right').html('填寫日期：' + (data.submission_date || '未設定'));
       
@@ -786,9 +783,6 @@
     // 填入編輯模態視窗
     function populateEditModal(data) {
       console.log('編輯資料:', data);
-      
-      // 更新模態視窗標題
-      $('#form03edit .modal-title').text('修改微微卡日記');
       
       // 填寫日期
       $('#form03edit .col-sm-12.text-right').html('填寫日期：' + (data.submission_date || '未設定'));
