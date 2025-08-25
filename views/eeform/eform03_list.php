@@ -528,7 +528,7 @@
     $(document).ready(function() {
       if (currentMemberId) {
         loadSubmissions();
-        loadLatestSubmissionForProfile(); // 載入最新提交記錄更新個人資料區域
+        loadSubmissionsForProfile(); // 載入提交記錄更新個人資料區域
       } else {
         $('#submissions-table-body').html(
           '<tr><td colspan="7" class="text-center text-warning p-4">' +
@@ -540,8 +540,8 @@
       }
     });
     
-    // 載入最新提交記錄更新個人資料區域
-    function loadLatestSubmissionForProfile() {
+    // 載入提交記錄更新個人資料區域
+    function loadSubmissionsForProfile() {
       $.ajax({
         url: '<?php echo base_url("api/eeform3/submissions/"); ?>' + currentMemberId,
         method: 'GET',
@@ -550,29 +550,31 @@
           if (response && response.success) {
             var submissions = response.data && response.data.data ? response.data.data : response.data;
             if (submissions && submissions.length > 0) {
-              // 取得最新的提交記錄（第一個）
+              // 取得最新的提交記錄（第一個）用於年齡、身高
               var latestSubmission = submissions[0];
-              updateProfileFromLatestSubmission(latestSubmission);
+              // 取得第一次的提交記錄（最後一個）用於目標、行動計畫
+              var firstSubmission = submissions[submissions.length - 1];
+              updateProfileFromSubmissions(latestSubmission, firstSubmission);
             }
           }
         },
         error: function(xhr, status, error) {
-          console.error('載入最新提交記錄失敗:', error);
+          console.error('載入提交記錄失敗:', error);
           // 如果載入失敗，保持現有的 userdata 顯示
         }
       });
     }
     
-    // 使用最新提交記錄更新個人資料區域
-    function updateProfileFromLatestSubmission(data) {
-      // 更新年齡、身高、目標
-      if (data.age) $('#member-age').text(data.age);
-      if (data.height) $('#member-height').text(data.height);
-      if (data.goal) $('#member-goal').text(data.goal);
+    // 使用提交記錄更新個人資料區域
+    function updateProfileFromSubmissions(latestData, firstData) {
+      // 更新年齡、身高（使用最新資料）
+      if (latestData.age) $('#member-age').text(latestData.age);
+      if (latestData.height) $('#member-height').text(latestData.height);
       
-      // 更新自身行動計畫
-      if (data.action_plan_1) $('#action-plan-1').text(data.action_plan_1);
-      if (data.action_plan_2) $('#action-plan-2').text(data.action_plan_2);
+      // 更新目標、自身行動計畫（使用第一次資料）
+      if (firstData.goal) $('#member-goal').text(firstData.goal);
+      if (firstData.action_plan_1) $('#action-plan-1').text(firstData.action_plan_1);
+      if (firstData.action_plan_2) $('#action-plan-2').text(firstData.action_plan_2);
     }
     
     // 載入提交記錄列表

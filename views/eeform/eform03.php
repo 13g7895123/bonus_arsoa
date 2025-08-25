@@ -562,7 +562,10 @@
       }
       
       // 驗證會員資料
-      validateMemberData();
+      if (validateMemberData()) {
+        // 載入第一次提交記錄來自動填入目標和行動計畫
+        loadFirstSubmissionData();
+      }
     });
     
     // 驗證會員姓名和編號
@@ -593,14 +596,58 @@
       return true;
     }
     
+    // 載入第一次提交記錄來自動填入目標和行動計畫
+    function loadFirstSubmissionData() {
+      var memberId = $('input[name="member_id"]').val();
+      if (!memberId) return;
+      
+      $.ajax({
+        url: '<?php echo base_url("api/eeform3/submissions/"); ?>' + memberId,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          if (response && response.success) {
+            var submissions = response.data && response.data.data ? response.data.data : response.data;
+            if (submissions && submissions.length > 0) {
+              // 取得第一次的提交記錄（最後一個）
+              var firstSubmission = submissions[submissions.length - 1];
+              
+              // 自動填入目標和行動計畫（如果欄位還是空的）
+              if (firstSubmission.goal && !$('input[name="goal"]').val()) {
+                $('input[name="goal"]').val(firstSubmission.goal).attr('readonly', true).css('background-color', '#f8f9fa');
+              }
+              if (firstSubmission.action_plan_1 && !$('input[name="action_plan_1"]').val()) {
+                $('input[name="action_plan_1"]').val(firstSubmission.action_plan_1).attr('readonly', true).css('background-color', '#f8f9fa');
+              }
+              if (firstSubmission.action_plan_2 && !$('input[name="action_plan_2"]').val()) {
+                $('input[name="action_plan_2"]').val(firstSubmission.action_plan_2).attr('readonly', true).css('background-color', '#f8f9fa');
+              }
+            }
+          }
+        },
+        error: function(xhr, status, error) {
+          console.log('載入第一次提交記錄失敗:', error);
+          // 如果載入失敗，保持欄位可編輯
+        }
+      });
+    }
+    
     // 填入測試資料的函數
     function fillTestData() {
       // 會員姓名與編號已自動填入，不需要在測試資料中覆蓋
       $('input[name="age"]').val('35');
       $('input[name="height"]').val('170');
-      $('input[name="goal"]').val('減重5公斤並維持健康體態');
-      $('input[name="action_plan_1"]').val('每天早上做30分鐘瑜珈');
-      $('input[name="action_plan_2"]').val('晚餐後散步1小時');
+      
+      // 只在欄位不是readonly的情況下填入目標和行動計畫測試資料
+      if (!$('input[name="goal"]').prop('readonly')) {
+        $('input[name="goal"]').val('減重5公斤並維持健康體態');
+      }
+      if (!$('input[name="action_plan_1"]').prop('readonly')) {
+        $('input[name="action_plan_1"]').val('每天早上做30分鐘瑜珈');
+      }
+      if (!$('input[name="action_plan_2"]').prop('readonly')) {
+        $('input[name="action_plan_2"]').val('晚餐後散步1小時');
+      }
       $('input[name="weight"]').val('70.5');
       $('input[name="blood_pressure_high"]').val('120');
       $('input[name="blood_pressure_low"]').val('80');
