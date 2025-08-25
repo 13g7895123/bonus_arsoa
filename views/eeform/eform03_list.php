@@ -673,6 +673,9 @@
       submissions.forEach(function(submission, index) {
         var bgColor = index % 2 === 0 ? '#E4FBFC' : '#eeeeee';
         var activities = getActivityBadges(submission);
+
+        console.log('Submission ID:', submission.id);
+        console.log(activities);
         
         tableRows += '<tr style="background-color: ' + bgColor + ';">';
         tableRows += '<td nowrap="nowrap" class="text-center">' + submission.submission_date + '</td>';

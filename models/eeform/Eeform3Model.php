@@ -374,6 +374,32 @@ class Eeform3Model extends MY_Model {
         $query = $this->db->get();
         $results = $query->result_array();
         
+        // 為每個提交記錄添加活動資料
+        foreach ($results as &$result) {
+            // 取得活動記錄
+            $this->db->select('ar.*, ai.item_key, ai.item_name');
+            $this->db->from($this->table_activity_records . ' ar');
+            $this->db->join($this->table_activity_items . ' ai', 'ar.activity_item_id = ai.id');
+            $this->db->where('ar.submission_id', $result['id']);
+            $this->db->where('ar.is_completed', 1);
+            
+            $activities = $this->db->get()->result_array();
+            $result['activities'] = $activities;
+            
+            // 同時將活動資料以布林值形式添加到主記錄中，方便前端使用
+            $activity_keys = ['hand_measure', 'exercise', 'health_supplement', 'weika', 'water_intake'];
+            foreach ($activity_keys as $key) {
+                $result[$key] = false; // 預設為false
+            }
+            
+            // 根據活動記錄設定布林值
+            foreach ($activities as $activity) {
+                if (isset($activity['item_key'])) {
+                    $result[$activity['item_key']] = true;
+                }
+            }
+        }
+        
         // 取得總筆數
         $this->db->from($this->table_submissions);
         $this->db->where('member_id', $member_id);
