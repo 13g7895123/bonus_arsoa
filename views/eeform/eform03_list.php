@@ -799,48 +799,58 @@
       // 填寫日期
       $('#form03view .col-sm-12.text-right').html('填寫日期：' + (data.submission_date || '未設定'));
       
-      // 基本資料
-      $('#form03view .col-sm-4:nth-child(2) p').text(data.member_name || '未設定');
-      $('#form03view .col-sm-4:nth-child(3) p').text(data.member_id || '未設定');
-      $('#form03view .col-sm-2:nth-child(4) p').text(data.age || '未設定');
-      $('#form03view .col-sm-2:nth-child(5) p').text(data.height || '未設定');
-      $('#form03view .col-sm-12:nth-child(6) p').text(data.goal || '未設定');
+      // 基本資料 - 使用更精確的選擇器
+      $('#form03view .row > .col-sm-4:has(label:contains("會員姓名")) p').text(data.member_name || '未設定');
+      $('#form03view .row > .col-sm-4:has(label:contains("會員編號")) p').text(data.member_id || '未設定');
+      $('#form03view .row > .col-sm-2:has(label:contains("年齡")) p').text(data.age || '未設定');
+      $('#form03view .row > .col-sm-2:has(label:contains("身高")) p').text(data.height || '未設定');
+      $('#form03view .row > .col-sm-12:has(label:contains("目標")) p').text(data.goal || '未設定');
       
       // 自身行動計畫
-      $('#form03view .alert-warning .col-sm-12:nth-child(1) p').text(data.action_plan_1 || '未設定');
-      $('#form03view .alert-warning .col-sm-12:nth-child(2) p').text(data.action_plan_2 || '未設定');
+      $('#form03view .alert-warning .col-sm-12:has(label:contains("自身行動計畫1")) p').text(data.action_plan_1 || '未設定');
+      $('#form03view .alert-warning .col-sm-12:has(label:contains("自身行動計畫2")) p').text(data.action_plan_2 || '未設定');
       
-      // 身體數據
-      $('#form03view .col-sm-3:nth-child(1) p').text(data.weight || '未填寫');
-      $('#form03view .col-sm-3:nth-child(2) p').text(data.blood_pressure_high || '未填寫');
-      $('#form03view .col-sm-3:nth-child(3) p').text(data.blood_pressure_low || '未填寫');
-      $('#form03view .col-sm-3:nth-child(4) p').text(data.waist || '未填寫');
+      // 身體數據 - 使用更精確的選擇器
+      $('#form03view .card .row .col-sm-3:has(label:contains("體重")) p').text((data.weight || '未填寫') + (data.weight ? ' 公斤' : ''));
+      $('#form03view .card .row .col-sm-3:has(label:contains("血壓(收)")) p').text(data.blood_pressure_high || '未填寫');
+      $('#form03view .card .row .col-sm-3:has(label:contains("血壓(舒)")) p').text(data.blood_pressure_low || '未填寫');
+      $('#form03view .card .row .col-sm-3:has(label:contains("腰圍")) p').text((data.waist || '未填寫') + (data.waist ? ' 公分' : ''));
       
-      // 共同行動項目 (checkboxes)
+      // 共同行動項目 (checkboxes) - 處理不同的資料結構
       var activities = data.activities || [];
-      var activityMap = {
-        'hand_measure': 0,
-        'exercise': 1, 
-        'health_supplement': 2,
-        'weika': 3,
-        'water_intake': 4
-      };
       
       // 重置所有checkbox
       $('#form03view .form-check-input').prop('checked', false);
       
-      // 根據資料設定checkbox
-      activities.forEach(function(activity) {
-        if (activityMap.hasOwnProperty(activity.item_key)) {
-          var index = activityMap[activity.item_key];
-          $('#form03view .form-check-input').eq(index).prop('checked', true);
-        }
-      });
+      if (activities.length > 0) {
+        // 如果有 activities 陣列，使用原來的方式
+        var activityMap = {
+          'hand_measure': 0,
+          'exercise': 1, 
+          'health_supplement': 2,
+          'weika': 3,
+          'water_intake': 4
+        };
+        
+        activities.forEach(function(activity) {
+          if (activityMap.hasOwnProperty(activity.item_key)) {
+            var index = activityMap[activity.item_key];
+            $('#form03view .form-check-input').eq(index).prop('checked', true);
+          }
+        });
+      } else {
+        // 如果沒有 activities 陣列，直接檢查欄位
+        if (data.hand_measure == 1 || data.hand_measure === true) $('#form03view .form-check-input').eq(0).prop('checked', true);
+        if (data.exercise == 1 || data.exercise === true) $('#form03view .form-check-input').eq(1).prop('checked', true);
+        if (data.health_supplement == 1 || data.health_supplement === true) $('#form03view .form-check-input').eq(2).prop('checked', true);
+        if (data.weika == 1 || data.weika === true) $('#form03view .form-check-input').eq(3).prop('checked', true);
+        if (data.water_intake == 1 || data.water_intake === true) $('#form03view .form-check-input').eq(4).prop('checked', true);
+      }
       
-      // 其他計畫
-      $('#form03view .col-sm-12:nth-child(7) p').text(data.plan_a || '未填寫');
-      $('#form03view .col-sm-12:nth-child(8) p').text(data.plan_b || '未填寫');  
-      $('#form03view .col-sm-12:nth-child(9) p').text(data.other || '未填寫');
+      // 其他計畫 - 使用更精確的選擇器
+      $('#form03view .card .row .col-sm-12:has(label:contains("計畫a")) p').text(data.plan_a || '未填寫');
+      $('#form03view .card .row .col-sm-12:has(label:contains("計畫b")) p').text(data.plan_b || '未填寫');
+      $('#form03view .card .row .col-sm-12:has(label:contains("其他")) p').text(data.other || '未填寫');
     }
     
     // 填入編輯模態視窗
@@ -850,48 +860,58 @@
       // 填寫日期
       $('#form03edit .col-sm-12.text-right').html('填寫日期：' + (data.submission_date || '未設定'));
       
-      // 基本資料 - 使用input欄位
-      $('#form03edit input[placeholder*="會員姓名"]').val(data.member_name || '');
-      $('#form03edit input[placeholder*="會員編號"]').val(data.member_id || '');
-      $('#form03edit input[placeholder*="限填數字"]:first').val(data.age || '');
-      $('#form03edit input[placeholder*="限填數字"]:eq(1)').val(data.height || '');
-      $('#form03edit input[placeholder*="請填寫目標"]:first').val(data.goal || '');
+      // 基本資料 - 使用更精確的選擇器
+      $('#form03edit .row > .col-sm-4:has(label:contains("會員姓名")) input').val(data.member_name || '');
+      $('#form03edit .row > .col-sm-4:has(label:contains("會員編號")) input').val(data.member_id || '');
+      $('#form03edit .row > .col-sm-2:has(label:contains("年齡")) input').val(data.age || '');
+      $('#form03edit .row > .col-sm-2:has(label:contains("身高")) input').val(data.height || '');
+      $('#form03edit .row > .col-sm-12:has(label:contains("目標")) input').val(data.goal || '');
       
       // 自身行動計畫
-      $('#form03edit .alert-warning input[placeholder*="請填寫目標"]:first').val(data.action_plan_1 || '');
-      $('#form03edit .alert-warning input[placeholder*="請填寫目標"]:eq(1)').val(data.action_plan_2 || '');
+      $('#form03edit .alert-warning .col-sm-12:has(label:contains("自身行動計畫1")) input').val(data.action_plan_1 || '');
+      $('#form03edit .alert-warning .col-sm-12:has(label:contains("自身行動計畫2")) input').val(data.action_plan_2 || '');
       
-      // 身體數據
-      $('#form03edit input[style*="width: 100%"]:eq(0)').val(data.weight || '');
-      $('#form03edit input[style*="width: 100%"]:eq(1)').val(data.blood_pressure_high || '');
-      $('#form03edit input[style*="width: 100%"]:eq(2)').val(data.blood_pressure_low || '');
-      $('#form03edit input[style*="width: 100%"]:eq(3)').val(data.waist || '');
+      // 身體數據 - 使用更精確的選擇器
+      $('#form03edit .card .row .col-sm-3:has(label:contains("體重")) input').val(data.weight || '');
+      $('#form03edit .card .row .col-sm-3:has(label:contains("血壓(收)")) input').val(data.blood_pressure_high || '');
+      $('#form03edit .card .row .col-sm-3:has(label:contains("血壓(舒)")) input').val(data.blood_pressure_low || '');
+      $('#form03edit .card .row .col-sm-3:has(label:contains("腰圍")) input').val(data.waist || '');
       
-      // 共同行動項目 (checkboxes)
+      // 共同行動項目 (checkboxes) - 處理不同的資料結構
       var activities = data.activities || [];
-      var activityMap = {
-        'hand_measure': 0,
-        'exercise': 1,
-        'health_supplement': 2,
-        'weika': 3,
-        'water_intake': 4
-      };
       
       // 重置所有checkbox
       $('#form03edit .form-check-input').prop('checked', false);
       
-      // 根據資料設定checkbox
-      activities.forEach(function(activity) {
-        if (activityMap.hasOwnProperty(activity.item_key)) {
-          var index = activityMap[activity.item_key];
-          $('#form03edit .form-check-input').eq(index).prop('checked', true);
-        }
-      });
+      if (activities.length > 0) {
+        // 如果有 activities 陣列，使用原來的方式
+        var activityMap = {
+          'hand_measure': 0,
+          'exercise': 1,
+          'health_supplement': 2,
+          'weika': 3,
+          'water_intake': 4
+        };
+        
+        activities.forEach(function(activity) {
+          if (activityMap.hasOwnProperty(activity.item_key)) {
+            var index = activityMap[activity.item_key];
+            $('#form03edit .form-check-input').eq(index).prop('checked', true);
+          }
+        });
+      } else {
+        // 如果沒有 activities 陣列，直接檢查欄位
+        if (data.hand_measure == 1 || data.hand_measure === true) $('#form03edit .form-check-input').eq(0).prop('checked', true);
+        if (data.exercise == 1 || data.exercise === true) $('#form03edit .form-check-input').eq(1).prop('checked', true);
+        if (data.health_supplement == 1 || data.health_supplement === true) $('#form03edit .form-check-input').eq(2).prop('checked', true);
+        if (data.weika == 1 || data.weika === true) $('#form03edit .form-check-input').eq(3).prop('checked', true);
+        if (data.water_intake == 1 || data.water_intake === true) $('#form03edit .form-check-input').eq(4).prop('checked', true);
+      }
       
-      // 其他計畫
-      $('#form03edit input[placeholder*="請填寫目標"]:eq(2)').val(data.plan_a || '');
-      $('#form03edit input[placeholder*="請填寫目標"]:eq(3)').val(data.plan_b || '');
-      $('#form03edit input[placeholder*="請填寫目標"]:eq(4)').val(data.other || '');
+      // 其他計畫 - 使用更精確的選擇器
+      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a")) input').val(data.plan_a || '');
+      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b")) input').val(data.plan_b || '');
+      $('#form03edit .card .row .col-sm-12:has(label:contains("其他")) input').val(data.other || '');
     }
     
     // 更新提交記錄
@@ -939,22 +959,22 @@
     // 收集編輯表單資料
     function collectEditFormData() {
       return {
-        // 基本資料
-        member_name: $('#form03edit input[placeholder*="會員姓名"]').val() || '',
-        member_id: $('#form03edit input[placeholder*="會員編號"]').val() || '',
-        age: $('#form03edit input[placeholder*="限填數字"]:first').val() || '',
-        height: $('#form03edit input[placeholder*="限填數字"]:eq(1)').val() || '',
-        goal: $('#form03edit input[placeholder*="請填寫目標"]:first').val() || '',
+        // 基本資料 - 使用更精確的選擇器
+        member_name: $('#form03edit .row > .col-sm-4:has(label:contains("會員姓名")) input').val() || '',
+        member_id: $('#form03edit .row > .col-sm-4:has(label:contains("會員編號")) input').val() || '',
+        age: $('#form03edit .row > .col-sm-2:has(label:contains("年齡")) input').val() || '',
+        height: $('#form03edit .row > .col-sm-2:has(label:contains("身高")) input').val() || '',
+        goal: $('#form03edit .row > .col-sm-12:has(label:contains("目標")) input').val() || '',
         
         // 自身行動計畫
-        action_plan_1: $('#form03edit .alert-warning input[placeholder*="請填寫目標"]:first').val() || '',
-        action_plan_2: $('#form03edit .alert-warning input[placeholder*="請填寫目標"]:eq(1)').val() || '',
+        action_plan_1: $('#form03edit .alert-warning .col-sm-12:has(label:contains("自身行動計畫1")) input').val() || '',
+        action_plan_2: $('#form03edit .alert-warning .col-sm-12:has(label:contains("自身行動計畫2")) input').val() || '',
         
-        // 身體數據
-        weight: $('#form03edit input[style*="width: 100%"]:eq(0)').val() || '',
-        blood_pressure_high: $('#form03edit input[style*="width: 100%"]:eq(1)').val() || '',
-        blood_pressure_low: $('#form03edit input[style*="width: 100%"]:eq(2)').val() || '',
-        waist: $('#form03edit input[style*="width: 100%"]:eq(3)').val() || '',
+        // 身體數據 - 使用更精確的選擇器
+        weight: $('#form03edit .card .row .col-sm-3:has(label:contains("體重")) input').val() || '',
+        blood_pressure_high: $('#form03edit .card .row .col-sm-3:has(label:contains("血壓(收)")) input').val() || '',
+        blood_pressure_low: $('#form03edit .card .row .col-sm-3:has(label:contains("血壓(舒)")) input').val() || '',
+        waist: $('#form03edit .card .row .col-sm-3:has(label:contains("腰圍")) input').val() || '',
         
         // 共同行動項目 (checkboxes)
         hand_measure: $('#form03edit .form-check-input:eq(0)').is(':checked') ? 1 : 0,
@@ -963,10 +983,10 @@
         weika: $('#form03edit .form-check-input:eq(3)').is(':checked') ? 1 : 0,
         water_intake: $('#form03edit .form-check-input:eq(4)').is(':checked') ? 1 : 0,
         
-        // 其他計畫
-        plan_a: $('#form03edit input[placeholder*="請填寫目標"]:eq(2)').val() || '',
-        plan_b: $('#form03edit input[placeholder*="請填寫目標"]:eq(3)').val() || '',
-        other: $('#form03edit input[placeholder*="請填寫目標"]:eq(4)').val() || ''
+        // 其他計畫 - 使用更精確的選擇器
+        plan_a: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a")) input').val() || '',
+        plan_b: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b")) input').val() || '',
+        other: $('#form03edit .card .row .col-sm-12:has(label:contains("其他")) input').val() || ''
       };
     }
     
