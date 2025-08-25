@@ -553,7 +553,7 @@
   </script>
   <script>
     // 控制測試按鈕顯示的變數
-    var showTestButton = true; // 設為 true 顯示測試按鈕
+    var showTestButton = false; // 設為 false 隱藏測試按鈕
     
     // 頁面載入時檢查是否顯示測試按鈕
     $(document).ready(function() {
@@ -626,7 +626,6 @@
           }
         },
         error: function(xhr, status, error) {
-          console.log('載入第一次提交記錄失敗:', error);
           // 如果載入失敗，保持欄位可編輯
         }
       });
@@ -753,9 +752,6 @@
       };
 
       // 發送API請求
-      console.log('準備發送API請求:', formData);
-      console.log('API URL:', '<?php echo base_url("api/eeform3/submit"); ?>');
-      
       $.ajax({
         url: '<?php echo base_url("api/eeform3/submit"); ?>',
         method: 'POST',
@@ -764,12 +760,10 @@
         dataType: 'json',
         beforeSend: function() {
           // 顯示載入狀態
-          console.log('開始發送API請求');
           $('#confirmModal .modal-footer button').prop('disabled', true);
           $('#confirmModal .modal-footer button').text('提交中...');
         },
         success: function(response) {
-          console.log('API請求成功:', response);
           if (response.success) {
             Swal.fire({
               title: '提交成功！',

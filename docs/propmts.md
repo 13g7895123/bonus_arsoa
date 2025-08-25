@@ -65,3 +65,4 @@
 53. 52點的第二項是因為他用PUT去更新，幫我確認一下API是允許甚麼方法並更新
 54. 目前PUT沒有被伺服器允許，幫我改成用POST的方式，並且針對上一點的調整，要同步更新eform3這一個頁面的部份，避免改完他的送出無法使用
 55. 目前eform3_list這一頁getActivityBadges這個功能的資料在api中都沒有對應的物件資料，幫我確認一下
+56. eform3_list、eform3幫我移除偵錯用的console.log，並且把eform3填入測試資料關閉

@@ -584,7 +584,6 @@
         method: 'GET',
         dataType: 'json',
         success: function(response) {
-          console.log('API響應:', response);
           if (response && response.success) {
             var submissions = response.data && response.data.data ? response.data.data : response.data;
             renderSubmissionsTable(submissions);
@@ -673,9 +672,6 @@
       submissions.forEach(function(submission, index) {
         var bgColor = index % 2 === 0 ? '#E4FBFC' : '#eeeeee';
         var activities = getActivityBadges(submission);
-
-        console.log('Submission ID:', submission.id);
-        console.log(activities);
         
         tableRows += '<tr style="background-color: ' + bgColor + ';">';
         tableRows += '<td nowrap="nowrap" class="text-center">' + submission.submission_date + '</td>';
@@ -701,9 +697,6 @@
     // 取得活動標記
     function getActivityBadges(submission) {
       var badges = [];
-      
-      // 除錯日誌
-      console.log('getActivityBadges - submission data:', submission);
       
       // 檢查不同可能的資料結構
       var activities = submission.activities || [];
@@ -749,7 +742,6 @@
         });
       }
       
-      console.log('getActivityBadges - badges result:', badges);
       return badges.join(' ');
     }
     
@@ -838,8 +830,6 @@
     
     // 填入檢視模態視窗
     function populateViewModal(data) {
-      console.log('檢視資料:', data);
-      
       // 填寫日期
       $('#form03view .col-sm-12.text-right').html('填寫日期：' + (data.submission_date || '未設定'));
       
@@ -898,8 +888,6 @@
     
     // 填入編輯模態視窗
     function populateEditModal(data) {
-      console.log('編輯資料:', data);
-      
       // 填寫日期
       $('#form03edit .col-sm-12.text-right').html('填寫日期：' + (data.submission_date || '未設定'));
       
