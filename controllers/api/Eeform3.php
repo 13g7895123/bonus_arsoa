@@ -355,41 +355,6 @@ class Eeform3 extends MY_Controller
                     $this->_send_error('找不到指定的表單', 404);
                 }
                 
-            } elseif ($method === 'PUT') {
-                // 更新表單資料
-                if (!$id) {
-                    $this->_send_error('缺少表單ID', 400);
-                    return;
-                }
-
-                // 取得PUT資料
-                $raw_input = $this->input->raw_input_stream;
-                $input_data = json_decode($raw_input, true);
-                
-                if (!$input_data) {
-                    $this->_send_error('沒有接收到資料', 400, [
-                        'raw_input' => $raw_input,
-                        'json_last_error' => json_last_error_msg()
-                    ]);
-                    return;
-                }
-
-                // 驗證資料
-                $validation_result = $this->eform3_model->validate_submission_data($input_data);
-                if (!$validation_result['valid']) {
-                    $this->_send_error('資料驗證失敗', 400, $validation_result['errors']);
-                    return;
-                }
-
-                // 更新表單資料
-                $result = $this->eform3_model->update_submission($id, $input_data);
-                
-                if ($result) {
-                    $this->_send_success('表單更新成功', ['submission_id' => $id]);
-                } else {
-                    $this->_send_error('表單更新失敗', 500);
-                }
-                
             } else {
                 $this->_send_error('Method not allowed', 405);
                 return;
@@ -397,6 +362,64 @@ class Eeform3 extends MY_Controller
 
         } catch (Exception $e) {
             $this->_send_error('操作失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
+     * 更新表單資料
+     * POST /api/eeform3/update/{id}
+     */
+    public function update($id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'POST') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id) {
+                $this->_send_error('缺少表單ID', 400);
+                return;
+            }
+
+            // 取得POST資料
+            $raw_input = $this->input->raw_input_stream;
+            $input_data = json_decode($raw_input, true);
+            
+            if (!$input_data) {
+                $input_data = $this->input->post();
+            }
+            
+            if (empty($input_data)) {
+                $this->_send_error('沒有接收到資料', 400, [
+                    'raw_input' => $raw_input,
+                    'post_data' => $this->input->post(),
+                    'json_last_error' => json_last_error_msg()
+                ]);
+                return;
+            }
+
+            // 驗證資料
+            $validation_result = $this->eform3_model->validate_submission_data($input_data);
+            if (!$validation_result['valid']) {
+                $this->_send_error('資料驗證失敗', 400, $validation_result['errors']);
+                return;
+            }
+
+            // 更新表單資料
+            $result = $this->eform3_model->update_submission($id, $input_data);
+            
+            if ($result) {
+                $this->_send_success('表單更新成功', ['submission_id' => $id]);
+            } else {
+                $this->_send_error('表單更新失敗', 500);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('更新操作失敗: ' . $e->getMessage(), 500, [
                 'trace' => $e->getTraceAsString(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine()

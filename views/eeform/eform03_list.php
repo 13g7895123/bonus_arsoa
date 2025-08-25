@@ -974,8 +974,8 @@
       }
       
       $.ajax({
-        url: '<?php echo base_url("api/eeform3/submission/"); ?>' + currentSubmissionId,
-        method: 'PUT',
+        url: '<?php echo base_url("api/eeform3/update/"); ?>' + currentSubmissionId,
+        method: 'POST',
         data: JSON.stringify(formData),
         contentType: 'application/json',
         dataType: 'json',
