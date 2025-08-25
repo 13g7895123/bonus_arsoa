@@ -847,9 +847,13 @@
         if (data.water_intake == 1 || data.water_intake === true) $('#form03view .form-check-input').eq(4).prop('checked', true);
       }
       
-      // 其他計畫 - 使用更精確的選擇器
-      $('#form03view .card .row .col-sm-12:has(label:contains("計畫a")) p').text(data.plan_a || '未填寫');
-      $('#form03view .card .row .col-sm-12:has(label:contains("計畫b")) p').text(data.plan_b || '未填寫');
+      // 其他計畫 - 使用更精確的選擇器（注意標籤包含點號）
+      console.log('populateViewModal - plan_a:', data.plan_a);
+      console.log('populateViewModal - plan_b:', data.plan_b);
+      console.log('populateViewModal - other:', data.other);
+      
+      $('#form03view .card .row .col-sm-12:has(label:contains("計畫a.")) p').text(data.plan_a || '未填寫');
+      $('#form03view .card .row .col-sm-12:has(label:contains("計畫b.")) p').text(data.plan_b || '未填寫');
       $('#form03view .card .row .col-sm-12:has(label:contains("其他")) p').text(data.other || '未填寫');
     }
     
@@ -865,11 +869,17 @@
       $('#form03edit .row > .col-sm-4:has(label:contains("會員編號")) input').val(data.member_id || '');
       $('#form03edit .row > .col-sm-2:has(label:contains("年齡")) input').val(data.age || '');
       $('#form03edit .row > .col-sm-2:has(label:contains("身高")) input').val(data.height || '');
-      $('#form03edit .row > .col-sm-12:has(label:contains("目標")) input').val(data.goal || '');
       
-      // 自身行動計畫
-      $('#form03edit .alert-warning .col-sm-12:has(label:contains("自身行動計畫1")) input').val(data.action_plan_1 || '');
-      $('#form03edit .alert-warning .col-sm-12:has(label:contains("自身行動計畫2")) input').val(data.action_plan_2 || '');
+      // 目標欄位 - 設為唯讀
+      var goalInput = $('#form03edit .row > .col-sm-12:has(label:contains("目標")) input');
+      goalInput.val(data.goal || '').attr('readonly', true).css('background-color', '#f8f9fa');
+      
+      // 自身行動計畫 - 設為唯讀
+      var actionPlan1Input = $('#form03edit .alert-warning .col-sm-12:has(label:contains("自身行動計畫1")) input');
+      actionPlan1Input.val(data.action_plan_1 || '').attr('readonly', true).css('background-color', '#f8f9fa');
+      
+      var actionPlan2Input = $('#form03edit .alert-warning .col-sm-12:has(label:contains("自身行動計畫2")) input');
+      actionPlan2Input.val(data.action_plan_2 || '').attr('readonly', true).css('background-color', '#f8f9fa');
       
       // 身體數據 - 使用更精確的選擇器
       $('#form03edit .card .row .col-sm-3:has(label:contains("體重")) input').val(data.weight || '');
@@ -908,9 +918,13 @@
         if (data.water_intake == 1 || data.water_intake === true) $('#form03edit .form-check-input').eq(4).prop('checked', true);
       }
       
-      // 其他計畫 - 使用更精確的選擇器
-      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a")) input').val(data.plan_a || '');
-      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b")) input').val(data.plan_b || '');
+      // 其他計畫 - 使用更精確的選擇器（注意標籤包含點號）
+      console.log('populateEditModal - plan_a:', data.plan_a);
+      console.log('populateEditModal - plan_b:', data.plan_b);
+      console.log('populateEditModal - other:', data.other);
+      
+      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a.")) input').val(data.plan_a || '');
+      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b.")) input').val(data.plan_b || '');
       $('#form03edit .card .row .col-sm-12:has(label:contains("其他")) input').val(data.other || '');
     }
     
@@ -983,9 +997,9 @@
         weika: $('#form03edit .form-check-input:eq(3)').is(':checked') ? 1 : 0,
         water_intake: $('#form03edit .form-check-input:eq(4)').is(':checked') ? 1 : 0,
         
-        // 其他計畫 - 使用更精確的選擇器
-        plan_a: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a")) input').val() || '',
-        plan_b: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b")) input').val() || '',
+        // 其他計畫 - 使用更精確的選擇器（注意標籤包含點號）
+        plan_a: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a.")) input').val() || '',
+        plan_b: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b.")) input').val() || '',
         other: $('#form03edit .card .row .col-sm-12:has(label:contains("其他")) input').val() || ''
       };
     }
