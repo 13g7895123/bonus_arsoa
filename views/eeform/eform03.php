@@ -507,6 +507,7 @@
   <script src="js/jquery.viewport.js"></script>
   <script src="js/jquery.countdown.min.js"></script>
   <script src="js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <!-- Simple CSS for clean UI -->
   <style>
@@ -571,13 +572,22 @@
       
       // 檢查會員姓名或編號是否為空或預設值
       if (!memberName || !memberId || memberName === '未設定' || memberId === '未設定' || memberName.trim() === '' || memberId.trim() === '') {
-        alert('會員姓名或編號有誤，請先完善會員資料');
-        // 返回上一頁（eform3_list）
-        if (document.referrer && document.referrer.indexOf('eform3_list') !== -1) {
-          window.history.back();
-        } else {
-          window.location.href = '<?php echo base_url("eform/eform3_list"); ?>';
-        }
+        Swal.fire({
+          title: '會員資料錯誤',
+          text: '會員姓名或編號有誤，請先完善會員資料',
+          icon: 'warning',
+          confirmButtonText: '確定',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // 返回上一頁（eform3_list）
+            if (document.referrer && document.referrer.indexOf('eform3_list') !== -1) {
+              window.history.back();
+            } else {
+              window.location.href = '<?php echo base_url("eform/eform3_list"); ?>';
+            }
+          }
+        });
         return false;
       }
       return true;
@@ -614,7 +624,12 @@
       var goal = $('input[name="goal"]').val();
 
       if (!memberName || !memberId || !age || !height || !goal) {
-        alert('請填寫所有必填欄位');
+        Swal.fire({
+          title: '欄位未完整',
+          text: '請填寫所有必填欄位',
+          icon: 'warning',
+          confirmButtonText: '確定'
+        });
         return;
       }
 
@@ -710,15 +725,35 @@
         success: function(response) {
           console.log('API請求成功:', response);
           if (response.success) {
-            alert('表單提交成功！');
-            $('#confirmModal').modal('hide');
+            Swal.fire({
+              title: '提交成功！',
+              text: '表單已成功提交',
+              icon: 'success',
+              confirmButtonText: '確定'
+            }).then(() => {
+              $('#confirmModal').modal('hide');
+            });
             
             // 可以選擇重新載入頁面或清空表單
-            if (confirm('是否要清空表單重新填寫？')) {
-              location.reload();
-            }
+            Swal.fire({
+              title: '是否要清空表單？',
+              text: '是否要清空表單重新填寫？',
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonText: '是，清空表單',
+              cancelButtonText: '不，保持現狀'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.reload();
+              }
+            });
           } else {
-            alert('提交失敗：' + response.message);
+            Swal.fire({
+              title: '提交失敗',
+              text: '提交失敗：' + response.message,
+              icon: 'error',
+              confirmButtonText: '確定'
+            });
           }
         },
         error: function(xhr, status, error) {
@@ -752,7 +787,13 @@
             }
           }
           
-          alert(errorMessage + debugInfo);
+          Swal.fire({
+            title: '提交錯誤',
+            text: errorMessage,
+            icon: 'error',
+            confirmButtonText: '確定',
+            footer: debugInfo ? '<small>' + debugInfo + '</small>' : null
+          });
         },
         complete: function() {
           // 恢復按鈕狀態
