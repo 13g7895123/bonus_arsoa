@@ -59,17 +59,16 @@
                             <table class="table table-striped mb-2 text-center">
                                <thead class="thead-dark">
                                 <tr>
-                                   <th width="20%">會員資訊</th>
-                                   <th width="15%">電話</th>
-                                   <th width="15%">填寫日期</th>
-                                   <th width="20%">肌膚類型</th>
-                                   <th width="15%">狀態</th>
+                                   <th width="25%">會員(來賓)資訊</th>
+                                   <th width="22%">出貨日期</th>
+                                   <th width="23%">最後填寫日期</th>
+                                   <th width="15%">已填寫</th>
                                    <th width="15%">查看</th>
                                  </tr>
                               </thead>
                                <tbody id="submissions-table-body">
                                 <tr>
-                                  <td colspan="6" class="text-center text-muted p-4">
+                                  <td colspan="5" class="text-center text-muted p-4">
                                     <div><i class="icon ion-loading-c" style="font-size: 2rem; animation: spin 1s linear infinite;"></i></div>
                                     <div class="mt-2">載入中，請稍候...</div>
                                   </td>
@@ -93,8 +92,67 @@
                 <!--<div class="col-lg-1 d-none d-xl-block"></div>-->
 
                 <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
-                  <!-- 側邊欄清單 -->
-                  <?= $this->block_service->electronic_form_right_menu(); ?>
+					
+				  <div class="mb75">
+<h4><strong>電子表單</strong></h4>
+<a href="eform01_list.php" class="btn btn-outline-secondary btn-block active">肌膚諮詢記錄表</a>
+<div class="card d-none">
+  <div class="card-body">
+    <a href="eform01_list.php" class="btn btn-outline-secondary btn-block text-left">填寫紀錄</a>
+    <a href="eform01.php" class="btn btn-outline-secondary btn-block text-left">我要填寫</a>
+  </div>
+</div>
+<a href="eform02.php" class="btn btn-outline-secondary btn-block">會員服務追蹤表(肌膚)</a>
+<a href="eform03_list.php" class="btn btn-outline-secondary btn-block">微微卡日記</a>
+<a href="eform04.php" class="btn btn-outline-secondary btn-block">會員服務追蹤表(保健)</a>
+<a href="eform05.php" class="btn btn-outline-secondary btn-block">健康諮詢表</a>
+</div>
+
+                  <!--<div class="mb65">
+                    <h4>產品分類</h4>
+
+                    <div class="article-list-mini">
+                      <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p01.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">肌膚保養系列</a></h5>
+                        </div>
+                      </div>
+                      <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p02.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">彩妝系列</a></h5>
+                        </div>
+                      </div>
+                      <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p04.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
+                        </div>
+                      </div>
+                      <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p05.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">美髮、美體系列</a></h5>
+                        </div>
+                      </div>
+					  <div class="media article-item-mini">
+                        <div class="mr-3"><a href="#" class="article-item-photo" style="height: 5.25rem;">
+							<img src="img/p03.png" alt="" /></a></div>
+                        <div class="media-body align-self-center">
+                          <h5 class=""><a href="#" class="text-dark">保健食品系列</a></h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>-->
+
+                  
+				  
+				  
                 </aside>
 				  
 				  
@@ -280,7 +338,7 @@ $(document).ready(function() {
           }
           
           $('#submissions-table-body').html(
-            '<tr><td colspan="6" class="text-center text-danger p-4">' +
+            '<tr><td colspan="5" class="text-center text-danger p-4">' +
             '<div><i class="icon ' + errorIcon + '" style="font-size: 2rem;"></i></div>' +
             '<div class="mt-2">' + errorMessage + '</div>' +
             '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
@@ -293,7 +351,7 @@ $(document).ready(function() {
     // 渲染提交記錄表格
     function renderSubmissionsTable(submissions) {
       if (!submissions) {
-        $('#submissions-table-body').html('<tr><td colspan="6" class="text-center text-warning p-4"><i class="icon ion-information-circled mr-2"></i>資料格式錯誤</td></tr>');
+        $('#submissions-table-body').html('<tr><td colspan="5" class="text-center text-warning p-4"><i class="icon ion-information-circled mr-2"></i>資料格式錯誤</td></tr>');
         return;
       }
       
@@ -302,7 +360,7 @@ $(document).ready(function() {
         if ($('#search').val().trim()) {
           // 搜尋結果為空
           emptyMessage = 
-            '<tr><td colspan="6" class="text-center text-muted p-4">' +
+            '<tr><td colspan="5" class="text-center text-muted p-4">' +
             '<div><i class="icon ion-search" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
             '<div class="mt-2">找不到符合 "' + $('#search').val().trim() + '" 的記錄</div>' +
             '<div class="small mt-1">請嘗試使用不同的關鍵字搜尋</div>' +
@@ -310,7 +368,7 @@ $(document).ready(function() {
         } else {
           // 沒有任何記錄
           emptyMessage = 
-            '<tr><td colspan="6" class="text-center text-muted p-4">' +
+            '<tr><td colspan="5" class="text-center text-muted p-4">' +
             '<div><i class="icon ion-document-text" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
             '<div class="mt-2">目前尚無肌膚諮詢記錄</div>' +
             '<div class="small mt-1">點擊下方按鈕開始填寫您的第一筆記錄</div>' +
@@ -345,18 +403,19 @@ $(document).ready(function() {
         };
         var displaySkinType = skinTypeMap[submission.skin_type] || submission.skin_type || '-';
         
-        tableRows += '<tr style="background-color: ' + bgColor + '; border-left: 3px solid #007bff;">';
-        tableRows += '<td class="text-center font-weight-bold">' + (submission.member_name || '-') + '</td>';
-        tableRows += '<td>' + (submission.phone || '-') + '</td>';
+        tableRows += '<tr style="background-color: ' + bgColor + ';">';
+        // 會員(來賓)資訊 - 包含姓名和電話
+        tableRows += '<td nowrap="nowrap" class="text-center">' + (submission.member_name || '-') + '<br>' + (submission.phone || '-') + '</td>';
+        // 出貨日期 (暫時顯示為 -)
+        tableRows += '<td>-</td>';
+        // 最後填寫日期
         tableRows += '<td>' + displayDate + '</td>';
-        tableRows += '<td>' + displaySkinType + '</td>';
-        tableRows += '<td><span class="badge badge-success">已完成</span></td>';
+        // 已填寫數量 (暫時顯示為 1)
+        tableRows += '<td class="text-center">1</td>';
+        // 查看
         tableRows += '<td class="text-center">';
-        tableRows += '<a href="javascript:void(0);" onclick="viewSubmission(' + (submission.id || 0) + ')" title="檢視記錄">';
-        tableRows += '<i class="icon ion-eye" style="font-size: 1.2rem; color: #007bff; margin-right: 10px;"></i>';
-        tableRows += '</a>';
-        tableRows += '<a href="javascript:void(0);" onclick="editSubmission(' + (submission.id || 0) + ')" title="編輯記錄">';
-        tableRows += '<i class="icon ion-edit" style="font-size: 1.2rem; color: #28a745;"></i>';
+        tableRows += '<a href="javascript:void(0);" onclick="viewSubmission(' + (submission.id || 0) + ')" title="檢視">';
+        tableRows += '<i class="fa fa-angle-down fa-lg menu__icon--open"></i>';
         tableRows += '</a>';
         tableRows += '</td>';
         tableRows += '</tr>';
