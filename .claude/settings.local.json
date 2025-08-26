@@ -6,7 +6,8 @@
       "Bash(git push:*)",
       "Bash(ls:*)",
       "Bash(php -l:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []

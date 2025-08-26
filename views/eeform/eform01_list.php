@@ -426,9 +426,170 @@ $(document).ready(function() {
     
     // 檢視提交記錄
     function viewSubmission(submissionId) {
-      // 這裡可以實作檢視功能
-      console.log('查看記錄:', submissionId);
-      alert('檢視功能開發中...');
+      if (!submissionId) {
+        alert('提交記錄ID無效');
+        return;
+      }
+      
+      // 顯示模態視窗
+      $('#exampleModal').modal('show');
+      
+      // 重置模態內容為載入狀態
+      $('#submissionModalTitle').text('肌膚諮詢記錄表詳細資料');
+      $('#submissionModalBody').html(
+        '<div class="text-center p-4">' +
+        '<i class="icon ion-loading-c" style="font-size: 2rem; animation: spin 1s linear infinite;"></i>' +
+        '<div class="mt-2">載入中，請稍候...</div>' +
+        '</div>'
+      );
+      
+      // 從API獲取詳細資料
+      $.ajax({
+        url: '<?php echo base_url("api/eeform1/submission/"); ?>' + submissionId,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          if (response && response.success) {
+            displaySubmissionData(response.data);
+          } else {
+            showSubmissionError('無法載入表單資料: ' + (response.message || '未知錯誤'));
+          }
+        },
+        error: function(xhr, status, error) {
+          var errorMessage = '載入失敗';
+          if (xhr.status === 404) {
+            errorMessage = '找不到指定的表單記錄';
+          } else if (xhr.status === 500) {
+            errorMessage = '服務器內部錯誤';
+          } else if (xhr.responseText) {
+            try {
+              var errorResponse = JSON.parse(xhr.responseText);
+              errorMessage = errorResponse.message || errorMessage;
+            } catch (e) {
+              errorMessage += ' (錯誤代碼: ' + xhr.status + ')';
+            }
+          }
+          showSubmissionError(errorMessage);
+        }
+      });
+    }
+    
+    // 顯示提交資料
+    function displaySubmissionData(data) {
+      if (!data) {
+        showSubmissionError('無效的資料格式');
+        return;
+      }
+      
+      // 更新模態標題
+      $('#submissionModalTitle').text((data.member_name || '會員') + ' 的肌膚諮詢記錄表');
+      
+      // 建構顯示內容
+      var html = '<div class="container-fluid">';
+      html += '<div class="row">';
+      
+      // 基本資料區塊
+      html += '<div class="col-12 mb-4">';
+      html += '<h5 class="border-bottom pb-2 mb-3"><i class="icon ion-person mr-2"></i>基本資料</h5>';
+      html += '<div class="row">';
+      html += '<div class="col-md-3"><strong>會員姓名:</strong><br>' + (data.member_name || '-') + '</div>';
+      html += '<div class="col-md-3"><strong>出生年月:</strong><br>' + (data.birth_year || '-') + '年 ' + (data.birth_month || '-') + '月</div>';
+      html += '<div class="col-md-3"><strong>電話:</strong><br>' + (data.phone || '-') + '</div>';
+      html += '<div class="col-md-3"><strong>填寫日期:</strong><br>' + (data.submission_date || data.created_at || '-') + '</div>';
+      html += '</div>';
+      if (data.skin_type || data.skin_age) {
+        html += '<div class="row mt-3">';
+        html += '<div class="col-md-3"><strong>肌膚類型:</strong><br>' + (data.skin_type || '-') + '</div>';
+        html += '<div class="col-md-3"><strong>肌膚年齡:</strong><br>' + (data.skin_age ? data.skin_age + '歲' : '-') + '</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+      
+      // 職業資料
+      if (data.occupations && data.occupations.length > 0) {
+        html += '<div class="col-12 mb-4">';
+        html += '<h5 class="border-bottom pb-2 mb-3"><i class="icon ion-briefcase mr-2"></i>職業</h5>';
+        html += '<div class="row">';
+        data.occupations.forEach(function(occupation) {
+          html += '<div class="col-md-3 mb-2"><span class="badge badge-primary">' + occupation.occupation_type + '</span></div>';
+        });
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      // 生活方式資料
+      if (data.lifestyle && data.lifestyle.length > 0) {
+        html += '<div class="col-12 mb-4">';
+        html += '<h5 class="border-bottom pb-2 mb-3"><i class="icon ion-android-sunny mr-2"></i>生活方式</h5>';
+        var lifestyleGroups = {};
+        data.lifestyle.forEach(function(item) {
+          if (!lifestyleGroups[item.category]) {
+            lifestyleGroups[item.category] = [];
+          }
+          lifestyleGroups[item.category].push(item);
+        });
+        
+        Object.keys(lifestyleGroups).forEach(function(category) {
+          var categoryName = '';
+          switch(category) {
+            case 'sunlight': categoryName = '日曬時間'; break;
+            case 'aircondition': categoryName = '空調環境'; break;
+            case 'sleep': categoryName = '睡眠狀況'; break;
+            default: categoryName = category;
+          }
+          html += '<div class="mb-3"><strong>' + categoryName + ':</strong> ';
+          lifestyleGroups[category].forEach(function(item, index) {
+            if (index > 0) html += ', ';
+            html += '<span class="badge badge-info">' + (item.item_value || item.item_key) + '</span>';
+          });
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      
+      // 肌膚困擾
+      if (data.skin_issues && data.skin_issues.length > 0) {
+        html += '<div class="col-12 mb-4">';
+        html += '<h5 class="border-bottom pb-2 mb-3"><i class="icon ion-android-alert mr-2"></i>肌膚困擾</h5>';
+        html += '<div class="row">';
+        data.skin_issues.forEach(function(issue) {
+          html += '<div class="col-md-4 mb-2"><span class="badge badge-warning">' + (issue.issue_description || issue.issue_type) + '</span></div>';
+        });
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      // 建議內容
+      if (data.suggestions) {
+        html += '<div class="col-12 mb-4">';
+        html += '<h5 class="border-bottom pb-2 mb-3"><i class="icon ion-lightbulb mr-2"></i>專業建議</h5>';
+        if (data.suggestions.toner_suggestion) {
+          html += '<div class="mb-2"><strong>化妝水建議:</strong> ' + data.suggestions.toner_suggestion + '</div>';
+        }
+        if (data.suggestions.serum_suggestion) {
+          html += '<div class="mb-2"><strong>精華液建議:</strong> ' + data.suggestions.serum_suggestion + '</div>';
+        }
+        if (data.suggestions.suggestion_content) {
+          html += '<div class="mb-2"><strong>其他建議:</strong> ' + data.suggestions.suggestion_content + '</div>';
+        }
+        html += '</div>';
+      }
+      
+      html += '</div>';
+      html += '</div>';
+      
+      $('#submissionModalBody').html(html);
+    }
+    
+    // 顯示錯誤訊息
+    function showSubmissionError(message) {
+      $('#submissionModalBody').html(
+        '<div class="text-center p-4">' +
+        '<i class="icon ion-alert-circled" style="font-size: 2rem; color: #dc3545;"></i>' +
+        '<div class="mt-2 text-danger">' + message + '</div>' +
+        '<div class="mt-3"><button class="btn btn-sm btn-outline-primary" onclick="$(\'#exampleModal\').modal(\'hide\');">關閉</button></div>' +
+        '</div>'
+      );
     }
     
     // 編輯提交記錄
@@ -555,109 +716,17 @@ $(document).ready(function() {
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">庭毅 測試 的肌膚諮詢記錄表</h5>
+        <h5 class="modal-title" id="submissionModalTitle">肌膚諮詢記錄表詳細資料</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <div class="mb30">
-                    <div class="container">
-                      <form action="#" class="text-left">
-                        <div class="row">
-							<div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
-							
-                          <div class="col-sm-4 mb30">
-                            <label class="label-custom">會員姓名</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="請填會員姓名" />
-                          </div>
-                          <div class="col-sm-3 mb30">
-                            <label class="label-custom">出生西元年</label>
-                            <select class="form-control form-control-custom" id="SeleteBYear">
-                              <option>請選擇</option>
-                              <option>2005</option>
-                              <option>2004</option>
-                              <option>2003</option>
-                              <option>2002</option>
-                            </select>
-                          </div>
-                          <div class="col-sm-2 mb30">
-                            <label class="label-custom">出生西元月</label>
-                            <select class="form-control form-control-custom" id="SeleteBYear">
-                              <option>請選擇</option>
-                              <option>1月</option>
-                              <option>2月</option>
-                              <option>3月</option>
-                              <option>4月</option>
-                            </select>
-                          </div>
-						  <div class="col-sm-3 mb30">
-                            <label class="label-custom">電話</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" />
-                          </div>
-							
-                          <div class="col-sm-12 mb30">
-                            <div class="form-check form-check-inline">職業：
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">服務業 </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">上班族 </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">餐飲業 </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">家管 </label>
-                            </div>
-                          </div>
-							
-						  <div class="col-sm-12 mb30">
-                            <div class="form-check form-check-inline">戶外日曬時間：
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">1~2小時 </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">3~4小時 </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">5~6小時 </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">8小時以上 </label>
-                            </div>
-                          </div>
-							
-						  <div class="col-sm-12 mb30">
-                            <div class="form-check form-check-inline">待在空調環境：
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">1小時內 </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">2~4小時 </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">5~8小時 </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">8小時以上 </label>
-                            </div>
-                          </div>
-							
-						  <div class="col-sm-12 mb30">
-                            <div class="form-check form-check-inline">睡眠狀況：
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">9:00~10:59點pm就寢 </label>
-                            </div>
+      <div class="modal-body" id="submissionModalBody">
+        <div class="text-center p-4">
+          <i class="icon ion-loading-c" style="font-size: 2rem; animation: spin 1s linear infinite;"></i>
+          <div class="mt-2">載入中，請稍候...</div>
+        </div>
+      </div>
                             <div class="form-check form-check-inline">
                               <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
                               <label class="form-check-label" for="inlineRadio4">11:00~12:59點pm就寢 </label>
