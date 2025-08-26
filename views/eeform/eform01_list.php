@@ -518,6 +518,9 @@ $(document).ready(function() {
         return;
       }
       
+      // 儲存當前編輯的記錄ID供更新時使用
+      window.currentEditingSubmissionId = submissionId;
+      
       // 設置模態標題
       $('#exampleModal .modal-title').text(title + ' - 編輯');
       
@@ -826,7 +829,103 @@ $(document).ready(function() {
     
     // 更新表單資料
     function updateFormData() {
-      alert('更新功能開發中...');
+      // 收集表單數據
+      var formData = {
+        member_name: $('#exampleModal input[placeholder="請填會員姓名"]').val(),
+        phone: $('#exampleModal input[placeholder="請填09xxxxxxxx"]').val(),
+        birth_year: $('#exampleModal select:first').val(),
+        birth_month: $('#exampleModal select:eq(1)').val(),
+        skin_type: $('#exampleModal input[name="skin_type"]:checked').val(),
+        skin_age: $('#exampleModal input[type="text"]:last').val(),
+        // 收集職業數據
+        occupations: [],
+        // 收集生活方式數據
+        lifestyle: [],
+        // 收集肌膚困擾數據
+        skin_issues: [],
+        // 收集建議內容
+        suggestions: {
+          toner_suggestion: $('#exampleModal input[class="form-control form-control-custom"]:eq(0)').val(),
+          serum_suggestion: $('#exampleModal input[class="form-control form-control-custom"]:eq(1)').val(),
+          suggestion_content: $('#exampleModal input[placeholder="請填寫建議內容…"]').val()
+        }
+      };
+      
+      // 收集職業選擇
+      $('#exampleModal input[type="checkbox"]').each(function(index, element) {
+        if ($(element).is(':checked')) {
+          var label = $(element).next('label').text().trim();
+          if (label && !['經常', '偶爾(換季時)', '不會'].includes(label)) {
+            formData.occupations.push(label);
+          }
+        }
+      });
+      
+      // 獲取當前編輯的記錄ID (需要從全局變量或其他方式獲取)
+      var submissionId = window.currentEditingSubmissionId || 1;
+      
+      // 發送更新請求
+      $.ajax({
+        url: '<?php echo base_url("api/eeform1/submission/"); ?>' + submissionId,
+        method: 'POST', // 使用POST而非PUT
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function(response) {
+          if (response && response.success) {
+            // 使用SweetAlert顯示成功訊息
+            if (typeof Swal !== 'undefined') {
+              Swal.fire({
+                title: '更新成功！',
+                text: '表單已成功更新',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1500
+              }).then(function() {
+                $('#exampleModal').modal('hide');
+                // 重新載入表格數據
+                loadSubmissions();
+              });
+            } else {
+              alert('更新成功！');
+              $('#exampleModal').modal('hide');
+              loadSubmissions();
+            }
+          } else {
+            showUpdateError('更新失敗: ' + (response.message || '未知錯誤'));
+          }
+        },
+        error: function(xhr, status, error) {
+          var errorMessage = '更新失敗';
+          if (xhr.status === 404) {
+            errorMessage = '找不到指定的記錄';
+          } else if (xhr.status === 500) {
+            errorMessage = '服務器內部錯誤';
+          } else if (xhr.responseText) {
+            try {
+              var errorResponse = JSON.parse(xhr.responseText);
+              errorMessage = errorResponse.message || errorMessage;
+            } catch (e) {
+              errorMessage += ' (錯誤代碼: ' + xhr.status + ')';
+            }
+          }
+          showUpdateError(errorMessage);
+        }
+      });
+    }
+    
+    // 顯示更新錯誤訊息
+    function showUpdateError(message) {
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: '更新失敗',
+          text: message,
+          icon: 'error',
+          confirmButtonText: '確定'
+        });
+      } else {
+        alert('更新失敗: ' + message);
+      }
     }
     
     // 執行搜尋

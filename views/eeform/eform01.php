@@ -784,7 +784,8 @@
                                 <i class="fas fa-flask mr-1"></i>填入測試資料
                               </button>
                             </div>
-                            <button type="button" class="btn btn-outline-danger btn-block" onclick="showConfirmModal()">送出表單</button>
+                            <!-- 確保送出表單按鈕始終可見 -->
+                            <button type="button" class="btn btn-outline-danger btn-block" onclick="showConfirmModal()" style="display: block !important;">送出表單</button>
                           </div>
 
                         </div>
