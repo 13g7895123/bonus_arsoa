@@ -191,20 +191,85 @@ $(document).ready(function() {
     
     // 載入提交記錄列表
     function loadSubmissions() {
-      // 使用假資料模擬，因為沒有真實的API
-      setTimeout(function() {
-        if (!currentMemberId || currentMemberId === '') {
+      $.ajax({
+        url: '<?php echo base_url("api/eeform1/submissions/"); ?>' + currentMemberId,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          if (response && response.success) {
+            var submissions = response.data && response.data.data ? response.data.data : response.data;
+            renderSubmissionsTable(submissions);
+          } else {
+            var errorMsg = response && response.message ? response.message : '未知錯誤';
+            $('#submissions-table-body').html(
+              '<tr><td colspan="6" class="text-center text-warning p-4">' +
+              '<div><i class="icon ion-alert-circled" style="font-size: 2rem;"></i></div>' +
+              '<div class="mt-2">載入失敗: ' + errorMsg + '</div>' +
+              '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
+              '</td></tr>'
+            );
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('載入提交記錄失敗:', {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            responseText: xhr.responseText,
+            error: error
+          });
+          
+          var errorMessage = '';
+          var errorIcon = 'ion-alert-circled';
+          
+          if (xhr.status === 0) {
+            errorMessage = '無法連接到服務器，請檢查網路連線';
+            errorIcon = 'ion-wifi';
+          } else if (xhr.status === 401) {
+            errorMessage = '登入已過期，請重新登入';
+            errorIcon = 'ion-person';
+          } else if (xhr.status === 403) {
+            errorMessage = '沒有權限訪問此資源';
+            errorIcon = 'ion-locked';
+          } else if (xhr.status === 404) {
+            errorMessage = 'API服務不存在或路徑錯誤';
+            errorIcon = 'ion-help-circled';
+          } else if (xhr.status === 500) {
+            errorMessage = '服務器內部錯誤，請稍後再試';
+            errorIcon = 'ion-bug';
+          } else if (xhr.responseText) {
+            try {
+              var errorResponse = JSON.parse(xhr.responseText);
+              if (errorResponse.message) {
+                errorMessage = errorResponse.message;
+              } else {
+                errorMessage = '載入失敗 (錯誤代碼: ' + xhr.status + ')';
+              }
+            } catch (e) {
+              errorMessage = '載入失敗，響應格式錯誤 (錯誤代碼: ' + xhr.status + ')';
+            }
+          } else {
+            errorMessage = '載入失敗，請稍後再試 (錯誤代碼: ' + xhr.status + ')';
+          }
+          
           $('#submissions-table-body').html(
-            '<tr><td colspan="6" class="text-center text-muted p-4">' +
-            '<div><i class="icon ion-document-text" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
-            '<div class="mt-2">目前尚無肌膚諮詢記錄</div>' +
-            '<div class="small mt-1">點擊下方按鈕開始填寫您的第一筆記錄</div>' +
+            '<tr><td colspan="6" class="text-center text-danger p-4">' +
+            '<div><i class="icon ' + errorIcon + '" style="font-size: 2rem;"></i></div>' +
+            '<div class="mt-2">' + errorMessage + '</div>' +
+            '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
             '</td></tr>'
           );
-          return;
         }
-        
-        // 顯示無資料狀態
+      });
+    }
+    
+    // 渲染提交記錄表格
+    function renderSubmissionsTable(submissions) {
+      if (!submissions) {
+        $('#submissions-table-body').html('<tr><td colspan="6" class="text-center text-warning"><i class="icon ion-information-circled mr-2"></i>資料格式錯誤</td></tr>');
+        return;
+      }
+      
+      if (submissions.length === 0) {
         $('#submissions-table-body').html(
           '<tr><td colspan="6" class="text-center text-muted p-4">' +
           '<div><i class="icon ion-document-text" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
@@ -212,9 +277,67 @@ $(document).ready(function() {
           '<div class="small mt-1">點擊下方按鈕開始填寫您的第一筆記錄</div>' +
           '</td></tr>'
         );
-      }, 1000);
+        return;
+      }
+      
+      var tableRows = '';
+      submissions.forEach(function(submission, index) {
+        var bgColor = index % 2 === 0 ? '#E4FBFC' : '#eeeeee';
+        
+        tableRows += '<tr style="background-color: ' + bgColor + ';">';
+        tableRows += '<td nowrap="nowrap" class="text-center">' + (submission.member_name || '-') + '</td>';
+        tableRows += '<td>' + (submission.phone || '-') + '</td>';
+        tableRows += '<td>' + (submission.submission_date || '-') + '</td>';
+        tableRows += '<td>' + (submission.skin_type || '-') + '</td>';
+        tableRows += '<td><span class="badge badge-success">已完成</span></td>';
+        tableRows += '<td>';
+        tableRows += '<a href="javascript:void(0);" onclick="viewSubmission(' + submission.id + ')" data-toggle="modal" data-target="#form01view">';
+        tableRows += '<i class="icon ion-clipboard" style="font-size: 1.1rem;"></i>';
+        tableRows += '</a>　｜　';
+        tableRows += '<a href="javascript:void(0);" onclick="editSubmission(' + submission.id + ')" data-toggle="modal" data-target="#form01edit">';
+        tableRows += '<i class="icon ion-edit" style="font-size: 1.1rem;"></i>';
+        tableRows += '</a>';
+        tableRows += '</td>';
+        tableRows += '</tr>';
+      });
+      
+      $('#submissions-table-body').html(tableRows);
+    }
+    
+    // 檢視提交記錄
+    function viewSubmission(submissionId) {
+      // 這裡可以實作檢視功能
+      console.log('查看記錄:', submissionId);
+      alert('檢視功能開發中...');
+    }
+    
+    // 編輯提交記錄
+    function editSubmission(submissionId) {
+      // 這裡可以實作編輯功能
+      console.log('編輯記錄:', submissionId);
+      alert('編輯功能開發中...');
     }
     </script>
+	  
+	  <!-- Custom styles for enhanced error states -->
+	  <style>
+	    /* Loading spinner animation */
+	    @keyframes spin {
+	      0% { transform: rotate(0deg); }
+	      100% { transform: rotate(360deg); }
+	    }
+	    
+	    /* Table empty state styles */
+	    #submissions-table-body td {
+	      vertical-align: middle;
+	    }
+	    
+	    /* Enhanced error state button */
+	    .retry-btn:hover {
+	      transform: translateY(-1px);
+	      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	    }
+	  </style>
 	  
 	  <!-- Modal -->
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModal" aria-hidden="true" id="exampleModal">

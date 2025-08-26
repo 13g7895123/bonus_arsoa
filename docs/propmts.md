@@ -66,3 +66,12 @@
 54. 目前PUT沒有被伺服器允許，幫我改成用POST的方式，並且針對上一點的調整，要同步更新eform3這一個頁面的部份，避免改完他的送出無法使用
 55. 目前eform3_list這一頁getActivityBadges這個功能的資料在api中都沒有對應的物件資料，幫我確認一下
 56. eform3_list、eform3幫我移除偵錯用的console.log，並且把eform3填入測試資料關閉
+57. 讀取eform1_list、eform1，eform1_list是eform1的上一頁，幫我完善eform1_list的功能，假資料就先幫我移除
+58. 目前eform1送出的API是404的頁面，幫我確認專案的controller資料夾，確認是哪裡的問題
+59. 我說的是eform1，不是eform1_list，請幫我重新確認，我看目前更新的都是eform1_list
+60. 幫我讀取eform1、eform1_list，針對這兩個頁面設計他的資料庫table，並把sql語法寫入docs\sql\eeform1.md中
+61. 結構是否有問題，沒有eeform1_lifestyle_options，卻有INSERT
+62. docs\sql\eeform1.md更新後，有確認eform1、eform1_list用到的api是否有同步更新嗎
+63. 目前看eform1送出後沒有資料到資料庫，eform1_list出現API服務不存在或路徑錯誤
+64. 請參照eform3的api路徑，把eform1的api改過去那裡，並移除舊的部分，且確認view的部分有同步修改
+65. controllers的部分沒有同步更新，沒有更新到api/eeform1/submit

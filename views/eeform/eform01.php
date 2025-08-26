@@ -34,7 +34,7 @@
                   <h1 class="h2-3d font-libre"><strong>肌膚諮詢記錄表</strong></h1>
                   <div class="mb30">
                     <div class="container">
-                      <form action="<?php echo base_url('Eform/saveEform01'); ?>" method="POST" class="text-left" id="eform01">
+                      <form action="#" method="POST" class="text-left" id="eform01">
                         <div class="row">
                           <div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
 
@@ -1220,7 +1220,7 @@
 
     <script>
       // 控制測試按鈕顯示的變數
-      var showTestButton = false; // 設為 false 可隱藏測試按鈕
+      var showTestButton = true; // 設為 false 可隱藏測試按鈕
 
       // 頁面載入時檢查是否顯示測試按鈕 - jQuery版本
       $(document).ready(function() {
@@ -1482,7 +1482,134 @@
       }
 
       function submitForm() {
-        $('#eform01').submit();
+        // 收集表單資料
+        var formData = {
+          member_name: $('input[name="member_name"]').val(),
+          birth_year: $('select[name="birth_year"]').val(),
+          birth_month: $('select[name="birth_month"]').val(),
+          phone: $('input[name="phone"]').val(),
+          
+          // 職業選擇
+          occupation_service: $('input[name="occupation_service"]').is(':checked') ? 1 : 0,
+          occupation_office: $('input[name="occupation_office"]').is(':checked') ? 1 : 0,
+          occupation_restaurant: $('input[name="occupation_restaurant"]').is(':checked') ? 1 : 0,
+          occupation_housewife: $('input[name="occupation_housewife"]').is(':checked') ? 1 : 0,
+          
+          // 戶外日曬時間
+          sunlight_1_2h: $('input[name="sunlight_1_2h"]').is(':checked') ? 1 : 0,
+          sunlight_3_4h: $('input[name="sunlight_3_4h"]').is(':checked') ? 1 : 0,
+          sunlight_5_6h: $('input[name="sunlight_5_6h"]').is(':checked') ? 1 : 0,
+          sunlight_8h_plus: $('input[name="sunlight_8h_plus"]').is(':checked') ? 1 : 0,
+          
+          // 空調環境時間
+          aircondition_1h: $('input[name="aircondition_1h"]').is(':checked') ? 1 : 0,
+          aircondition_2_4h: $('input[name="aircondition_2_4h"]').is(':checked') ? 1 : 0,
+          aircondition_5_8h: $('input[name="aircondition_5_8h"]').is(':checked') ? 1 : 0,
+          aircondition_8h_plus: $('input[name="aircondition_8h_plus"]').is(':checked') ? 1 : 0,
+          
+          // 睡眠狀況
+          sleep_9_10: $('input[name="sleep_9_10"]').is(':checked') ? 1 : 0,
+          sleep_11_12: $('input[name="sleep_11_12"]').is(':checked') ? 1 : 0,
+          sleep_after_1: $('input[name="sleep_after_1"]').is(':checked') ? 1 : 0,
+          sleep_other: $('input[name="sleep_other"]').is(':checked') ? 1 : 0,
+          sleep_other_text: $('input[name="sleep_other_text"]').val(),
+          
+          // 現在使用產品
+          product_honey_soap: $('input[name="product_honey_soap"]').is(':checked') ? 1 : 0,
+          product_mud_mask: $('input[name="product_mud_mask"]').is(':checked') ? 1 : 0,
+          product_toner: $('input[name="product_toner"]').is(':checked') ? 1 : 0,
+          product_serum: $('input[name="product_serum"]').is(':checked') ? 1 : 0,
+          product_premium: $('input[name="product_premium"]').is(':checked') ? 1 : 0,
+          product_sunscreen: $('input[name="product_sunscreen"]').is(':checked') ? 1 : 0,
+          product_other: $('input[name="product_other"]').is(':checked') ? 1 : 0,
+          product_other_text: $('input[name="product_other_text"]').val(),
+          
+          // 肌膚困擾
+          skin_issue_elasticity: $('input[name="skin_issue_elasticity"]').is(':checked') ? 1 : 0,
+          skin_issue_luster: $('input[name="skin_issue_luster"]').is(':checked') ? 1 : 0,
+          skin_issue_dull: $('input[name="skin_issue_dull"]').is(':checked') ? 1 : 0,
+          skin_issue_spots: $('input[name="skin_issue_spots"]').is(':checked') ? 1 : 0,
+          skin_issue_pores: $('input[name="skin_issue_pores"]').is(':checked') ? 1 : 0,
+          skin_issue_acne: $('input[name="skin_issue_acne"]').is(':checked') ? 1 : 0,
+          skin_issue_wrinkles: $('input[name="skin_issue_wrinkles"]').is(':checked') ? 1 : 0,
+          skin_issue_rough: $('input[name="skin_issue_rough"]').is(':checked') ? 1 : 0,
+          skin_issue_irritation: $('input[name="skin_issue_irritation"]').is(':checked') ? 1 : 0,
+          skin_issue_dry: $('input[name="skin_issue_dry"]').is(':checked') ? 1 : 0,
+          skin_issue_makeup: $('input[name="skin_issue_makeup"]').is(':checked') ? 1 : 0,
+          skin_issue_other: $('input[name="skin_issue_other"]').is(':checked') ? 1 : 0,
+          skin_issue_other_text: $('input[name="skin_issue_other_text"]').val(),
+          
+          // 過敏狀況
+          allergy_frequent: $('input[name="allergy_frequent"]').is(':checked') ? 1 : 0,
+          allergy_seasonal: $('input[name="allergy_seasonal"]').is(':checked') ? 1 : 0,
+          allergy_never: $('input[name="allergy_never"]').is(':checked') ? 1 : 0,
+          
+          // 建議內容
+          toner_suggestion: $('input[name="toner_suggestion"]').val(),
+          serum_suggestion: $('input[name="serum_suggestion"]').val(),
+          suggestion_content: $('input[name="suggestion_content"]').val(),
+          
+          // 肌膚類型
+          skin_type: $('input[name="skin_type"]:checked').val(),
+          skin_age: $('input[name="skin_age"]').val(),
+          
+          // 水潤評分
+          moisture_severe: $('input[name="moisture_severe"]').val(),
+          moisture_warning: $('input[name="moisture_warning"]').val(),
+          moisture_healthy: $('input[name="moisture_healthy"]').val()
+        };
+
+        // 發送API請求
+        $.ajax({
+          url: '<?php echo base_url("api/eeform1/submit"); ?>',
+          method: 'POST',
+          data: JSON.stringify(formData),
+          contentType: 'application/json',
+          dataType: 'json',
+          beforeSend: function() {
+            // 顯示載入狀態
+            $('#confirmModal .modal-footer button').prop('disabled', true);
+            $('#confirmModal .modal-footer button').text('提交中...');
+          },
+          success: function(response) {
+            if (response.success) {
+              Swal.fire({
+                title: '提交成功！',
+                text: '肌膚諮詢記錄表已成功提交，1.5秒後自動返回列表頁面',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              }).then(() => {
+                $('#confirmModal').modal('hide');
+                // 直接跳轉到 eform1_list 頁面
+                window.location.href = '<?php echo base_url("eform/eform1_list"); ?>';
+              });
+            } else {
+              Swal.fire({
+                title: '提交失敗',
+                text: '提交失敗：' + response.message,
+                icon: 'error',
+                confirmButtonText: '確定'
+              });
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('提交失敗:', error);
+            Swal.fire({
+              title: '提交失敗',
+              text: '網絡錯誤，請稍後再試',
+              icon: 'error',
+              confirmButtonText: '確定'
+            });
+          },
+          complete: function() {
+            // 恢復按鈕狀態
+            $('#confirmModal .modal-footer button').prop('disabled', false);
+            $('#confirmModal .modal-footer button').text('確認送出');
+          }
+        });
       }
     </script>
 

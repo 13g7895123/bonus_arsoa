@@ -91,6 +91,13 @@ $route['C/(.*)'] = 'event_quick/consent/$1';		// 同意書
 $route['sitemap'] = 'rss/sitemap';
 
 // API路由配置
+$route['api/eeform1/health'] = 'api/eeform1/health';
+$route['api/eeform1/submit'] = 'api/eeform1/submit';
+$route['api/eeform1/submissions/(:any)'] = 'api/eeform1/submissions/$1';
+$route['api/eeform1/submission/(:any)'] = 'api/eeform1/submission/$1';
+$route['api/eeform1/update/(:any)'] = 'api/eeform1/update/$1';
+$route['api/eeform1/stats/(:any)'] = 'api/eeform1/stats/$1';
+
 $route['api/eeform3/health'] = 'api/eeform3/health';
 $route['api/eeform3/submit'] = 'api/eeform3/submit';
 $route['api/eeform3/activity_items'] = 'api/eeform3/activity_items';
