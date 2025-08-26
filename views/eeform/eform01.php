@@ -1221,6 +1221,12 @@
     <script>
       // 控制測試按鈕顯示的變數
       var showTestButton = true; // 設為 false 可隱藏測試按鈕
+      
+      // 取得目前登入使用者資訊
+      var currentUserData = {
+        member_id: '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>',
+        member_name: '<?php echo isset($userdata['c_name']) ? $userdata['c_name'] : ''; ?>'
+      };
 
       // 頁面載入時檢查是否顯示測試按鈕 - jQuery版本
       $(document).ready(function() {
@@ -1484,6 +1490,8 @@
       function submitForm() {
         // 收集表單資料
         var formData = {
+          // 使用者識別資訊
+          member_id: currentUserData.member_id,
           member_name: $('input[name="member_name"]').val(),
           birth_year: $('select[name="birth_year"]').val(),
           birth_month: $('select[name="birth_month"]').val(),

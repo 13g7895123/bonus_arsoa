@@ -77,4 +77,6 @@
 65. controllers的部分沒有同步更新，沒有更新到api/eeform1/submit
 66. The action you have requested is not allowed.
 67. /api/eeform1/submit這支API出現404錯誤，請幫我修復
-68. Unable to locate the model you have specified: Eeform1Model
+68. Unable to locate the model you have specified: 
+69. eform1_list沒有顯示填寫完的資料，而且搜尋會直接重整頁面，幫我用前端的方式處理API
+70. 搜尋點下去沒有打API，幫我確認問題，填寫完的eform1表單要掛在當前使用者名下，讓eform1_list可以顯示，確認目前邏輯是否符合，不符的話請修改調整

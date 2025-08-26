@@ -84,6 +84,7 @@ class Eeform1Model extends MY_Model
         try {
             // 準備主表資料
             $submission_data = [
+                'member_id' => isset($data['member_id']) ? $data['member_id'] : null,
                 'member_name' => $data['member_name'],
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
@@ -245,7 +246,7 @@ class Eeform1Model extends MY_Model
     {
         $this->db->select('s.*, COUNT(*) OVER() as total_count');
         $this->db->from('eeform1_submissions s');
-        $this->db->where('s.phone', $member_id); // 使用電話作為會員識別
+        $this->db->where('s.member_id', $member_id); // 使用member_id作為會員識別
         
         if ($start_date) {
             $this->db->where('s.submission_date >=', $start_date);
@@ -363,6 +364,7 @@ class Eeform1Model extends MY_Model
         try {
             // 更新主表
             $submission_data = [
+                'member_id' => isset($data['member_id']) ? $data['member_id'] : null,
                 'member_name' => $data['member_name'],
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
@@ -417,12 +419,12 @@ class Eeform1Model extends MY_Model
     public function get_member_stats($member_id)
     {
         // 取得總提交次數
-        $this->db->where('phone', $member_id);
+        $this->db->where('member_id', $member_id);
         $total_submissions = $this->db->count_all_results('eeform1_submissions');
         
         // 取得最新提交日期
         $this->db->select('submission_date');
-        $this->db->where('phone', $member_id);
+        $this->db->where('member_id', $member_id);
         $this->db->order_by('submission_date', 'DESC');
         $this->db->limit(1);
         $latest = $this->db->get('eeform1_submissions')->row_array();
