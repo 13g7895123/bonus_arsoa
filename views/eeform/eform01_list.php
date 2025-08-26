@@ -380,14 +380,18 @@ $(document).ready(function() {
       
       var tableRows = '';
       submissions.forEach(function(submission, index) {
-        var bgColor = index % 2 === 0 ? '#f8f9fa' : '#ffffff';
+        var bgColor = index % 2 === 0 ? '#E4FBFC' : '#eeeeee';
         
         // 格式化日期
         var displayDate = submission.submission_date || submission.created_at || '-';
         if (displayDate !== '-') {
           try {
             var date = new Date(displayDate);
-            displayDate = date.toLocaleDateString('zh-TW');
+            displayDate = date.getFullYear() + '-' + 
+                        String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                        String(date.getDate()).padStart(2, '0') + ' ' +
+                        String(date.getHours()).padStart(2, '0') + ':' +
+                        String(date.getMinutes()).padStart(2, '0');
           } catch (e) {
             // 如果日期解析失敗，保留原始值
           }
@@ -414,9 +418,33 @@ $(document).ready(function() {
         tableRows += '<td class="text-center">1</td>';
         // 查看
         tableRows += '<td class="text-center">';
-        tableRows += '<a href="javascript:void(0);" onclick="viewSubmission(' + (submission.id || 0) + ')" title="檢視">';
+        tableRows += '<a href="javascript:void(0);" onclick="question_reply_div(' + index + ');" title="檢視">';
         tableRows += '<i class="fa fa-angle-down fa-lg menu__icon--open"></i>';
         tableRows += '</a>';
+        tableRows += '</td>';
+        tableRows += '</tr>';
+        
+        // 詳細資料行（隱藏）
+        tableRows += '<tr style="display:none" id="qdiv_' + index + '">';
+        tableRows += '<td colspan="5">';
+        tableRows += '<div class="card-body">';
+        tableRows += '<div class="row mb-3">';
+        tableRows += '<div class="col-md-auto border-right">已填寫</div>';
+        tableRows += '<div class="col-md-10">';
+        tableRows += '<ul class="list-inline text-left" style="margin-top: -10px;">';
+        tableRows += '<li class="list-inline-item">';
+        tableRows += '<span title="填寫時間：' + displayDate + '">' + displayDate + '</span>　　';
+        tableRows += '<a href="javascript:void(0);" onclick="viewSubmissionDetail(' + (submission.id || 0) + ',' + index + ')" data-toggle="modal" data-target="#exampleModal">';
+        tableRows += '<i class="icon ion-clipboard" style="font-size: 1.1rem;"></i>';
+        tableRows += '</a>　｜　';
+        tableRows += '<a href="javascript:void(0);" onclick="editSubmissionDetail(' + (submission.id || 0) + ',' + index + ')" data-toggle="modal" data-target="#exampleModal">';
+        tableRows += '<i class="icon ion-edit" style="font-size: 1.1rem;"></i>';
+        tableRows += '</a>';
+        tableRows += '</li>';
+        tableRows += '</ul>';
+        tableRows += '</div>';
+        tableRows += '</div>';
+        tableRows += '</div>';
         tableRows += '</td>';
         tableRows += '</tr>';
       });
@@ -424,15 +452,22 @@ $(document).ready(function() {
       $('#submissions-table-body').html(tableRows);
     }
     
-    // 檢視提交記錄
-    function viewSubmission(submissionId) {
+    // 切換詳細資料顯示
+    function question_reply_div(index) {
+      var detailRow = $('#qdiv_' + index);
+      if (detailRow.is(':visible')) {
+        detailRow.hide();
+      } else {
+        detailRow.show();
+      }
+    }
+    
+    // 檢視提交記錄詳細內容
+    function viewSubmissionDetail(submissionId, index) {
       if (!submissionId) {
         alert('提交記錄ID無效');
         return;
       }
-      
-      // 顯示模態視窗
-      $('#exampleModal').modal('show');
       
       // 重置模態內容為載入狀態
       $('#submissionModalTitle').text('肌膚諮詢記錄表詳細資料');
@@ -472,6 +507,13 @@ $(document).ready(function() {
           showSubmissionError(errorMessage);
         }
       });
+    }
+    
+    // 編輯提交記錄
+    function editSubmissionDetail(submissionId, index) {
+      // 這裡可以實作編輯功能
+      console.log('編輯記錄:', submissionId);
+      alert('編輯功能開發中...');
     }
     
     // 顯示提交資料
@@ -590,13 +632,6 @@ $(document).ready(function() {
         '<div class="mt-3"><button class="btn btn-sm btn-outline-primary" onclick="$(\'#exampleModal\').modal(\'hide\');">關閉</button></div>' +
         '</div>'
       );
-    }
-    
-    // 編輯提交記錄
-    function editSubmission(submissionId) {
-      // 這裡可以實作編輯功能
-      console.log('編輯記錄:', submissionId);
-      alert('編輯功能開發中...');
     }
     
     // 執行搜尋
