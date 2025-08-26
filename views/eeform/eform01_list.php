@@ -570,10 +570,10 @@ $(document).ready(function() {
       var disabled = isEditable ? '' : ' disabled readonly';
       var currentDate = new Date().toISOString().slice(0, 10);
       
-      // 建構完整表單內容 (參照原版設計)
-      var html = '<div class="mb30">';
+      // 建構完整表單內容 (參照原版設計) - 確保背景不透明
+      var html = '<div class="mb30" style="background-color: #ffffff; padding: 20px;">';
       html += '<div class="container">';
-      html += '<form action="#" class="text-left">';
+      html += '<form action="#" class="text-left" style="background-color: #ffffff;">';
       html += '<div class="row">';
       
       // 填寫日期
@@ -665,8 +665,8 @@ $(document).ready(function() {
       
       // 肌膚困擾
       html += '<div class="col-sm-12 mb50">';
-      html += '<div class="card bg-light">';
-      html += '<div class="card-body">';
+      html += '<div class="card bg-light" style="background-color: #f8f9fa !important;">';
+      html += '<div class="card-body" style="background-color: #f8f9fa;">';
       html += '<div class="container">';
       html += '<div class="row"><p class="mb-0">肌膚困擾：</p></div>';
       html += '<div class="row mb30">';
@@ -698,7 +698,7 @@ $(document).ready(function() {
       html += '<div class="col-sm-12"><hr class="my-4"></div>';
       html += '<div class="col-sm-12 mb30">';
       html += '<h4>建議內容：</h4>';
-      html += '<div class="alert alert-warning" role="alert">';
+      html += '<div class="alert alert-warning" role="alert" style="background-color: #fff3cd !important; border-color: #ffeaa7; opacity: 1 !important;">';
       html += '<div class="row">';
       html += '<div class="col-sm-6 mb30">';
       html += '<label class="label-custom">化妝水：</label>';
@@ -718,8 +718,8 @@ $(document).ready(function() {
       
       // 肌膚檢測數據
       html += '<div class="col-sm-12 mb30">';
-      html += '<div class="card bg-light">';
-      html += '<div class="card-body">';
+      html += '<div class="card bg-light" style="background-color: #f8f9fa !important;">';
+      html += '<div class="card-body" style="background-color: #f8f9fa;">';
       html += '<div class="container">';
       html += '<div class="row">';
       html += '<div class="col-sm-7 mb30">';
@@ -773,7 +773,7 @@ $(document).ready(function() {
     
     // 新增檢測數據區塊
     function addTestDataSection(categoryName, data, disabled) {
-      var html = '<div class="col-sm-12 mb20">';
+      var html = '<div class="col-sm-12 mb20" style="background-color: #f8f9fa; padding: 10px; border-radius: 5px;">';
       html += '<label class="label-custom">' + categoryName + '</label>';
       html += '<div class="row">';
       
@@ -884,6 +884,32 @@ $(document).ready(function() {
 	    @keyframes spin {
 	      0% { transform: rotate(0deg); }
 	      100% { transform: rotate(360deg); }
+	    }
+	    
+	    /* 確保模態視窗背景不透明 */
+	    .modal-content {
+	      background-color: #ffffff !important;
+	      opacity: 1 !important;
+	    }
+	    
+	    .modal-body {
+	      background-color: #ffffff !important;
+	      opacity: 1 !important;
+	    }
+	    
+	    .card.bg-light {
+	      background-color: #f8f9fa !important;
+	      opacity: 1 !important;
+	    }
+	    
+	    .form-control-custom {
+	      background-color: #ffffff !important;
+	      opacity: 1 !important;
+	    }
+	    
+	    .alert-warning {
+	      background-color: #fff3cd !important;
+	      opacity: 1 !important;
 	    }
 	    
 	    /* Table empty state styles */
