@@ -29,7 +29,28 @@ class Eeform1 extends MY_Controller
         $this->load->model( 'front_member_model' );
         $this->load->model( 'front_base_model' );
         $this->load->model( 'front_mssql_model' );
-        $this->load->model('eeform/Eeform1Model', 'eform1_model');
+        
+        // Try loading with error handling
+        try {
+            $this->load->model('eeform/Eeform1Model', 'eform1_model');
+        } catch (Exception $e) {
+            echo json_encode([
+                'error' => 'Model loading exception',
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            exit;
+        }
+        
+        // Verify model is loaded
+        if (!isset($this->eform1_model)) {
+            echo json_encode([
+                'error' => 'Model loading failed',
+                'debug' => 'Eeform1Model could not be loaded after load attempt'
+            ]);
+            exit;
+        }
         $this->load->library( 'user_agent' );
         $this->load->helper('url');
     }
@@ -39,12 +60,19 @@ class Eeform1 extends MY_Controller
      * GET /api/eeform1/test
      */
     public function test() {
-        // Simple direct output for debugging
+        // Test if model is loaded and working
+        if (method_exists($this->eform1_model, 'validate_submission_data')) {
+            $model_status = 'Model loaded with validate_submission_data method';
+        } else {
+            $model_status = 'Model loaded but missing expected methods';
+        }
+        
         echo json_encode([
             'success' => true,
             'message' => 'Eeform1 controller is accessible',
             'controller' => 'Eeform1',
             'method' => 'test',
+            'model_status' => $model_status,
             'timestamp' => date('Y-m-d H:i:s')
         ]);
         exit;

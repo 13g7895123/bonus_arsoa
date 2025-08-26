@@ -1,8 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Eeform1Model extends CI_Model
+class Eeform1Model extends MY_Model
 {
+    protected $table_submissions = 'eeform1_submissions';
+    protected $table_skin_concerns = 'eeform1_skin_concerns';
+    protected $table_lifestyle_habits = 'eeform1_lifestyle_habits';
+    protected $table_occupations = 'eeform1_occupations';
+    protected $table_skincare_products = 'eeform1_skincare_products';
+    protected $table_problem_areas = 'eeform1_problem_areas';
+    protected $table_skincare_goals = 'eeform1_skincare_goals';
+    protected $table_consultation_dates = 'eeform1_consultation_dates';
+
     public function __construct()
     {
         parent::__construct();
