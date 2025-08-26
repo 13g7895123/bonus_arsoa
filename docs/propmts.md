@@ -80,3 +80,4 @@
 68. Unable to locate the model you have specified: 
 69. eform1_list沒有顯示填寫完的資料，而且搜尋會直接重整頁面，幫我用前端的方式處理API
 70. 搜尋點下去沒有打API，幫我確認問題，填寫完的eform1表單要掛在當前使用者名下，讓eform1_list可以顯示，確認目前邏輯是否符合，不符的話請修改調整
+71. eeform1_submissions沒有member_id，更新前請確認是否有需要更新資料表

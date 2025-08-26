@@ -20,6 +20,7 @@ EEFORM1 肌膚諮詢記錄表系統需要以下資料表來完整儲存表單數
 ```sql
 CREATE TABLE eeform1_submissions (
     id INT PRIMARY KEY AUTO_INCREMENT COMMENT '記錄ID',
+    member_id VARCHAR(50) NULL COMMENT '會員編號',
     member_name VARCHAR(100) NOT NULL COMMENT '會員姓名',
     birth_year SMALLINT NOT NULL COMMENT '出生西元年',
     birth_month TINYINT NOT NULL COMMENT '出生西元月',
@@ -35,6 +36,7 @@ CREATE TABLE eeform1_submissions (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
     status ENUM('draft', 'submitted', 'reviewed') DEFAULT 'submitted' COMMENT '狀態',
     
+    INDEX idx_member_id (member_id),
     INDEX idx_member_name (member_name),
     INDEX idx_phone (phone),
     INDEX idx_submission_date (submission_date),
@@ -198,8 +200,8 @@ CREATE TABLE eeform1_suggestions (
 
 ```sql
 -- 範例：插入一筆完整的肌膚諮詢記錄
-INSERT INTO eeform1_submissions (member_name, birth_year, birth_month, phone, skin_type, skin_age, submission_date) 
-VALUES ('王小華', 1990, 5, '0912345678', 'combination', 25, CURDATE());
+INSERT INTO eeform1_submissions (member_id, member_name, birth_year, birth_month, phone, skin_type, skin_age, submission_date) 
+VALUES ('000001', '王小華', 1990, 5, '0912345678', 'combination', 25, CURDATE());
 
 -- 取得剛插入的記錄ID
 SET @submission_id = LAST_INSERT_ID();
@@ -248,7 +250,7 @@ LEFT JOIN eeform1_occupations o ON s.id = o.submission_id AND o.is_selected = 1
 LEFT JOIN eeform1_skin_issues si ON s.id = si.submission_id AND si.is_selected = 1  
 LEFT JOIN eeform1_allergies a ON s.id = a.submission_id AND a.is_selected = 1
 LEFT JOIN eeform1_suggestions sg ON s.id = sg.submission_id
-WHERE s.member_name = '王小華'
+WHERE s.member_id = '000001'
 GROUP BY s.id
 ORDER BY s.created_at DESC;
 ```
@@ -283,7 +285,8 @@ ORDER BY month DESC;
 
 ```sql
 -- 複合索引：常用查詢組合
-CREATE INDEX idx_member_date ON eeform1_submissions (member_name, submission_date);
+CREATE INDEX idx_member_date ON eeform1_submissions (member_id, submission_date);
+CREATE INDEX idx_member_name_date ON eeform1_submissions (member_name, submission_date);
 CREATE INDEX idx_phone_date ON eeform1_submissions (phone, submission_date);
 CREATE INDEX idx_skin_type_date ON eeform1_submissions (skin_type, submission_date);
 
@@ -306,6 +309,26 @@ ADD CONSTRAINT chk_birth_month CHECK (birth_month >= 1 AND birth_month <= 12);
 -- 確保肌膚年齡在合理範圍內
 ALTER TABLE eeform1_submissions 
 ADD CONSTRAINT chk_skin_age CHECK (skin_age >= 18 AND skin_age <= 80);
+```
+
+## 資料表更新 (既有系統升級)
+
+如果既有系統的 `eeform1_submissions` 表沒有 `member_id` 欄位，請執行以下 SQL 語句進行更新：
+
+```sql
+-- 新增 member_id 欄位
+ALTER TABLE eeform1_submissions 
+ADD COLUMN member_id VARCHAR(50) NULL COMMENT '會員編號' AFTER id;
+
+-- 新增索引
+CREATE INDEX idx_member_id ON eeform1_submissions (member_id);
+
+-- 新增複合索引
+CREATE INDEX idx_member_date ON eeform1_submissions (member_id, submission_date);
+
+-- 如果需要根據電話號碼或會員姓名映射 member_id，可以執行類似以下更新語句：
+-- UPDATE eeform1_submissions SET member_id = phone WHERE member_id IS NULL;
+-- 或根據實際會員系統的邏輯進行對應
 ```
 
 ## 備份與維護
