@@ -28,13 +28,14 @@
                   <h1 class="h2-3d font-libre"><strong>肌膚諮詢記錄表</strong></h1>
                   <div class="mb30">
                     <div class="container wow fadeInUp" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">                    
-                       <form name="oForm" id="oForm" method="get"> 
+                       <form name="oForm" id="oForm"> 
                          <div class="row">
                            <div class="form-group mx-sm-3 mb-2">
                              <label for="search" class="sr-only">查詢姓名或電話</label>
                              <input type="text" class="form-control" id="search" name="search" placeholder="查詢姓名或電話" value="" maxlength="20">
                            </div>
-                           <button type="submit" class="btn btn-primary mb-2" style="height: 46px;">搜尋</button>
+                           <button type="button" class="btn btn-primary mb-2" style="height: 46px;" onclick="performSearch()">搜尋</button>
+                           <button type="button" class="btn btn-secondary mb-2 ml-2" style="height: 46px;" onclick="clearSearch()">清除</button>
                            <span id="search_msg" style="color:red;margin-top: 8px;margin-left: 10px;"></span>
 						   </div>
                         
@@ -173,6 +174,8 @@ $(document).ready(function() {
     // 全域變數
     var currentMemberId = '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>'; // 從控制器取得會員ID
     var currentSubmissionId = null; // 當前選中的提交記錄ID
+    var allSubmissions = []; // 儲存所有提交記錄
+    var filteredSubmissions = []; // 儲存過濾後的記錄
     
     // 頁面載入時初始化
     $(document).ready(function() {
@@ -187,10 +190,26 @@ $(document).ready(function() {
           '</td></tr>'
         );
       }
+      
+      // 加入Enter鍵搜尋功能
+      $('#search').on('keypress', function(e) {
+        if (e.which == 13) {
+          performSearch();
+          return false;
+        }
+      });
     });
     
     // 載入提交記錄列表
     function loadSubmissions() {
+      // 顯示載入狀態
+      $('#submissions-table-body').html(
+        '<tr><td colspan="6" class="text-center text-muted p-4">' +
+        '<div><i class="icon ion-loading-c" style="font-size: 2rem; animation: spin 1s linear infinite;"></i></div>' +
+        '<div class="mt-2">載入中，請稍候...</div>' +
+        '</td></tr>'
+      );
+      
       $.ajax({
         url: '<?php echo base_url("api/eeform1/submissions/"); ?>' + currentMemberId,
         method: 'GET',
@@ -198,7 +217,16 @@ $(document).ready(function() {
         success: function(response) {
           if (response && response.success) {
             var submissions = response.data && response.data.data ? response.data.data : response.data;
-            renderSubmissionsTable(submissions);
+            if (Array.isArray(submissions)) {
+              allSubmissions = submissions;
+              filteredSubmissions = submissions;
+              renderSubmissionsTable(submissions);
+            } else {
+              console.warn('Submissions data is not an array:', submissions);
+              allSubmissions = [];
+              filteredSubmissions = [];
+              renderSubmissionsTable([]);
+            }
           } else {
             var errorMsg = response && response.message ? response.message : '未知錯誤';
             $('#submissions-table-body').html(
@@ -265,37 +293,70 @@ $(document).ready(function() {
     // 渲染提交記錄表格
     function renderSubmissionsTable(submissions) {
       if (!submissions) {
-        $('#submissions-table-body').html('<tr><td colspan="6" class="text-center text-warning"><i class="icon ion-information-circled mr-2"></i>資料格式錯誤</td></tr>');
+        $('#submissions-table-body').html('<tr><td colspan="6" class="text-center text-warning p-4"><i class="icon ion-information-circled mr-2"></i>資料格式錯誤</td></tr>');
         return;
       }
       
       if (submissions.length === 0) {
-        $('#submissions-table-body').html(
-          '<tr><td colspan="6" class="text-center text-muted p-4">' +
-          '<div><i class="icon ion-document-text" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
-          '<div class="mt-2">目前尚無肌膚諮詢記錄</div>' +
-          '<div class="small mt-1">點擊下方按鈕開始填寫您的第一筆記錄</div>' +
-          '</td></tr>'
-        );
+        var emptyMessage = '';
+        if ($('#search').val().trim()) {
+          // 搜尋結果為空
+          emptyMessage = 
+            '<tr><td colspan="6" class="text-center text-muted p-4">' +
+            '<div><i class="icon ion-search" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
+            '<div class="mt-2">找不到符合 "' + $('#search').val().trim() + '" 的記錄</div>' +
+            '<div class="small mt-1">請嘗試使用不同的關鍵字搜尋</div>' +
+            '</td></tr>';
+        } else {
+          // 沒有任何記錄
+          emptyMessage = 
+            '<tr><td colspan="6" class="text-center text-muted p-4">' +
+            '<div><i class="icon ion-document-text" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
+            '<div class="mt-2">目前尚無肌膚諮詢記錄</div>' +
+            '<div class="small mt-1">點擊下方按鈕開始填寫您的第一筆記錄</div>' +
+            '</td></tr>';
+        }
+        $('#submissions-table-body').html(emptyMessage);
         return;
       }
       
       var tableRows = '';
       submissions.forEach(function(submission, index) {
-        var bgColor = index % 2 === 0 ? '#E4FBFC' : '#eeeeee';
+        var bgColor = index % 2 === 0 ? '#f8f9fa' : '#ffffff';
         
-        tableRows += '<tr style="background-color: ' + bgColor + ';">';
-        tableRows += '<td nowrap="nowrap" class="text-center">' + (submission.member_name || '-') + '</td>';
+        // 格式化日期
+        var displayDate = submission.submission_date || submission.created_at || '-';
+        if (displayDate !== '-') {
+          try {
+            var date = new Date(displayDate);
+            displayDate = date.toLocaleDateString('zh-TW');
+          } catch (e) {
+            // 如果日期解析失敗，保留原始值
+          }
+        }
+        
+        // 格式化肌膚類型
+        var skinTypeMap = {
+          'normal': '一般性',
+          'combination': '混合性',
+          'oily': '油性',
+          'dry': '乾性',
+          'sensitive': '敏感性'
+        };
+        var displaySkinType = skinTypeMap[submission.skin_type] || submission.skin_type || '-';
+        
+        tableRows += '<tr style="background-color: ' + bgColor + '; border-left: 3px solid #007bff;">';
+        tableRows += '<td class="text-center font-weight-bold">' + (submission.member_name || '-') + '</td>';
         tableRows += '<td>' + (submission.phone || '-') + '</td>';
-        tableRows += '<td>' + (submission.submission_date || '-') + '</td>';
-        tableRows += '<td>' + (submission.skin_type || '-') + '</td>';
+        tableRows += '<td>' + displayDate + '</td>';
+        tableRows += '<td>' + displaySkinType + '</td>';
         tableRows += '<td><span class="badge badge-success">已完成</span></td>';
-        tableRows += '<td>';
-        tableRows += '<a href="javascript:void(0);" onclick="viewSubmission(' + submission.id + ')" data-toggle="modal" data-target="#form01view">';
-        tableRows += '<i class="icon ion-clipboard" style="font-size: 1.1rem;"></i>';
-        tableRows += '</a>　｜　';
-        tableRows += '<a href="javascript:void(0);" onclick="editSubmission(' + submission.id + ')" data-toggle="modal" data-target="#form01edit">';
-        tableRows += '<i class="icon ion-edit" style="font-size: 1.1rem;"></i>';
+        tableRows += '<td class="text-center">';
+        tableRows += '<a href="javascript:void(0);" onclick="viewSubmission(' + (submission.id || 0) + ')" title="檢視記錄">';
+        tableRows += '<i class="icon ion-eye" style="font-size: 1.2rem; color: #007bff; margin-right: 10px;"></i>';
+        tableRows += '</a>';
+        tableRows += '<a href="javascript:void(0);" onclick="editSubmission(' + (submission.id || 0) + ')" title="編輯記錄">';
+        tableRows += '<i class="icon ion-edit" style="font-size: 1.2rem; color: #28a745;"></i>';
         tableRows += '</a>';
         tableRows += '</td>';
         tableRows += '</tr>';
@@ -317,6 +378,54 @@ $(document).ready(function() {
       console.log('編輯記錄:', submissionId);
       alert('編輯功能開發中...');
     }
+    
+    // 執行搜尋
+    function performSearch() {
+      var searchTerm = $('#search').val().trim();
+      $('#search_msg').text('');
+      
+      if (!searchTerm) {
+        // 如果搜尋欄位為空，顯示所有記錄
+        filteredSubmissions = allSubmissions;
+        renderSubmissionsTable(allSubmissions);
+        $('#search_msg').text('');
+        return;
+      }
+      
+      // 顯示搜尋中狀態
+      $('#search_msg').html('<i class="icon ion-loading-c" style="animation: spin 1s linear infinite;"></i> 搜尋中...');
+      
+      // 模擬搜尋延遲，提供更好的用戶體驗
+      setTimeout(function() {
+        // 在本地資料中進行搜尋
+        filteredSubmissions = allSubmissions.filter(function(submission) {
+          var memberName = (submission.member_name || '').toLowerCase();
+          var phone = (submission.phone || '').toLowerCase();
+          var searchLower = searchTerm.toLowerCase();
+          
+          return memberName.includes(searchLower) || phone.includes(searchLower);
+        });
+        
+        // 渲染搜尋結果
+        renderSubmissionsTable(filteredSubmissions);
+        
+        // 顯示搜尋結果統計
+        var resultCount = filteredSubmissions.length;
+        if (resultCount === 0) {
+          $('#search_msg').html('<i class="icon ion-search"></i> 找不到符合條件的記錄');
+        } else {
+          $('#search_msg').html('<i class="icon ion-search"></i> 找到 ' + resultCount + ' 筆記錄');
+        }
+      }, 300);
+    }
+    
+    // 清除搜尋
+    function clearSearch() {
+      $('#search').val('');
+      $('#search_msg').text('');
+      filteredSubmissions = allSubmissions;
+      renderSubmissionsTable(allSubmissions);
+    }
     </script>
 	  
 	  <!-- Custom styles for enhanced error states -->
@@ -334,6 +443,49 @@ $(document).ready(function() {
 	    
 	    /* Enhanced error state button */
 	    .retry-btn:hover {
+	      transform: translateY(-1px);
+	      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	    }
+	    
+	    /* Search form enhancements */
+	    #search {
+	      border-radius: 0.25rem;
+	      border: 2px solid #dee2e6;
+	      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	    }
+	    
+	    #search:focus {
+	      border-color: #007bff;
+	      box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+	    }
+	    
+	    #search_msg {
+	      font-size: 0.875rem;
+	      color: #6c757d;
+	    }
+	    
+	    /* Table row hover effects */
+	    #submissions-table-body tr:hover {
+	      background-color: #e3f2fd !important;
+	      transition: background-color 0.2s ease;
+	    }
+	    
+	    /* Action button improvements */
+	    #submissions-table-body a {
+	      text-decoration: none;
+	      transition: all 0.2s ease;
+	    }
+	    
+	    #submissions-table-body a:hover {
+	      transform: scale(1.1);
+	    }
+	    
+	    /* Search button improvements */
+	    .btn {
+	      transition: all 0.2s ease;
+	    }
+	    
+	    .btn:hover {
 	      transform: translateY(-1px);
 	      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 	    }
