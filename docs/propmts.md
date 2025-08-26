@@ -75,3 +75,5 @@
 63. 目前看eform1送出後沒有資料到資料庫，eform1_list出現API服務不存在或路徑錯誤
 64. 請參照eform3的api路徑，把eform1的api改過去那裡，並移除舊的部分，且確認view的部分有同步修改
 65. controllers的部分沒有同步更新，沒有更新到api/eeform1/submit
+66. The action you have requested is not allowed.
+67. /api/eeform1/submit這支API出現404錯誤，請幫我修復

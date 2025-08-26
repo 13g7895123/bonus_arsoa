@@ -22,49 +22,32 @@ class Eeform1 extends MY_Controller
             exit(0);
         }
         
-        try {
-            parent::__construct();
-            _timer('*** controllers start ***');
+        // Simplified constructor for debugging
+        parent::__construct();
+        _timer('*** controllers start ***');
 
-            $this->load->model( 'front_member_model' );
-            $this->load->model( 'front_base_model' );
-            $this->load->model( 'front_mssql_model' );
-            
-            // Load eform01 specific models with error handling
-            try {
-                $this->load->model('eeform/Eeform1Model', 'eform1_model');
-            } catch (Exception $e) {
-                $this->_send_error('Failed to load eform1 model: ' . $e->getMessage(), 500, [
-                    'trace' => $e->getTraceAsString(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine()
-                ]);
-                exit();
-            }
-            
-            $this->load->library( 'user_agent' );
-            $this->load->helper('url');
-            
-        } catch (Exception $e) {
-            $this->_send_error('Constructor error: ' . $e->getMessage(), 500, [
-                'trace' => $e->getTraceAsString(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'request_data' => [
-                    'method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown',
-                    'uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
-                    'headers' => getallheaders()
-                ]
-            ]);
-            exit();
-        } catch (Throwable $e) {
-            $this->_send_error('Fatal constructor error: ' . $e->getMessage(), 500, [
-                'trace' => $e->getTraceAsString(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-            exit();
-        }
+        $this->load->model( 'front_member_model' );
+        $this->load->model( 'front_base_model' );
+        $this->load->model( 'front_mssql_model' );
+        $this->load->model('eeform/Eeform1Model', 'eform1_model');
+        $this->load->library( 'user_agent' );
+        $this->load->helper('url');
+    }
+
+    /**
+     * Test endpoint to verify controller accessibility
+     * GET /api/eeform1/test
+     */
+    public function test() {
+        // Simple direct output for debugging
+        echo json_encode([
+            'success' => true,
+            'message' => 'Eeform1 controller is accessible',
+            'controller' => 'Eeform1',
+            'method' => 'test',
+            'timestamp' => date('Y-m-d H:i:s')
+        ]);
+        exit;
     }
 
     /**

@@ -90,7 +90,9 @@ $route['C/(.*)'] = 'event_quick/consent/$1';		// 同意書
 
 $route['sitemap'] = 'rss/sitemap';
 
-// API路由配置
+// API路由配置 - Debug route first
+$route['api/test'] = 'api/eeform1/test';
+$route['api/eeform1/test'] = 'api/eeform1/test';
 $route['api/eeform1/health'] = 'api/eeform1/health';
 $route['api/eeform1/submit'] = 'api/eeform1/submit';
 $route['api/eeform1/submissions/(:any)'] = 'api/eeform1/submissions/$1';
