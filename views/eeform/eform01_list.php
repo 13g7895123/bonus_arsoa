@@ -28,293 +28,51 @@
                   <h1 class="h2-3d font-libre"><strong>肌膚諮詢記錄表</strong></h1>
                   <div class="mb30">
                     <div class="container wow fadeInUp" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">                    
-                       <form name="oForm" id="oForm" method="post" action="https://www.arsoa.tw/sample/partners"> 
+                       <form name="oForm" id="oForm" method="get"> 
                          <div class="row">
                            <div class="form-group mx-sm-3 mb-2">
-                             <label for="name" class="sr-only">查詢姓名或編號</label>
-                             <input type="text" class="form-control" id="Search" name="Search" placeholder="查詢姓名或電話" value="" maxlength="10">
+                             <label for="search" class="sr-only">查詢姓名或電話</label>
+                             <input type="text" class="form-control" id="search" name="search" placeholder="查詢姓名或電話" value="" maxlength="20">
                            </div>
-                           <input type="submit" class="btn btn-primary mb-2" style="height: 46px;" value="搜尋">
-                           <span id="check_mobile_msg" style="color:red;margin-top: 8px;margin-left: 10px;"></span>
+                           <button type="submit" class="btn btn-primary mb-2" style="height: 46px;">搜尋</button>
+                           <span id="search_msg" style="color:red;margin-top: 8px;margin-left: 10px;"></span>
 						   </div>
                         
-                        <div class="row" id="form_personal" style="margin-top: 30px;">                           
+                        <div class="row" id="form_personal" style="margin-top: 30px;">
+                          <!-- 會員基本資料顯示區域 -->
+                          <div class="col-sm-4 mb30">
+                            <label class="label-custom">會員姓名</label>
+                            <p id="member-name"><?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : '未設定'; ?></p>
+                          </div>
+                          <div class="col-sm-4 mb30">
+                            <label class="label-custom">會員編號</label>
+                            <p id="member-id"><?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : '未設定'; ?></p>
+                          </div>
+                          <div class="col-sm-4 mb30">
+                            <label class="label-custom">電話</label>
+                            <p id="member-phone"><?php echo isset($userdata['phone']) ? htmlspecialchars($userdata['phone']) : '未設定'; ?></p>
+                          </div>
                         </div>            
                         <div class="card mb-3">
                            <div class="card-body">
                             <table class="table table-striped mb-2 text-center">
                                <thead class="thead-dark">
                                 <tr>
-                                   <th width="25%">會員(來賓)資訊</th>
-                                   <th width="22%">出貨日期</th>
-                                   <th width="23%">最後填寫日期</th>
-                                   <th width="15%">已填寫</th>
+                                   <th width="20%">會員資訊</th>
+                                   <th width="15%">電話</th>
+                                   <th width="15%">填寫日期</th>
+                                   <th width="20%">肌膚類型</th>
+                                   <th width="15%">狀態</th>
                                    <th width="15%">查看</th>
                                  </tr>
                               </thead>
-                               <tbody>
-                                <tr style="background-color: #E4FBFC;">
-                                   <td nowrap="nowrap" class="text-center">庭毅 測試<br>
-                                    0903508869</td>
-                                   <td>2022-08-17</td>
-                                   <td>2022-09-05 10:35</td>
-                                   <td> 3 </td>
-                                   <td><a href="javascript:void();" onclick="question_reply_div('1');" title="檢視"><i class="fa fa-angle-down fa-lg menu__icon--open"></i></a></td>
-                                 </tr>
-                                <tr style="display:table-row" id="qdiv_1">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已填寫</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left" style="margin-top: -10px;">
-                                           <li class="list-inline-item">
-											   <span title="填寫時間：2022-08-19 18:00">2022-08-19 18:01</span>　　
-											   <a href="javascript:void();" onclick="javascript:;" data-toggle="modal" data-target="#exampleModal">
-												   <i class="icon ion-clipboard" style="font-size: 1.1rem;"></i>
-											   </a>　｜　
-											   <a href="javascript:void();" onclick="javascript:;" data-toggle="modal" data-target="#exampleModal">
-												   <i class="icon ion-edit" style="font-size: 1.1rem;"></i>
-											   </a>
-											   </li>
-                                           <br>
-                                           <li class="list-inline-item">
-											   <span title="填寫時間：2022-08-19 18:00">2022-08-19 18:01</span>　　
-											   <a href="javascript:void();" onclick="javascript:;" data-toggle="modal" data-target="#exampleModal">
-												   <i class="icon ion-clipboard" style="font-size: 1.1rem;"></i>
-											   </a>　｜　
-											   <a href="javascript:void();" onclick="javascript:;" data-toggle="modal" data-target="#exampleModal">
-												   <i class="icon ion-edit" style="font-size: 1.1rem;"></i>
-											   </a>
-											   </li>
-                                           <br>
-										   <li class="list-inline-item">
-											   <span title="填寫時間：2022-08-19 18:00">2022-08-19 18:01</span>　　
-											   <a href="javascript:void();" onclick="javascript:;" data-toggle="modal" data-target="#exampleModal">
-												   <i class="icon ion-clipboard" style="font-size: 1.1rem;"></i>
-											   </a>　｜　
-											   <a href="javascript:void();" onclick="javascript:;" data-toggle="modal" data-target="#exampleModal">
-												   <i class="icon ion-edit" style="font-size: 1.1rem;"></i>
-											   </a>
-											   </li>
-                                           <br>
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
-                                <tr style="background-color: #eeeeee;">
-                                   <td nowrap="nowrap" class="text-center">張國瑜<br>
-                                    0935246839</td>
-                                   <td>2022-08-04</td>
-                                   <td>2022-08-23 18:21</td>
-                                   <td>3 / 3 </td>
-                                   <td><a href="javascript:void();" onclick="question_reply_div('2');" title="檢視"><i class="fa fa-angle-down fa-lg menu__icon--open"></i></a></td>
-                                 </tr>
-                                <tr style="display:none" id="qdiv_2">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已寄送</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left" style="margin-top: -10px;">
-                                           <li class="list-inline-item"> <span title="填寫時間：2022-08-06 18:00">2022-08-17 00:00</span> &nbsp;
-                                               14日養成美麗肌膚<br>
-                                               第一次&nbsp;&nbsp; <a href="javascript:void();" onclick="question_reply_show('4a2082e0ecb0d06e3258cff10e82aea4','14日養成美麗肌膚&lt;br&gt;第一次');" data-toggle="modal" data-target="#exampleModal"><i class="icon ion-clipboard" style="font-size: 1.1rem;"></i></a> </li>
-                                           <br>
-                                           <li class="list-inline-item"> <span title="填寫時間：2022-08-19 18:00">2022-08-19 18:02</span> &nbsp;
-                                               簡單保養肌膚越年輕！<br>
-                                               第二次&nbsp;&nbsp; <a href="javascript:void();" onclick="question_reply_show('c5e9fed3ef71f408f5d77d32271b6559','簡單保養肌膚越年輕！&lt;br&gt;第二次');" data-toggle="modal" data-target="#exampleModal"><i class="icon ion-clipboard" style="font-size: 1.1rem;"></i></a> </li>
-                                           <br>
-                                           <li class="list-inline-item"> <span title="填寫時間：2022-08-23 18:00">2022-08-23 18:21</span> &nbsp;
-                                               肌膚越來越水潤Q彈了<br>
-                                               第三次&nbsp;&nbsp; <a href="javascript:void();" onclick="question_reply_show('d3306e513bb590e60dbd2bb80a1abe28','肌膚越來越水潤Q彈了&lt;br&gt;第三次');" data-toggle="modal" data-target="#exampleModal"><i class="icon ion-clipboard" style="font-size: 1.1rem;"></i></a> </li>
-                                           <br>
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
-                                <tr style="background-color: #E4FBFC;">
-                                   <td nowrap="nowrap" class="text-center">謝銍淂<br>
-                                    0970984312</td>
-                                   <td>2022-08-02</td>
-                                   <td>2022-08-19 18:01</td>
-                                   <td>3 / 3 </td>
-                                   <td><a href="javascript:void();" onclick="question_reply_div('3');" title="檢視"><i class="fa fa-angle-down fa-lg menu__icon--open"></i></a></td>
-                                 </tr>
-                                <tr style="display:none" id="qdiv_3">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已寄送</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left" style="margin-top: -10px;">
-                                           <li class="list-inline-item"> <span title="填寫時間：2022-08-04 18:00">2022-08-05 10:02</span> &nbsp;
-                                               14日養成美麗肌膚<br>
-                                               第一次&nbsp;&nbsp; <a href="javascript:void();" onclick="question_reply_show('e3928bdb9c9252502342efb9f58b99d4','14日養成美麗肌膚&lt;br&gt;第一次');" data-toggle="modal" data-target="#exampleModal"><i class="icon ion-clipboard" style="font-size: 1.1rem;"></i></a> </li>
-                                           <br>
-                                           <li class="list-inline-item"> <span title="填寫時間：2022-08-07 18:00">2022-08-15 00:00</span> &nbsp;
-                                               簡單保養肌膚越年輕！<br>
-                                               第二次&nbsp;&nbsp; <a href="javascript:void();" onclick="question_reply_show('7edb6b51bd7afce0e3927ce9a578d33a','簡單保養肌膚越年輕！&lt;br&gt;第二次');" data-toggle="modal" data-target="#exampleModal"><i class="icon ion-clipboard" style="font-size: 1.1rem;"></i></a> </li>
-                                           <br>
-                                           <li class="list-inline-item"> <span title="填寫時間：2022-08-19 18:00">2022-08-19 18:01</span> &nbsp;
-                                               肌膚越來越水潤Q彈了<br>
-                                               第三次&nbsp;&nbsp; <a href="javascript:void();" onclick="question_reply_show('ab323df5a96d6091c5982e57e61cb3ed','肌膚越來越水潤Q彈了&lt;br&gt;第三次');" data-toggle="modal" data-target="#exampleModal"><i class="icon ion-clipboard" style="font-size: 1.1rem;"></i></a> </li>
-                                           <br>
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
-                                <tr style="background-color: #eeeeee;">
-                                   <td nowrap="nowrap" class="text-center">韓荷仙<br>
-                                    0912571849</td>
-                                   <td>2022-08-02</td>
-                                   <td>2022-08-10 18:17</td>
-                                   <td>3 / 3 </td>
-                                   <td><a href="javascript:void();" onclick="question_reply_div('4');" title="檢視"><i class="fa fa-angle-down fa-lg menu__icon--open"></i></a></td>
-                                 </tr>
-                                <tr style="display:none" id="qdiv_4">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已寄送</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left" style="margin-top: -10px;">
-                                           <li class="list-inline-item"> <span title="填寫時間：2022-08-04 18:00">2022-08-04 19:10</span> &nbsp;
-                                               14日養成美麗肌膚<br>
-                                               第一次&nbsp;&nbsp; <a href="javascript:void();" onclick="question_reply_show('b8990a17a6ec212d5844f2acc1782833','14日養成美麗肌膚&lt;br&gt;第一次');" data-toggle="modal" data-target="#exampleModal"><i class="icon ion-clipboard" style="font-size: 1.1rem;"></i></a> </li>
-                                           <br>
-                                           <li class="list-inline-item"> <span title="填寫時間：2022-08-06 18:00">2022-08-06 18:01</span> &nbsp;
-                                               簡單保養肌膚越年輕！<br>
-                                               第二次&nbsp;&nbsp; <a href="javascript:void();" onclick="question_reply_show('8c2debbfb5c6edd0c62f4675c1db20e7','簡單保養肌膚越年輕！&lt;br&gt;第二次');" data-toggle="modal" data-target="#exampleModal"><i class="icon ion-clipboard" style="font-size: 1.1rem;"></i></a> </li>
-                                           <br>
-                                           <li class="list-inline-item"> <span title="填寫時間：2022-08-10 18:00">2022-08-10 18:17</span> &nbsp;
-                                               肌膚越來越水潤Q彈了<br>
-                                               第三次&nbsp;&nbsp; <a href="javascript:void();" onclick="question_reply_show('4d010e77eeb21689fe1961b37e8ccc9e','肌膚越來越水潤Q彈了&lt;br&gt;第三次');" data-toggle="modal" data-target="#exampleModal"><i class="icon ion-clipboard" style="font-size: 1.1rem;"></i></a> </li>
-                                           <br>
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
-                                <tr style="background-color: #E4FBFC;">
-                                   <td nowrap="nowrap" class="text-center">Ginny<br>
-                                    0958931567</td>
-                                   <td>2022-08-02</td>
-                                   <td>尚未填寫</td>
-                                   <td>1 / 0 </td>
-                                   <td><a href="javascript:void();" onclick="question_reply_div('5');" title="檢視"><i class="fa fa-angle-down fa-lg menu__icon--open"></i></a></td>
-                                 </tr>
-                                <tr style="display:none" id="qdiv_5">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已寄送</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left">
-                                           填寫時間：2022-08-04 18:00
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
-                                <tr style="background-color: #eeeeee;">
-                                   <td nowrap="nowrap" class="text-center">劉德華<br>
-                                    0911111111</td>
-                                   <td>2022-08-02</td>
-                                   <td>尚未填寫</td>
-                                   <td>1 / 0 </td>
-                                   <td><a href="javascript:void();" onclick="question_reply_div('6');" title="檢視"><i class="fa fa-angle-down fa-lg menu__icon--open"></i></a></td>
-                                 </tr>
-                                <tr style="display:none" id="qdiv_6">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已寄送</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left">
-                                           填寫時間：2022-08-04 18:00
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
-                                <tr style="background-color: #E4FBFC;">
-                                   <td nowrap="nowrap" class="text-center">劉靜儀<br>
-                                    0975183305</td>
-                                   <td>2022-08-02</td>
-                                   <td>尚未填寫</td>
-                                   <td>1 / 0 </td>
-                                   <td><a href="javascript:void();" onclick="question_reply_div('7');" title="檢視"><i class="fa fa-angle-down fa-lg menu__icon--open"></i></a></td>
-                                 </tr>
-                                <tr style="display:none" id="qdiv_7">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已寄送</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left">
-                                           填寫時間：2022-08-04 18:00
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
-                                <tr style="background-color: #eeeeee;">
-                                   <td nowrap="nowrap" class="text-center">TEST<br>
-                                    0921456789</td>
-                                   <td>2022-08-04</td>
-                                   <td>尚未填寫</td>
-                                   <td>0 / 0 </td>
-                                   <td><a href="javascript:void();" onclick="question_reply_div('8');" title="檢視"><i class="fa fa-angle-down fa-lg menu__icon--open"></i></a></td>
-                                 </tr>
-                                <tr style="display:none" id="qdiv_8">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已寄送</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left">
-                                           填寫時間：2022-08-12 09:46
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
-                                <tr style="background-color: #E4FBFC;">
-                                   <td nowrap="nowrap" class="text-center">測試<br>
-                                    0123456789</td>
-                                   <td>2022-08-19</td>
-                                   <td>尚未填寫</td>
-                                   <td>0 / 0 </td>
-                                   <td><a href="javascript:void();" onclick="question_reply_div('9');" title="檢視"><i class="fa fa-angle-down fa-lg menu__icon--open"></i></a></td>
-                                 </tr>
-                                <tr style="display:none" id="qdiv_9">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已寄送</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left">
-                                           填寫時間：2022-09-07 18:00
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
-                                <tr style="background-color: #eeeeee;">
-                                   <td nowrap="nowrap" class="text-center">測試<br>
-                                    0123456789</td>
-                                   <td>2022-09-27</td>
-                                   <td>尚未寄送</td>
-                                   <td>0 / 0 </td>
-                                   <td></td>
-                                 </tr>
-                                <tr style="display:none" id="qdiv_10">
-                                   <td colspan="5"><div class="card-body">
-                                       <div class="row mb-3">
-                                       <div class="col-md-auto border-right">已寄送</div>
-                                       <div class="col-md-10">
-                                           <ul class="list-inline text-left">
-                                           填寫時間：1970-01-01 08:00
-                                         </ul>
-                                         </div>
-                                     </div>
-                                     </div></td>
-                                 </tr>
+                               <tbody id="submissions-table-body">
+                                <tr>
+                                  <td colspan="6" class="text-center text-muted p-4">
+                                    <div><i class="icon ion-loading-c" style="font-size: 2rem; animation: spin 1s linear infinite;"></i></div>
+                                    <div class="mt-2">載入中，請稍候...</div>
+                                  </td>
+                                </tr>
                               </tbody>
                              </table>
                           </div>
@@ -322,13 +80,9 @@
 			          	   </form>  
 						<div class="col-sm-12 mb30">
 							  <hr class="my-4">
-							  <a href="eform01.php" class="btn btn-outline-danger btn-block">填寫肌膚諮詢記錄表</a>
+							  <a href="<?php echo base_url('eform/eform1'); ?>" class="btn btn-outline-danger btn-block">填寫肌膚諮詢記錄表</a>
 							</div>
 			          	
-<form name="PageForm" method="post" action="https://www.arsoa.tw/sample/partners">
-  <input type="hidden" name="Search" value=""><input name="Submit" type="submit" value="Submit" style="display:none;"><input type="hidden" name="Page">
-<nav aria-label="Page navigation example"><ul class="pagination justify-content-center"><li class="page-item disabled"><a href="javascript:void(0);" class="page-link"><span aria-hidden="true">«</span><span class="sr-only">Previous</span></a></li><li class="page-item active"><a href="javascript:void(0);" class="page-link">1</a></li><li class="page-item disabled"><a href="javascript:void(0);" class="page-link"><span aria-hidden="true">»</span><span class="sr-only">Next</span></a></li></ul></nav>  
-</form>
 
                     </div>
                   </div>
@@ -414,6 +168,53 @@ $(document).ready(function() {
 });
  /*Scroll to top when arrow up clicked END*/
 	  </script>
+
+    <script>
+    // 全域變數
+    var currentMemberId = '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>'; // 從控制器取得會員ID
+    var currentSubmissionId = null; // 當前選中的提交記錄ID
+    
+    // 頁面載入時初始化
+    $(document).ready(function() {
+      if (currentMemberId) {
+        loadSubmissions();
+      } else {
+        $('#submissions-table-body').html(
+          '<tr><td colspan="6" class="text-center text-warning p-4">' +
+          '<div><i class="icon ion-person" style="font-size: 2rem;"></i></div>' +
+          '<div class="mt-2">請先登入會員帳號</div>' +
+          '<div class="small mt-1">登入後即可查看您的肌膚諮詢記錄</div>' +
+          '</td></tr>'
+        );
+      }
+    });
+    
+    // 載入提交記錄列表
+    function loadSubmissions() {
+      // 使用假資料模擬，因為沒有真實的API
+      setTimeout(function() {
+        if (!currentMemberId || currentMemberId === '') {
+          $('#submissions-table-body').html(
+            '<tr><td colspan="6" class="text-center text-muted p-4">' +
+            '<div><i class="icon ion-document-text" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
+            '<div class="mt-2">目前尚無肌膚諮詢記錄</div>' +
+            '<div class="small mt-1">點擊下方按鈕開始填寫您的第一筆記錄</div>' +
+            '</td></tr>'
+          );
+          return;
+        }
+        
+        // 顯示無資料狀態
+        $('#submissions-table-body').html(
+          '<tr><td colspan="6" class="text-center text-muted p-4">' +
+          '<div><i class="icon ion-document-text" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
+          '<div class="mt-2">目前尚無肌膚諮詢記錄</div>' +
+          '<div class="small mt-1">點擊下方按鈕開始填寫您的第一筆記錄</div>' +
+          '</td></tr>'
+        );
+      }, 1000);
+    }
+    </script>
 	  
 	  <!-- Modal -->
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModal" aria-hidden="true" id="exampleModal">
