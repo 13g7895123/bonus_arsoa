@@ -1165,6 +1165,18 @@ $(document).ready(function() {
         console.log('No moisture_scores data available for', categoryName);
       }
       
+      // Get the category key for field naming
+      var categoryKey = {
+        '水潤': 'moisture',
+        '膚色': 'complexion', 
+        '紋理': 'texture',
+        '敏感': 'sensitivity',
+        '油脂': 'oil',
+        '色素': 'pigment',
+        '皺紋': 'wrinkle',
+        '毛孔': 'pore'
+      }[categoryName] || 'moisture';
+      
       // 三組日期和數字輸入
       for (var i = 0; i < 3; i++) {
         var scoreData = categoryScores[i] || {};
@@ -1178,8 +1190,8 @@ $(document).ready(function() {
         
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
-        html += '<div class="col-lg-6"><input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="' + dateValue + '"' + disabled + '></div>';
-        html += '<div class="col-lg-6"><input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue + '"' + disabled + '></div>';
+        html += '<div class="col-lg-6"><input type="text" name="' + categoryKey + '_date_' + i + '" class="form-control form-control-custom" placeholder="請填日期…" value="' + dateValue + '"' + disabled + '></div>';
+        html += '<div class="col-lg-6"><input type="text" name="' + categoryKey + '_number_' + i + '" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue + '"' + disabled + '></div>';
         html += '</div>';
         html += '</div>';
       }
@@ -1204,10 +1216,13 @@ $(document).ready(function() {
         
         console.log('Dropdown values - type:', scoreType, 'value:', scoreValue2);
         
+        // Create field names based on category and score type
+        var scoreTypeField = categoryKey + '_' + scoreType;
+        
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
         html += '<div class="col-lg-6">';
-        html += '<select class="form-control form-control-custom"' + disabled + '>';
+        html += '<select name="' + scoreTypeField + '_type" class="form-control form-control-custom"' + disabled + '>';
         html += '<option value="">請選擇</option>';
         var options = [
           {value: 'severe', label: '嚴重、盡快改善'},
@@ -1220,7 +1235,7 @@ $(document).ready(function() {
         });
         html += '</select>';
         html += '</div>';
-        html += '<div class="col-lg-6"><input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue2 + '"' + disabled + '></div>';
+        html += '<div class="col-lg-6"><input type="text" name="' + scoreTypeField + '" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue2 + '"' + disabled + '></div>';
         html += '</div>';
         html += '</div>';
       }
@@ -1316,6 +1331,37 @@ $(document).ready(function() {
         skin_type: $('#exampleModal input[name="skin_type"]:checked').val(),
         skin_age: $('#exampleModal input[name="skin_age"]').val()
       };
+
+      // 收集肌膚評分資料（8個類別，每個類別3種評分類型）
+      var skinCategories = ['moisture', 'complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
+      var scoreTypes = ['severe', 'warning', 'healthy'];
+      
+      skinCategories.forEach(function(category) {
+        scoreTypes.forEach(function(scoreType) {
+          var fieldName = category + '_' + scoreType;
+          var scoreValue = $('#exampleModal input[name="' + fieldName + '"]').val();
+          if (scoreValue && scoreValue.trim() !== '') {
+            formData[fieldName] = scoreValue.trim();
+          }
+        });
+        
+        // 收集日期和數字資料（每個類別3組）
+        for (var i = 0; i < 3; i++) {
+          var dateField = category + '_date_' + i;
+          var numberField = category + '_number_' + i;
+          var dateValue = $('#exampleModal input[name="' + dateField + '"]').val();
+          var numberValue = $('#exampleModal input[name="' + numberField + '"]').val();
+          
+          if (dateValue && dateValue.trim() !== '') {
+            formData[dateField] = dateValue.trim();
+          }
+          if (numberValue && numberValue.trim() !== '') {
+            formData[numberField] = numberValue.trim();
+          }
+        }
+      });
+      
+      console.log('Collected form data with skin scores:', formData);
       
       // 獲取當前編輯的記錄ID (需要從全局變量或其他方式獲取)
       var submissionId = window.currentEditingSubmissionId || 1;
