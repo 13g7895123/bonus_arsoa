@@ -105,3 +105,4 @@
 93. 我排查了一下他存入skin_scores，但是API顯示空資料，幫我確認
 94. 請幫我檢查程式邏輯，資料庫沒問題，資料表我都已經建立好了
 95. 幫我確認最後填寫日期的欄位為甚麼時間都是一樣的，是否資料表中只記錄到日期，查看docs\sql\eeform1.md並修正
+96. eform1_list更新表單打的這支API，/api/eeform1/submission/6，他用POST，但是後端沒有改導致，Method not allowed
