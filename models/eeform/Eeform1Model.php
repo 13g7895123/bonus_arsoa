@@ -91,7 +91,7 @@ class Eeform1Model extends MY_Model
                 'phone' => $data['phone'],
                 'skin_type' => isset($data['skin_type']) ? $data['skin_type'] : null,
                 'skin_age' => isset($data['skin_age']) ? intval($data['skin_age']) : null,
-                'submission_date' => date('Y-m-d'),
+                'submission_date' => date('Y-m-d H:i:s'),
                 'created_at' => date('Y-m-d H:i:s'),
                 'status' => 'submitted'
             ];

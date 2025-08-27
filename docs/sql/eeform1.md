@@ -31,7 +31,7 @@ CREATE TABLE eeform1_submissions (
     skin_age TINYINT NULL COMMENT '肌膚年齡',
     
     -- 系統欄位
-    submission_date DATE NOT NULL COMMENT '填寫日期',
+    submission_date DATETIME NOT NULL COMMENT '填寫日期時間',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
     status ENUM('draft', 'submitted', 'reviewed') DEFAULT 'submitted' COMMENT '狀態',

@@ -7,7 +7,9 @@
       "Bash(ls:*)",
       "Bash(php -l:*)",
       "Bash(head:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(curl:*)",
+      "Bash(mysql:*)"
     ],
     "deny": [],
     "ask": []
