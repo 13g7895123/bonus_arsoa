@@ -194,44 +194,37 @@ class Eeform1Model extends MY_Model
                 }
             }
             
-            // 處理水潤評分資料 (目前資料表結構僅支援水潤類型)
-            $moisture_types = ['severe', 'warning', 'healthy'];
-            foreach ($moisture_types as $type) {
-                if (!empty($data["moisture_{$type}"])) {
-                    $this->db->insert('eeform1_moisture_scores', [
-                        'submission_id' => $submission_id,
-                        'score_type' => $type,
-                        'score_value' => intval($data["moisture_{$type}"]),
-                        'measurement_date' => date('Y-m-d')
-                    ]);
-                }
-            }
-            
-            // TODO: 其他評分類型 (膚色、紋理、敏感、油脂、色素、皺紋、毛孔) 
-            // 需要擴充資料表結構或建立額外的評分表才能儲存
-            // 目前的 eeform1_moisture_scores 表格結構僅支援 moisture 類型的評分
-            
-            // 暫時記錄其他評分資料到 notes 欄位 (如果需要保留資料的話)
-            $other_scores = [];
-            $other_categories = ['complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
+            // 處理肌膚評分資料（支援8個類別）
+            $skin_categories = ['moisture', 'complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
             $score_types = ['severe', 'warning', 'healthy'];
             
-            foreach ($other_categories as $category) {
+            foreach ($skin_categories as $category) {
                 foreach ($score_types as $type) {
                     $field_name = "{$category}_{$type}";
                     if (!empty($data[$field_name])) {
-                        $other_scores["{$category}_{$type}"] = intval($data[$field_name]);
+                        $score_data = [
+                            'submission_id' => $submission_id,
+                            'category' => $category,
+                            'score_type' => $type,
+                            'score_value' => intval($data[$field_name]),
+                            'measurement_date' => date('Y-m-d')
+                        ];
+                        
+                        // 檢查是否有對應的日期和數字資料
+                        $date_field = "{$category}_date";
+                        $number_field = "{$category}_number";
+                        
+                        if (!empty($data[$date_field])) {
+                            $score_data['measurement_date'] = $data[$date_field];
+                        }
+                        
+                        if (!empty($data[$number_field])) {
+                            $score_data['measurement_number'] = intval($data[$number_field]);
+                        }
+                        
+                        $this->db->insert('eeform1_skin_scores', $score_data);
                     }
                 }
-            }
-            
-            // 如果有其他評分資料，儲存為 JSON 格式到第一筆 moisture 記錄的 notes 欄位
-            if (!empty($other_scores)) {
-                $notes_data = json_encode($other_scores, JSON_UNESCAPED_UNICODE);
-                // 更新第一筆 moisture 記錄加入 notes
-                $this->db->where('submission_id', $submission_id);
-                $this->db->limit(1);
-                $this->db->update('eeform1_moisture_scores', ['notes' => $notes_data]);
             }
             
             // 處理建議內容
@@ -356,50 +349,10 @@ class Eeform1Model extends MY_Model
         $this->db->where('is_selected', 1);
         $allergies = $this->db->get()->result_array();
         
-        // 取得水潤評分資料
-        $this->db->from('eeform1_moisture_scores');
+        // 取得肌膚評分資料（新版統一資料表）
+        $this->db->from('eeform1_skin_scores');
         $this->db->where('submission_id', $id);
-        $moisture_scores = $this->db->get()->result_array();
-        
-        // 解析其他評分資料（從 notes 欄位中解析 JSON）
-        $other_scores_data = [];
-        if (!empty($moisture_scores)) {
-            foreach ($moisture_scores as $score) {
-                if (!empty($score['notes'])) {
-                    $parsed_notes = json_decode($score['notes'], true);
-                    if ($parsed_notes) {
-                        $other_scores_data = array_merge($other_scores_data, $parsed_notes);
-                    }
-                }
-            }
-        }
-        
-        // 將其他評分資料轉換為與 moisture_scores 相同的格式以便前端使用
-        $all_scores = [];
-        
-        // 加入原本的 moisture scores
-        foreach ($moisture_scores as $score) {
-            $all_scores[] = [
-                'category' => 'moisture',
-                'score_type' => $score['score_type'],
-                'score_value' => $score['score_value'],
-                'measurement_date' => $score['measurement_date']
-            ];
-        }
-        
-        // 加入其他評分類型的資料
-        foreach ($other_scores_data as $field_name => $value) {
-            // field_name 格式: category_type (例如 complexion_severe)
-            $parts = explode('_', $field_name, 2);
-            if (count($parts) === 2) {
-                $all_scores[] = [
-                    'category' => $parts[0],
-                    'score_type' => $parts[1],
-                    'score_value' => $value,
-                    'measurement_date' => date('Y-m-d')
-                ];
-            }
-        }
+        $skin_scores = $this->db->get()->result_array();
         
         // 取得建議內容
         $this->db->from('eeform1_suggestions');
@@ -412,7 +365,8 @@ class Eeform1Model extends MY_Model
         $submission['products'] = $products;
         $submission['skin_issues'] = $skin_issues;
         $submission['allergies'] = $allergies;
-        $submission['moisture_scores'] = $all_scores;  // 使用包含所有評分資料的陣列
+        $submission['skin_scores'] = $skin_scores;
+        $submission['moisture_scores'] = $skin_scores;  // 為了向後相容性保留此欄位
         $submission['suggestions'] = $suggestions;
         
         return $submission;
@@ -461,7 +415,7 @@ class Eeform1Model extends MY_Model
             $this->db->delete('eeform1_allergies');
             
             $this->db->where('submission_id', $id);
-            $this->db->delete('eeform1_moisture_scores');
+            $this->db->delete('eeform1_skin_scores');
             
             $this->db->where('submission_id', $id);
             $this->db->delete('eeform1_suggestions');
@@ -553,38 +507,37 @@ class Eeform1Model extends MY_Model
                 }
             }
             
-            // 重新插入評分資料（使用與 create_submission 相同的邏輯）
-            $moisture_types = ['severe', 'warning', 'healthy'];
-            foreach ($moisture_types as $type) {
-                if (!empty($data["moisture_{$type}"])) {
-                    $this->db->insert('eeform1_moisture_scores', [
-                        'submission_id' => $id,
-                        'score_type' => $type,
-                        'score_value' => intval($data["moisture_{$type}"]),
-                        'measurement_date' => date('Y-m-d')
-                    ]);
-                }
-            }
-            
-            // 處理其他評分資料
-            $other_scores = [];
-            $other_categories = ['complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
+            // 重新插入肌膚評分資料（支援8個類別）
+            $skin_categories = ['moisture', 'complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
             $score_types = ['severe', 'warning', 'healthy'];
             
-            foreach ($other_categories as $category) {
+            foreach ($skin_categories as $category) {
                 foreach ($score_types as $type) {
                     $field_name = "{$category}_{$type}";
                     if (!empty($data[$field_name])) {
-                        $other_scores["{$category}_{$type}"] = intval($data[$field_name]);
+                        $score_data = [
+                            'submission_id' => $id,
+                            'category' => $category,
+                            'score_type' => $type,
+                            'score_value' => intval($data[$field_name]),
+                            'measurement_date' => date('Y-m-d')
+                        ];
+                        
+                        // 檢查是否有對應的日期和數字資料
+                        $date_field = "{$category}_date";
+                        $number_field = "{$category}_number";
+                        
+                        if (!empty($data[$date_field])) {
+                            $score_data['measurement_date'] = $data[$date_field];
+                        }
+                        
+                        if (!empty($data[$number_field])) {
+                            $score_data['measurement_number'] = intval($data[$number_field]);
+                        }
+                        
+                        $this->db->insert('eeform1_skin_scores', $score_data);
                     }
                 }
-            }
-            
-            if (!empty($other_scores)) {
-                $notes_data = json_encode($other_scores, JSON_UNESCAPED_UNICODE);
-                $this->db->where('submission_id', $id);
-                $this->db->limit(1);
-                $this->db->update('eeform1_moisture_scores', ['notes' => $notes_data]);
             }
             
             // 重新插入建議內容

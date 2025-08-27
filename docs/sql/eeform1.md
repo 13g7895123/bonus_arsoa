@@ -10,7 +10,7 @@ EEFORM1 肌膚諮詢記錄表系統需要以下資料表來完整儲存表單數
 4. `eeform1_products` - 使用產品記錄表
 5. `eeform1_skin_issues` - 肌膚困擾記錄表
 6. `eeform1_allergies` - 過敏狀況記錄表
-7. `eeform1_moisture_scores` - 水潤評分記錄表
+7. `eeform1_skin_scores` - 肌膚評分記錄表（支援8種評分類別）
 8. `eeform1_suggestions` - 建議內容記錄表
 
 ## SQL 建表語句
@@ -130,23 +130,26 @@ CREATE TABLE eeform1_allergies (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='過敏狀況記錄表';
 ```
 
-### 7. 水潤評分記錄表 (eeform1_moisture_scores)
+### 7. 肌膚評分記錄表 (eeform1_skin_scores)
 
 ```sql
-CREATE TABLE eeform1_moisture_scores (
+CREATE TABLE eeform1_skin_scores (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '提交記錄ID',
+    category ENUM('moisture', 'complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore') NOT NULL COMMENT '評分類別',
     score_type ENUM('severe', 'warning', 'healthy') NOT NULL COMMENT '評分類型',
     score_value TINYINT NOT NULL DEFAULT 0 COMMENT '評分值 (0-10)',
     measurement_date DATE NULL COMMENT '測量日期',
+    measurement_number INT NULL COMMENT '測量數值',
     notes TEXT NULL COMMENT '備註',
     
     FOREIGN KEY (submission_id) REFERENCES eeform1_submissions(id) ON DELETE CASCADE,
-    UNIQUE KEY uk_submission_score (submission_id, score_type, measurement_date),
+    UNIQUE KEY uk_submission_category_score (submission_id, category, score_type),
     INDEX idx_submission_id (submission_id),
+    INDEX idx_category (category),
     INDEX idx_score_type (score_type),
     INDEX idx_measurement_date (measurement_date)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='水潤評分記錄表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='肌膚評分記錄表';
 ```
 
 ### 8. 建議內容記錄表 (eeform1_suggestions)
@@ -176,7 +179,23 @@ CREATE TABLE eeform1_suggestions (
 
 1. **基本資料**直接儲存在 `eeform1_submissions` 表中
 2. **多選項目**（如職業、生活方式、產品使用等）儲存在對應的關聯表中
-3. **生活方式選項**包含以下類別和鍵值：
+3. **肌膚評分資料**儲存在 `eeform1_skin_scores` 表中，支援8種評分類別
+4. **生活方式選項**包含以下類別和鍵值：
+
+#### 肌膚評分類別說明 (skin_scores)
+- `moisture` - 水潤度評分
+- `complexion` - 膚色評分  
+- `texture` - 紋理評分
+- `sensitivity` - 敏感度評分
+- `oil` - 油脂分泌評分
+- `pigment` - 色素沉澱評分
+- `wrinkle` - 皺紋評分
+- `pore` - 毛孔評分
+
+每個類別都包含三種評分類型：
+- `severe` - 嚴重、盡快改善
+- `warning` - 有問題、要注意
+- `healthy` - 健康
 
 #### 日曬時間選項 (sunlight)
 - `1_2h` - 1~2小時  
@@ -222,6 +241,41 @@ INSERT INTO eeform1_skin_issues (submission_id, issue_type) VALUES
 (@submission_id, 'dull'),
 (@submission_id, 'spots'),
 (@submission_id, 'dry');
+
+-- 插入肌膚評分資料（8個類別的完整評分）
+INSERT INTO eeform1_skin_scores (submission_id, category, score_type, score_value, measurement_date, measurement_number) VALUES
+-- 水潤類別
+(@submission_id, 'moisture', 'severe', 2, CURDATE(), 25),
+(@submission_id, 'moisture', 'warning', 6, CURDATE(), 45),
+(@submission_id, 'moisture', 'healthy', 8, CURDATE(), 75),
+-- 膚色類別
+(@submission_id, 'complexion', 'severe', 3, CURDATE(), 30),
+(@submission_id, 'complexion', 'warning', 7, CURDATE(), 50),
+(@submission_id, 'complexion', 'healthy', 9, CURDATE(), 80),
+-- 紋理類別
+(@submission_id, 'texture', 'severe', 1, CURDATE(), 20),
+(@submission_id, 'texture', 'warning', 5, CURDATE(), 40),
+(@submission_id, 'texture', 'healthy', 7, CURDATE(), 70),
+-- 敏感類別
+(@submission_id, 'sensitivity', 'severe', 4, CURDATE(), 35),
+(@submission_id, 'sensitivity', 'warning', 6, CURDATE(), 55),
+(@submission_id, 'sensitivity', 'healthy', 8, CURDATE(), 85),
+-- 油脂類別
+(@submission_id, 'oil', 'severe', 2, CURDATE(), 25),
+(@submission_id, 'oil', 'warning', 5, CURDATE(), 45),
+(@submission_id, 'oil', 'healthy', 7, CURDATE(), 75),
+-- 色素類別
+(@submission_id, 'pigment', 'severe', 3, CURDATE(), 30),
+(@submission_id, 'pigment', 'warning', 6, CURDATE(), 50),
+(@submission_id, 'pigment', 'healthy', 9, CURDATE(), 80),
+-- 皺紋類別
+(@submission_id, 'wrinkle', 'severe', 1, CURDATE(), 15),
+(@submission_id, 'wrinkle', 'warning', 4, CURDATE(), 35),
+(@submission_id, 'wrinkle', 'healthy', 6, CURDATE(), 65),
+-- 毛孔類別
+(@submission_id, 'pore', 'severe', 2, CURDATE(), 20),
+(@submission_id, 'pore', 'warning', 5, CURDATE(), 40),
+(@submission_id, 'pore', 'healthy', 8, CURDATE(), 70);
 
 -- 插入建議內容
 INSERT INTO eeform1_suggestions (submission_id, toner_suggestion, serum_suggestion, suggestion_content) VALUES
@@ -298,7 +352,7 @@ ALTER TABLE eeform1_suggestions ADD FULLTEXT KEY ft_content (suggestion_content)
 
 ```sql
 -- 確保評分值在合理範圍內
-ALTER TABLE eeform1_moisture_scores 
+ALTER TABLE eeform1_skin_scores 
 ADD CONSTRAINT chk_score_range CHECK (score_value >= 0 AND score_value <= 10);
 
 -- 確保出生年月在合理範圍內
