@@ -573,18 +573,25 @@ $(document).ready(function() {
       
       // 複製基本資料
       var formData = {
-        id: apiData.id,
-        member_id: apiData.member_id,
-        member_name: apiData.member_name,
-        birth_year: apiData.birth_year,
-        birth_month: apiData.birth_month,
-        phone: apiData.phone,
+        id: apiData.id || null,
+        member_id: apiData.member_id || null,
+        member_name: apiData.member_name || '',
+        birth_year: apiData.birth_year || '',
+        birth_month: apiData.birth_month || '',
+        phone: apiData.phone || '',
+        skin_type: apiData.skin_type || '',
+        skin_age: apiData.skin_age || '',
+        submission_date: apiData.submission_date || '',
+        created_at: apiData.created_at || '',
+        updated_at: apiData.updated_at || ''
+      };
+      
+      console.log('Raw basic fields from API:', {
         skin_type: apiData.skin_type,
         skin_age: apiData.skin_age,
-        submission_date: apiData.submission_date,
-        created_at: apiData.created_at,
-        updated_at: apiData.updated_at
-      };
+        member_name: apiData.member_name,
+        suggestions: apiData.suggestions
+      });
       
       // 轉換職業資料 (注意：資料庫儲存的是英文枚舉值)
       var occupationMap = {
@@ -746,11 +753,34 @@ $(document).ready(function() {
       }
       
       // 轉換建議內容
+      console.log('API suggestions data:', apiData.suggestions);
       if (apiData.suggestions) {
         formData.toner_suggestion = apiData.suggestions.toner_suggestion || '';
         formData.serum_suggestion = apiData.suggestions.serum_suggestion || '';
         formData.suggestion_content = apiData.suggestions.suggestion_content || '';
+        console.log('Transformed suggestions:', {
+          toner: formData.toner_suggestion,
+          serum: formData.serum_suggestion, 
+          content: formData.suggestion_content
+        });
+      } else {
+        // 如果沒有suggestions物件，設定預設值
+        formData.toner_suggestion = '';
+        formData.serum_suggestion = '';
+        formData.suggestion_content = '';
+        console.log('No suggestions data found, setting empty values');
       }
+      
+      // 保留moisture_scores資料供檢測數據區塊使用
+      formData.moisture_scores = apiData.moisture_scores || [];
+      console.log('API moisture_scores data:', apiData.moisture_scores);
+      
+      // 檢查基本欄位
+      console.log('Basic fields check:', {
+        skin_type: formData.skin_type,
+        skin_age: formData.skin_age,
+        member_name: formData.member_name
+      });
       
       console.log('Transformed form data:', formData);
       return formData;
@@ -1059,12 +1089,24 @@ $(document).ready(function() {
       html += '<label class="label-custom">' + categoryName + '</label>';
       html += '<div class="row">';
       
+      // 查找對應的moisture_scores資料
+      var categoryScores = [];
+      if (data.moisture_scores && Array.isArray(data.moisture_scores)) {
+        // 這裡可以根據categoryName匹配對應的資料
+        // 目前先顯示前三筆資料作為示例
+        categoryScores = data.moisture_scores.slice(0, 3);
+      }
+      
       // 三組日期和數字輸入
       for (var i = 0; i < 3; i++) {
+        var scoreData = categoryScores[i] || {};
+        var dateValue = scoreData.measurement_date || '';
+        var scoreValue = scoreData.score_value || '';
+        
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
-        html += '<div class="col-lg-6"><input type="text" class="form-control form-control-custom" placeholder="請填日期…"' + disabled + '></div>';
-        html += '<div class="col-lg-6"><input type="text" class="form-control form-control-custom" placeholder="限填數字…"' + disabled + '></div>';
+        html += '<div class="col-lg-6"><input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="' + dateValue + '"' + disabled + '></div>';
+        html += '<div class="col-lg-6"><input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue + '"' + disabled + '></div>';
         html += '</div>';
         html += '</div>';
       }
@@ -1074,17 +1116,27 @@ $(document).ready(function() {
       
       // 三組下拉選單和數字輸入
       for (var i = 0; i < 3; i++) {
+        var scoreData2 = categoryScores[i] || {};
+        var scoreType = scoreData2.score_type || '';
+        var scoreValue2 = scoreData2.score_value || '';
+        
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
         html += '<div class="col-lg-6">';
         html += '<select class="form-control form-control-custom"' + disabled + '>';
-        html += '<option>請選擇</option>';
-        html += '<option>嚴重、盡快改善</option>';
-        html += '<option>有問題、要注意</option>';
-        html += '<option>健康</option>';
+        html += '<option value="">請選擇</option>';
+        var options = [
+          {value: 'severe', label: '嚴重、盡快改善'},
+          {value: 'warning', label: '有問題、要注意'},
+          {value: 'healthy', label: '健康'}
+        ];
+        options.forEach(function(option) {
+          var selected = (scoreType === option.value) ? ' selected' : '';
+          html += '<option value="' + option.value + '"' + selected + '>' + option.label + '</option>';
+        });
         html += '</select>';
         html += '</div>';
-        html += '<div class="col-lg-6"><input type="text" class="form-control form-control-custom" placeholder="限填數字…"' + disabled + '></div>';
+        html += '<div class="col-lg-6"><input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue2 + '"' + disabled + '></div>';
         html += '</div>';
         html += '</div>';
       }
