@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Form Data Collection</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Test Form Data Collection</h2>
+    
+    <form id="testForm">
+        <h3>Moisture Scores</h3>
+        <input type="text" name="moisture_severe" value="0" placeholder="Severe"> (0)<br>
+        <input type="text" name="moisture_warning" value="5" placeholder="Warning"> (5)<br>
+        <input type="text" name="moisture_healthy" value="8" placeholder="Healthy"> (8)<br>
+        
+        <h3>Complexion Scores</h3>
+        <input type="text" name="complexion_severe" value="1" placeholder="Severe"> (1)<br>
+        <input type="text" name="complexion_warning" value="6" placeholder="Warning"> (6)<br>
+        <input type="text" name="complexion_healthy" value="9" placeholder="Healthy"> (9)<br>
+        
+        <h3>Empty Fields (should not be submitted)</h3>
+        <input type="text" name="texture_severe" value="" placeholder="Empty"> (empty)<br>
+        <input type="text" name="texture_warning" value="" placeholder="Empty"> (empty)<br>
+        
+        <button type="button" onclick="testDataCollection()">Test Data Collection</button>
+    </form>
+    
+    <div id="results"></div>
+    
+    <script>
+    function testDataCollection() {
+        // Collect form data using similar logic to the actual form
+        var formData = {
+            // Basic fields
+            member_name: 'Test User',
+            birth_year: 1990,
+            birth_month: 5,
+            phone: '0912345678',
+            
+            // Skin scores
+            moisture_severe: $('input[name="moisture_severe"]').val(),
+            moisture_warning: $('input[name="moisture_warning"]').val(),
+            moisture_healthy: $('input[name="moisture_healthy"]').val(),
+            
+            complexion_severe: $('input[name="complexion_severe"]').val(),
+            complexion_warning: $('input[name="complexion_warning"]').val(),
+            complexion_healthy: $('input[name="complexion_healthy"]').val(),
+            
+            texture_severe: $('input[name="texture_severe"]').val(),
+            texture_warning: $('input[name="texture_warning"]').val(),
+        };
+        
+        console.log('Collected Form Data:', formData);
+        
+        var html = '<h3>Collected Data</h3><pre>' + JSON.stringify(formData, null, 2) + '</pre>';
+        
+        html += '<h3>Logic Test Results</h3>';
+        
+        // Test the logic conditions
+        var skinCategories = ['moisture', 'complexion', 'texture'];
+        var scoreTypes = ['severe', 'warning', 'healthy'];
+        
+        html += '<table border="1"><tr><th>Field</th><th>Value</th><th>!empty()</th><th>isset() && !== ""</th><th>Will Insert?</th></tr>';
+        
+        skinCategories.forEach(function(category) {
+            scoreTypes.forEach(function(type) {
+                var fieldName = category + '_' + type;
+                var value = formData[fieldName];
+                var oldLogic = !!(value && value !== ''); // Similar to PHP !empty()
+                var newLogic = (value !== undefined && value !== '');
+                
+                html += '<tr>';
+                html += '<td>' + fieldName + '</td>';
+                html += '<td>"' + value + '"</td>';
+                html += '<td>' + oldLogic + '</td>';
+                html += '<td>' + newLogic + '</td>';
+                html += '<td style="background:' + (newLogic ? 'lightgreen' : 'lightcoral') + '">' + (newLogic ? 'YES' : 'NO') + '</td>';
+                html += '</tr>';
+            });
+        });
+        
+        html += '</table>';
+        
+        $('#results').html(html);
+    }
+    </script>
+</body>
+</html>

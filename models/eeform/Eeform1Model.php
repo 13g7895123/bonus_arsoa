@@ -204,7 +204,9 @@ class Eeform1Model extends MY_Model
             foreach ($skin_categories as $category) {
                 foreach ($score_types as $type) {
                     $field_name = "{$category}_{$type}";
-                    if (!empty($data[$field_name])) {
+                    // Check if field exists and has a value (including "0")
+                    error_log("Checking field: $field_name, value: " . (isset($data[$field_name]) ? "'" . $data[$field_name] . "'" : 'NOT SET'));
+                    if (isset($data[$field_name]) && $data[$field_name] !== '') {
                         $score_data = [
                             'submission_id' => $submission_id,
                             'category' => $category,
@@ -614,7 +616,9 @@ class Eeform1Model extends MY_Model
             foreach ($skin_categories as $category) {
                 foreach ($score_types as $type) {
                     $field_name = "{$category}_{$type}";
-                    if (!empty($data[$field_name])) {
+                    // Check if field exists and has a value (including "0")
+                    error_log("UPDATE - Checking field: $field_name, value: " . (isset($data[$field_name]) ? "'" . $data[$field_name] . "'" : 'NOT SET'));
+                    if (isset($data[$field_name]) && $data[$field_name] !== '') {
                         $score_data = [
                             'submission_id' => $id,
                             'category' => $category,
