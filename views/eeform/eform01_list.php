@@ -1100,8 +1100,9 @@ $(document).ready(function() {
       // 三組日期和數字輸入
       for (var i = 0; i < 3; i++) {
         var scoreData = categoryScores[i] || {};
-        var dateValue = scoreData.measurement_date || '2025-08-27';
-        var scoreValue = scoreData.score_value || '5';
+        // 日期和數字輸入只顯示資料庫資料，沒有資料時顯示空白
+        var dateValue = scoreData.measurement_date || '';
+        var scoreValue = scoreData.score_value || '';
         
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
@@ -1123,8 +1124,9 @@ $(document).ready(function() {
       
       for (var i = 0; i < 3; i++) {
         var scoreData2 = categoryScores[i] || {};
+        // 下拉選單保持預設值邏輯，數值欄位只顯示資料庫資料
         var scoreType = scoreData2.score_type || defaultValues[i].type;
-        var scoreValue2 = scoreData2.score_value || defaultValues[i].value;
+        var scoreValue2 = scoreData2.score_value || '';
         
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
