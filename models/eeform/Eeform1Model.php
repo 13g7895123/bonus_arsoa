@@ -198,6 +198,9 @@ class Eeform1Model extends MY_Model
             $skin_categories = ['moisture', 'complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
             $score_types = ['severe', 'warning', 'healthy'];
             
+            error_log('Processing skin categories for submission_id: ' . $submission_id);
+            error_log('Available form data fields: ' . implode(', ', array_keys($data)));
+            
             foreach ($skin_categories as $category) {
                 foreach ($score_types as $type) {
                     $field_name = "{$category}_{$type}";
@@ -222,7 +225,18 @@ class Eeform1Model extends MY_Model
                             $score_data['measurement_number'] = intval($data[$number_field]);
                         }
                         
-                        $this->db->insert('eeform1_skin_scores', $score_data);
+                        $insert_result = $this->db->insert('eeform1_skin_scores', $score_data);
+                        
+                        // Debug: 檢查插入結果
+                        if ($insert_result) {
+                            $inserted_id = $this->db->insert_id();
+                            error_log('Successfully inserted skin_score: ' . json_encode($score_data) . ' with ID: ' . $inserted_id);
+                        } else {
+                            $db_error = $this->db->error();
+                            error_log('Failed to insert skin_score: ' . json_encode($score_data) . ' Error: ' . json_encode($db_error));
+                        }
+                    } else {
+                        error_log('No data found for field: ' . $field_name);
                     }
                 }
             }
@@ -349,16 +363,78 @@ class Eeform1Model extends MY_Model
         $this->db->where('is_selected', 1);
         $allergies = $this->db->get()->result_array();
         
+        // Debug: 檢查資料表是否存在
+        $table_exists_query = "SHOW TABLES LIKE 'eeform1_skin_scores'";
+        $table_check = $this->db->query($table_exists_query);
+        error_log('Table eeform1_skin_scores exists: ' . ($table_check->num_rows() > 0 ? 'YES' : 'NO'));
+        
+        if ($table_check->num_rows() === 0) {
+            error_log('ERROR: eeform1_skin_scores table does not exist!');
+            // 檢查是否還在使用舊的表名
+            $old_table_check = $this->db->query("SHOW TABLES LIKE 'eeform1_moisture_scores'");
+            error_log('Old table eeform1_moisture_scores exists: ' . ($old_table_check->num_rows() > 0 ? 'YES' : 'NO'));
+            
+            if ($old_table_check->num_rows() > 0) {
+                error_log('Falling back to old table structure');
+                // 使用舊表結構作為臨時解決方案
+                $this->db->from('eeform1_moisture_scores');
+                $this->db->where('submission_id', $id);
+                $skin_scores = $this->db->get()->result_array();
+                
+                // 轉換舊資料結構為新格式
+                foreach ($skin_scores as &$score) {
+                    if (!isset($score['category'])) {
+                        $score['category'] = 'moisture'; // 舊資料預設為moisture
+                    }
+                }
+                
+                error_log('Retrieved ' . count($skin_scores) . ' records from old table');
+                
+                // 組合結果並返回
+                $submission['occupations'] = $occupations;
+                $submission['lifestyle'] = $lifestyle;
+                $submission['products'] = $products;
+                $submission['skin_issues'] = $skin_issues;
+                $submission['allergies'] = $allergies;
+                $submission['skin_scores'] = $skin_scores;
+                $submission['moisture_scores'] = $skin_scores;
+                $submission['suggestions'] = $suggestions;
+                
+                return $submission;
+            }
+        }
+        
         // 取得肌膚評分資料（新版統一資料表）
+        $this->db->from('eeform1_skin_scores');
+        $this->db->where('submission_id', $id);
+        
+        // Debug: 檢查SQL查詢
+        $sql_query = $this->db->get_compiled_select();
+        log_message('debug', 'SQL Query: ' . $sql_query);
+        error_log('SQL Query for skin_scores: ' . $sql_query);
+        
+        // 重新設定查詢 (get_compiled_select 會清除查詢)
         $this->db->from('eeform1_skin_scores');
         $this->db->where('submission_id', $id);
         $skin_scores = $this->db->get()->result_array();
         
+        // Check for database errors
+        $db_error = $this->db->error();
+        if ($db_error['code'] != 0) {
+            error_log('Database error when querying skin_scores: ' . json_encode($db_error));
+        }
+        
         // Debug: 檢查查詢結果
         log_message('debug', 'Querying eeform1_skin_scores for submission_id: ' . $id);
         log_message('debug', 'Found skin_scores records: ' . count($skin_scores));
+        error_log('Found skin_scores records count: ' . count($skin_scores) . ' for submission_id: ' . $id);
+        
         if (!empty($skin_scores)) {
-            log_message('debug', 'Sample skin_scores: ' . json_encode(array_slice($skin_scores, 0, 3)));
+            $sample_data = json_encode(array_slice($skin_scores, 0, 3));
+            log_message('debug', 'Sample skin_scores: ' . $sample_data);
+            error_log('Sample skin_scores: ' . $sample_data);
+        } else {
+            error_log('No skin_scores found - checking if table exists or data was inserted');
         }
         
         // 取得建議內容
@@ -375,6 +451,18 @@ class Eeform1Model extends MY_Model
         $submission['skin_scores'] = $skin_scores;
         $submission['moisture_scores'] = $skin_scores;  // 為了向後相容性保留此欄位
         $submission['suggestions'] = $suggestions;
+        
+        // Final debug: 檢查最終返回的資料結構
+        error_log('=== Final submission data structure ===');
+        error_log('Total submission keys: ' . implode(', ', array_keys($submission)));
+        error_log('skin_scores final count: ' . count($skin_scores));
+        error_log('moisture_scores final count: ' . count($submission['moisture_scores']));
+        if (!empty($skin_scores)) {
+            error_log('Final skin_scores sample: ' . json_encode(array_slice($skin_scores, 0, 2)));
+        } else {
+            error_log('WARNING: Final skin_scores is empty for submission_id: ' . $id);
+        }
+        error_log('======================================');
         
         return $submission;
     }
