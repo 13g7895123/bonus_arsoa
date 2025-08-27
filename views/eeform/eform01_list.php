@@ -487,7 +487,22 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(response) {
           if (response && response.success) {
+            console.log('=== API Response Debug ===');
             console.log('Raw API response:', response.data);
+            console.log('Skin scores data structure:', {
+              has_skin_scores: !!(response.data.skin_scores),
+              skin_scores_length: response.data.skin_scores ? response.data.skin_scores.length : 0,
+              has_moisture_scores: !!(response.data.moisture_scores),
+              moisture_scores_length: response.data.moisture_scores ? response.data.moisture_scores.length : 0
+            });
+            if (response.data.skin_scores) {
+              console.log('Skin scores sample:', response.data.skin_scores.slice(0, 3));
+            }
+            if (response.data.moisture_scores) {
+              console.log('Moisture scores sample:', response.data.moisture_scores.slice(0, 3));
+            }
+            console.log('==========================');
+            
             var transformedData = transformApiDataToFormStructure(response.data);
             displayOriginalFormContent(transformedData, false); // false = 檢視模式
           } else {
@@ -541,7 +556,22 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(response) {
           if (response && response.success) {
+            console.log('=== Edit API Response Debug ===');
             console.log('Raw API response for edit:', response.data);
+            console.log('Skin scores data structure:', {
+              has_skin_scores: !!(response.data.skin_scores),
+              skin_scores_length: response.data.skin_scores ? response.data.skin_scores.length : 0,
+              has_moisture_scores: !!(response.data.moisture_scores),
+              moisture_scores_length: response.data.moisture_scores ? response.data.moisture_scores.length : 0
+            });
+            if (response.data.skin_scores) {
+              console.log('Skin scores sample:', response.data.skin_scores.slice(0, 3));
+            }
+            if (response.data.moisture_scores) {
+              console.log('Moisture scores sample:', response.data.moisture_scores.slice(0, 3));
+            }
+            console.log('===============================');
+            
             var transformedData = transformApiDataToFormStructure(response.data);
             displayOriginalFormContent(transformedData, true); // true = 編輯模式
           } else {
@@ -771,9 +801,28 @@ $(document).ready(function() {
         console.log('No suggestions data found, setting empty values');
       }
       
-      // 保留moisture_scores資料供檢測數據區塊使用
-      formData.moisture_scores = apiData.moisture_scores || [];
-      console.log('API moisture_scores data:', apiData.moisture_scores);
+      // 處理肌膚評分資料（支援新舊資料結構）
+      var skinScoresData = [];
+      
+      // 優先使用新的skin_scores結構
+      if (apiData.skin_scores && Array.isArray(apiData.skin_scores)) {
+        skinScoresData = apiData.skin_scores;
+        console.log('Using skin_scores data:', apiData.skin_scores);
+      } 
+      // 如果沒有skin_scores，使用moisture_scores作為向後相容
+      else if (apiData.moisture_scores && Array.isArray(apiData.moisture_scores)) {
+        skinScoresData = apiData.moisture_scores;
+        console.log('Using moisture_scores data:', apiData.moisture_scores);
+      }
+      
+      // 保留兩個欄位供檢測數據區塊使用
+      formData.skin_scores = skinScoresData;
+      formData.moisture_scores = skinScoresData;
+      
+      console.log('Final skin scores data structure:', skinScoresData);
+      console.log('Data categories found:', skinScoresData.map(function(score) {
+        return score.category + '_' + score.score_type;
+      }));
       
       // 檢查基本欄位
       console.log('Basic fields check:', {
@@ -1108,14 +1157,24 @@ $(document).ready(function() {
         categoryScores = data.moisture_scores.filter(function(score) {
           return score.category === categoryKey;
         });
+        
+        console.log('Processing category:', categoryName, '-> key:', categoryKey);
+        console.log('Available scores:', data.moisture_scores.length);
+        console.log('Filtered scores for', categoryName, ':', categoryScores);
+      } else {
+        console.log('No moisture_scores data available for', categoryName);
       }
       
       // 三組日期和數字輸入
       for (var i = 0; i < 3; i++) {
         var scoreData = categoryScores[i] || {};
+        console.log('Score data for', categoryName, 'index', i, ':', scoreData);
+        
         // 日期和數字輸入只顯示資料庫資料，沒有資料時顯示空白
         var dateValue = scoreData.measurement_date || '';
         var scoreValue = scoreData.score_value || '';
+        
+        console.log('Extracted values - date:', dateValue, 'score:', scoreValue);
         
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
@@ -1137,9 +1196,13 @@ $(document).ready(function() {
       
       for (var i = 0; i < 3; i++) {
         var scoreData2 = categoryScores[i] || {};
+        console.log('Dropdown score data for', categoryName, 'index', i, ':', scoreData2);
+        
         // 下拉選單保持預設值邏輯，數值欄位只顯示資料庫資料
         var scoreType = scoreData2.score_type || defaultValues[i].type;
         var scoreValue2 = scoreData2.score_value || '';
+        
+        console.log('Dropdown values - type:', scoreType, 'value:', scoreValue2);
         
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';

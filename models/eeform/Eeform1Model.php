@@ -354,6 +354,13 @@ class Eeform1Model extends MY_Model
         $this->db->where('submission_id', $id);
         $skin_scores = $this->db->get()->result_array();
         
+        // Debug: 檢查查詢結果
+        log_message('debug', 'Querying eeform1_skin_scores for submission_id: ' . $id);
+        log_message('debug', 'Found skin_scores records: ' . count($skin_scores));
+        if (!empty($skin_scores)) {
+            log_message('debug', 'Sample skin_scores: ' . json_encode(array_slice($skin_scores, 0, 3)));
+        }
+        
         // 取得建議內容
         $this->db->from('eeform1_suggestions');
         $this->db->where('submission_id', $id);

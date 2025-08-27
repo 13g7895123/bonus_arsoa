@@ -272,6 +272,14 @@ class Eeform1 extends MY_Controller
                 $submission = $this->eform1_model->get_submission_detail($id);
                 
                 if ($submission) {
+                    // Debug: 檢查skin_scores資料結構
+                    error_log('API submission response debug for ID ' . $id . ':');
+                    error_log('skin_scores count: ' . (isset($submission['skin_scores']) ? count($submission['skin_scores']) : 0));
+                    error_log('moisture_scores count: ' . (isset($submission['moisture_scores']) ? count($submission['moisture_scores']) : 0));
+                    if (isset($submission['skin_scores']) && !empty($submission['skin_scores'])) {
+                        error_log('skin_scores sample: ' . json_encode(array_slice($submission['skin_scores'], 0, 3)));
+                    }
+                    
                     $this->_send_success('取得表單詳細資料成功', $submission);
                 } else {
                     $this->_send_error('找不到指定的表單', 404);
