@@ -390,6 +390,11 @@ class Eeform1Model extends MY_Model
                 
                 error_log('Retrieved ' . count($skin_scores) . ' records from old table');
                 
+                // 取得建議內容 (needed for fallback path)
+                $this->db->from('eeform1_suggestions');
+                $this->db->where('submission_id', $id);
+                $suggestions = $this->db->get()->row_array();
+                
                 // 組合結果並返回
                 $submission['occupations'] = $occupations;
                 $submission['lifestyle'] = $lifestyle;
