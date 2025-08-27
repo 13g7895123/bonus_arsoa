@@ -1100,8 +1100,8 @@ $(document).ready(function() {
       // 三組日期和數字輸入
       for (var i = 0; i < 3; i++) {
         var scoreData = categoryScores[i] || {};
-        var dateValue = scoreData.measurement_date || '';
-        var scoreValue = scoreData.score_value || '';
+        var dateValue = scoreData.measurement_date || '2025-08-27';
+        var scoreValue = scoreData.score_value || '5';
         
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
@@ -1114,11 +1114,17 @@ $(document).ready(function() {
       html += '</div>';
       html += '<div class="row">';
       
-      // 三組下拉選單和數字輸入
+      // 三組下拉選單和數字輸入 - 設定預設值
+      var defaultValues = [
+        {type: 'severe', value: '0'},
+        {type: 'warning', value: '6'},
+        {type: 'healthy', value: '8'}
+      ];
+      
       for (var i = 0; i < 3; i++) {
         var scoreData2 = categoryScores[i] || {};
-        var scoreType = scoreData2.score_type || '';
-        var scoreValue2 = scoreData2.score_value || '';
+        var scoreType = scoreData2.score_type || defaultValues[i].type;
+        var scoreValue2 = scoreData2.score_value || defaultValues[i].value;
         
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
