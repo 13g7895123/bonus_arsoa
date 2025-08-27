@@ -364,7 +364,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -374,7 +374,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -384,7 +384,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -394,10 +394,10 @@
                                           <div class="col-sm-4 mb20 date-input-group">
                                             <div class="row">
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="2025-08-27">
                                               </div>
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="5">
                                               </div>
                                             </div>
                                           </div>
@@ -416,7 +416,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -426,7 +426,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -436,7 +436,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -446,10 +446,10 @@
                                           <div class="col-sm-4 mb20 date-input-group">
                                             <div class="row">
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="2025-08-27">
                                               </div>
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="5">
                                               </div>
                                             </div>
                                           </div>
@@ -468,7 +468,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -478,7 +478,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -488,7 +488,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -498,10 +498,10 @@
                                           <div class="col-sm-4 mb20 date-input-group">
                                             <div class="row">
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="2025-08-27">
                                               </div>
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="5">
                                               </div>
                                             </div>
                                           </div>
@@ -520,7 +520,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -530,7 +530,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -540,7 +540,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -550,10 +550,10 @@
                                           <div class="col-sm-4 mb20 date-input-group">
                                             <div class="row">
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="2025-08-27">
                                               </div>
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="5">
                                               </div>
                                             </div>
                                           </div>
@@ -572,7 +572,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -582,7 +582,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -592,7 +592,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -602,10 +602,10 @@
                                           <div class="col-sm-4 mb20 date-input-group">
                                             <div class="row">
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="2025-08-27">
                                               </div>
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="5">
                                               </div>
                                             </div>
                                           </div>
@@ -624,7 +624,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -634,7 +634,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -644,7 +644,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -654,10 +654,10 @@
                                           <div class="col-sm-4 mb20 date-input-group">
                                             <div class="row">
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="2025-08-27">
                                               </div>
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="5">
                                               </div>
                                             </div>
                                           </div>
@@ -676,7 +676,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -686,7 +686,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -696,7 +696,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -706,10 +706,10 @@
                                           <div class="col-sm-4 mb20 date-input-group">
                                             <div class="row">
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="2025-08-27">
                                               </div>
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="5">
                                               </div>
                                             </div>
                                           </div>
@@ -728,7 +728,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -738,7 +738,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -748,7 +748,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10">
+                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -758,10 +758,10 @@
                                           <div class="col-sm-4 mb20 date-input-group">
                                             <div class="row">
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="請填日期…" value="2025-08-27">
                                               </div>
                                               <div class="col-lg-6">
-                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…">
+                                                <input type="text" class="form-control form-control-custom" placeholder="限填數字…" value="5">
                                               </div>
                                             </div>
                                           </div>
