@@ -586,12 +586,12 @@ $(document).ready(function() {
         updated_at: apiData.updated_at
       };
       
-      // 轉換職業資料
+      // 轉換職業資料 (注意：資料庫儲存的是英文枚舉值)
       var occupationMap = {
-        '服務業': 'occupation_service',
-        '上班族': 'occupation_office', 
-        '餐飲業': 'occupation_restaurant',
-        '家管': 'occupation_housewife'
+        'service': 'occupation_service',
+        'office': 'occupation_office', 
+        'restaurant': 'occupation_restaurant',
+        'housewife': 'occupation_housewife'
       };
       
       // 初始化職業欄位
@@ -600,32 +600,35 @@ $(document).ready(function() {
       });
       
       if (apiData.occupations && Array.isArray(apiData.occupations)) {
+        console.log('Processing occupations:', apiData.occupations);
         apiData.occupations.forEach(function(occ) {
+          console.log('Occupation item:', occ, 'is_selected:', occ.is_selected, 'occupation_type:', occ.occupation_type);
           if (occ.is_selected == 1 && occupationMap[occ.occupation_type]) {
             formData[occupationMap[occ.occupation_type]] = 1;
+            console.log('Set', occupationMap[occ.occupation_type], 'to 1');
           }
         });
       }
       
-      // 轉換生活方式資料
+      // 轉換生活方式資料 (注意：資料庫儲存的是item_key)
       var lifestyleMap = {
         'sunlight': {
-          '1~2小時': 'sunlight_1_2h',
-          '3~4小時': 'sunlight_3_4h',
-          '5~6小時': 'sunlight_5_6h',
-          '8小時以上': 'sunlight_8h_plus'
+          '1_2h': 'sunlight_1_2h',
+          '3_4h': 'sunlight_3_4h',
+          '5_6h': 'sunlight_5_6h',
+          '8h_plus': 'sunlight_8h_plus'
         },
         'aircondition': {
-          '1小時內': 'aircondition_1h',
-          '2~4小時': 'aircondition_2_4h',
-          '5~8小時': 'aircondition_5_8h',
-          '8小時以上': 'aircondition_8h_plus'
+          '1h': 'aircondition_1h',
+          '2_4h': 'aircondition_2_4h',
+          '5_8h': 'aircondition_5_8h',
+          '8h_plus': 'aircondition_8h_plus'
         },
         'sleep': {
-          '晚上9:00~10:59就寢': 'sleep_9_10',
-          '晚上11:00~12:59就寢': 'sleep_11_12',
-          '凌晨1點之後就寢': 'sleep_after_1',
-          '其他': 'sleep_other'
+          '9_10': 'sleep_9_10',
+          '11_12': 'sleep_11_12',
+          'after_1': 'sleep_after_1',
+          'other': 'sleep_other'
         }
       };
       
@@ -637,29 +640,32 @@ $(document).ready(function() {
       });
       
       if (apiData.lifestyle && Array.isArray(apiData.lifestyle)) {
+        console.log('Processing lifestyle:', apiData.lifestyle);
         apiData.lifestyle.forEach(function(lifestyle) {
+          console.log('Lifestyle item:', lifestyle);
           if (lifestyle.is_selected == 1) {
             var categoryMap = lifestyleMap[lifestyle.category];
-            if (categoryMap && categoryMap[lifestyle.item_value]) {
-              formData[categoryMap[lifestyle.item_value]] = 1;
+            if (categoryMap && categoryMap[lifestyle.item_key]) {
+              formData[categoryMap[lifestyle.item_key]] = 1;
+              console.log('Set', categoryMap[lifestyle.item_key], 'to 1');
             }
             // 處理其他文字內容
-            if (lifestyle.category === 'sleep' && lifestyle.item_value === '其他' && lifestyle.other_text) {
-              formData.sleep_other_text = lifestyle.other_text;
+            if (lifestyle.category === 'sleep' && lifestyle.item_key === 'other' && lifestyle.item_value) {
+              formData.sleep_other_text = lifestyle.item_value;
             }
           }
         });
       }
       
-      // 轉換產品使用資料
+      // 轉換產品使用資料 (注意：資料庫儲存的是英文枚舉值)
       var productMap = {
-        '蜜皂': 'product_honey_soap',
-        '泥膜': 'product_mud_mask',
-        '化妝水': 'product_toner',
-        '精華液': 'product_serum',
-        '極緻系列': 'product_premium',
-        '防曬': 'product_sunscreen',
-        '其他': 'product_other'
+        'honey_soap': 'product_honey_soap',
+        'mud_mask': 'product_mud_mask',
+        'toner': 'product_toner',
+        'serum': 'product_serum',
+        'premium': 'product_premium',
+        'sunscreen': 'product_sunscreen',
+        'other': 'product_other'
       };
       
       // 初始化產品欄位
@@ -668,30 +674,33 @@ $(document).ready(function() {
       });
       
       if (apiData.products && Array.isArray(apiData.products)) {
+        console.log('Processing products:', apiData.products);
         apiData.products.forEach(function(product) {
+          console.log('Product item:', product);
           if (product.is_selected == 1 && productMap[product.product_type]) {
             formData[productMap[product.product_type]] = 1;
-            if (product.product_type === '其他' && product.other_text) {
-              formData.product_other_text = product.other_text;
+            console.log('Set', productMap[product.product_type], 'to 1');
+            if (product.product_type === 'other' && product.product_name) {
+              formData.product_other_text = product.product_name;
             }
           }
         });
       }
       
-      // 轉換肌膚困擾資料
+      // 轉換肌膚困擾資料 (注意：資料庫儲存的是英文枚舉值)
       var skinIssueMap = {
-        '沒有彈性': 'skin_issue_elasticity',
-        '沒有光澤': 'skin_issue_luster',
-        '暗沉': 'skin_issue_dull',
-        '斑點': 'skin_issue_spots',
-        '毛孔粗大': 'skin_issue_pores',
-        '痘痘粉刺': 'skin_issue_acne',
-        '皺紋細紋': 'skin_issue_wrinkles',
-        '粗糙': 'skin_issue_rough',
-        '癢、紅腫': 'skin_issue_irritation',
-        '乾燥': 'skin_issue_dry',
-        '上妝不服貼': 'skin_issue_makeup',
-        '其他': 'skin_issue_other'
+        'elasticity': 'skin_issue_elasticity',
+        'luster': 'skin_issue_luster',
+        'dull': 'skin_issue_dull',
+        'spots': 'skin_issue_spots',
+        'pores': 'skin_issue_pores',
+        'acne': 'skin_issue_acne',
+        'wrinkles': 'skin_issue_wrinkles',
+        'rough': 'skin_issue_rough',
+        'irritation': 'skin_issue_irritation',
+        'dry': 'skin_issue_dry',
+        'makeup': 'skin_issue_makeup',
+        'other': 'skin_issue_other'
       };
       
       // 初始化肌膚困擾欄位
@@ -700,21 +709,24 @@ $(document).ready(function() {
       });
       
       if (apiData.skin_issues && Array.isArray(apiData.skin_issues)) {
+        console.log('Processing skin issues:', apiData.skin_issues);
         apiData.skin_issues.forEach(function(issue) {
-          if (issue.is_selected == 1 && skinIssueMap[issue.issue_description]) {
-            formData[skinIssueMap[issue.issue_description]] = 1;
-            if (issue.issue_description === '其他' && issue.other_text) {
-              formData.skin_issue_other_text = issue.other_text;
+          console.log('Skin issue item:', issue);
+          if (issue.is_selected == 1 && skinIssueMap[issue.issue_type]) {
+            formData[skinIssueMap[issue.issue_type]] = 1;
+            console.log('Set', skinIssueMap[issue.issue_type], 'to 1');
+            if (issue.issue_type === 'other' && issue.issue_description) {
+              formData.skin_issue_other_text = issue.issue_description;
             }
           }
         });
       }
       
-      // 轉換過敏狀況資料
+      // 轉換過敏狀況資料 (注意：資料庫儲存的是英文枚舉值)
       var allergyMap = {
-        '經常': 'allergy_frequent',
-        '偶爾(換季時)': 'allergy_seasonal', 
-        '不會': 'allergy_never'
+        'frequent': 'allergy_frequent',
+        'seasonal': 'allergy_seasonal', 
+        'never': 'allergy_never'
       };
       
       // 初始化過敏欄位
@@ -723,9 +735,12 @@ $(document).ready(function() {
       });
       
       if (apiData.allergies && Array.isArray(apiData.allergies)) {
+        console.log('Processing allergies:', apiData.allergies);
         apiData.allergies.forEach(function(allergy) {
+          console.log('Allergy item:', allergy);
           if (allergy.is_selected == 1 && allergyMap[allergy.allergy_type]) {
             formData[allergyMap[allergy.allergy_type]] = 1;
+            console.log('Set', allergyMap[allergy.allergy_type], 'to 1');
           }
         });
       }
