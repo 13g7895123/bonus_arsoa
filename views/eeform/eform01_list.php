@@ -487,7 +487,9 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(response) {
           if (response && response.success) {
-            displayOriginalFormContent(response.data, false); // false = 檢視模式
+            console.log('Raw API response:', response.data);
+            var transformedData = transformApiDataToFormStructure(response.data);
+            displayOriginalFormContent(transformedData, false); // false = 檢視模式
           } else {
             showFormError('無法載入表單資料: ' + (response.message || '未知錯誤'));
           }
@@ -539,7 +541,9 @@ $(document).ready(function() {
         dataType: 'json',
         success: function(response) {
           if (response && response.success) {
-            displayOriginalFormContent(response.data, true); // true = 編輯模式
+            console.log('Raw API response for edit:', response.data);
+            var transformedData = transformApiDataToFormStructure(response.data);
+            displayOriginalFormContent(transformedData, true); // true = 編輯模式
           } else {
             showFormError('無法載入表單資料: ' + (response.message || '未知錯誤'));
           }
@@ -563,6 +567,180 @@ $(document).ready(function() {
       });
     }
     
+    // 轉換嵌套資料結構為平面結構
+    function transformApiDataToFormStructure(apiData) {
+      if (!apiData) return null;
+      
+      // 複製基本資料
+      var formData = {
+        id: apiData.id,
+        member_id: apiData.member_id,
+        member_name: apiData.member_name,
+        birth_year: apiData.birth_year,
+        birth_month: apiData.birth_month,
+        phone: apiData.phone,
+        skin_type: apiData.skin_type,
+        skin_age: apiData.skin_age,
+        submission_date: apiData.submission_date,
+        created_at: apiData.created_at,
+        updated_at: apiData.updated_at
+      };
+      
+      // 轉換職業資料
+      var occupationMap = {
+        '服務業': 'occupation_service',
+        '上班族': 'occupation_office', 
+        '餐飲業': 'occupation_restaurant',
+        '家管': 'occupation_housewife'
+      };
+      
+      // 初始化職業欄位
+      Object.values(occupationMap).forEach(function(field) {
+        formData[field] = 0;
+      });
+      
+      if (apiData.occupations && Array.isArray(apiData.occupations)) {
+        apiData.occupations.forEach(function(occ) {
+          if (occ.is_selected == 1 && occupationMap[occ.occupation_type]) {
+            formData[occupationMap[occ.occupation_type]] = 1;
+          }
+        });
+      }
+      
+      // 轉換生活方式資料
+      var lifestyleMap = {
+        'sunlight': {
+          '1~2小時': 'sunlight_1_2h',
+          '3~4小時': 'sunlight_3_4h',
+          '5~6小時': 'sunlight_5_6h',
+          '8小時以上': 'sunlight_8h_plus'
+        },
+        'aircondition': {
+          '1小時內': 'aircondition_1h',
+          '2~4小時': 'aircondition_2_4h',
+          '5~8小時': 'aircondition_5_8h',
+          '8小時以上': 'aircondition_8h_plus'
+        },
+        'sleep': {
+          '晚上9:00~10:59就寢': 'sleep_9_10',
+          '晚上11:00~12:59就寢': 'sleep_11_12',
+          '凌晨1點之後就寢': 'sleep_after_1',
+          '其他': 'sleep_other'
+        }
+      };
+      
+      // 初始化生活方式欄位
+      Object.values(lifestyleMap).forEach(function(categoryMap) {
+        Object.values(categoryMap).forEach(function(field) {
+          formData[field] = 0;
+        });
+      });
+      
+      if (apiData.lifestyle && Array.isArray(apiData.lifestyle)) {
+        apiData.lifestyle.forEach(function(lifestyle) {
+          if (lifestyle.is_selected == 1) {
+            var categoryMap = lifestyleMap[lifestyle.category];
+            if (categoryMap && categoryMap[lifestyle.item_value]) {
+              formData[categoryMap[lifestyle.item_value]] = 1;
+            }
+            // 處理其他文字內容
+            if (lifestyle.category === 'sleep' && lifestyle.item_value === '其他' && lifestyle.other_text) {
+              formData.sleep_other_text = lifestyle.other_text;
+            }
+          }
+        });
+      }
+      
+      // 轉換產品使用資料
+      var productMap = {
+        '蜜皂': 'product_honey_soap',
+        '泥膜': 'product_mud_mask',
+        '化妝水': 'product_toner',
+        '精華液': 'product_serum',
+        '極緻系列': 'product_premium',
+        '防曬': 'product_sunscreen',
+        '其他': 'product_other'
+      };
+      
+      // 初始化產品欄位
+      Object.values(productMap).forEach(function(field) {
+        formData[field] = 0;
+      });
+      
+      if (apiData.products && Array.isArray(apiData.products)) {
+        apiData.products.forEach(function(product) {
+          if (product.is_selected == 1 && productMap[product.product_type]) {
+            formData[productMap[product.product_type]] = 1;
+            if (product.product_type === '其他' && product.other_text) {
+              formData.product_other_text = product.other_text;
+            }
+          }
+        });
+      }
+      
+      // 轉換肌膚困擾資料
+      var skinIssueMap = {
+        '沒有彈性': 'skin_issue_elasticity',
+        '沒有光澤': 'skin_issue_luster',
+        '暗沉': 'skin_issue_dull',
+        '斑點': 'skin_issue_spots',
+        '毛孔粗大': 'skin_issue_pores',
+        '痘痘粉刺': 'skin_issue_acne',
+        '皺紋細紋': 'skin_issue_wrinkles',
+        '粗糙': 'skin_issue_rough',
+        '癢、紅腫': 'skin_issue_irritation',
+        '乾燥': 'skin_issue_dry',
+        '上妝不服貼': 'skin_issue_makeup',
+        '其他': 'skin_issue_other'
+      };
+      
+      // 初始化肌膚困擾欄位
+      Object.values(skinIssueMap).forEach(function(field) {
+        formData[field] = 0;
+      });
+      
+      if (apiData.skin_issues && Array.isArray(apiData.skin_issues)) {
+        apiData.skin_issues.forEach(function(issue) {
+          if (issue.is_selected == 1 && skinIssueMap[issue.issue_description]) {
+            formData[skinIssueMap[issue.issue_description]] = 1;
+            if (issue.issue_description === '其他' && issue.other_text) {
+              formData.skin_issue_other_text = issue.other_text;
+            }
+          }
+        });
+      }
+      
+      // 轉換過敏狀況資料
+      var allergyMap = {
+        '經常': 'allergy_frequent',
+        '偶爾(換季時)': 'allergy_seasonal', 
+        '不會': 'allergy_never'
+      };
+      
+      // 初始化過敏欄位
+      Object.values(allergyMap).forEach(function(field) {
+        formData[field] = 0;
+      });
+      
+      if (apiData.allergies && Array.isArray(apiData.allergies)) {
+        apiData.allergies.forEach(function(allergy) {
+          if (allergy.is_selected == 1 && allergyMap[allergy.allergy_type]) {
+            formData[allergyMap[allergy.allergy_type]] = 1;
+          }
+        });
+      }
+      
+      // 轉換建議內容
+      if (apiData.suggestions) {
+        formData.toner_suggestion = apiData.suggestions.toner_suggestion || '';
+        formData.serum_suggestion = apiData.suggestions.serum_suggestion || '';
+        formData.suggestion_content = apiData.suggestions.suggestion_content || '';
+      }
+      
+      console.log('Transformed form data:', formData);
+      return formData;
+    }
+    
     // 顯示原版表單內容
     function displayOriginalFormContent(data, isEditable) {
       if (!data) {
@@ -570,7 +748,7 @@ $(document).ready(function() {
         return;
       }
       
-      console.log('Loading submission data:', data); // Debug log
+      console.log('Displaying form with transformed data:', data);
       
       var disabled = isEditable ? '' : ' disabled readonly';
       var currentDate = new Date().toISOString().slice(0, 10);
