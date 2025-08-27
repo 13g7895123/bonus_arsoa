@@ -215,18 +215,6 @@ class Eeform1Model extends MY_Model
                             'measurement_date' => date('Y-m-d')
                         ];
                         
-                        // 檢查是否有對應的日期和數字資料
-                        $date_field = "{$category}_date";
-                        $number_field = "{$category}_number";
-                        
-                        if (!empty($data[$date_field])) {
-                            $score_data['measurement_date'] = $data[$date_field];
-                        }
-                        
-                        if (!empty($data[$number_field])) {
-                            $score_data['measurement_number'] = intval($data[$number_field]);
-                        }
-                        
                         $insert_result = $this->db->insert('eeform1_skin_scores', $score_data);
                         
                         // Debug: 檢查插入結果
@@ -241,6 +229,7 @@ class Eeform1Model extends MY_Model
                         error_log('No data found for field: ' . $field_name);
                     }
                 }
+                
             }
             
             // 處理建議內容
@@ -627,21 +616,10 @@ class Eeform1Model extends MY_Model
                             'measurement_date' => date('Y-m-d')
                         ];
                         
-                        // 檢查是否有對應的日期和數字資料
-                        $date_field = "{$category}_date";
-                        $number_field = "{$category}_number";
-                        
-                        if (!empty($data[$date_field])) {
-                            $score_data['measurement_date'] = $data[$date_field];
-                        }
-                        
-                        if (!empty($data[$number_field])) {
-                            $score_data['measurement_number'] = intval($data[$number_field]);
-                        }
-                        
                         $this->db->insert('eeform1_skin_scores', $score_data);
                     }
                 }
+                
             }
             
             // 重新插入建議內容
