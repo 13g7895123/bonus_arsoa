@@ -364,7 +364,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
+                                              <input type="text" name="moisture_severe" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -374,7 +374,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
+                                              <input type="text" name="moisture_warning" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -384,7 +384,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
+                                              <input type="text" name="moisture_healthy" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -416,7 +416,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
+                                              <input type="text" name="complexion_severe" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -426,7 +426,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
+                                              <input type="text" name="complexion_warning" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -436,7 +436,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
+                                              <input type="text" name="complexion_healthy" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -468,7 +468,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
+                                              <input type="text" name="texture_severe" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -478,7 +478,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
+                                              <input type="text" name="texture_warning" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -488,7 +488,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
+                                              <input type="text" name="texture_healthy" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -520,7 +520,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
+                                              <input type="text" name="sensitivity_severe" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -530,7 +530,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
+                                              <input type="text" name="sensitivity_warning" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -540,7 +540,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
+                                              <input type="text" name="sensitivity_healthy" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -572,7 +572,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
+                                              <input type="text" name="oil_severe" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -582,7 +582,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
+                                              <input type="text" name="oil_warning" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -592,7 +592,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
+                                              <input type="text" name="oil_healthy" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -624,7 +624,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
+                                              <input type="text" name="pigment_severe" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -634,7 +634,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
+                                              <input type="text" name="pigment_warning" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -644,7 +644,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
+                                              <input type="text" name="pigment_healthy" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -676,7 +676,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
+                                              <input type="text" name="wrinkle_severe" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -686,7 +686,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
+                                              <input type="text" name="wrinkle_warning" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -696,7 +696,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
+                                              <input type="text" name="wrinkle_healthy" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -728,7 +728,7 @@
                                               <p><i class="ico ion-record" style="color:red;"></i> 嚴重、盡快改善：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
+                                              <input type="text" name="pore_severe" class="form-control form-control-custom" placeholder="限填數字 ex. 0 - 1" value="0">
                                             </div>
                                           </div>
                                         </div>
@@ -738,7 +738,7 @@
                                               <p><i class="ico ion-record" style="color:orange;"></i> 有問題、要注意：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
+                                              <input type="text" name="pore_warning" class="form-control form-control-custom" placeholder="限填數字 ex. 5 - 7" value="6">
                                             </div>
                                           </div>
                                         </div>
@@ -748,7 +748,7 @@
                                               <p><i class="ico ion-record" style="color:green;"></i> 健康：</p>
                                             </div>
                                             <div class="col-lg-auto">
-                                              <input type="text" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
+                                              <input type="text" name="pore_healthy" class="form-control form-control-custom" placeholder="限填數字 ex. 8 - 10" value="8">
                                             </div>
                                           </div>
                                         </div>
@@ -1269,6 +1269,41 @@
         $('input[name="moisture_severe"]').val('0');
         $('input[name="moisture_warning"]').val('6');
         $('input[name="moisture_healthy"]').val('8');
+        
+        // 評分欄位（膚色）
+        $('input[name="complexion_severe"]').val('1');
+        $('input[name="complexion_warning"]').val('5');
+        $('input[name="complexion_healthy"]').val('9');
+        
+        // 評分欄位（紋理）
+        $('input[name="texture_severe"]').val('2');
+        $('input[name="texture_warning"]').val('4');
+        $('input[name="texture_healthy"]').val('7');
+        
+        // 評分欄位（敏感）
+        $('input[name="sensitivity_severe"]').val('0');
+        $('input[name="sensitivity_warning"]').val('3');
+        $('input[name="sensitivity_healthy"]').val('8');
+        
+        // 評分欄位（油脂）
+        $('input[name="oil_severe"]').val('1');
+        $('input[name="oil_warning"]').val('7');
+        $('input[name="oil_healthy"]').val('9');
+        
+        // 評分欄位（色素）
+        $('input[name="pigment_severe"]').val('0');
+        $('input[name="pigment_warning"]').val('4');
+        $('input[name="pigment_healthy"]').val('8');
+        
+        // 評分欄位（皺紋）
+        $('input[name="wrinkle_severe"]').val('1');
+        $('input[name="wrinkle_warning"]').val('5');
+        $('input[name="wrinkle_healthy"]').val('9');
+        
+        // 評分欄位（毛孔）
+        $('input[name="pore_severe"]').val('2');
+        $('input[name="pore_warning"]').val('6');
+        $('input[name="pore_healthy"]').val('8');
 
         // 填入其他可能存在的評分欄位
         var scoreFields = [
@@ -1562,10 +1597,45 @@
           skin_type: $('input[name="skin_type"]:checked').val(),
           skin_age: $('input[name="skin_age"]').val(),
           
-          // 水潤評分
+          // 各種評分資料
           moisture_severe: $('input[name="moisture_severe"]').val(),
           moisture_warning: $('input[name="moisture_warning"]').val(),
-          moisture_healthy: $('input[name="moisture_healthy"]').val()
+          moisture_healthy: $('input[name="moisture_healthy"]').val(),
+          
+          // 膚色評分
+          complexion_severe: $('input[name="complexion_severe"]').val(),
+          complexion_warning: $('input[name="complexion_warning"]').val(),
+          complexion_healthy: $('input[name="complexion_healthy"]').val(),
+          
+          // 紋理評分
+          texture_severe: $('input[name="texture_severe"]').val(),
+          texture_warning: $('input[name="texture_warning"]').val(),
+          texture_healthy: $('input[name="texture_healthy"]').val(),
+          
+          // 敏感評分
+          sensitivity_severe: $('input[name="sensitivity_severe"]').val(),
+          sensitivity_warning: $('input[name="sensitivity_warning"]').val(),
+          sensitivity_healthy: $('input[name="sensitivity_healthy"]').val(),
+          
+          // 油脂評分
+          oil_severe: $('input[name="oil_severe"]').val(),
+          oil_warning: $('input[name="oil_warning"]').val(),
+          oil_healthy: $('input[name="oil_healthy"]').val(),
+          
+          // 色素評分
+          pigment_severe: $('input[name="pigment_severe"]').val(),
+          pigment_warning: $('input[name="pigment_warning"]').val(),
+          pigment_healthy: $('input[name="pigment_healthy"]').val(),
+          
+          // 皺紋評分
+          wrinkle_severe: $('input[name="wrinkle_severe"]').val(),
+          wrinkle_warning: $('input[name="wrinkle_warning"]').val(),
+          wrinkle_healthy: $('input[name="wrinkle_healthy"]').val(),
+          
+          // 毛孔評分
+          pore_severe: $('input[name="pore_severe"]').val(),
+          pore_warning: $('input[name="pore_warning"]').val(),
+          pore_healthy: $('input[name="pore_healthy"]').val()
         };
 
         // 發送API請求

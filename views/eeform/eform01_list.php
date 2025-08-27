@@ -1089,12 +1089,25 @@ $(document).ready(function() {
       html += '<label class="label-custom">' + categoryName + '</label>';
       html += '<div class="row">';
       
-      // 查找對應的moisture_scores資料
+      // 查找對應的評分資料
       var categoryScores = [];
       if (data.moisture_scores && Array.isArray(data.moisture_scores)) {
-        // 這裡可以根據categoryName匹配對應的資料
-        // 目前先顯示前三筆資料作為示例
-        categoryScores = data.moisture_scores.slice(0, 3);
+        // 根據 categoryName 匹配對應的資料
+        var categoryMapping = {
+          '水潤': 'moisture',
+          '膚色': 'complexion', 
+          '紋理': 'texture',
+          '敏感': 'sensitivity',
+          '油脂': 'oil',
+          '色素': 'pigment',
+          '皺紋': 'wrinkle',
+          '毛孔': 'pore'
+        };
+        
+        var categoryKey = categoryMapping[categoryName] || 'moisture';
+        categoryScores = data.moisture_scores.filter(function(score) {
+          return score.category === categoryKey;
+        });
       }
       
       // 三組日期和數字輸入

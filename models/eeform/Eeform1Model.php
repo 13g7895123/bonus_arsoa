@@ -194,7 +194,7 @@ class Eeform1Model extends MY_Model
                 }
             }
             
-            // 處理水潤評分資料
+            // 處理水潤評分資料 (目前資料表結構僅支援水潤類型)
             $moisture_types = ['severe', 'warning', 'healthy'];
             foreach ($moisture_types as $type) {
                 if (!empty($data["moisture_{$type}"])) {
@@ -205,6 +205,33 @@ class Eeform1Model extends MY_Model
                         'measurement_date' => date('Y-m-d')
                     ]);
                 }
+            }
+            
+            // TODO: 其他評分類型 (膚色、紋理、敏感、油脂、色素、皺紋、毛孔) 
+            // 需要擴充資料表結構或建立額外的評分表才能儲存
+            // 目前的 eeform1_moisture_scores 表格結構僅支援 moisture 類型的評分
+            
+            // 暫時記錄其他評分資料到 notes 欄位 (如果需要保留資料的話)
+            $other_scores = [];
+            $other_categories = ['complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
+            $score_types = ['severe', 'warning', 'healthy'];
+            
+            foreach ($other_categories as $category) {
+                foreach ($score_types as $type) {
+                    $field_name = "{$category}_{$type}";
+                    if (!empty($data[$field_name])) {
+                        $other_scores["{$category}_{$type}"] = intval($data[$field_name]);
+                    }
+                }
+            }
+            
+            // 如果有其他評分資料，儲存為 JSON 格式到第一筆 moisture 記錄的 notes 欄位
+            if (!empty($other_scores)) {
+                $notes_data = json_encode($other_scores, JSON_UNESCAPED_UNICODE);
+                // 更新第一筆 moisture 記錄加入 notes
+                $this->db->where('submission_id', $submission_id);
+                $this->db->limit(1);
+                $this->db->update('eeform1_moisture_scores', ['notes' => $notes_data]);
             }
             
             // 處理建議內容
@@ -334,6 +361,46 @@ class Eeform1Model extends MY_Model
         $this->db->where('submission_id', $id);
         $moisture_scores = $this->db->get()->result_array();
         
+        // 解析其他評分資料（從 notes 欄位中解析 JSON）
+        $other_scores_data = [];
+        if (!empty($moisture_scores)) {
+            foreach ($moisture_scores as $score) {
+                if (!empty($score['notes'])) {
+                    $parsed_notes = json_decode($score['notes'], true);
+                    if ($parsed_notes) {
+                        $other_scores_data = array_merge($other_scores_data, $parsed_notes);
+                    }
+                }
+            }
+        }
+        
+        // 將其他評分資料轉換為與 moisture_scores 相同的格式以便前端使用
+        $all_scores = [];
+        
+        // 加入原本的 moisture scores
+        foreach ($moisture_scores as $score) {
+            $all_scores[] = [
+                'category' => 'moisture',
+                'score_type' => $score['score_type'],
+                'score_value' => $score['score_value'],
+                'measurement_date' => $score['measurement_date']
+            ];
+        }
+        
+        // 加入其他評分類型的資料
+        foreach ($other_scores_data as $field_name => $value) {
+            // field_name 格式: category_type (例如 complexion_severe)
+            $parts = explode('_', $field_name, 2);
+            if (count($parts) === 2) {
+                $all_scores[] = [
+                    'category' => $parts[0],
+                    'score_type' => $parts[1],
+                    'score_value' => $value,
+                    'measurement_date' => date('Y-m-d')
+                ];
+            }
+        }
+        
         // 取得建議內容
         $this->db->from('eeform1_suggestions');
         $this->db->where('submission_id', $id);
@@ -345,7 +412,7 @@ class Eeform1Model extends MY_Model
         $submission['products'] = $products;
         $submission['skin_issues'] = $skin_issues;
         $submission['allergies'] = $allergies;
-        $submission['moisture_scores'] = $moisture_scores;
+        $submission['moisture_scores'] = $all_scores;  // 使用包含所有評分資料的陣列
         $submission['suggestions'] = $suggestions;
         
         return $submission;
@@ -393,8 +460,143 @@ class Eeform1Model extends MY_Model
             $this->db->where('submission_id', $id);
             $this->db->delete('eeform1_allergies');
             
-            // 重新插入新的關聯資料（使用與 create_submission 相同的邏輯）
-            // ... (省略重複代碼，與 create_submission 中的處理邏輯相同)
+            $this->db->where('submission_id', $id);
+            $this->db->delete('eeform1_moisture_scores');
+            
+            $this->db->where('submission_id', $id);
+            $this->db->delete('eeform1_suggestions');
+            
+            // 重新插入職業資料
+            $occupations = ['service', 'office', 'restaurant', 'housewife'];
+            foreach ($occupations as $occupation) {
+                if (!empty($data["occupation_{$occupation}"])) {
+                    $this->db->insert('eeform1_occupations', [
+                        'submission_id' => $id,
+                        'occupation_type' => $occupation,
+                        'is_selected' => 1
+                    ]);
+                }
+            }
+            
+            // 重新插入生活方式資料
+            $lifestyle_categories = [
+                'sunlight' => ['1_2h', '3_4h', '5_6h', '8h_plus'],
+                'aircondition' => ['1h', '2_4h', '5_8h', '8h_plus'],
+                'sleep' => ['9_10', '11_12', 'after_1', 'other']
+            ];
+            
+            foreach ($lifestyle_categories as $category => $items) {
+                foreach ($items as $item) {
+                    $field_name = "{$category}_{$item}";
+                    if (!empty($data[$field_name])) {
+                        $lifestyle_data = [
+                            'submission_id' => $id,
+                            'category' => $category,
+                            'item_key' => $item,
+                            'is_selected' => 1
+                        ];
+                        
+                        if ($item === 'other' && !empty($data["{$category}_other_text"])) {
+                            $lifestyle_data['item_value'] = $data["{$category}_other_text"];
+                        }
+                        
+                        $this->db->insert('eeform1_lifestyle', $lifestyle_data);
+                    }
+                }
+            }
+            
+            // 重新插入產品使用資料
+            $products = ['honey_soap', 'mud_mask', 'toner', 'serum', 'premium', 'sunscreen', 'other'];
+            foreach ($products as $product) {
+                if (!empty($data["product_{$product}"])) {
+                    $product_data = [
+                        'submission_id' => $id,
+                        'product_type' => $product,
+                        'is_selected' => 1
+                    ];
+                    
+                    if ($product === 'other' && !empty($data['product_other_text'])) {
+                        $product_data['product_name'] = $data['product_other_text'];
+                    }
+                    
+                    $this->db->insert('eeform1_products', $product_data);
+                }
+            }
+            
+            // 重新插入肌膚困擾資料
+            $skin_issues = ['elasticity', 'luster', 'dull', 'spots', 'pores', 'acne', 'wrinkles', 'rough', 'irritation', 'dry', 'makeup', 'other'];
+            foreach ($skin_issues as $issue) {
+                if (!empty($data["skin_issue_{$issue}"])) {
+                    $issue_data = [
+                        'submission_id' => $id,
+                        'issue_type' => $issue,
+                        'is_selected' => 1
+                    ];
+                    
+                    if ($issue === 'other' && !empty($data['skin_issue_other_text'])) {
+                        $issue_data['issue_description'] = $data['skin_issue_other_text'];
+                    }
+                    
+                    $this->db->insert('eeform1_skin_issues', $issue_data);
+                }
+            }
+            
+            // 重新插入過敏狀況資料
+            $allergies = ['frequent', 'seasonal', 'never'];
+            foreach ($allergies as $allergy) {
+                if (!empty($data["allergy_{$allergy}"])) {
+                    $this->db->insert('eeform1_allergies', [
+                        'submission_id' => $id,
+                        'allergy_type' => $allergy,
+                        'is_selected' => 1
+                    ]);
+                }
+            }
+            
+            // 重新插入評分資料（使用與 create_submission 相同的邏輯）
+            $moisture_types = ['severe', 'warning', 'healthy'];
+            foreach ($moisture_types as $type) {
+                if (!empty($data["moisture_{$type}"])) {
+                    $this->db->insert('eeform1_moisture_scores', [
+                        'submission_id' => $id,
+                        'score_type' => $type,
+                        'score_value' => intval($data["moisture_{$type}"]),
+                        'measurement_date' => date('Y-m-d')
+                    ]);
+                }
+            }
+            
+            // 處理其他評分資料
+            $other_scores = [];
+            $other_categories = ['complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
+            $score_types = ['severe', 'warning', 'healthy'];
+            
+            foreach ($other_categories as $category) {
+                foreach ($score_types as $type) {
+                    $field_name = "{$category}_{$type}";
+                    if (!empty($data[$field_name])) {
+                        $other_scores["{$category}_{$type}"] = intval($data[$field_name]);
+                    }
+                }
+            }
+            
+            if (!empty($other_scores)) {
+                $notes_data = json_encode($other_scores, JSON_UNESCAPED_UNICODE);
+                $this->db->where('submission_id', $id);
+                $this->db->limit(1);
+                $this->db->update('eeform1_moisture_scores', ['notes' => $notes_data]);
+            }
+            
+            // 重新插入建議內容
+            if (!empty($data['toner_suggestion']) || !empty($data['serum_suggestion']) || !empty($data['suggestion_content'])) {
+                $this->db->insert('eeform1_suggestions', [
+                    'submission_id' => $id,
+                    'toner_suggestion' => isset($data['toner_suggestion']) ? $data['toner_suggestion'] : '',
+                    'serum_suggestion' => isset($data['serum_suggestion']) ? $data['serum_suggestion'] : '',
+                    'suggestion_content' => isset($data['suggestion_content']) ? $data['suggestion_content'] : '',
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+            }
             
             $this->db->trans_complete();
             
