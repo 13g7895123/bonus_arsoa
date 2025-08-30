@@ -21,9 +21,10 @@ class Admin_eeform extends MY_Controller
         $this->load->library('layout', array('layout' => '../template/admin_layout'));
     }
 
-    public function eeform_manage($test)
+    public function eeform_manage_eeform02()
     {
-        $data = array('text' => $test)
-        $this->layout->view('admin/eeform_manage', $data);
+        $test = 'eeform_manage_eeform2';
+        $data = array('text' => $test);
+        $this->layout->view('admin/eeform/form2', $data);
     }
 }

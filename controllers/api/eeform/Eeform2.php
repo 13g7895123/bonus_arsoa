@@ -259,6 +259,174 @@ class Eeform2 extends MY_Controller
         }
     }
 
+    /**
+     * 管理員取得所有表單記錄 (分頁)
+     * GET /api/eeform2/list
+     */
+    public function list() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得查詢參數
+            $page = (int)($this->input->get('page') ?? 1);
+            $limit = (int)($this->input->get('limit') ?? 20);
+            $search = $this->input->get('search') ?? '';
+            $status = $this->input->get('status') ?? '';
+            $start_date = $this->input->get('start_date') ?? '';
+            $end_date = $this->input->get('end_date') ?? '';
+
+            // 驗證參數
+            if ($page < 1) $page = 1;
+            if ($limit < 1 || $limit > 100) $limit = 20;
+
+            $filters = [
+                'search' => $search,
+                'status' => $status,
+                'start_date' => $start_date,
+                'end_date' => $end_date
+            ];
+
+            $result = $this->eform2_model->get_all_submissions_paginated($page, $limit, $filters);
+            
+            $this->_send_success('取得表單列表成功', [
+                'data' => $result['data'],
+                'pagination' => [
+                    'current_page' => $page,
+                    'per_page' => $limit,
+                    'total' => $result['total'],
+                    'total_pages' => ceil($result['total'] / $limit)
+                ],
+                'filters' => $filters
+            ]);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得表單列表失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * 更新表單狀態
+     * PUT /api/eeform2/update_status/{id}
+     */
+    public function update_status($id = null) {
+        try {
+            if (!in_array($this->input->method(TRUE), ['PUT', 'POST'])) {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id || !is_numeric($id)) {
+                $this->_send_error('缺少有效的表單ID', 400);
+                return;
+            }
+
+            $raw_input = $this->input->raw_input_stream;
+            $input_data = json_decode($raw_input, true);
+            
+            if (!$input_data) {
+                $input_data = $this->input->post();
+            }
+
+            if (empty($input_data['status'])) {
+                $this->_send_error('缺少狀態參數', 400);
+                return;
+            }
+
+            $allowed_statuses = ['submitted', 'processing', 'completed', 'cancelled'];
+            if (!in_array($input_data['status'], $allowed_statuses)) {
+                $this->_send_error('無效的狀態值', 400, [
+                    'allowed_statuses' => $allowed_statuses
+                ]);
+                return;
+            }
+
+            $update_data = [
+                'status' => $input_data['status'],
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+            if (!empty($input_data['admin_note'])) {
+                $update_data['admin_note'] = trim($input_data['admin_note']);
+            }
+
+            $result = $this->eform2_model->update_submission_status($id, $update_data);
+            
+            if ($result) {
+                $this->_send_success('更新狀態成功', [
+                    'id' => $id,
+                    'new_status' => $input_data['status']
+                ]);
+            } else {
+                $this->_send_error('更新狀態失敗', 500);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('更新狀態失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * 刪除表單記錄
+     * DELETE /api/eeform2/delete/{id}
+     */
+    public function delete($id = null) {
+        try {
+            if (!in_array($this->input->method(TRUE), ['DELETE', 'POST'])) {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id || !is_numeric($id)) {
+                $this->_send_error('缺少有效的表單ID', 400);
+                return;
+            }
+
+            $result = $this->eform2_model->delete_submission($id);
+            
+            if ($result) {
+                $this->_send_success('刪除記錄成功', [
+                    'id' => $id
+                ]);
+            } else {
+                $this->_send_error('刪除記錄失敗', 500);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('刪除記錄失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * 取得統計資料
+     * GET /api/eeform2/stats
+     */
+    public function stats() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            $stats = $this->eform2_model->get_submission_stats();
+            
+            $this->_send_success('取得統計資料成功', $stats);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得統計資料失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
     // Helper methods
     private function _send_success($message, $data = null, $code = 200) {
         $response = [

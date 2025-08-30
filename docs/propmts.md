@@ -14,3 +14,4 @@
 10. eform2的填寫日期沒有帶入當天日期，eform2、eform4的見面日請不要填入預設值
 11. 幫我view過整個專案，告訴我側邊攔在哪裡設定功能與項目
 12. 我看完了，他在setup.xml設定，幫我view過完整專案，寫一份它裡面的設定詳細說明在docs\sidebar.md中
+13. 目前eform2的前台已經處理好了，幫我處理後台的部分，需要可以管理該份電子表單的狀況，view的路徑在views/admin/eeform/form2.php，幫我用前後端分離的方式，直接寫html+jquery，api用fetch的方式，有需要打API的話看一下eform2當初建置的是否還有需要新增調整，調整一下，views/admin/eeform/form2.php這個檔案只要boby後的內容就好，html已經有了，除非有style幫我直接寫style即可

@@ -572,8 +572,8 @@
 			 </SND>
 			 <KIND 權限檢查="1">
 					<資料>會員服務追蹤管理表(肌膚)</資料>
-					<傳回值>Q001</傳回值>					
-					<網址>admin_eeform/eeform_manage/eform2</網址>
+					<傳回值>E001</傳回值>					
+					<網址>admin_eeform/eeform_manage_eeform02</網址>
 					<層級>1</層級>
 					<權限>2</權限>
 		   </KIND>	
