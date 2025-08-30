@@ -52,81 +52,8 @@
                             <div class="card bg-light ">
                               <div class="card-body">
                                 <div class="container">
-                                  <div class="row">
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">淨白活膚蜜皂</label>
-                                      <input type="number" name="product_soap001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">AP柔敏潔顏皂</label>
-                                      <input type="number" name="product_soap002" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">活顏泥膜</label>
-                                      <input type="number" name="product_mask001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">安露莎化粧水I</label>
-                                      <input type="number" name="product_toner001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">安露莎化粧水II</label>
-                                      <input type="number" name="product_toner002" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">安露莎活膚化粧水</label>
-                                      <input type="number" name="product_toner003" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">柔敏化粧水</label>
-                                      <input type="number" name="product_toner004" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">安露莎精華液I</label>
-                                      <input type="number" name="product_serum001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">安露莎精華液II</label>
-                                      <input type="number" name="product_serum002" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">安露莎活膚精華液</label>
-                                      <input type="number" name="product_serum003" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">美白精華液</label>
-                                      <input type="number" name="product_serum004" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">保濕潤膚液</label>
-                                      <input type="number" name="product_lotion001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">美容防皺油</label>
-                                      <input type="number" name="product_oil001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">保濕凝膠</label>
-                                      <input type="number" name="product_gel001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">亮采晶萃</label>
-                                      <input type="number" name="product_essence001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">防曬隔離液</label>
-                                      <input type="number" name="product_sunscreen001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">保濕粉底液</label>
-                                      <input type="number" name="product_foundation001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-                                    <div class="col-sm-3 mb20">
-                                      <label class="label-custom">絲柔粉餅</label>
-                                      <input type="number" name="product_powder001" style="width: 100%;" placeholder="請填寫數量…" min="0">
-                                    </div>
-
-
+                                  <div class="row" id="products-container">
+                                    <!-- 動態載入產品 -->
                                   </div>
                                 </div>
                               </div>
@@ -543,6 +470,7 @@
     <script>
       // 控制測試按鈕顯示的變數
       var showTestButton = true; // 設為 true 顯示測試按鈕
+      var productsData = []; // 存儲從API載入的產品資料
       
       // 頁面載入時檢查是否顯示測試按鈕
       $(document).ready(function() {
@@ -558,7 +486,84 @@
         if (showTestButton) {
           $('#testDataButton').show();
         }
+        
+        // 載入產品資料
+        loadProducts();
       });
+      
+      // 載入產品資料
+      function loadProducts() {
+        $.ajax({
+          url: '<?php echo base_url("api/eeform/eeform2/products"); ?>',
+          method: 'GET',
+          dataType: 'json',
+          success: function(response) {
+            if (response.success && response.data) {
+              productsData = response.data;
+              renderProducts(response.data);
+            } else {
+              console.error('載入產品資料失敗:', response.message);
+              // 顯示錯誤訊息或使用預設產品
+              renderDefaultProducts();
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('載入產品資料失敗:', error);
+            // 使用預設產品作為備援
+            renderDefaultProducts();
+          }
+        });
+      }
+      
+      // 渲染產品列表
+      function renderProducts(products) {
+        var container = $('#products-container');
+        container.empty();
+        
+        if (!products || products.length === 0) {
+          container.append('<div class="col-12"><p class="text-muted">暫無可用產品</p></div>');
+          return;
+        }
+        
+        products.forEach(function(product) {
+          var fieldName = 'product_' + product.product_code.toLowerCase();
+          var productHtml = `
+            <div class="col-sm-3 mb20">
+              <label class="label-custom">${product.product_name}</label>
+              <input type="number" name="${fieldName}" style="width: 100%;" 
+                     placeholder="請填寫數量…" min="0" 
+                     data-product-code="${product.product_code}"
+                     data-product-name="${product.product_name}">
+            </div>
+          `;
+          container.append(productHtml);
+        });
+      }
+      
+      // 預設產品 (備援)
+      function renderDefaultProducts() {
+        var defaultProducts = [
+          {product_code: 'SOAP001', product_name: '淨白活膚蜜皂'},
+          {product_code: 'SOAP002', product_name: 'AP柔敏潔顏皂'},
+          {product_code: 'MASK001', product_name: '活顏泥膜'},
+          {product_code: 'TONER001', product_name: '安露莎化粧水I'},
+          {product_code: 'TONER002', product_name: '安露莎化粧水II'},
+          {product_code: 'TONER003', product_name: '安露莎活膚化粧水'},
+          {product_code: 'TONER004', product_name: '柔敏化粧水'},
+          {product_code: 'SERUM001', product_name: '安露莎精華液I'},
+          {product_code: 'SERUM002', product_name: '安露莎精華液II'},
+          {product_code: 'SERUM003', product_name: '安露莎活膚精華液'},
+          {product_code: 'SERUM004', product_name: '美白精華液'},
+          {product_code: 'LOTION001', product_name: '保濕潤膚液'},
+          {product_code: 'OIL001', product_name: '美容防皺油'},
+          {product_code: 'GEL001', product_name: '保濕凝膠'},
+          {product_code: 'ESSENCE001', product_name: '亮采晶萃'},
+          {product_code: 'SUNSCREEN001', product_name: '防曬隔離液'},
+          {product_code: 'FOUNDATION001', product_name: '保濕粉底液'},
+          {product_code: 'POWDER001', product_name: '絲柔粉餅'}
+        ];
+        renderProducts(defaultProducts);
+      }
       
       // 填入測試資料的函數
       function fillTestData() {
@@ -574,25 +579,12 @@
         $('input[name="age"]').val('30');
         $('input[name="skin_health_condition"]').val('輕微乾燥，偶有敏感');
         
-        // 產品數量測試資料
-        $('input[name="product_soap001"]').val('2');
-        $('input[name="product_soap002"]').val('1');
-        $('input[name="product_mask001"]').val('3');
-        $('input[name="product_toner001"]').val('2');
-        $('input[name="product_toner002"]').val('1');
-        $('input[name="product_toner003"]').val('2');
-        $('input[name="product_toner004"]').val('1');
-        $('input[name="product_serum001"]').val('2');
-        $('input[name="product_serum002"]').val('1');
-        $('input[name="product_serum003"]').val('1');
-        $('input[name="product_serum004"]').val('2');
-        $('input[name="product_lotion001"]').val('3');
-        $('input[name="product_oil001"]').val('1');
-        $('input[name="product_gel001"]').val('2');
-        $('input[name="product_essence001"]').val('1');
-        $('input[name="product_sunscreen001"]').val('2');
-        $('input[name="product_foundation001"]').val('1');
-        $('input[name="product_powder001"]').val('2');
+        // 動態填入產品數量測試資料
+        $('#products-container input[type="number"]').each(function(index) {
+          var testQuantities = [2, 1, 3, 2, 1, 2, 1, 2, 1, 1, 2, 3, 1, 2, 1, 2, 1, 2];
+          var quantity = testQuantities[index % testQuantities.length] || 1;
+          $(this).val(quantity);
+        });
         
         $('input[name="line_contact"]').val('與會員保持良好互動，定期關心產品使用狀況');
         $('input[name="tel_contact"]').val('每月電話追蹤，了解產品效果和需求');
@@ -629,40 +621,24 @@
         $('#confirm-line-contact').text($('input[name="line_contact"]').val() || '(未填寫)');
         $('#confirm-tel-contact').text($('input[name="tel_contact"]').val() || '(未填寫)');
         
-        // 收集產品資料
+        // 收集產品資料 (動態)
         var productData = [];
-        var productMapping = {
-          'product_soap001': '淨白活膚蜜皂',
-          'product_soap002': 'AP柔敏潔顏皂',
-          'product_mask001': '活顏泥膜',
-          'product_toner001': '安露莎化粧水I',
-          'product_toner002': '安露莎化粧水II',
-          'product_toner003': '安露莎活膚化粧水',
-          'product_toner004': '柔敏化粧水',
-          'product_serum001': '安露莎精華液I',
-          'product_serum002': '安露莎精華液II',
-          'product_serum003': '安露莎活膚精華液',
-          'product_serum004': '美白精華液',
-          'product_lotion001': '保濕潤膚液',
-          'product_oil001': '美容防皺油',
-          'product_gel001': '保濕凝膠',
-          'product_essence001': '亮采晶萃',
-          'product_sunscreen001': '防曬隔離液',
-          'product_foundation001': '保濕粉底液',
-          'product_powder001': '絲柔粉餅'
-        };
 
         // 收集所有產品輸入框的數據
-        $('#eform02').find('input[type="number"], input[name^="product_"]').each(function() {
-          var name = $(this).attr('name');
-          var value = $(this).val();
-          var label = $(this).closest('.col-sm-3').find('label').text();
+        $('#products-container input[type="number"]').each(function() {
+          var $input = $(this);
+          var name = $input.attr('name');
+          var value = $input.val();
+          var label = $input.closest('.col-sm-3').find('label').text();
+          var productCode = $input.data('product-code');
+          var productName = $input.data('product-name');
           
           if (value && parseInt(value) > 0) {
             productData.push({
               name: name,
-              label: label,
-              quantity: value
+              label: productName || label,
+              quantity: value,
+              product_code: productCode
             });
           }
         });
@@ -699,16 +675,20 @@
           products: {}
         };
 
-        // 收集產品資料
-        $('#eform02').find('input[type="number"], input[name^="product_"]').each(function() {
-          var name = $(this).attr('name');
-          var value = $(this).val();
-          var label = $(this).closest('.col-sm-3').find('label').text();
+        // 收集產品資料 (動態)
+        $('#products-container input[type="number"]').each(function() {
+          var $input = $(this);
+          var name = $input.attr('name');
+          var value = $input.val();
+          var label = $input.closest('.col-sm-3').find('label').text();
+          var productCode = $input.data('product-code');
+          var productName = $input.data('product-name');
           
           if (name && (value || value === '0')) {
             formData.products[name] = {
-              name: label,
-              quantity: parseInt(value) || 0
+              name: productName || label,
+              quantity: parseInt(value) || 0,
+              product_code: productCode
             };
           }
         });

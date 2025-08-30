@@ -965,7 +965,7 @@
 
         async showProductModal() {
             try {
-                // 載入目前的產品設定
+                // 載入目前的產品設定從資料庫
                 const response = await fetch('/api/eeform/eeform2/products');
                 const result = await response.json();
                 
@@ -973,7 +973,7 @@
                     this.renderProducts(result.data);
                 } else {
                     // 如果沒有資料，顯示空的產品列表
-                    this.renderProducts({});
+                    this.renderProducts([]);
                 }
                 
                 $('#productModal').modal('show');
@@ -981,7 +981,7 @@
                 console.error('載入產品資料失敗:', error);
                 this.showAlert('載入產品資料失敗', 'danger');
                 // 顯示空的產品列表作為備援
-                this.renderProducts({});
+                this.renderProducts([]);
                 $('#productModal').modal('show');
             }
         }
@@ -990,25 +990,25 @@
             const container = $('#products-container');
             container.empty();
 
-            // 將產品按照 key 排序
-            const sortedProducts = Object.entries(products).sort((a, b) => a[0].localeCompare(b[0]));
+            // products 現在是數組格式，不再是物件格式
+            const sortedProducts = Array.isArray(products) ? products.sort((a, b) => a.product_code.localeCompare(b.product_code)) : [];
             
             if (sortedProducts.length === 0) {
                 container.append('<div class="text-center text-muted py-3">尚無產品，請點擊「新增產品」按鈕新增產品</div>');
                 return;
             }
 
-            sortedProducts.forEach(([productKey, productData], index) => {
+            sortedProducts.forEach((productData, index) => {
                 const productHtml = `
-                    <div class="product-item mb-3 p-3 border rounded" data-product-key="${productKey}">
+                    <div class="product-item mb-3 p-3 border rounded" data-product-id="${productData.id || ''}" data-product-code="${productData.product_code || ''}">
                         <div class="row align-items-center">
                             <div class="col-md-4">
                                 <label class="form-label">產品代碼</label>
-                                <input type="text" class="form-control product-code" value="${productData.code || ''}" placeholder="例：SOAP001">
+                                <input type="text" class="form-control product-code" value="${productData.product_code || ''}" placeholder="例：SOAP001">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">產品名稱</label>
-                                <input type="text" class="form-control product-name" value="${productData.name || ''}" placeholder="請輸入產品名稱">
+                                <input type="text" class="form-control product-name" value="${productData.product_name || ''}" placeholder="請輸入產品名稱">
                             </div>
                             <div class="col-md-2 text-end">
                                 <label class="form-label">&nbsp;</label>
@@ -1037,12 +1037,12 @@
             // 移除空狀態訊息
             container.find('.text-center.text-muted').remove();
             
-            // 生成新的產品 key
+            // 生成新的產品識別符（新產品沒有ID）
             const timestamp = Date.now();
-            const productKey = `new_product_${timestamp}`;
+            const newProductId = `new_product_${timestamp}`;
             
             const productHtml = `
-                <div class="product-item mb-3 p-3 border rounded bg-light" data-product-key="${productKey}">
+                <div class="product-item mb-3 p-3 border rounded bg-light" data-product-id="" data-product-code="${newProductId}">
                     <div class="row align-items-center">
                         <div class="col-md-4">
                             <label class="form-label">產品代碼 <span class="text-danger">*</span></label>
@@ -1067,7 +1067,7 @@
             container.append(productHtml);
             
             // 綁定新增產品的刪除按鈕事件
-            const newItem = container.find(`[data-product-key="${productKey}"]`);
+            const newItem = container.find(`[data-product-code="${newProductId}"]`);
             newItem.find('.delete-product-btn').on('click', (e) => {
                 const productItem = $(e.target).closest('.product-item');
                 this.deleteProduct(productItem);
@@ -1114,12 +1114,12 @@
             try {
                 // 驗證所有產品資料
                 const productItems = $('#products-container .product-item');
-                const products = {};
+                const products = [];
                 const errors = [];
                 
                 productItems.each(function() {
                     const $item = $(this);
-                    const productKey = $item.data('product-key');
+                    const productId = $item.data('product-id'); // 現有產品的ID，新產品為空
                     const code = $item.find('.product-code').val().trim().toUpperCase();
                     const name = $item.find('.product-name').val().trim();
                     
@@ -1134,16 +1134,25 @@
                     }
                     
                     // 檢查代碼是否重複
-                    const existingProduct = Object.values(products).find(p => p.code === code);
+                    const existingProduct = products.find(p => p.code === code);
                     if (existingProduct) {
                         errors.push(`產品代碼 "${code}" 重複，請使用不同的代碼`);
                         return false;
                     }
                     
-                    products[productKey] = {
+                    // 準備產品資料
+                    const product = {
                         code: code,
-                        name: name
+                        name: name,
+                        is_active: true
                     };
+                    
+                    // 如果有ID，表示是更新現有產品
+                    if (productId) {
+                        product.id = productId;
+                    }
+                    
+                    products.push(product);
                 });
                 
                 if (errors.length > 0) {
