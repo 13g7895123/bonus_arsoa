@@ -16,7 +16,7 @@
                     <div class="container">
                       <form action="#" method="POST" class="text-left" id="eform02">
                         <div class="row">
-                          <div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
+                          <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">姓名</label>
@@ -59,71 +59,71 @@
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">AP柔敏潔顏皂</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_soap002" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">活顏泥膜</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_mask001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">安露莎化粧水I</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_toner001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">安露莎化粧水II</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_toner002" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">安露莎活膚化粧水</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_toner003" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">柔敏化粧水</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_toner004" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">安露莎精華液I</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_serum001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">安露莎精華液II</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_serum002" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">安露莎活膚精華液</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_serum003" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">美白精華液</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_serum004" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">保濕潤膚液</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_lotion001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">美容防皺油</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_oil001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">保濕凝膠</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_gel001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">亮采晶萃</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_essence001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">防曬隔離液</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_sunscreen001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">保濕粉底液</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_foundation001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">絲柔粉餅</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_powder001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
 
 
@@ -552,8 +552,8 @@
                          String(today.getMonth() + 1).padStart(2, '0') + '-' + 
                          String(today.getDate()).padStart(2, '0');
         
+        $('#current-date').text(currentDate);
         $('input[name="join_date"]').val(currentDate);
-        $('input[name="meeting_date"]').val(currentDate);
         
         if (showTestButton) {
           $('#testDataButton').show();
@@ -573,10 +573,29 @@
         $('select[name="gender"]').val('女');
         $('input[name="age"]').val('30');
         $('input[name="skin_health_condition"]').val('輕微乾燥，偶有敏感');
+        
+        // 產品數量測試資料
         $('input[name="product_soap001"]').val('2');
+        $('input[name="product_soap002"]').val('1');
+        $('input[name="product_mask001"]').val('3');
+        $('input[name="product_toner001"]').val('2');
+        $('input[name="product_toner002"]').val('1');
+        $('input[name="product_toner003"]').val('2');
+        $('input[name="product_toner004"]').val('1');
+        $('input[name="product_serum001"]').val('2');
+        $('input[name="product_serum002"]').val('1');
+        $('input[name="product_serum003"]').val('1');
+        $('input[name="product_serum004"]').val('2');
+        $('input[name="product_lotion001"]').val('3');
+        $('input[name="product_oil001"]').val('1');
+        $('input[name="product_gel001"]').val('2');
+        $('input[name="product_essence001"]').val('1');
+        $('input[name="product_sunscreen001"]').val('2');
+        $('input[name="product_foundation001"]').val('1');
+        $('input[name="product_powder001"]').val('2');
+        
         $('input[name="line_contact"]').val('與會員保持良好互動，定期關心產品使用狀況');
         $('input[name="tel_contact"]').val('每月電話追蹤，了解產品效果和需求');
-        $('input[name="meeting_date"]').val('2025-09-15');
       }
 
       function showConfirmModal() {
@@ -718,12 +737,7 @@
                 allowEscapeKey: false
               }).then(() => {
                 $('#confirmModal').modal('hide');
-                // 返回到來源頁面
-                if (document.referrer) {
-                  window.location.href = document.referrer;
-                } else {
-                  window.location.href = '<?php echo base_url("eform"); ?>';
-                }
+                history.go(0);
               });
             } else {
               Swal.fire({

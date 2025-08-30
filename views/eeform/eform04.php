@@ -482,7 +482,6 @@
         
         $('#current-date').text(currentDate);
         $('input[name="join_date"]').val(currentDate);
-        $('input[name="meeting_date"]').val(currentDate);
         
         if (showTestButton) $('#testDataButton').show();
       });
@@ -525,7 +524,6 @@
         
         $('input[name="line_contact"]').val('與會員保持良好互動，定期關心產品使用狀況');
         $('input[name="tel_contact"]').val('每月電話追蹤，了解產品效果和需求');
-        $('input[name="meeting_date"]').val('2025-09-15');
       }
 
       function showConfirmModal() {
