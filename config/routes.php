@@ -102,11 +102,11 @@ $route['api/eeform1/submission/(:any)'] = 'api/eeform1/submission/$1';
 $route['api/eeform1/update/(:any)'] = 'api/eeform1/update/$1';
 $route['api/eeform1/stats/(:any)'] = 'api/eeform1/stats/$1';
 
-$route['api/eeform2/health'] = 'api/eeform2/health';
-$route['api/eeform2/submit'] = 'api/eeform2/submit';
-$route['api/eeform2/submissions/(:any)'] = 'api/eeform2/submissions/$1';
-$route['api/eeform2/submission/(:any)'] = 'api/eeform2/submission/$1';
-$route['api/eeform2/stats/(:any)'] = 'api/eeform2/stats/$1';
+$route['api/eeform2/health'] = 'api/eeform/eeform2/health';
+$route['api/eeform2/submit'] = 'api/eeform/eeform2/submit';
+$route['api/eeform2/submissions/(:any)'] = 'api/eeform/eeform2/submissions/$1';
+$route['api/eeform2/submission/(:any)'] = 'api/eeform/eeform2/submission/$1';
+$route['api/eeform2/stats/(:any)'] = 'api/eeform/eeform2/stats/$1';
 
 $route['api/eeform3/health'] = 'api/eeform3/health';
 $route['api/eeform3/submit'] = 'api/eeform3/submit';
@@ -116,17 +116,17 @@ $route['api/eeform3/submission/(:any)'] = 'api/eeform3/submission/$1';
 $route['api/eeform3/submission/(:any)/status'] = 'api/eeform3/update_status/$1';
 $route['api/eeform3/stats/(:any)'] = 'api/eeform3/stats/$1';
 
-$route['api/eeform4/health'] = 'api/eeform4/health';
-$route['api/eeform4/submit'] = 'api/eeform4/submit';
-$route['api/eeform4/submissions/(:any)'] = 'api/eeform4/submissions/$1';
-$route['api/eeform4/submission/(:any)'] = 'api/eeform4/submission/$1';
-$route['api/eeform4/stats/(:any)'] = 'api/eeform4/stats/$1';
+$route['api/eeform4/health'] = 'api/eeform/eeform4/health';
+$route['api/eeform4/submit'] = 'api/eeform/eeform4/submit';
+$route['api/eeform4/submissions/(:any)'] = 'api/eeform/eeform4/submissions/$1';
+$route['api/eeform4/submission/(:any)'] = 'api/eeform/eeform4/submission/$1';
+$route['api/eeform4/stats/(:any)'] = 'api/eeform/eeform4/stats/$1';
 
-$route['api/eeform5/health'] = 'api/eeform5/health';
-$route['api/eeform5/submit'] = 'api/eeform5/submit';
-$route['api/eeform5/submissions/(:any)'] = 'api/eeform5/submissions/$1';
-$route['api/eeform5/submission/(:any)'] = 'api/eeform5/submission/$1';
-$route['api/eeform5/stats/(:any)'] = 'api/eeform5/stats/$1';
+$route['api/eeform5/health'] = 'api/eeform/eeform5/health';
+$route['api/eeform5/submit'] = 'api/eeform/eeform5/submit';
+$route['api/eeform5/submissions/(:any)'] = 'api/eeform/eeform5/submissions/$1';
+$route['api/eeform5/submission/(:any)'] = 'api/eeform/eeform5/submission/$1';
+$route['api/eeform5/stats/(:any)'] = 'api/eeform/eeform5/stats/$1';
 
 $route['api/eform5/submit'] = 'api/eform/form5/submit';
 

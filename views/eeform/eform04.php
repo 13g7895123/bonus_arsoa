@@ -41,11 +41,11 @@
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">年齡</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="限填數字" />
+                            <input type="number" name="age" class="form-control form-control-custom" placeholder="限填數字" required />
                           </div>
                           <div class="col-sm-12 mb30">
                             <label class="label-custom">肌膚/健康狀況</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="請填寫肌膚/健康狀況…" />
+                            <input type="text" name="skin_health_condition" class="form-control form-control-custom" placeholder="請填寫肌膚/健康狀況…" />
                           </div>
 
                           <div class="col-sm-12 mb30">
@@ -56,35 +56,35 @@
                                   <div class="row">
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">活力發酵精萃</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_energy_essence001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">白鶴靈芝EX</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_reishi_ex001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">美力C錠</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_vitamin_c001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">鶴力晶</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_energy_crystal001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">白鶴靈芝茶</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_reishi_tea001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">淨白活膚蜜皂</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_soap001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">活顏泥膜</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_mask001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
                                     <div class="col-sm-3 mb20">
                                       <label class="label-custom">化粧水</label>
-                                      <input type="text" style="width: 100%;" placeholder="請填寫數量…">
+                                      <input type="number" name="product_toner001" style="width: 100%;" placeholder="請填寫數量…" min="0">
                                     </div>
 
 
@@ -95,13 +95,115 @@
                           </div>
 
                           <div class="col-sm-12 mb30">
+                            <h5>健康困擾</h5>
+                            <div class="card bg-light ">
+                              <div class="card-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-4 mb20">
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="health_concerns[]" value="疲勞" id="health_fatigue">
+                                        <label class="form-check-label" for="health_fatigue">疲勞</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-4 mb20">
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="health_concerns[]" value="失眠" id="health_insomnia">
+                                        <label class="form-check-label" for="health_insomnia">失眠</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-4 mb20">
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="health_concerns[]" value="免疫力差" id="health_immunity">
+                                        <label class="form-check-label" for="health_immunity">免疫力差</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-4 mb20">
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="health_concerns[]" value="消化不良" id="health_digestion">
+                                        <label class="form-check-label" for="health_digestion">消化不良</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-4 mb20">
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="health_concerns[]" value="皮膚問題" id="health_skin">
+                                        <label class="form-check-label" for="health_skin">皮膚問題</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-4 mb20">
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="health_concerns[]" value="關節疼痛" id="health_joints">
+                                        <label class="form-check-label" for="health_joints">關節疼痛</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-4 mb20">
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="health_concerns[]" value="記憶力衰退" id="health_memory">
+                                        <label class="form-check-label" for="health_memory">記憶力衰退</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-4 mb20">
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="health_concerns[]" value="血糖控制" id="health_blood_sugar">
+                                        <label class="form-check-label" for="health_blood_sugar">血糖控制</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-4 mb20">
+                                      <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="health_concerns[]" value="其他" id="health_other">
+                                        <label class="form-check-label" for="health_other">其他</label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-sm-12 mb30">
+                            <h5>每日建議產品&攝取量</h5>
+                            <div class="card bg-light ">
+                              <div class="card-body">
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col-sm-6 mb20">
+                                      <label class="label-custom">活力發酵精萃建議攝取量</label>
+                                      <input type="text" name="recommend_energy_essence" style="width: 100%;" placeholder="例：每日1-2包，餐前30分鐘">
+                                    </div>
+                                    <div class="col-sm-6 mb20">
+                                      <label class="label-custom">白鶴靈芝EX建議攝取量</label>
+                                      <input type="text" name="recommend_reishi_ex" style="width: 100%;" placeholder="例：每日2-3粒，餐後服用">
+                                    </div>
+                                    <div class="col-sm-6 mb20">
+                                      <label class="label-custom">美力C錠建議攝取量</label>
+                                      <input type="text" name="recommend_vitamin_c" style="width: 100%;" placeholder="例：每日1-2錠，飯後服用">
+                                    </div>
+                                    <div class="col-sm-6 mb20">
+                                      <label class="label-custom">鶴力晶建議攝取量</label>
+                                      <input type="text" name="recommend_energy_crystal" style="width: 100%;" placeholder="例：每日1包，溫開水沖泡">
+                                    </div>
+                                    <div class="col-sm-6 mb20">
+                                      <label class="label-custom">白鶴靈芝茶建議攝取量</label>
+                                      <input type="text" name="recommend_reishi_tea" style="width: 100%;" placeholder="例：每日1-2包，熱水沖泡">
+                                    </div>
+                                    <div class="col-sm-6 mb20">
+                                      <label class="label-custom">綜合建議</label>
+                                      <input type="text" name="recommend_general" style="width: 100%;" placeholder="整體建議攝取時間和注意事項">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-sm-12 mb30">
                             <label class="label-custom">LINE</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="請填寫LINE聯絡狀況，300字元內…" />
+                            <input type="text" name="line_contact" class="form-control form-control-custom" placeholder="請填寫LINE聯絡狀況，300字元內…" />
                           </div>
 
                           <div class="col-sm-12 mb30">
                             <label class="label-custom">TEL</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="請填寫電話聯絡狀況，300字元內…" />
+                            <input type="text" name="tel_contact" class="form-control form-control-custom" placeholder="請填寫電話聯絡狀況，300字元內…" />
                           </div>
 
                           <div class="col-sm-12 mb30">
@@ -396,6 +498,34 @@
         $('input[name="join_date"]').val('2023-01-15');
         $('select[name="gender"]').val('女');
         $('input[name="age"]').val('30');
+        $('input[name="skin_health_condition"]').val('測試健康狀況描述');
+        
+        // 產品數量測試資料
+        $('input[name="product_energy_essence001"]').val('2');
+        $('input[name="product_reishi_ex001"]').val('3');
+        $('input[name="product_vitamin_c001"]').val('2');
+        $('input[name="product_energy_crystal001"]').val('1');
+        $('input[name="product_reishi_tea001"]').val('2');
+        $('input[name="product_soap001"]').val('1');
+        $('input[name="product_mask001"]').val('2');
+        $('input[name="product_toner001"]').val('3');
+        
+        // 健康困擾測試資料
+        $('input[value="疲勞"]').prop('checked', true);
+        $('input[value="失眠"]').prop('checked', true);
+        $('input[value="皮膚問題"]').prop('checked', true);
+        
+        // 每日建議產品&攝取量測試資料
+        $('input[name="recommend_energy_essence"]').val('每日1-2包，餐前30分鐘溫開水沖泡');
+        $('input[name="recommend_reishi_ex"]').val('每日2-3粒，餐後服用，建議搭配溫開水');
+        $('input[name="recommend_vitamin_c"]').val('每日1-2錠，飯後服用，增強免疫力');
+        $('input[name="recommend_energy_crystal"]').val('每日1包，溫開水沖泡，空腹服用效果佳');
+        $('input[name="recommend_reishi_tea"]').val('每日1-2包，熱水沖泡，可當茶飲用');
+        $('input[name="recommend_general"]').val('建議搭配均衡飲食，適量運動，充足睡眠');
+        
+        $('input[name="line_contact"]').val('與會員保持良好互動，定期關心產品使用狀況');
+        $('input[name="tel_contact"]').val('每月電話追蹤，了解產品效果和需求');
+        $('input[name="meeting_date"]').val('2025-09-15');
       }
 
       function showConfirmModal() {
@@ -420,6 +550,12 @@
       }
 
       function submitForm() {
+        // Collect health concerns
+        var healthConcerns = [];
+        $('input[name="health_concerns[]"]:checked').each(function() {
+          healthConcerns.push($(this).val());
+        });
+
         var formData = {
           member_name: $('input[name="member_name"]').val(),
           member_id: $('input[name="member_id"]').val(),
@@ -427,6 +563,21 @@
           gender: $('select[name="gender"]').val(),
           age: $('input[name="age"]').val(),
           skin_health_condition: $('input[name="skin_health_condition"]').val(),
+          product_energy_essence001: $('input[name="product_energy_essence001"]').val(),
+          product_reishi_ex001: $('input[name="product_reishi_ex001"]').val(),
+          product_vitamin_c001: $('input[name="product_vitamin_c001"]').val(),
+          product_energy_crystal001: $('input[name="product_energy_crystal001"]').val(),
+          product_reishi_tea001: $('input[name="product_reishi_tea001"]').val(),
+          product_soap001: $('input[name="product_soap001"]').val(),
+          product_mask001: $('input[name="product_mask001"]').val(),
+          product_toner001: $('input[name="product_toner001"]').val(),
+          health_concerns: healthConcerns,
+          recommend_energy_essence: $('input[name="recommend_energy_essence"]').val(),
+          recommend_reishi_ex: $('input[name="recommend_reishi_ex"]').val(),
+          recommend_vitamin_c: $('input[name="recommend_vitamin_c"]').val(),
+          recommend_energy_crystal: $('input[name="recommend_energy_crystal"]').val(),
+          recommend_reishi_tea: $('input[name="recommend_reishi_tea"]').val(),
+          recommend_general: $('input[name="recommend_general"]').val(),
           line_contact: $('input[name="line_contact"]').val(),
           tel_contact: $('input[name="tel_contact"]').val(),
           meeting_date: $('input[name="meeting_date"]').val()
