@@ -1152,7 +1152,7 @@
                 }
                 
                 const response = await fetch('/api/eeform/eeform2/products', {
-                    method: 'PUT',
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -1202,7 +1202,7 @@
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
                 
-                this.showAlert('Excel 表單已成功匯出', 'success');
+                this.showAlert('表單已成功匯出', 'success');
             } catch (error) {
                 console.error('匯出表單失敗:', error);
                 this.showAlert('匯出表單失敗，請稍後再試', 'danger');

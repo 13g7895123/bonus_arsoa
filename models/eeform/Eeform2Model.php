@@ -59,27 +59,18 @@ class Eeform2Model extends MY_Model {
             $this->db->where('submission_id', $submission_id);
             $this->db->delete($this->table_products);
             
-            // 產品代碼映射
-            $product_mapping = [
-                'product_soap001' => ['code' => 'SOAP001', 'name' => '淨白活膚蜜皂'],
-                'product_soap002' => ['code' => 'SOAP002', 'name' => 'AP柔敏潔顏皂'],
-                'product_mask001' => ['code' => 'MASK001', 'name' => '活顏泥膜'],
-                'product_toner001' => ['code' => 'TONER001', 'name' => '安露莎化粧水I'],
-                'product_toner002' => ['code' => 'TONER002', 'name' => '安露莎化粧水II'],
-                'product_toner003' => ['code' => 'TONER003', 'name' => '安露莎活膚化粧水'],
-                'product_toner004' => ['code' => 'TONER004', 'name' => '柔敏化粧水'],
-                'product_serum001' => ['code' => 'SERUM001', 'name' => '安露莎精華液I'],
-                'product_serum002' => ['code' => 'SERUM002', 'name' => '安露莎精華液II'],
-                'product_serum003' => ['code' => 'SERUM003', 'name' => '安露莎活膚精華液'],
-                'product_serum004' => ['code' => 'SERUM004', 'name' => '美白精華液'],
-                'product_lotion001' => ['code' => 'LOTION001', 'name' => '保濕潤膚液'],
-                'product_oil001' => ['code' => 'OIL001', 'name' => '美容防皺油'],
-                'product_gel001' => ['code' => 'GEL001', 'name' => '保濕凝膠'],
-                'product_essence001' => ['code' => 'ESSENCE001', 'name' => '亮采晶萃'],
-                'product_sunscreen001' => ['code' => 'SUNSCREEN001', 'name' => '防曬隔離液'],
-                'product_foundation001' => ['code' => 'FOUNDATION001', 'name' => '保濕粉底液'],
-                'product_powder001' => ['code' => 'POWDER001', 'name' => '絲柔粉餅']
-            ];
+            // 取得產品主檔資料來建立映射
+            $product_master = $this->get_all_products();
+            $product_mapping = [];
+            
+            foreach ($product_master as $product) {
+                // 建立前端欄位名稱對應 (product_code 轉為小寫並加上 product_ 前綴)
+                $field_name = 'product_' . strtolower($product['product_code']);
+                $product_mapping[$field_name] = [
+                    'code' => $product['product_code'],
+                    'name' => $product['product_name']
+                ];
+            }
             
             // 插入產品記錄
             foreach ($products as $key => $product) {
@@ -408,6 +399,149 @@ class Eeform2Model extends MY_Model {
             
         } catch (Exception $e) {
             throw new Exception('取得統計資料失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 取得所有產品主檔資料
+     * @return array
+     */
+    public function get_all_products() {
+        try {
+            $this->db->select('*');
+            $this->db->from($this->table_product_master);
+            $this->db->where('is_active', true);
+            $this->db->order_by('sort_order', 'ASC');
+            $this->db->order_by('product_code', 'ASC');
+            
+            $query = $this->db->get();
+            return $query->result_array();
+            
+        } catch (Exception $e) {
+            throw new Exception('取得產品資料失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 根據產品代碼取得產品資訊
+     * @param string $product_code 產品代碼
+     * @return array|null
+     */
+    public function get_product_by_code($product_code) {
+        try {
+            $this->db->select('*');
+            $this->db->from($this->table_product_master);
+            $this->db->where('product_code', $product_code);
+            $this->db->where('is_active', true);
+            
+            $query = $this->db->get();
+            return $query->row_array();
+            
+        } catch (Exception $e) {
+            throw new Exception('取得產品資料失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 新增產品
+     * @param array $data 產品資料
+     * @return int|bool 產品ID或false
+     */
+    public function add_product($data) {
+        try {
+            $this->db->insert($this->table_product_master, $data);
+            return $this->db->insert_id();
+            
+        } catch (Exception $e) {
+            throw new Exception('新增產品失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 更新產品
+     * @param int $id 產品ID
+     * @param array $data 產品資料
+     * @return bool
+     */
+    public function update_product($id, $data) {
+        try {
+            $this->db->where('id', $id);
+            return $this->db->update($this->table_product_master, $data);
+            
+        } catch (Exception $e) {
+            throw new Exception('更新產品失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 刪除產品 (軟刪除)
+     * @param int $id 產品ID
+     * @return bool
+     */
+    public function delete_product($id) {
+        try {
+            $data = [
+                'is_active' => false,
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+            
+            $this->db->where('id', $id);
+            return $this->db->update($this->table_product_master, $data);
+            
+        } catch (Exception $e) {
+            throw new Exception('刪除產品失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 批量更新產品資料
+     * @param array $products 產品清單
+     * @return bool
+     */
+    public function batch_update_products($products) {
+        try {
+            $this->db->trans_start();
+            
+            foreach ($products as $product) {
+                if (isset($product['id']) && $product['id']) {
+                    // 更新現有產品
+                    $update_data = [
+                        'product_code' => $product['code'],
+                        'product_name' => $product['name'],
+                        'product_category' => isset($product['category']) ? $product['category'] : 'other',
+                        'description' => isset($product['description']) ? $product['description'] : null,
+                        'sort_order' => isset($product['sort_order']) ? $product['sort_order'] : 0,
+                        'is_active' => isset($product['is_active']) ? $product['is_active'] : true
+                    ];
+                    
+                    $this->db->where('id', $product['id']);
+                    $this->db->update($this->table_product_master, $update_data);
+                } else {
+                    // 新增產品
+                    $insert_data = [
+                        'product_code' => $product['code'],
+                        'product_name' => $product['name'],
+                        'product_category' => isset($product['category']) ? $product['category'] : 'other',
+                        'description' => isset($product['description']) ? $product['description'] : null,
+                        'sort_order' => isset($product['sort_order']) ? $product['sort_order'] : 0,
+                        'is_active' => isset($product['is_active']) ? $product['is_active'] : true
+                    ];
+                    
+                    $this->db->insert($this->table_product_master, $insert_data);
+                }
+            }
+            
+            $this->db->trans_complete();
+            
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('批量更新產品失敗');
+            }
+            
+            return true;
+            
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            throw new Exception('批量更新產品失敗: ' . $e->getMessage());
         }
     }
 }
