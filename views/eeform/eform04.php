@@ -17,15 +17,19 @@
                     <div class="container">
                       <form action="#" method="POST" class="text-left" id="eform04">
                         <div class="row">
-                          <div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
+                          <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
-                          <div class="col-sm-4 mb30">
+                          <div class="col-sm-3 mb30">
                             <label class="label-custom">姓名</label>
                             <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
                           </div>
                           <div class="col-sm-3 mb30">
+                            <label class="label-custom">會員編號</label>
+                            <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" required />
+                          </div>
+                          <div class="col-sm-3 mb30">
                             <label class="label-custom">入會日</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="將使用datepicker" />
+                            <input type="date" name="join_date" class="form-control form-control-custom" required />
                           </div>
                           <div class="col-sm-2 mb30">
                             <label class="label-custom">性別</label>
@@ -102,7 +106,7 @@
 
                           <div class="col-sm-12 mb30">
                             <label class="label-custom">見面日</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="將使用datepicker" />
+                            <input type="date" name="meeting_date" class="form-control form-control-custom" />
                           </div>
 
                           <div class="col-sm-12 mb30">
@@ -365,14 +369,30 @@
       /*Scroll to top when arrow up clicked END*/
     </script>
     <script>
-      var showTestButton = false;
+      var showTestButton = true;
       
       $(document).ready(function() {
+        // 自動填入當天日期
+        var today = new Date();
+        var currentDate = today.getFullYear() + '-' + 
+                         String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                         String(today.getDate()).padStart(2, '0');
+        
+        $('#current-date').text(currentDate);
+        $('input[name="join_date"]').val(currentDate);
+        $('input[name="meeting_date"]').val(currentDate);
+        
         if (showTestButton) $('#testDataButton').show();
       });
       
       function fillTestData() {
-        $('input[name="member_name"]').val('測試會員');
+        // 只在用戶資料為空時填入測試資料
+        if (!$('input[name="member_name"]').val()) {
+          $('input[name="member_name"]').val('測試會員');
+        }
+        if (!$('input[name="member_id"]').val()) {
+          $('input[name="member_id"]').val('TEST001');
+        }
         $('input[name="join_date"]').val('2023-01-15');
         $('select[name="gender"]').val('女');
         $('input[name="age"]').val('30');
@@ -381,11 +401,12 @@
       function showConfirmModal() {
         // Basic validation
         var memberName = $('input[name="member_name"]').val();
+        var memberId = $('input[name="member_id"]').val();
         var joinDate = $('input[name="join_date"]').val();
         var gender = $('select[name="gender"]').val();
         var age = $('input[name="age"]').val();
 
-        if (!memberName || !joinDate || !gender || !age) {
+        if (!memberName || !memberId || !joinDate || !gender || !age) {
           Swal.fire({
             title: '欄位未完整',
             text: '請填寫所有必填欄位',
@@ -401,6 +422,7 @@
       function submitForm() {
         var formData = {
           member_name: $('input[name="member_name"]').val(),
+          member_id: $('input[name="member_id"]').val(),
           join_date: $('input[name="join_date"]').val(),
           gender: $('select[name="gender"]').val(),
           age: $('input[name="age"]').val(),

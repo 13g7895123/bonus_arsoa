@@ -12,35 +12,23 @@
                     <div class="container">
                       <form action="#" class="text-left">
                         <div class="row">
-                          <div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
+                          <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
-                          <div class="col-sm-4 mb30">
+                          <div class="col-sm-3 mb30">
                             <label class="label-custom">會員姓名</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="請填會員姓名" />
+                            <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
                           </div>
                           <div class="col-sm-3 mb30">
-                            <label class="label-custom">出生西元年</label>
-                            <select class="form-control form-control-custom" id="SeleteBYear">
-                              <option>請選擇</option>
-                              <option>2005</option>
-                              <option>2004</option>
-                              <option>2003</option>
-                              <option>2002</option>
-                            </select>
+                            <label class="label-custom">會員編號</label>
+                            <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" required />
                           </div>
-                          <div class="col-sm-2 mb30">
-                            <label class="label-custom">出生西元月</label>
-                            <select class="form-control form-control-custom" id="SeleteBYear">
-                              <option>請選擇</option>
-                              <option>1月</option>
-                              <option>2月</option>
-                              <option>3月</option>
-                              <option>4月</option>
-                            </select>
+                          <div class="col-sm-3 mb30">
+                            <label class="label-custom">出生年月</label>
+                            <input type="month" name="birth_date" class="form-control form-control-custom" required />
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">身高(公分)</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="限填數字" />
+                            <input type="number" name="height" class="form-control form-control-custom" placeholder="限填數字" required />
                           </div>
 
                           <div class="col-sm-12 mb30">
@@ -218,6 +206,11 @@
 
                           <div class="col-sm-12 mb30">
                             <hr class="my-4">
+                            <div id="testDataButton" style="display: none;" class="mb-3">
+                              <button type="button" class="btn btn-outline-info btn-sm" onclick="fillTestData()">
+                                <i class="fas fa-flask mr-1"></i>填入測試資料
+                              </button>
+                            </div>
                             <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
                           </div>
 
@@ -451,6 +444,16 @@
         }
       });
       $(document).ready(function() {
+        // 自動填入當天日期
+        var today = new Date();
+        var currentDate = today.getFullYear() + '-' + 
+                         String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                         String(today.getDate()).padStart(2, '0');
+        
+        $('#current-date').text(currentDate);
+        
+        if (showTestButton) $('#testDataButton').show();
+        
         $("#back2Top").click(function(event) {
           event.preventDefault();
           $("html, body").animate({
@@ -461,6 +464,22 @@
 
       });
       /*Scroll to top when arrow up clicked END*/
+      
+      // 控制測試按鈕顯示的變數
+      var showTestButton = true;
+      
+      // 填入測試資料的函數
+      function fillTestData() {
+        // 只在用戶資料為空時填入測試資料
+        if (!$('input[name="member_name"]').val()) {
+          $('input[name="member_name"]').val('測試會員');
+        }
+        if (!$('input[name="member_id"]').val()) {
+          $('input[name="member_id"]').val('TEST001');
+        }
+        $('input[name="birth_date"]').val('1990-01');
+        $('input[name="height"]').val('170');
+      }
     </script>
 
   </body>
