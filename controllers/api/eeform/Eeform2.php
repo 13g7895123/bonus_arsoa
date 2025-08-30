@@ -439,13 +439,7 @@ class Eeform2 extends MY_Controller
                 // 取得目前的產品設定 - 從 Model 中的 product_mapping 取得
                 $product_mapping = $this->_get_product_mapping();
                 
-                $products = [];
-                foreach ($product_mapping as $key => $product) {
-                    $product_key = str_replace('product_', '', $key);
-                    $products[$product_key] = $product['name'];
-                }
-                
-                $this->_send_success('取得產品設定成功', $products);
+                $this->_send_success('取得產品設定成功', $product_mapping);
                 
             } else if ($method === 'PUT' || $method === 'POST') {
                 // 更新產品設定
@@ -540,31 +534,97 @@ class Eeform2 extends MY_Controller
         }
     }
 
+    /**
+     * 匯出單一表單 (Excel格式)
+     * GET /api/eeform2/export_single/{id}
+     */
+    public function export_single($id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id || !is_numeric($id)) {
+                $this->_send_error('缺少有效的表單ID', 400);
+                return;
+            }
+
+            $submission = $this->eform2_model->get_submission_by_id($id);
+            
+            if (!$submission) {
+                $this->_send_error('找不到指定的表單記錄', 404);
+                return;
+            }
+
+            // 準備單一表單的Excel資料
+            $excel_data = $this->_prepare_single_form_excel_data($submission);
+            $filename = 'eform02_表單_' . $id . '_' . date('Y-m-d_H-i-s') . '.xlsx';
+            
+            // 使用簡易的Excel格式 (實際上是CSV)
+            header('Content-Type: application/vnd.ms-excel; charset=UTF-8');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Cache-Control: max-age=0');
+            
+            // 輸出 BOM 以支援中文
+            echo "\xEF\xBB\xBF";
+            
+            // 建立檔案指針
+            $output = fopen('php://output', 'w');
+            
+            // 寫入 Excel 資料
+            foreach ($excel_data as $row) {
+                fputcsv($output, $row);
+            }
+            
+            fclose($output);
+            exit();
+
+        } catch (Exception $e) {
+            $this->_send_error('匯出表單失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
     // Helper methods
     
     /**
      * 取得產品對應表
      */
     private function _get_product_mapping() {
+        // 從設定檔載入產品對應表
+        $config_path = APPPATH . 'config/eform2_products.json';
+        
+        if (file_exists($config_path)) {
+            $json_data = file_get_contents($config_path);
+            $products = json_decode($json_data, true);
+            
+            if ($products && is_array($products)) {
+                return $products;
+            }
+        }
+        
+        // 如果設定檔不存在，返回預設產品
         return [
-            'product_soap001' => ['code' => 'SOAP001', 'name' => '淨白活膚蜜皂'],
-            'product_soap002' => ['code' => 'SOAP002', 'name' => 'AP柔敏潔顏皂'],
-            'product_mask001' => ['code' => 'MASK001', 'name' => '活顏泥膜'],
-            'product_toner001' => ['code' => 'TONER001', 'name' => '安露莎化粧水I'],
-            'product_toner002' => ['code' => 'TONER002', 'name' => '安露莎化粧水II'],
-            'product_toner003' => ['code' => 'TONER003', 'name' => '安露莎活膚化粧水'],
-            'product_toner004' => ['code' => 'TONER004', 'name' => '柔敏化粧水'],
-            'product_serum001' => ['code' => 'SERUM001', 'name' => '安露莎精華液I'],
-            'product_serum002' => ['code' => 'SERUM002', 'name' => '安露莎精華液II'],
-            'product_serum003' => ['code' => 'SERUM003', 'name' => '安露莎活膚精華液'],
-            'product_serum004' => ['code' => 'SERUM004', 'name' => '美白精華液'],
-            'product_lotion001' => ['code' => 'LOTION001', 'name' => '保濕潤膚液'],
-            'product_oil001' => ['code' => 'OIL001', 'name' => '美容防皺油'],
-            'product_gel001' => ['code' => 'GEL001', 'name' => '保濕凝膠'],
-            'product_essence001' => ['code' => 'ESSENCE001', 'name' => '亮采晶萃'],
-            'product_sunscreen001' => ['code' => 'SUNSCREEN001', 'name' => '防曬隔離液'],
-            'product_foundation001' => ['code' => 'FOUNDATION001', 'name' => '保濕粉底液'],
-            'product_powder001' => ['code' => 'POWDER001', 'name' => '絲柔粉餅']
+            'soap001' => ['code' => 'SOAP001', 'name' => '淨白活膚蜜皂'],
+            'soap002' => ['code' => 'SOAP002', 'name' => 'AP柔敏潔顏皂'],
+            'mask001' => ['code' => 'MASK001', 'name' => '活顏泥膜'],
+            'toner001' => ['code' => 'TONER001', 'name' => '安露莎化粧水I'],
+            'toner002' => ['code' => 'TONER002', 'name' => '安露莎化粧水II'],
+            'toner003' => ['code' => 'TONER003', 'name' => '安露莎活膚化粧水'],
+            'toner004' => ['code' => 'TONER004', 'name' => '柔敏化粧水'],
+            'serum001' => ['code' => 'SERUM001', 'name' => '安露莎精華液I'],
+            'serum002' => ['code' => 'SERUM002', 'name' => '安露莎精華液II'],
+            'serum003' => ['code' => 'SERUM003', 'name' => '安露莎活膚精華液'],
+            'serum004' => ['code' => 'SERUM004', 'name' => '美白精華液'],
+            'lotion001' => ['code' => 'LOTION001', 'name' => '保濕潤膚液'],
+            'oil001' => ['code' => 'OIL001', 'name' => '美容防皺油'],
+            'gel001' => ['code' => 'GEL001', 'name' => '保濕凝膠'],
+            'essence001' => ['code' => 'ESSENCE001', 'name' => '亮采晶萃'],
+            'sunscreen001' => ['code' => 'SUNSCREEN001', 'name' => '防曬隔離液'],
+            'foundation001' => ['code' => 'FOUNDATION001', 'name' => '保濕粉底液'],
+            'powder001' => ['code' => 'POWDER001', 'name' => '絲柔粉餅']
         ];
     }
     
@@ -642,6 +702,261 @@ class Eeform2 extends MY_Controller
         }
         
         return $excel_data;
+    }
+    
+    /**
+     * 準備單一表單的 Excel 匯出資料
+     */
+    private function _prepare_single_form_excel_data($submission) {
+        $excel_data = [];
+        
+        // 標題
+        $excel_data[] = ['會員服務追蹤管理表(肌膚)', ''];
+        $excel_data[] = ['', '']; // 空行
+        
+        // 基本資料
+        $excel_data[] = ['基本資料', ''];
+        $excel_data[] = ['會員姓名', $submission['member_name'] ?? ''];
+        $excel_data[] = ['會員編號', $submission['member_id'] ?? ''];
+        $excel_data[] = ['性別', $submission['gender'] ?? ''];
+        $excel_data[] = ['年齡', isset($submission['age']) ? $submission['age'] . ' 歲' : ''];
+        $excel_data[] = ['入會日', $submission['join_date'] ?? ''];
+        $excel_data[] = ['見面日', $submission['meeting_date'] ?? ''];
+        $excel_data[] = ['', '']; // 空行
+        
+        // 健康狀況
+        $excel_data[] = ['健康狀況', ''];
+        $excel_data[] = ['肌膚健康狀況', $submission['skin_health_condition'] ?? ''];
+        $excel_data[] = ['', '']; // 空行
+        
+        // 產品訂購
+        $excel_data[] = ['產品訂購', ''];
+        if (isset($submission['products']) && is_array($submission['products']) && !empty($submission['products'])) {
+            foreach ($submission['products'] as $product) {
+                $excel_data[] = [$product['product_name'], $product['quantity'] . ' 個'];
+            }
+        } else {
+            $excel_data[] = ['未訂購任何產品', ''];
+        }
+        $excel_data[] = ['', '']; // 空行
+        
+        // 聯絡資訊
+        $excel_data[] = ['聯絡資訊', ''];
+        $excel_data[] = ['LINE聯絡', $submission['line_contact'] ?? ''];
+        $excel_data[] = ['電話聯絡', $submission['tel_contact'] ?? ''];
+        $excel_data[] = ['', '']; // 空行
+        
+        // 表單資訊
+        $excel_data[] = ['表單資訊', ''];
+        $excel_data[] = ['提交日期', $submission['submission_date'] ?? ''];
+        $excel_data[] = ['建立時間', $submission['created_at'] ?? ''];
+        
+        $status_map = [
+            'submitted' => '已提交',
+            'processing' => '處理中',
+            'completed' => '已完成',
+            'cancelled' => '已取消'
+        ];
+        $excel_data[] = ['狀態', $status_map[$submission['status']] ?? $submission['status']];
+        
+        if (!empty($submission['admin_note'])) {
+            $excel_data[] = ['管理員備註', $submission['admin_note']];
+        }
+        
+        return $excel_data;
+    }
+    
+    /**
+     * 生成前台表單格式的 HTML
+     */
+    private function _generate_form_html($submission) {
+        // 獲取產品資料
+        $products_html = '';
+        if (isset($submission['products']) && is_array($submission['products'])) {
+            foreach ($submission['products'] as $product) {
+                $products_html .= '<p><strong>' . htmlspecialchars($product['product_name']) . ':</strong> ' . intval($product['quantity']) . ' 個</p>';
+            }
+        }
+        if (empty($products_html)) {
+            $products_html = '<p>未訂購任何產品</p>';
+        }
+        
+        $html = '<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員服務追蹤管理表(肌膚) - ' . htmlspecialchars($submission['member_name'] ?? '') . '</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", "Apple LiGothic Medium", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-title {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        .form-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -5px;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            margin: 5px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-value {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            min-height: 20px;
+            word-wrap: break-word;
+        }
+        .form-value.empty {
+            color: #999;
+            font-style: italic;
+        }
+        .products-section {
+            background-color: #e8f5e8;
+            border-left-color: #27ae60;
+        }
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .form-container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="form-title">會員服務追蹤管理表(肌膚)</h1>
+        
+        <div class="form-section">
+            <h3>基本資料</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>會員姓名</label>
+                    <div class="form-value">' . htmlspecialchars($submission['member_name'] ?? '') . '</div>
+                </div>
+                <div class="form-group">
+                    <label>會員編號</label>
+                    <div class="form-value">' . htmlspecialchars($submission['member_id'] ?? '') . '</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>性別</label>
+                    <div class="form-value">' . htmlspecialchars($submission['gender'] ?? '') . '</div>
+                </div>
+                <div class="form-group">
+                    <label>年齡</label>
+                    <div class="form-value">' . (isset($submission['age']) ? intval($submission['age']) . ' 歲' : '') . '</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>入會日</label>
+                    <div class="form-value">' . htmlspecialchars($submission['join_date'] ?? '') . '</div>
+                </div>
+                <div class="form-group">
+                    <label>見面日</label>
+                    <div class="form-value' . (empty($submission['meeting_date']) ? ' empty' : '') . '">' . 
+                    (empty($submission['meeting_date']) ? '(未填寫)' : htmlspecialchars($submission['meeting_date'])) . '</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>健康狀況</h3>
+            <div class="form-group">
+                <label>肌膚健康狀況描述</label>
+                <div class="form-value' . (empty($submission['skin_health_condition']) ? ' empty' : '') . '">' .
+                (empty($submission['skin_health_condition']) ? '(未填寫)' : nl2br(htmlspecialchars($submission['skin_health_condition']))) . '</div>
+            </div>
+        </div>
+        
+        <div class="form-section products-section">
+            <h3>產品訂購</h3>
+            <div class="form-group">
+                <label>訂購產品清單</label>
+                <div class="form-value">' . $products_html . '</div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>聯絡資訊</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>LINE 聯絡方式</label>
+                    <div class="form-value' . (empty($submission['line_contact']) ? ' empty' : '') . '">' .
+                    (empty($submission['line_contact']) ? '(未填寫)' : nl2br(htmlspecialchars($submission['line_contact']))) . '</div>
+                </div>
+                <div class="form-group">
+                    <label>電話聯絡方式</label>
+                    <div class="form-value' . (empty($submission['tel_contact']) ? ' empty' : '') . '">' .
+                    (empty($submission['tel_contact']) ? '(未填寫)' : nl2br(htmlspecialchars($submission['tel_contact']))) . '</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>表單資訊</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>填寫日期</label>
+                    <div class="form-value">' . htmlspecialchars($submission['submission_date'] ?? '') . '</div>
+                </div>
+                <div class="form-group">
+                    <label>建立時間</label>
+                    <div class="form-value">' . htmlspecialchars($submission['created_at'] ?? '') . '</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>';
+        
+        return $html;
     }
     
     private function _send_success($message, $data = null, $code = 200) {

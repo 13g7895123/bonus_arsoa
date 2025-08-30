@@ -357,17 +357,47 @@
         outline: 0 !important;
         box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
     }
+    
+    /* Product modal scrollable styles */
+    #productModal .modal-body {
+        max-height: 70vh !important;
+        overflow-y: auto !important;
+    }
+    
+    #productModal .modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    #productModal .modal-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    #productModal .modal-body::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    #productModal .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+    
+    #productModal .product-item {
+        transition: all 0.2s ease;
+    }
+    
+    #productModal .product-item:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transform: translateY(-1px);
+    }
 </style>
     <div class="container-fluid py-4 eform2-admin">
         <div class="row mb-4">
             <div class="col-12 d-flex justify-content-between align-items-center">
                 <h2>會員服務追蹤管理表(肌膚)</h2>
                 <div class="header-buttons">
-                    <button class="btn btn-outline-primary me-2" id="edit-products-btn">
+                    <button class="btn btn-outline-primary" id="edit-products-btn">
                         <i class="lnr lnr-cog"></i> 編輯商品
-                    </button>
-                    <button class="btn btn-success" id="export-excel-btn">
-                        <i class="lnr lnr-download"></i> 匯出 Excel
                     </button>
                 </div>
             </div>
@@ -511,94 +541,15 @@
                     <h5 class="modal-title">eform02 產品管理</h5>
                 </div>
                 <div class="modal-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="text-muted mb-0">產品列表</h6>
+                        <button type="button" class="btn btn-primary btn-sm" id="add-product-btn">
+                            <i class="lnr lnr-plus-circle"></i> 新增產品
+                        </button>
+                    </div>
                     <form id="product-form">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="text-muted mb-3">潔顏類</h6>
-                                <div class="mb-3">
-                                    <label class="form-label">淨白活膚蜜皂 (SOAP001)</label>
-                                    <input type="text" class="form-control" id="product_soap001_name" value="淨白活膚蜜皂">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">AP柔敏潔顏皂 (SOAP002)</label>
-                                    <input type="text" class="form-control" id="product_soap002_name" value="AP柔敏潔顏皂">
-                                </div>
-                                
-                                <h6 class="text-muted mb-3 mt-4">面膜類</h6>
-                                <div class="mb-3">
-                                    <label class="form-label">活顏泥膜 (MASK001)</label>
-                                    <input type="text" class="form-control" id="product_mask001_name" value="活顏泥膜">
-                                </div>
-                                
-                                <h6 class="text-muted mb-3 mt-4">化妝水類</h6>
-                                <div class="mb-3">
-                                    <label class="form-label">安露莎化粧水I (TONER001)</label>
-                                    <input type="text" class="form-control" id="product_toner001_name" value="安露莎化粧水I">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">安露莎化粧水II (TONER002)</label>
-                                    <input type="text" class="form-control" id="product_toner002_name" value="安露莎化粧水II">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">安露莎活膚化粧水 (TONER003)</label>
-                                    <input type="text" class="form-control" id="product_toner003_name" value="安露莎活膚化粧水">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">柔敏化粧水 (TONER004)</label>
-                                    <input type="text" class="form-control" id="product_toner004_name" value="柔敏化粧水">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="text-muted mb-3">精華液類</h6>
-                                <div class="mb-3">
-                                    <label class="form-label">安露莎精華液I (SERUM001)</label>
-                                    <input type="text" class="form-control" id="product_serum001_name" value="安露莎精華液I">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">安露莎精華液II (SERUM002)</label>
-                                    <input type="text" class="form-control" id="product_serum002_name" value="安露莎精華液II">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">安露莎活膚精華液 (SERUM003)</label>
-                                    <input type="text" class="form-control" id="product_serum003_name" value="安露莎活膚精華液">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">美白精華液 (SERUM004)</label>
-                                    <input type="text" class="form-control" id="product_serum004_name" value="美白精華液">
-                                </div>
-                                
-                                <h6 class="text-muted mb-3 mt-4">乳液/油/凝膠類</h6>
-                                <div class="mb-3">
-                                    <label class="form-label">保濕潤膚液 (LOTION001)</label>
-                                    <input type="text" class="form-control" id="product_lotion001_name" value="保濕潤膚液">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">美容防皺油 (OIL001)</label>
-                                    <input type="text" class="form-control" id="product_oil001_name" value="美容防皺油">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">保濕凝膠 (GEL001)</label>
-                                    <input type="text" class="form-control" id="product_gel001_name" value="保濕凝膠">
-                                </div>
-                                
-                                <h6 class="text-muted mb-3 mt-4">彩妝類</h6>
-                                <div class="mb-3">
-                                    <label class="form-label">亮采晶萃 (ESSENCE001)</label>
-                                    <input type="text" class="form-control" id="product_essence001_name" value="亮采晶萃">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">防曬隔離液 (SUNSCREEN001)</label>
-                                    <input type="text" class="form-control" id="product_sunscreen001_name" value="防曬隔離液">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">保濕粉底液 (FOUNDATION001)</label>
-                                    <input type="text" class="form-control" id="product_foundation001_name" value="保濕粉底液">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">絲柔粉餅 (POWDER001)</label>
-                                    <input type="text" class="form-control" id="product_powder001_name" value="絲柔粉餅">
-                                </div>
-                            </div>
+                        <div id="products-container">
+                            <!-- 動態載入產品列表 -->
                         </div>
                     </form>
                 </div>
@@ -649,11 +600,11 @@
             // 編輯商品按鈕
             $('#edit-products-btn').on('click', () => this.showProductModal());
 
-            // 匯出Excel按鈕
-            $('#export-excel-btn').on('click', () => this.exportToExcel());
-
             // 儲存產品變更
             $('#save-products').on('click', () => this.saveProducts());
+
+            // 新增產品按鈕
+            $(document).on('click', '#add-product-btn', () => this.addProduct());
         }
 
 
@@ -711,6 +662,9 @@
                         <td class="table-actions">
                             <button class="btn btn-sm btn-info" onclick="admin.viewDetail(${item.id})" title="檢視詳細資料" data-toggle="tooltip">
                                 <i class="lnr lnr-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-success" onclick="admin.exportSingleForm(${item.id})" title="匯出此表單" data-toggle="tooltip">
+                                <i class="lnr lnr-download"></i>
                             </button>
                             <button class="btn btn-sm btn-danger" onclick="admin.deleteSubmission(${item.id})" title="刪除記錄" data-toggle="tooltip">
                                 <i class="lnr lnr-trash"></i>
@@ -1016,41 +970,186 @@
                 const result = await response.json();
                 
                 if (result.success && result.data) {
-                    // 將產品名稱填入表單
-                    Object.keys(result.data).forEach(productKey => {
-                        const inputId = `product_${productKey}_name`;
-                        if ($(`#${inputId}`).length) {
-                            $(`#${inputId}`).val(result.data[productKey]);
-                        }
-                    });
+                    this.renderProducts(result.data);
+                } else {
+                    // 如果沒有資料，顯示空的產品列表
+                    this.renderProducts({});
                 }
                 
                 $('#productModal').modal('show');
             } catch (error) {
                 console.error('載入產品資料失敗:', error);
                 this.showAlert('載入產品資料失敗', 'danger');
+                // 顯示空的產品列表作為備援
+                this.renderProducts({});
+                $('#productModal').modal('show');
+            }
+        }
+
+        renderProducts(products) {
+            const container = $('#products-container');
+            container.empty();
+
+            // 將產品按照 key 排序
+            const sortedProducts = Object.entries(products).sort((a, b) => a[0].localeCompare(b[0]));
+            
+            if (sortedProducts.length === 0) {
+                container.append('<div class="text-center text-muted py-3">尚無產品，請點擊「新增產品」按鈕新增產品</div>');
+                return;
+            }
+
+            sortedProducts.forEach(([productKey, productData], index) => {
+                const productHtml = `
+                    <div class="product-item mb-3 p-3 border rounded" data-product-key="${productKey}">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <label class="form-label">產品代碼</label>
+                                <input type="text" class="form-control product-code" value="${productData.code || ''}" placeholder="例：SOAP001">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">產品名稱</label>
+                                <input type="text" class="form-control product-name" value="${productData.name || ''}" placeholder="請輸入產品名稱">
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <label class="form-label">&nbsp;</label>
+                                <div>
+                                    <button type="button" class="btn btn-danger btn-sm delete-product-btn" title="刪除產品">
+                                        <i class="lnr lnr-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.append(productHtml);
+            });
+
+            // 綁定刪除按鈕事件
+            container.find('.delete-product-btn').on('click', (e) => {
+                const productItem = $(e.target).closest('.product-item');
+                this.deleteProduct(productItem);
+            });
+        }
+
+        addProduct() {
+            const container = $('#products-container');
+            
+            // 移除空狀態訊息
+            container.find('.text-center.text-muted').remove();
+            
+            // 生成新的產品 key
+            const timestamp = Date.now();
+            const productKey = `new_product_${timestamp}`;
+            
+            const productHtml = `
+                <div class="product-item mb-3 p-3 border rounded bg-light" data-product-key="${productKey}">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <label class="form-label">產品代碼 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control product-code" value="" placeholder="例：SOAP001" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">產品名稱 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control product-name" value="" placeholder="請輸入產品名稱" required>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <label class="form-label">&nbsp;</label>
+                            <div>
+                                <button type="button" class="btn btn-danger btn-sm delete-product-btn" title="刪除產品">
+                                    <i class="lnr lnr-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.append(productHtml);
+            
+            // 綁定新增產品的刪除按鈕事件
+            const newItem = container.find(`[data-product-key="${productKey}"]`);
+            newItem.find('.delete-product-btn').on('click', (e) => {
+                const productItem = $(e.target).closest('.product-item');
+                this.deleteProduct(productItem);
+            });
+            
+            // 聚焦到第一個輸入框
+            newItem.find('.product-code').focus();
+        }
+
+        deleteProduct(productItem) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: '確定要刪除此產品嗎？',
+                    text: '此操作無法復原！',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: '確定刪除',
+                    cancelButtonText: '取消'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        productItem.remove();
+                        
+                        // 如果沒有產品了，顯示空狀態
+                        if ($('#products-container .product-item').length === 0) {
+                            $('#products-container').append('<div class="text-center text-muted py-3">尚無產品，請點擊「新增產品」按鈕新增產品</div>');
+                        }
+                    }
+                });
+            } else {
+                if (confirm('確定要刪除此產品嗎？此操作無法復原。')) {
+                    productItem.remove();
+                    
+                    // 如果沒有產品了，顯示空狀態
+                    if ($('#products-container .product-item').length === 0) {
+                        $('#products-container').append('<div class="text-center text-muted py-3">尚無產品，請點擊「新增產品」按鈕新增產品</div>');
+                    }
+                }
             }
         }
 
         async saveProducts() {
             try {
-                // 收集所有產品名稱
+                // 驗證所有產品資料
+                const productItems = $('#products-container .product-item');
                 const products = {};
+                const errors = [];
                 
-                // 定義所有產品的對應關係
-                const productKeys = [
-                    'soap001', 'soap002', 'mask001', 'toner001', 'toner002', 'toner003', 'toner004',
-                    'serum001', 'serum002', 'serum003', 'serum004', 'lotion001', 'oil001', 'gel001',
-                    'essence001', 'sunscreen001', 'foundation001', 'powder001'
-                ];
-                
-                productKeys.forEach(key => {
-                    const inputId = `product_${key}_name`;
-                    const value = $(`#${inputId}`).val();
-                    if (value) {
-                        products[key] = value.trim();
+                productItems.each(function() {
+                    const $item = $(this);
+                    const productKey = $item.data('product-key');
+                    const code = $item.find('.product-code').val().trim().toUpperCase();
+                    const name = $item.find('.product-name').val().trim();
+                    
+                    // 驗證必填欄位
+                    if (!code) {
+                        errors.push('所有產品都必須填寫產品代碼');
+                        return false;
                     }
+                    if (!name) {
+                        errors.push('所有產品都必須填寫產品名稱');
+                        return false;
+                    }
+                    
+                    // 檢查代碼是否重複
+                    const existingProduct = Object.values(products).find(p => p.code === code);
+                    if (existingProduct) {
+                        errors.push(`產品代碼 "${code}" 重複，請使用不同的代碼`);
+                        return false;
+                    }
+                    
+                    products[productKey] = {
+                        code: code,
+                        name: name
+                    };
                 });
+                
+                if (errors.length > 0) {
+                    this.showAlert(errors[0], 'warning');
+                    return;
+                }
                 
                 const response = await fetch('/api/eeform/eeform2/products', {
                     method: 'PUT',
@@ -1076,18 +1175,10 @@
             }
         }
 
-        async exportToExcel() {
-            try {
-                // 顯示載入中
-                $('#export-excel-btn').prop('disabled', true).html('<i class="lnr lnr-sync"></i> 匯出中...');
-                
-                // 準備匯出參數
-                const params = new URLSearchParams({
-                    ...this.filters,
-                    export: 'excel'
-                });
 
-                const response = await fetch(`/api/eeform/eeform2/export?${params}`);
+        async exportSingleForm(id) {
+            try {
+                const response = await fetch(`/api/eeform/eeform2/export_single/${id}`);
                 
                 if (!response.ok) {
                     throw new Error('匯出請求失敗');
@@ -1104,19 +1195,17 @@
                 // 設定檔名
                 const now = new Date();
                 const timestamp = now.toISOString().slice(0, 19).replace(/:/g, '-');
-                a.download = `eform02_會員服務追蹤管理表_${timestamp}.xlsx`;
+                a.download = `eform02_表單_${id}_${timestamp}.xlsx`;
                 
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
                 
-                this.showAlert('Excel 檔案已成功匯出', 'success');
+                this.showAlert('Excel 表單已成功匯出', 'success');
             } catch (error) {
-                console.error('匯出 Excel 失敗:', error);
-                this.showAlert('匯出 Excel 失敗，請稍後再試', 'danger');
-            } finally {
-                $('#export-excel-btn').prop('disabled', false).html('<i class="lnr lnr-download"></i> 匯出 Excel');
+                console.error('匯出表單失敗:', error);
+                this.showAlert('匯出表單失敗，請稍後再試', 'danger');
             }
         }
 
