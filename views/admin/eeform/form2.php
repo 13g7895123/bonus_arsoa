@@ -1,30 +1,179 @@
 <style>
-    .dashboard-card {
-        border-left: 4px solid #007bff;
-        transition: transform 0.2s;
+    /* EForm2 Admin Styles */
+    .eform2-admin {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+    
+    .dashboard-card {
+        border-left: 4px solid #007bff !important;
+        transition: transform 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 8px !important;
+    }
+    
     .dashboard-card:hover {
         transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
+    
     .status-badge {
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 4px !important;
+        font-weight: 500;
     }
+    
     .table-actions {
         white-space: nowrap;
+        min-width: 120px;
     }
+    
+    .table-actions .btn {
+        margin: 0 2px;
+        padding: 0.25rem 0.5rem;
+    }
+    
     .loading {
         opacity: 0.6;
         pointer-events: none;
     }
+    
     .filters-section {
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        padding: 1rem;
-        margin-bottom: 1rem;
+        background-color: #f8f9fa !important;
+        border-radius: 8px !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+        border: 1px solid #e9ecef;
+    }
+    
+    .filters-section .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card {
+        border-radius: 8px !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    }
+    
+    .card-header {
+        background-color: #fff !important;
+        border-bottom: 1px solid #e9ecef !important;
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+    }
+    
+    .table th {
+        background-color: #f8f9fa !important;
+        border-top: none !important;
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.875rem;
+        padding: 0.75rem;
+    }
+    
+    .table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-color: #e9ecef;
+    }
+    
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0,0,0,0.02) !important;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,123,255,0.05) !important;
+    }
+    
+    .pagination .page-link {
+        color: #007bff;
+        border-color: #dee2e6;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .pagination .page-item.active .page-link {
+        background-color: #007bff !important;
+        border-color: #007bff !important;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.875rem !important;
+        border-radius: 4px !important;
+    }
+    
+    .modal-content {
+        border-radius: 8px !important;
+        border: none !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid #e9ecef !important;
+        padding: 1rem 1.25rem;
+    }
+    
+    .modal-body {
+        padding: 1.25rem;
+    }
+    
+    .alert {
+        border-radius: 6px !important;
+        border: none !important;
+        font-weight: 500;
+    }
+    
+    .spinner-border {
+        color: #007bff !important;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .dashboard-card {
+            margin-bottom: 1rem;
+        }
+        
+        .table-actions .btn {
+            padding: 0.25rem;
+            margin: 0 1px;
+        }
+        
+        .table-actions .btn i {
+            font-size: 0.75rem;
+        }
+        
+        .filters-section .row > div {
+            margin-bottom: 1rem;
+        }
+    }
+    
+    /* Fix any potential conflicts with admin template */
+    .eform2-admin .form-control {
+        display: block !important;
+        width: 100% !important;
+        padding: 0.375rem 0.75rem !important;
+        font-size: 1rem !important;
+        font-weight: 400 !important;
+        line-height: 1.5 !important;
+        color: #495057 !important;
+        background-color: #fff !important;
+        background-image: none !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 0.25rem !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    }
+    
+    .eform2-admin .form-control:focus {
+        color: #495057 !important;
+        background-color: #fff !important;
+        border-color: #80bdff !important;
+        outline: 0 !important;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
     }
 </style>
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-4 eform2-admin">
         <div class="row mb-4">
             <div class="col-12">
                 <h2><i class="fas fa-clipboard-list"></i> EForm2 管理系統</h2>

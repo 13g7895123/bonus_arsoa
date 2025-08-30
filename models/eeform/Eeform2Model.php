@@ -275,4 +275,134 @@ class Eeform2Model extends MY_Model {
             throw new Exception('取得統計資料失敗: ' . $e->getMessage());
         }
     }
+
+    /**
+     * 管理員取得所有提交記錄 (分頁)
+     * @param int $page 頁碼
+     * @param int $limit 每頁筆數
+     * @param array $filters 篩選條件
+     * @return array
+     */
+    public function get_all_submissions_paginated($page = 1, $limit = 20, $filters = []) {
+        try {
+            $offset = ($page - 1) * $limit;
+            
+            // 構建查詢
+            $this->db->select('*');
+            $this->db->from($this->table_submissions);
+            
+            // 套用篩選條件
+            if (!empty($filters['search'])) {
+                $search = $filters['search'];
+                $this->db->group_start();
+                $this->db->like('member_name', $search);
+                $this->db->or_like('line_contact', $search);
+                $this->db->or_like('tel_contact', $search);
+                $this->db->group_end();
+            }
+            
+            if (!empty($filters['status'])) {
+                $this->db->where('status', $filters['status']);
+            }
+            
+            if (!empty($filters['start_date'])) {
+                $this->db->where('submission_date >=', $filters['start_date']);
+            }
+            
+            if (!empty($filters['end_date'])) {
+                $this->db->where('submission_date <=', $filters['end_date']);
+            }
+            
+            // 取得總數量
+            $total_query = clone $this->db;
+            $total = $total_query->count_all_results();
+            
+            // 套用分頁和排序
+            $this->db->order_by('created_at', 'DESC');
+            $this->db->limit($limit, $offset);
+            
+            $query = $this->db->get();
+            $data = $query->result_array();
+            
+            return [
+                'data' => $data,
+                'total' => $total
+            ];
+            
+        } catch (Exception $e) {
+            throw new Exception('取得分頁資料失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 更新提交記錄狀態
+     * @param int $id 提交記錄ID
+     * @param array $data 更新資料
+     * @return bool
+     */
+    public function update_submission_status($id, $data) {
+        try {
+            $this->db->where('id', $id);
+            $result = $this->db->update($this->table_submissions, $data);
+            
+            return $result;
+            
+        } catch (Exception $e) {
+            throw new Exception('更新狀態失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 取得提交記錄統計資料 (管理員用)
+     * @return array
+     */
+    public function get_submission_stats() {
+        try {
+            $stats = [];
+            
+            // 總提交數
+            $this->db->select('COUNT(*) as total');
+            $this->db->from($this->table_submissions);
+            $query = $this->db->get();
+            $result = $query->row_array();
+            $stats['total'] = (int)$result['total'];
+            
+            // 已完成數量
+            $this->db->select('COUNT(*) as completed');
+            $this->db->from($this->table_submissions);
+            $this->db->where('status', 'completed');
+            $query = $this->db->get();
+            $result = $query->row_array();
+            $stats['completed'] = (int)$result['completed'];
+            
+            // 處理中數量
+            $this->db->select('COUNT(*) as processing');
+            $this->db->from($this->table_submissions);
+            $this->db->where('status', 'processing');
+            $query = $this->db->get();
+            $result = $query->row_array();
+            $stats['processing'] = (int)$result['processing'];
+            
+            // 今日提交數量
+            $this->db->select('COUNT(*) as today');
+            $this->db->from($this->table_submissions);
+            $this->db->where('DATE(created_at)', date('Y-m-d'));
+            $query = $this->db->get();
+            $result = $query->row_array();
+            $stats['today'] = (int)$result['today'];
+            
+            // 已提交數量
+            $this->db->select('COUNT(*) as submitted');
+            $this->db->from($this->table_submissions);
+            $this->db->where('status', 'submitted');
+            $query = $this->db->get();
+            $result = $query->row_array();
+            $stats['submitted'] = (int)$result['submitted'];
+            
+            return $stats;
+            
+        } catch (Exception $e) {
+            throw new Exception('取得統計資料失敗: ' . $e->getMessage());
+        }
+    }
 }
