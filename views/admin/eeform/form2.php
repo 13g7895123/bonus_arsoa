@@ -117,10 +117,156 @@
     .modal-header {
         border-bottom: 1px solid #e9ecef !important;
         padding: 1rem 1.25rem;
+        background-color: #f8f9fa !important;
     }
     
     .modal-body {
         padding: 1.25rem;
+    }
+    
+    /* View Detail Modal Specific Styling */
+    #detailModal .modal-body {
+        padding: 2rem !important;
+        background-color: #f8f9fa;
+    }
+    
+    #detailModal .modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    #detailModal .modal-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    #detailModal .modal-body::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    #detailModal .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+    
+    #detailModal .border {
+        border-color: #e9ecef !important;
+        background-color: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    #detailModal .form-group label {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    #detailModal .form-group > div {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        min-height: 1.5em;
+    }
+    
+    #detailModal .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Make modal extra wide */
+    #detailModal .modal-dialog {
+        max-width: 1400px !important;
+        margin: 1.75rem auto;
+    }
+    
+    /* Improve section headers */
+    #detailModal .border .bg-light h6 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #495057;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Enhanced content styling */
+    #detailModal .form-group > div {
+        background-color: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    
+    #detailModal .form-group > div:not(.bg-light) {
+        padding: 0.75rem 1rem !important;
+    }
+    
+    #detailModal .form-group > div.bg-light {
+        border: 1px solid #dee2e6;
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Product grid styling */
+    #detailModal .text-center strong {
+        font-size: 1.1rem;
+        color: #007bff;
+    }
+    
+    /* Modal header enhancement */
+    #detailModal .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom: none;
+    }
+    
+    #detailModal .modal-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+    
+    #detailModal .close span {
+        color: white;
+        opacity: 0.8;
+        font-size: 1.5rem;
+    }
+    
+    #detailModal .close:hover span {
+        opacity: 1;
+    }
+    
+    /* Section borders */
+    #detailModal .border {
+        border: 2px solid #e9ecef !important;
+        border-radius: 10px !important;
+        overflow: hidden;
+        transition: box-shadow 0.2s ease;
+    }
+    
+    #detailModal .border:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    /* Search button enhancement */
+    #apply-filters {
+        height: calc(1.5em + 0.75rem + 2px);
+        font-weight: 600;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+        transition: all 0.2s ease;
+    }
+    
+    #apply-filters:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.4);
+    }
+    
+    /* Form spacing improvements */
+    .filters-section {
+        margin-bottom: 2rem !important;
+    }
+    
+    .filters-section .row > div {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
     }
     
     .alert {
@@ -209,8 +355,9 @@
                         <option value="100">100</option>
                     </select>
                 </div>
-                <div class="col-md-1 d-flex align-items-end">
-                    <button class="btn btn-primary" id="apply-filters">
+                <div class="col-md-2">
+                    <label class="form-label" style="visibility: hidden;">搜尋</label>
+                    <button class="btn btn-primary w-100" id="apply-filters">
                         <i class="lnr lnr-magnifier"></i> 搜尋
                     </button>
                 </div>
@@ -269,13 +416,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">會員服務追蹤管理表(肌膚) - 詳細資料</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body" id="detail-content" style="max-height: 70vh; overflow-y: auto;">
                     <!-- 動態載入詳細資料 -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
                 </div>
             </div>
         </div>
@@ -502,67 +651,73 @@
                     // 產品資料處理
                     let productHtml = '';
                     if (data.products && data.products.length > 0) {
-                        data.products.forEach(product => {
+                        productHtml = '<div class="row">';
+                        data.products.forEach((product, index) => {
                             productHtml += `
-                                <div class="d-flex align-items-center mb-2">
-                                    <span class="text-muted mr-3" style="min-width: 120px;">${product.product_name}：</span>
-                                    <span class="text-dark">${product.quantity} 個</span>
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-group">
+                                        <label class="text-muted small mb-1">${product.product_name}</label>
+                                        <div class="text-dark font-weight-normal p-2 bg-light rounded text-center">
+                                            <strong>${product.quantity}</strong> 個
+                                        </div>
+                                    </div>
                                 </div>
                             `;
                         });
+                        productHtml += '</div>';
                     } else {
-                        productHtml = '<span class="text-muted">未訂購任何產品</span>';
+                        productHtml = '<div class="text-center py-4"><span class="text-muted">未訂購任何產品</span></div>';
                     }
                     
                     const content = `
                         <div class="container-fluid">
                             <!-- 基本資料 -->
-                            <div class="border mb-4">
+                            <div class="border mb-4 rounded">
                                 <div class="bg-light p-3 border-bottom">
                                     <h6 class="m-0 font-weight-bold text-dark">基本資料</h6>
                                 </div>
-                                <div class="p-3">
+                                <div class="p-5">
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-muted mr-3" style="min-width: 60px;">姓名：</span>
-                                                <span class="text-dark">${data.member_name || ''}</span>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">姓名</label>
+                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word; word-break: break-all;">${data.member_name || '(未填寫)'}</div>
                                             </div>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-muted mr-3" style="min-width: 70px;">會員編號：</span>
-                                                <span class="text-dark">${data.member_id || ''}</span>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">會員編號</label>
+                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word;">${data.member_id || '(未填寫)'}</div>
                                             </div>
                                         </div>
                                         <div class="col-md-2 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-muted mr-3" style="min-width: 60px;">性別：</span>
-                                                <span class="text-dark">${data.gender || ''}</span>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">性別</label>
+                                                <div class="text-dark font-weight-normal">${data.gender || '(未填寫)'}</div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-muted mr-3" style="min-width: 60px;">年齡：</span>
-                                                <span class="text-dark">${data.age || ''} 歲</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-muted mr-3" style="min-width: 60px;">入會日：</span>
-                                                <span class="text-dark">${data.join_date || ''}</span>
+                                        <div class="col-md-2 mb-3">
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">年齡</label>
+                                                <div class="text-dark font-weight-normal">${data.age ? data.age + ' 歲' : '(未填寫)'}</div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-muted mr-3" style="min-width: 60px;">見面日：</span>
-                                                <span class="text-dark">${data.meeting_date || '(未填寫)'}</span>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">入會日</label>
+                                                <div class="text-dark font-weight-normal">${data.join_date || '(未填寫)'}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">見面日</label>
+                                                <div class="text-dark font-weight-normal">${data.meeting_date || '(未填寫)'}</div>
                                             </div>
                                         </div>
                                         <div class="col-12">
-                                            <div class="d-flex align-items-start">
-                                                <span class="text-muted mr-3" style="min-width: 80px;">健康狀況：</span>
-                                                <span class="text-dark">${data.skin_health_condition || '(未填寫)'}</span>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">健康狀況</label>
+                                                <div class="text-dark font-weight-normal p-2 bg-light rounded" style="word-wrap: break-word; white-space: pre-wrap; min-height: 40px;">${data.skin_health_condition || '(未填寫)'}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -570,32 +725,32 @@
                             </div>
 
                             <!-- 產品訂購 -->
-                            <div class="border mb-4">
+                            <div class="border mb-4 rounded">
                                 <div class="bg-light p-3 border-bottom">
                                     <h6 class="m-0 font-weight-bold text-dark">產品訂購</h6>
                                 </div>
-                                <div class="p-3">
+                                <div class="p-5">
                                     ${productHtml}
                                 </div>
                             </div>
 
                             <!-- 聯絡資訊 -->
-                            <div class="border mb-4">
+                            <div class="border mb-4 rounded">
                                 <div class="bg-light p-3 border-bottom">
                                     <h6 class="m-0 font-weight-bold text-dark">聯絡資訊</h6>
                                 </div>
-                                <div class="p-3">
+                                <div class="p-5">
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <div class="d-flex align-items-start">
-                                                <span class="text-muted mr-3" style="min-width: 60px;">LINE：</span>
-                                                <span class="text-dark">${data.line_contact || '(未填寫)'}</span>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">LINE 聯絡</label>
+                                                <div class="text-dark font-weight-normal p-2 bg-light rounded" style="word-wrap: break-word; white-space: pre-wrap; min-height: 60px;">${data.line_contact || '(未填寫)'}</div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <div class="d-flex align-items-start">
-                                                <span class="text-muted mr-3" style="min-width: 60px;">電話：</span>
-                                                <span class="text-dark">${data.tel_contact || '(未填寫)'}</span>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">電話聯絡</label>
+                                                <div class="text-dark font-weight-normal p-2 bg-light rounded" style="word-wrap: break-word; white-space: pre-wrap; min-height: 60px;">${data.tel_contact || '(未填寫)'}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -603,35 +758,29 @@
                             </div>
 
                             <!-- 系統資料 -->
-                            <div class="border mb-2">
+                            <div class="border mb-2 rounded">
                                 <div class="bg-light p-3 border-bottom">
                                     <h6 class="m-0 font-weight-bold text-dark">系統資料</h6>
                                 </div>
-                                <div class="p-3">
+                                <div class="p-5">
                                     <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-muted mr-3" style="min-width: 60px;">狀態：</span>
-                                                <span>${this.getStatusBadge(data.status)}</span>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">提交日期</label>
+                                                <div class="text-dark font-weight-normal">${data.submission_date || '(未填寫)'}</div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-muted mr-3" style="min-width: 70px;">提交日期：</span>
-                                                <span class="text-dark">${data.submission_date || ''}</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-muted mr-3" style="min-width: 70px;">建立時間：</span>
-                                                <span class="text-dark">${data.created_at || ''}</span>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">建立時間</label>
+                                                <div class="text-dark font-weight-normal">${data.created_at || '(未填寫)'}</div>
                                             </div>
                                         </div>
                                         ${data.admin_note ? `
                                         <div class="col-12">
-                                            <div class="d-flex align-items-start">
-                                                <span class="text-muted mr-3" style="min-width: 80px;">管理員備註：</span>
-                                                <span class="text-dark">${data.admin_note}</span>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">管理員備註</label>
+                                                <div class="text-dark font-weight-normal p-2 bg-light rounded" style="word-wrap: break-word; white-space: pre-wrap; min-height: 40px;">${data.admin_note}</div>
                                             </div>
                                         </div>
                                         ` : ''}
