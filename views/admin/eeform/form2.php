@@ -2,6 +2,7 @@
     /* EForm2 Admin Styles */
     .eform2-admin {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        padding: 2rem !important;
     }
     
     .dashboard-card {
@@ -176,8 +177,7 @@
     <div class="container-fluid py-4 eform2-admin">
         <div class="row mb-4">
             <div class="col-12">
-                <h2><i class="fas fa-clipboard-list"></i> EForm2 管理系統</h2>
-                <p class="text-muted">管理電子表單提交記錄</p>
+                <h2><i class="lnr lnr-user"></i> 會員服務追蹤管理表(肌膚)</h2>
             </div>
         </div>
 
@@ -192,7 +192,7 @@
                                 <h3 id="stat-total" class="mb-0">-</h3>
                             </div>
                             <div class="align-self-center">
-                                <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                <i class="lnr lnr-file-empty" style="font-size: 2rem; color: #007bff;"></i>
                             </div>
                         </div>
                     </div>
@@ -207,7 +207,7 @@
                                 <h3 id="stat-completed" class="mb-0">-</h3>
                             </div>
                             <div class="align-self-center">
-                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                                <i class="lnr lnr-checkmark-circle" style="font-size: 2rem; color: #28a745;"></i>
                             </div>
                         </div>
                     </div>
@@ -222,7 +222,7 @@
                                 <h3 id="stat-processing" class="mb-0">-</h3>
                             </div>
                             <div class="align-self-center">
-                                <i class="fas fa-clock fa-2x text-warning"></i>
+                                <i class="lnr lnr-clock" style="font-size: 2rem; color: #ffc107;"></i>
                             </div>
                         </div>
                     </div>
@@ -237,7 +237,7 @@
                                 <h3 id="stat-today" class="mb-0">-</h3>
                             </div>
                             <div class="align-self-center">
-                                <i class="fas fa-calendar-day fa-2x text-info"></i>
+                                <i class="lnr lnr-calendar-full" style="font-size: 2rem; color: #17a2b8;"></i>
                             </div>
                         </div>
                     </div>
@@ -281,7 +281,7 @@
                 </div>
                 <div class="col-md-1 d-flex align-items-end">
                     <button class="btn btn-primary" id="apply-filters">
-                        <i class="fas fa-search"></i> 搜尋
+                        <i class="lnr lnr-magnifier"></i> 搜尋
                     </button>
                 </div>
             </div>
@@ -292,7 +292,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">提交記錄列表</h5>
                 <button class="btn btn-success btn-sm" id="refresh-data">
-                    <i class="fas fa-sync-alt"></i> 重新整理
+                    <i class="lnr lnr-sync"></i> 重新整理
                 </button>
             </div>
             <div class="card-body">
@@ -495,20 +495,23 @@
                         <td>${statusBadge}</td>
                         <td>${item.submission_date}</td>
                         <td class="table-actions">
-                            <button class="btn btn-sm btn-info" onclick="admin.viewDetail(${item.id})">
-                                <i class="fas fa-eye"></i>
+                            <button class="btn btn-sm btn-info" onclick="admin.viewDetail(${item.id})" title="檢視詳細資料" data-toggle="tooltip">
+                                <i class="lnr lnr-eye"></i>
                             </button>
-                            <button class="btn btn-sm btn-warning" onclick="admin.showStatusModal(${item.id}, '${item.status}')">
-                                <i class="fas fa-edit"></i>
+                            <button class="btn btn-sm btn-warning" onclick="admin.showStatusModal(${item.id}, '${item.status}')" title="編輯狀態" data-toggle="tooltip">
+                                <i class="lnr lnr-pencil"></i>
                             </button>
-                            <button class="btn btn-sm btn-danger" onclick="admin.deleteSubmission(${item.id})">
-                                <i class="fas fa-trash"></i>
+                            <button class="btn btn-sm btn-danger" onclick="admin.deleteSubmission(${item.id})" title="刪除記錄" data-toggle="tooltip">
+                                <i class="lnr lnr-trash"></i>
                             </button>
                         </td>
                     </tr>
                 `;
                 tbody.append(row);
             });
+            
+            // Initialize tooltips for new buttons
+            $('[data-toggle="tooltip"]').tooltip();
         }
 
         renderPagination(pagination) {

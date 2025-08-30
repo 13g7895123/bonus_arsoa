@@ -16,3 +16,5 @@
 12. 我看完了，他在setup.xml設定，幫我view過完整專案，寫一份它裡面的設定詳細說明在docs\sidebar.md中
 13. 目前eform2的前台已經處理好了，幫我處理後台的部分，需要可以管理該份電子表單的狀況，view的路徑在views/admin/eeform/form2.php，幫我用前後端分離的方式，直接寫html+jquery，api用fetch的方式，有需要打API的話看一下eform2當初建置的是否還有需要新增調整，調整一下，views/admin/eeform/form2.php這個檔案只要boby後的內容就好，html已經有了，除非有style幫我直接寫style即可
 14. API有問題，Call to undefined method Eeform2Model::get_all_submissions_paginated()，另外後台的css似乎有跑掉，請重新確認
+15. 最上面Title調整為會員服務追蹤管理表(肌膚)，小標題移除，ICON幫我查詢一下目前系統用甚麼，換成對應的ICON，不要用一個沒有引入的一直錯誤，功能按鈕的ICON也是，另外幫我外邊的padding大一點，太靠邊了
+16. 你是一位專業的UIUX工程師，幫我調整一下頁面，讓顯示更好看一點，另外檢視與編輯按下去出現bootstrap is not defined，按鈕移上去要出現功能的名稱
