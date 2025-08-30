@@ -324,6 +324,11 @@ class Eeform2Model extends MY_Model {
             $query = $this->db->get();
             $data = $query->result_array();
             
+            // 為每個提交記錄加載產品數據
+            foreach ($data as &$submission) {
+                $submission['products'] = $this->get_products_by_submission($submission['id']);
+            }
+            
             return [
                 'data' => $data,
                 'total' => $total

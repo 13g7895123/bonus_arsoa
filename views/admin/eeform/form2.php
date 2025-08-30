@@ -175,8 +175,9 @@
     
     /* Make modal extra wide */
     #detailModal .modal-dialog {
-        max-width: 1400px !important;
+        max-width: 1800px !important;
         margin: 1.75rem auto;
+        width: 95vw;
     }
     
     /* Improve section headers */
@@ -188,50 +189,42 @@
         letter-spacing: 0.5px;
     }
     
-    /* Enhanced content styling */
+    /* Consistent input-style formatting for all modal content */
     #detailModal .form-group > div {
-        background-color: #fff;
+        background-color: #f8f9fa;
         border: 1px solid #e9ecef;
         border-radius: 6px;
+        padding: 0.75rem 1rem !important;
+        min-height: 38px;
+        display: flex;
+        align-items: center;
         transition: all 0.2s ease;
     }
     
-    #detailModal .form-group > div:not(.bg-light) {
-        padding: 0.75rem 1rem !important;
+    #detailModal .form-group > div:hover {
+        background-color: #e9ecef;
     }
     
-    #detailModal .form-group > div.bg-light {
-        border: 1px solid #dee2e6;
-        background-color: #f8f9fa !important;
-    }
-    
-    /* Product grid styling */
-    #detailModal .text-center strong {
-        font-size: 1.1rem;
+    /* Special styling for product quantities */
+    #detailModal .form-group strong {
         color: #007bff;
+        font-size: 1.1rem;
     }
     
     /* Modal header enhancement */
     #detailModal .modal-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-bottom: none;
+        background-color: #fff;
+        color: #495057;
+        border-bottom: 1px solid #e9ecef;
+        border-radius: 8px 8px 0 0;
     }
     
     #detailModal .modal-title {
         font-weight: 600;
         font-size: 1.25rem;
+        color: #495057;
     }
     
-    #detailModal .close span {
-        color: white;
-        opacity: 0.8;
-        font-size: 1.5rem;
-    }
-    
-    #detailModal .close:hover span {
-        opacity: 1;
-    }
     
     /* Section borders */
     #detailModal .border {
@@ -267,6 +260,48 @@
     .filters-section .row > div {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
+    }
+    
+    /* Make table text larger */
+    .table th,
+    .table td {
+        font-size: 1rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    .table th {
+        font-weight: 600 !important;
+    }
+    
+    /* Custom margin-bottom for better block spacing */
+    .mb-6 {
+        margin-bottom: 3rem !important;
+    }
+    
+    /* Make blocks wider and add more padding */
+    #detailModal .border {
+        margin: 0 -1rem 3rem -1rem !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Add inner padding to border mb-6 rounded elements in modal */
+    #detailModal .border.mb-6.rounded {
+        padding: 2rem !important;
+    }
+    
+    /* Adjust content padding inside border elements to avoid double padding */
+    #detailModal .border.mb-6.rounded .p-5 {
+        padding: 0 !important;
+    }
+    
+    /* Adjust header padding to match the new structure */
+    #detailModal .border.mb-6.rounded .bg-light {
+        margin: -2rem -2rem 1.5rem -2rem !important;
+        padding: 1rem 2rem !important;
+    }
+    
+    #detailModal .container-fluid {
+        padding: 0 2rem !important;
     }
     
     .alert {
@@ -325,15 +360,23 @@
 </style>
     <div class="container-fluid py-4 eform2-admin">
         <div class="row mb-4">
-            <div class="col-12">
+            <div class="col-12 d-flex justify-content-between align-items-center">
                 <h2>會員服務追蹤管理表(肌膚)</h2>
+                <div class="header-buttons">
+                    <button class="btn btn-outline-primary me-2" id="edit-products-btn">
+                        <i class="lnr lnr-cog"></i> 編輯商品
+                    </button>
+                    <button class="btn btn-success" id="export-excel-btn">
+                        <i class="lnr lnr-download"></i> 匯出 Excel
+                    </button>
+                </div>
             </div>
         </div>
 
 
         <!-- 篩選器 -->
         <div class="filters-section">
-            <div class="row">
+            <div class="row d-flex align-items-end">
                 <div class="col-md-3">
                     <label class="form-label">搜尋</label>
                     <input type="text" class="form-control" id="search-input" placeholder="會員姓名、聯絡方式">
@@ -356,8 +399,7 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label" style="visibility: hidden;">搜尋</label>
-                    <button class="btn btn-primary w-100" id="apply-filters">
+                    <button class="btn btn-primary w-100" id="apply-filters" style="margin-top: 25px">
                         <i class="lnr lnr-magnifier"></i> 搜尋
                     </button>
                 </div>
@@ -416,9 +458,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">會員服務追蹤管理表(肌膚) - 詳細資料</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body" id="detail-content" style="max-height: 70vh; overflow-y: auto;">
                     <!-- 動態載入詳細資料 -->
@@ -464,6 +503,113 @@
         </div>
     </div>
 
+    <!-- 產品管理模態框 -->
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">eform02 產品管理</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="product-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-3">潔顏類</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">淨白活膚蜜皂 (SOAP001)</label>
+                                    <input type="text" class="form-control" id="product_soap001_name" value="淨白活膚蜜皂">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">AP柔敏潔顏皂 (SOAP002)</label>
+                                    <input type="text" class="form-control" id="product_soap002_name" value="AP柔敏潔顏皂">
+                                </div>
+                                
+                                <h6 class="text-muted mb-3 mt-4">面膜類</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">活顏泥膜 (MASK001)</label>
+                                    <input type="text" class="form-control" id="product_mask001_name" value="活顏泥膜">
+                                </div>
+                                
+                                <h6 class="text-muted mb-3 mt-4">化妝水類</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">安露莎化粧水I (TONER001)</label>
+                                    <input type="text" class="form-control" id="product_toner001_name" value="安露莎化粧水I">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">安露莎化粧水II (TONER002)</label>
+                                    <input type="text" class="form-control" id="product_toner002_name" value="安露莎化粧水II">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">安露莎活膚化粧水 (TONER003)</label>
+                                    <input type="text" class="form-control" id="product_toner003_name" value="安露莎活膚化粧水">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">柔敏化粧水 (TONER004)</label>
+                                    <input type="text" class="form-control" id="product_toner004_name" value="柔敏化粧水">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-3">精華液類</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">安露莎精華液I (SERUM001)</label>
+                                    <input type="text" class="form-control" id="product_serum001_name" value="安露莎精華液I">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">安露莎精華液II (SERUM002)</label>
+                                    <input type="text" class="form-control" id="product_serum002_name" value="安露莎精華液II">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">安露莎活膚精華液 (SERUM003)</label>
+                                    <input type="text" class="form-control" id="product_serum003_name" value="安露莎活膚精華液">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">美白精華液 (SERUM004)</label>
+                                    <input type="text" class="form-control" id="product_serum004_name" value="美白精華液">
+                                </div>
+                                
+                                <h6 class="text-muted mb-3 mt-4">乳液/油/凝膠類</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">保濕潤膚液 (LOTION001)</label>
+                                    <input type="text" class="form-control" id="product_lotion001_name" value="保濕潤膚液">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">美容防皺油 (OIL001)</label>
+                                    <input type="text" class="form-control" id="product_oil001_name" value="美容防皺油">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">保濕凝膠 (GEL001)</label>
+                                    <input type="text" class="form-control" id="product_gel001_name" value="保濕凝膠">
+                                </div>
+                                
+                                <h6 class="text-muted mb-3 mt-4">彩妝類</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">亮采晶萃 (ESSENCE001)</label>
+                                    <input type="text" class="form-control" id="product_essence001_name" value="亮采晶萃">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">防曬隔離液 (SUNSCREEN001)</label>
+                                    <input type="text" class="form-control" id="product_sunscreen001_name" value="防曬隔離液">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">保濕粉底液 (FOUNDATION001)</label>
+                                    <input type="text" class="form-control" id="product_foundation001_name" value="保濕粉底液">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">絲柔粉餅 (POWDER001)</label>
+                                    <input type="text" class="form-control" id="product_powder001_name" value="絲柔粉餅">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="save-products">儲存變更</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
     class EForm2Admin {
         constructor() {
@@ -499,6 +645,15 @@
                 this.currentPage = 1;
                 this.loadData();
             });
+
+            // 編輯商品按鈕
+            $('#edit-products-btn').on('click', () => this.showProductModal());
+
+            // 匯出Excel按鈕
+            $('#export-excel-btn').on('click', () => this.exportToExcel());
+
+            // 儲存產品變更
+            $('#save-products').on('click', () => this.saveProducts());
         }
 
 
@@ -657,22 +812,20 @@
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
                                         <label class="text-muted small mb-1">${product.product_name}</label>
-                                        <div class="text-dark font-weight-normal p-2 bg-light rounded text-center">
-                                            <strong>${product.quantity}</strong> 個
-                                        </div>
+                                        <div class="text-dark font-weight-normal"><strong>${product.quantity}</strong> 個</div>
                                     </div>
                                 </div>
                             `;
                         });
                         productHtml += '</div>';
                     } else {
-                        productHtml = '<div class="text-center py-4"><span class="text-muted">未訂購任何產品</span></div>';
+                        productHtml = '<div class="form-group"><div class="text-center py-2"><span class="text-muted">未訂購任何產品</span></div></div>';
                     }
                     
                     const content = `
                         <div class="container-fluid">
                             <!-- 基本資料 -->
-                            <div class="border mb-4 rounded">
+                            <div class="border mb-6 rounded">
                                 <div class="bg-light p-3 border-bottom">
                                     <h6 class="m-0 font-weight-bold text-dark">基本資料</h6>
                                 </div>
@@ -717,7 +870,7 @@
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label class="text-muted small mb-1">健康狀況</label>
-                                                <div class="text-dark font-weight-normal p-2 bg-light rounded" style="word-wrap: break-word; white-space: pre-wrap; min-height: 40px;">${data.skin_health_condition || '(未填寫)'}</div>
+                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word; white-space: pre-wrap;">${data.skin_health_condition || '(未填寫)'}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -725,7 +878,7 @@
                             </div>
 
                             <!-- 產品訂購 -->
-                            <div class="border mb-4 rounded">
+                            <div class="border mb-6 rounded">
                                 <div class="bg-light p-3 border-bottom">
                                     <h6 class="m-0 font-weight-bold text-dark">產品訂購</h6>
                                 </div>
@@ -735,7 +888,7 @@
                             </div>
 
                             <!-- 聯絡資訊 -->
-                            <div class="border mb-4 rounded">
+                            <div class="border mb-6 rounded">
                                 <div class="bg-light p-3 border-bottom">
                                     <h6 class="m-0 font-weight-bold text-dark">聯絡資訊</h6>
                                 </div>
@@ -744,46 +897,15 @@
                                         <div class="col-md-6 mb-3">
                                             <div class="form-group">
                                                 <label class="text-muted small mb-1">LINE 聯絡</label>
-                                                <div class="text-dark font-weight-normal p-2 bg-light rounded" style="word-wrap: break-word; white-space: pre-wrap; min-height: 60px;">${data.line_contact || '(未填寫)'}</div>
+                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word; white-space: pre-wrap;">${data.line_contact || '(未填寫)'}</div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="form-group">
                                                 <label class="text-muted small mb-1">電話聯絡</label>
-                                                <div class="text-dark font-weight-normal p-2 bg-light rounded" style="word-wrap: break-word; white-space: pre-wrap; min-height: 60px;">${data.tel_contact || '(未填寫)'}</div>
+                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word; white-space: pre-wrap;">${data.tel_contact || '(未填寫)'}</div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 系統資料 -->
-                            <div class="border mb-2 rounded">
-                                <div class="bg-light p-3 border-bottom">
-                                    <h6 class="m-0 font-weight-bold text-dark">系統資料</h6>
-                                </div>
-                                <div class="p-5">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">提交日期</label>
-                                                <div class="text-dark font-weight-normal">${data.submission_date || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">建立時間</label>
-                                                <div class="text-dark font-weight-normal">${data.created_at || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                        ${data.admin_note ? `
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">管理員備註</label>
-                                                <div class="text-dark font-weight-normal p-2 bg-light rounded" style="word-wrap: break-word; white-space: pre-wrap; min-height: 40px;">${data.admin_note}</div>
-                                            </div>
-                                        </div>
-                                        ` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -884,6 +1006,117 @@
             } catch (error) {
                 console.error('刪除失敗:', error);
                 this.showAlert('刪除失敗，請稍後再試', 'danger');
+            }
+        }
+
+        async showProductModal() {
+            try {
+                // 載入目前的產品設定
+                const response = await fetch('/api/eeform/eeform2/products');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    // 將產品名稱填入表單
+                    Object.keys(result.data).forEach(productKey => {
+                        const inputId = `product_${productKey}_name`;
+                        if ($(`#${inputId}`).length) {
+                            $(`#${inputId}`).val(result.data[productKey]);
+                        }
+                    });
+                }
+                
+                $('#productModal').modal('show');
+            } catch (error) {
+                console.error('載入產品資料失敗:', error);
+                this.showAlert('載入產品資料失敗', 'danger');
+            }
+        }
+
+        async saveProducts() {
+            try {
+                // 收集所有產品名稱
+                const products = {};
+                
+                // 定義所有產品的對應關係
+                const productKeys = [
+                    'soap001', 'soap002', 'mask001', 'toner001', 'toner002', 'toner003', 'toner004',
+                    'serum001', 'serum002', 'serum003', 'serum004', 'lotion001', 'oil001', 'gel001',
+                    'essence001', 'sunscreen001', 'foundation001', 'powder001'
+                ];
+                
+                productKeys.forEach(key => {
+                    const inputId = `product_${key}_name`;
+                    const value = $(`#${inputId}`).val();
+                    if (value) {
+                        products[key] = value.trim();
+                    }
+                });
+                
+                const response = await fetch('/api/eeform/eeform2/products', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ products: products })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    $('#productModal').modal('hide');
+                    this.showAlert('產品設定更新成功', 'success');
+                    // 重新載入資料以反映變更
+                    this.loadData();
+                } else {
+                    this.showAlert('更新失敗: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('更新產品設定失敗:', error);
+                this.showAlert('更新產品設定失敗，請稍後再試', 'danger');
+            }
+        }
+
+        async exportToExcel() {
+            try {
+                // 顯示載入中
+                $('#export-excel-btn').prop('disabled', true).html('<i class="lnr lnr-sync"></i> 匯出中...');
+                
+                // 準備匯出參數
+                const params = new URLSearchParams({
+                    ...this.filters,
+                    export: 'excel'
+                });
+
+                const response = await fetch(`/api/eeform/eeform2/export?${params}`);
+                
+                if (!response.ok) {
+                    throw new Error('匯出請求失敗');
+                }
+                
+                const blob = await response.blob();
+                
+                // 創建下載連結
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                
+                // 設定檔名
+                const now = new Date();
+                const timestamp = now.toISOString().slice(0, 19).replace(/:/g, '-');
+                a.download = `eform02_會員服務追蹤管理表_${timestamp}.xlsx`;
+                
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                this.showAlert('Excel 檔案已成功匯出', 'success');
+            } catch (error) {
+                console.error('匯出 Excel 失敗:', error);
+                this.showAlert('匯出 Excel 失敗，請稍後再試', 'danger');
+            } finally {
+                $('#export-excel-btn').prop('disabled', false).html('<i class="lnr lnr-download"></i> 匯出 Excel');
             }
         }
 
