@@ -18,3 +18,5 @@
 14. API有問題，Call to undefined method Eeform2Model::get_all_submissions_paginated()，另外後台的css似乎有跑掉，請重新確認
 15. 最上面Title調整為會員服務追蹤管理表(肌膚)，小標題移除，ICON幫我查詢一下目前系統用甚麼，換成對應的ICON，不要用一個沒有引入的一直錯誤，功能按鈕的ICON也是，另外幫我外邊的padding大一點，太靠邊了
 16. 你是一位專業的UIUX工程師，幫我調整一下頁面，讓顯示更好看一點，另外檢視與編輯按下去出現bootstrap is not defined，按鈕移上去要出現功能的名稱
+17. 移除title的icon與最上方的統計資料，搜尋的狀態與表格的狀態也拿掉，表格的ID請隱藏，操作的檢視與編輯無法使用，通知請使用sweet alert
+18. 移除編輯按鈕，檢視的時候請直接顯示前台表單的樣式與內容

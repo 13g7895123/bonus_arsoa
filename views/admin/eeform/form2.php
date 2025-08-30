@@ -1,3 +1,6 @@
+<!-- Sweet Alert 2 CDN needed in the head section -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+
 <style>
     /* EForm2 Admin Styles */
     .eform2-admin {
@@ -177,73 +180,10 @@
     <div class="container-fluid py-4 eform2-admin">
         <div class="row mb-4">
             <div class="col-12">
-                <h2><i class="lnr lnr-user"></i> 會員服務追蹤管理表(肌膚)</h2>
+                <h2>會員服務追蹤管理表(肌膚)</h2>
             </div>
         </div>
 
-        <!-- 統計儀表板 -->
-        <div class="row mb-4" id="stats-dashboard">
-            <div class="col-md-3">
-                <div class="card dashboard-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6 class="card-title text-muted">總提交數</h6>
-                                <h3 id="stat-total" class="mb-0">-</h3>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="lnr lnr-file-empty" style="font-size: 2rem; color: #007bff;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card dashboard-card" style="border-left-color: #28a745;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6 class="card-title text-muted">已完成</h6>
-                                <h3 id="stat-completed" class="mb-0">-</h3>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="lnr lnr-checkmark-circle" style="font-size: 2rem; color: #28a745;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card dashboard-card" style="border-left-color: #ffc107;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6 class="card-title text-muted">處理中</h6>
-                                <h3 id="stat-processing" class="mb-0">-</h3>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="lnr lnr-clock" style="font-size: 2rem; color: #ffc107;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card dashboard-card" style="border-left-color: #6c757d;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6 class="card-title text-muted">今日提交</h6>
-                                <h3 id="stat-today" class="mb-0">-</h3>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="lnr lnr-calendar-full" style="font-size: 2rem; color: #17a2b8;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- 篩選器 -->
         <div class="filters-section">
@@ -251,16 +191,6 @@
                 <div class="col-md-3">
                     <label class="form-label">搜尋</label>
                     <input type="text" class="form-control" id="search-input" placeholder="會員姓名、聯絡方式">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">狀態</label>
-                    <select class="form-control" id="status-filter">
-                        <option value="">全部</option>
-                        <option value="submitted">已提交</option>
-                        <option value="processing">處理中</option>
-                        <option value="completed">已完成</option>
-                        <option value="cancelled">已取消</option>
-                    </select>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">開始日期</label>
@@ -306,14 +236,13 @@
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th style="display: none;">ID</th>
                                 <th>會員姓名</th>
                                 <th>性別</th>
                                 <th>年齡</th>
                                 <th>加入日期</th>
                                 <th>預約見面日</th>
                                 <th>聯絡方式</th>
-                                <th>狀態</th>
                                 <th>提交日期</th>
                                 <th>操作</th>
                             </tr>
@@ -336,13 +265,13 @@
 
     <!-- 詳細資料模態框 -->
     <div class="modal fade" id="detailModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">提交詳細資料</h5>
+                    <h5 class="modal-title">會員服務追蹤管理表(肌膚) - 詳細資料</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="detail-content">
+                <div class="modal-body" id="detail-content" style="max-height: 70vh; overflow-y: auto;">
                     <!-- 動態載入詳細資料 -->
                 </div>
                 <div class="modal-footer">
@@ -396,7 +325,6 @@
         }
 
         init() {
-            this.loadStats();
             this.loadData();
             this.bindEvents();
         }
@@ -410,7 +338,6 @@
             
             // 重新整理
             $('#refresh-data').on('click', () => {
-                this.loadStats();
                 this.loadData();
             });
 
@@ -425,22 +352,6 @@
             });
         }
 
-        async loadStats() {
-            try {
-                const response = await fetch('/api/eeform/eeform2/stats');
-                const result = await response.json();
-                
-                if (result.success) {
-                    const stats = result.data;
-                    $('#stat-total').text(stats.total || 0);
-                    $('#stat-completed').text(stats.completed || 0);
-                    $('#stat-processing').text(stats.processing || 0);
-                    $('#stat-today').text(stats.today || 0);
-                }
-            } catch (error) {
-                console.error('載入統計資料失敗:', error);
-            }
-        }
 
         async loadData() {
             $('#loading-indicator').show();
@@ -474,7 +385,7 @@
             tbody.empty();
 
             if (!data || data.length === 0) {
-                tbody.append('<tr><td colspan="10" class="text-center">無資料</td></tr>');
+                tbody.append('<tr><td colspan="8" class="text-center">無資料</td></tr>');
                 return;
             }
 
@@ -482,7 +393,7 @@
                 const statusBadge = this.getStatusBadge(item.status);
                 const row = `
                     <tr>
-                        <td>${item.id}</td>
+                        <td style="display: none;">${item.id}</td>
                         <td>${item.member_name}</td>
                         <td>${item.gender}</td>
                         <td>${item.age}</td>
@@ -492,14 +403,10 @@
                             ${item.line_contact ? `LINE: ${item.line_contact}<br>` : ''}
                             ${item.tel_contact ? `TEL: ${item.tel_contact}` : ''}
                         </td>
-                        <td>${statusBadge}</td>
                         <td>${item.submission_date}</td>
                         <td class="table-actions">
                             <button class="btn btn-sm btn-info" onclick="admin.viewDetail(${item.id})" title="檢視詳細資料" data-toggle="tooltip">
                                 <i class="lnr lnr-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-warning" onclick="admin.showStatusModal(${item.id}, '${item.status}')" title="編輯狀態" data-toggle="tooltip">
-                                <i class="lnr lnr-pencil"></i>
                             </button>
                             <button class="btn btn-sm btn-danger" onclick="admin.deleteSubmission(${item.id})" title="刪除記錄" data-toggle="tooltip">
                                 <i class="lnr lnr-trash"></i>
@@ -565,7 +472,6 @@
         applyFilters() {
             this.filters = {
                 search: $('#search-input').val(),
-                status: $('#status-filter').val(),
                 start_date: $('#start-date').val(),
                 end_date: $('#end-date').val()
             };
@@ -592,37 +498,151 @@
                 
                 if (result.success) {
                     const data = result.data;
+                    
+                    // 產品資料處理
+                    let productHtml = '';
+                    if (data.products && data.products.length > 0) {
+                        data.products.forEach(product => {
+                            productHtml += `
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="text-muted mr-3" style="min-width: 120px;">${product.product_name}：</span>
+                                    <span class="text-dark">${product.quantity} 個</span>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        productHtml = '<span class="text-muted">未訂購任何產品</span>';
+                    }
+                    
                     const content = `
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>基本資料</h6>
-                                <p><strong>ID:</strong> ${data.id}</p>
-                                <p><strong>會員姓名:</strong> ${data.member_name}</p>
-                                <p><strong>性別:</strong> ${data.gender}</p>
-                                <p><strong>年齡:</strong> ${data.age}</p>
-                                <p><strong>加入日期:</strong> ${data.join_date}</p>
-                                <p><strong>預約見面日:</strong> ${data.meeting_date || '未預約'}</p>
+                        <div class="container-fluid">
+                            <!-- 基本資料 -->
+                            <div class="border mb-4">
+                                <div class="bg-light p-3 border-bottom">
+                                    <h6 class="m-0 font-weight-bold text-dark">基本資料</h6>
+                                </div>
+                                <div class="p-3">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="text-muted mr-3" style="min-width: 60px;">姓名：</span>
+                                                <span class="text-dark">${data.member_name || ''}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="text-muted mr-3" style="min-width: 70px;">會員編號：</span>
+                                                <span class="text-dark">${data.member_id || ''}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="text-muted mr-3" style="min-width: 60px;">性別：</span>
+                                                <span class="text-dark">${data.gender || ''}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="text-muted mr-3" style="min-width: 60px;">年齡：</span>
+                                                <span class="text-dark">${data.age || ''} 歲</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="text-muted mr-3" style="min-width: 60px;">入會日：</span>
+                                                <span class="text-dark">${data.join_date || ''}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="text-muted mr-3" style="min-width: 60px;">見面日：</span>
+                                                <span class="text-dark">${data.meeting_date || '(未填寫)'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-start">
+                                                <span class="text-muted mr-3" style="min-width: 80px;">健康狀況：</span>
+                                                <span class="text-dark">${data.skin_health_condition || '(未填寫)'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6>聯絡資料</h6>
-                                <p><strong>LINE:</strong> ${data.line_contact || '未提供'}</p>
-                                <p><strong>電話:</strong> ${data.tel_contact || '未提供'}</p>
-                                <p><strong>肌膚狀況:</strong> ${data.skin_health_condition || '未填寫'}</p>
+
+                            <!-- 產品訂購 -->
+                            <div class="border mb-4">
+                                <div class="bg-light p-3 border-bottom">
+                                    <h6 class="m-0 font-weight-bold text-dark">產品訂購</h6>
+                                </div>
+                                <div class="p-3">
+                                    ${productHtml}
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <h6>系統資料</h6>
-                                <p><strong>狀態:</strong> ${this.getStatusBadge(data.status)}</p>
-                                <p><strong>提交日期:</strong> ${data.submission_date}</p>
-                                <p><strong>建立時間:</strong> ${data.created_at}</p>
-                                ${data.admin_note ? `<p><strong>管理員備註:</strong> ${data.admin_note}</p>` : ''}
+
+                            <!-- 聯絡資訊 -->
+                            <div class="border mb-4">
+                                <div class="bg-light p-3 border-bottom">
+                                    <h6 class="m-0 font-weight-bold text-dark">聯絡資訊</h6>
+                                </div>
+                                <div class="p-3">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="d-flex align-items-start">
+                                                <span class="text-muted mr-3" style="min-width: 60px;">LINE：</span>
+                                                <span class="text-dark">${data.line_contact || '(未填寫)'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="d-flex align-items-start">
+                                                <span class="text-muted mr-3" style="min-width: 60px;">電話：</span>
+                                                <span class="text-dark">${data.tel_contact || '(未填寫)'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 系統資料 -->
+                            <div class="border mb-2">
+                                <div class="bg-light p-3 border-bottom">
+                                    <h6 class="m-0 font-weight-bold text-dark">系統資料</h6>
+                                </div>
+                                <div class="p-3">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="text-muted mr-3" style="min-width: 60px;">狀態：</span>
+                                                <span>${this.getStatusBadge(data.status)}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="text-muted mr-3" style="min-width: 70px;">提交日期：</span>
+                                                <span class="text-dark">${data.submission_date || ''}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="text-muted mr-3" style="min-width: 70px;">建立時間：</span>
+                                                <span class="text-dark">${data.created_at || ''}</span>
+                                            </div>
+                                        </div>
+                                        ${data.admin_note ? `
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-start">
+                                                <span class="text-muted mr-3" style="min-width: 80px;">管理員備註：</span>
+                                                <span class="text-dark">${data.admin_note}</span>
+                                            </div>
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `;
                     
                     $('#detail-content').html(content);
-                    new bootstrap.Modal($('#detailModal')[0]).show();
+                    $('#detailModal').modal('show');
                 } else {
                     this.showAlert('載入詳細資料失敗: ' + result.message, 'danger');
                 }
@@ -636,7 +656,7 @@
             $('#status-submission-id').val(id);
             $('#new-status').val(currentStatus);
             $('#admin-note').val('');
-            new bootstrap.Modal($('#statusModal')[0]).show();
+            $('#statusModal').modal('show');
         }
 
         async updateStatus() {
@@ -664,10 +684,9 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    bootstrap.Modal.getInstance($('#statusModal')[0]).hide();
+                    $('#statusModal').modal('hide');
                     this.showAlert('狀態更新成功', 'success');
                     this.loadData();
-                    this.loadStats();
                 } else {
                     this.showAlert('更新失敗: ' + result.message, 'danger');
                 }
@@ -678,7 +697,25 @@
         }
 
         async deleteSubmission(id) {
-            if (!confirm('確定要刪除此記錄嗎？此操作無法復原。')) {
+            // 使用 Sweet Alert 確認刪除
+            let confirmed = false;
+            if (typeof Swal !== 'undefined') {
+                const result = await Swal.fire({
+                    title: '確定要刪除此記錄嗎？',
+                    text: '此操作無法復原！',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: '確定刪除',
+                    cancelButtonText: '取消'
+                });
+                confirmed = result.isConfirmed;
+            } else {
+                confirmed = confirm('確定要刪除此記錄嗎？此操作無法復原。');
+            }
+            
+            if (!confirmed) {
                 return;
             }
 
@@ -692,7 +729,6 @@
                 if (result.success) {
                     this.showAlert('刪除成功', 'success');
                     this.loadData();
-                    this.loadStats();
                 } else {
                     this.showAlert('刪除失敗: ' + result.message, 'danger');
                 }
@@ -703,22 +739,37 @@
         }
 
         showAlert(message, type) {
-            // 移除現有警告
-            $('.alert').remove();
-            
-            const alert = `
-                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
-            
-            $('body').prepend(alert);
-            
-            // 3秒後自動消失
-            setTimeout(() => {
-                $('.alert').alert('close');
-            }, 3000);
+            // 使用 Sweet Alert 顯示通知
+            if (typeof Swal !== 'undefined') {
+                // 判斷通知類型
+                let icon = 'info';
+                if (type === 'success') icon = 'success';
+                else if (type === 'danger' || type === 'error') icon = 'error';
+                else if (type === 'warning') icon = 'warning';
+                
+                Swal.fire({
+                    title: message,
+                    icon: icon,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    toast: true,
+                    position: 'top-end'
+                });
+            } else {
+                // 備援：使用原本的 Bootstrap alert
+                $('.alert').remove();
+                const alert = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('body').prepend(alert);
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 3000);
+            }
         }
     }
 
