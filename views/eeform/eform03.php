@@ -553,7 +553,7 @@
   </script>
   <script>
     // 控制測試按鈕顯示的變數
-    var showTestButton = false; // 設為 false 隱藏測試按鈕
+    var showTestButton = true; // 設為 false 隱藏測試按鈕
     
     // 頁面載入時檢查是否顯示測試按鈕
     $(document).ready(function() {

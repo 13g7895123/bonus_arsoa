@@ -1,36 +1,3 @@
-<!doctype html>
-<html lang="zh-Hant-TW">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
-  <meta name="description" content="Arsoa 安露莎化粧品">
-  <meta name="author" content="Paul, Logan Cee">
-
-  <title>Arsoa 安露莎化粧品 - Single Post With Sidebar</title>
-
-  <!-- CSS -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/animsition.min.css" rel="stylesheet">
-  <link href="css/owl.carousel.min.css" rel="stylesheet">
-  <link href="css/owl.theme.default.min.css" rel="stylesheet">
-  <link href="css/socicon.css" rel="stylesheet">
-  <link href="css/ionicons.min.css" rel="stylesheet">
-  <link href="css/animate.min.css" rel="stylesheet">
-  <link href="css/jquery.fancybox.min.css" rel="stylesheet">
-
-  <!-- Main CSS -->
-  <link href="css/style.css" rel="stylesheet">
-
-  <!-- Favicons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-  <link rel="manifest" href="favicon/site.webmanifest">
-  <meta name="msapplication-TileColor" content="#da532c">
-  <meta name="theme-color" content="#ffffff">
-
-</head>
 
 <body class="theme-orange fixed-footer fixed-footer-lg">
   <div class="animsition">
@@ -39,20 +6,6 @@
 
 
       <div class="section-mini">
-
-        <!--<div class="section-item text-left">
-            <div class="article-promo">
-              <div class="article-promo-item" style="background:url(img/love_bg.jpg); min-height: 20.375rem;">
-              </div>
-            </div>
-			  
-			  <div class="breadcrumb"><div class="container">
-				  <a href="index.html" title="首頁">首頁</a>　<i class="icon ion-ios-arrow-right"></i>　<a href="javascript:;" title="會員專區">會員專區</a>　<i class="icon ion-ios-arrow-right"></i>　<a href="love.html" title="ARSOA Ai">ARSOA Ai</a></div>
-				  </div>
-			  
-          </div>-->
-
-
 
         <div class="section-item text-left">
           <div class="container">
@@ -153,7 +106,7 @@
 
               <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
                 <!-- 側邊欄清單 -->
-                <?= $this->block_service->electronic_form_right_menu(); ?>
+                <?= $this->block_service->electronic_form_right_menu('eform3'); ?>
               </aside>
             </div>
           </div>

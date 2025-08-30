@@ -49,10 +49,10 @@ class Eform extends MY_Controller
     {
         $data = array(
             'userdata' => $this->userdata,
-            'apiUrl' => base_url() . 'api/eeform1/submit'
+            'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
         );
-        
-        $this->layout->view('./eeform/eform01', $data);
+
+        $this->layout->view('./eeform/eform02', $data);
     }
 
     public function eform1_list()

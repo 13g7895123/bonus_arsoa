@@ -24,7 +24,7 @@
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">出生年月</label>
-                            <input type="month" name="birth_date" class="form-control form-control-custom" min="1940-01" max="2010-12" required />
+                            <input type="month" name="birth_date" class="form-control form-control-custom" required />
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">身高(公分)</label>
@@ -588,11 +588,7 @@
                 allowOutsideClick: false,
                 allowEscapeKey: false
               }).then(() => {
-                if (document.referrer) {
-                  window.location.href = document.referrer;
-                } else {
-                  window.location.href = '<?php echo base_url("eform"); ?>';
-                }
+                history.go(0);
               });
             } else {
               Swal.fire({

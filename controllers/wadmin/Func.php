@@ -259,7 +259,7 @@ class Func extends MY_Controller
              }          
         }
         
-        $where  = array ('id' => $data['edit'],'ftype' => $ftype);        
+        $where  = array ('id' => $data['edit'],'ftype' => $ftype);
          
         $data['data'] = $this->front_admin_model->get_data('ap_feedback',$where);
       

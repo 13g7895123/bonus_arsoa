@@ -94,7 +94,8 @@ class Online_form extends MY_Controller
     {
         $data = array(
             'userdata' => $this->userdata,
-            'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
+            // 'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
+            'apiUrl' => base_url() . 'api/e' . $this->router->fetch_method() . '/submit'
         );
 
         // 如果有宅配的話，會帶入會員編號和姓名

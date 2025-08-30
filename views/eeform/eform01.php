@@ -1,27 +1,4 @@
-  <head>
-    <!-- Simple CSS for clean UI -->
-    <style>
-      .modal-content {
-        border-radius: 0px;
-      }
-
-      .modal-body::-webkit-scrollbar {
-        width: 8px;
-      }
-
-      .modal-body::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-
-      .modal-body::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-      }
-
-      .modal-body::-webkit-scrollbar-thumb:hover {
-        background: #a8a8a8;
-      }
-    </style>
-  </head>
+  
   <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
       <div class="wrapper">
@@ -799,7 +776,7 @@
 
                 <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
                   <!-- 側邊欄清單 -->
-                  <?= $this->block_service->electronic_form_right_menu(); ?>
+                  <?= $this->block_service->electronic_form_right_menu('eform1'); ?>
                 </aside>
               </div>
             </div>
