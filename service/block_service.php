@@ -309,9 +309,9 @@ class Block_service extends MY_Service
         return $this->load->view('helper/member_right_menu', $data, TRUE);
     }
 
-    public function electronic_form_right_menu()
+    public function electronic_form_right_menu($now_page)
     {
-        $data = array();
+        $data = array('now_page' => $now_page);
         return $this->load->view('helper/electronic_form_right_menu', $data, TRUE);
     }
     

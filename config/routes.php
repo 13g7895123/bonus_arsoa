@@ -91,6 +91,8 @@ $route['C/(.*)'] = 'event_quick/consent/$1';		// 同意書
 $route['sitemap'] = 'rss/sitemap';
 
 // API路由配置 - Debug route first
+$route['eform/api/form5/submit'] = 'eform/Api/form5';
+
 $route['api/test'] = 'api/eeform1/test';
 $route['api/eeform1/test'] = 'api/eeform1/test';
 $route['api/eeform1/health'] = 'api/eeform1/health';
@@ -100,6 +102,12 @@ $route['api/eeform1/submission/(:any)'] = 'api/eeform1/submission/$1';
 $route['api/eeform1/update/(:any)'] = 'api/eeform1/update/$1';
 $route['api/eeform1/stats/(:any)'] = 'api/eeform1/stats/$1';
 
+$route['api/eeform2/health'] = 'api/eeform2/health';
+$route['api/eeform2/submit'] = 'api/eeform2/submit';
+$route['api/eeform2/submissions/(:any)'] = 'api/eeform2/submissions/$1';
+$route['api/eeform2/submission/(:any)'] = 'api/eeform2/submission/$1';
+$route['api/eeform2/stats/(:any)'] = 'api/eeform2/stats/$1';
+
 $route['api/eeform3/health'] = 'api/eeform3/health';
 $route['api/eeform3/submit'] = 'api/eeform3/submit';
 $route['api/eeform3/activity_items'] = 'api/eeform3/activity_items';
@@ -107,6 +115,20 @@ $route['api/eeform3/submissions/(:any)'] = 'api/eeform3/submissions/$1';
 $route['api/eeform3/submission/(:any)'] = 'api/eeform3/submission/$1';
 $route['api/eeform3/submission/(:any)/status'] = 'api/eeform3/update_status/$1';
 $route['api/eeform3/stats/(:any)'] = 'api/eeform3/stats/$1';
+
+$route['api/eeform4/health'] = 'api/eeform4/health';
+$route['api/eeform4/submit'] = 'api/eeform4/submit';
+$route['api/eeform4/submissions/(:any)'] = 'api/eeform4/submissions/$1';
+$route['api/eeform4/submission/(:any)'] = 'api/eeform4/submission/$1';
+$route['api/eeform4/stats/(:any)'] = 'api/eeform4/stats/$1';
+
+$route['api/eeform5/health'] = 'api/eeform5/health';
+$route['api/eeform5/submit'] = 'api/eeform5/submit';
+$route['api/eeform5/submissions/(:any)'] = 'api/eeform5/submissions/$1';
+$route['api/eeform5/submission/(:any)'] = 'api/eeform5/submission/$1';
+$route['api/eeform5/stats/(:any)'] = 'api/eeform5/stats/$1';
+
+$route['api/eform5/submit'] = 'api/eform/form5/submit';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
