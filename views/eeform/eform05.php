@@ -10,7 +10,7 @@
                   <h1 class="h2-3d font-libre"><strong>健康諮詢表</strong></h1>
                   <div class="mb30">
                     <div class="container">
-                      <form action="#" class="text-left">
+                      <form action="#" method="POST" class="text-left" id="eform05">
                         <div class="row">
                           <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
@@ -24,7 +24,7 @@
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">出生年月</label>
-                            <input type="month" name="birth_date" class="form-control form-control-custom" required />
+                            <input type="month" name="birth_date" class="form-control form-control-custom" min="1940-01" max="2010-12" required />
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">身高(公分)</label>
@@ -33,52 +33,50 @@
 
                           <div class="col-sm-12 mb30">
                             <div class="form-check form-check-inline">職業：
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">服務業 </label>
+                              <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_service" value="服務業">
+                              <label class="form-check-label" for="occupation_service">服務業 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">上班族 </label>
+                              <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_office" value="上班族">
+                              <label class="form-check-label" for="occupation_office">上班族 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">餐飲業 </label>
+                              <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_food" value="餐飲業">
+                              <label class="form-check-label" for="occupation_food">餐飲業 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">自由業 </label>
+                              <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_freelance" value="自由業">
+                              <label class="form-check-label" for="occupation_freelance">自由業 </label>
                             </div>
                           </div>
 
                           <div class="col-sm-12 mb30">
                             <div class="form-check form-check-inline">長期使用藥物習慣：
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">有 </label>
+                              <input class="form-check-input" type="radio" name="has_medication_habit" id="medication_yes" value="1">
+                              <label class="form-check-label" for="medication_yes">有 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">使用藥物： </label>
-                              <input type="text">
+                              <input class="form-check-input" type="radio" name="has_medication_habit" id="medication_no" value="0">
+                              <label class="form-check-label" for="medication_no">無 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">無 </label>
+                              <label class="form-check-label">使用藥物： </label>
+                              <input type="text" name="medication_name">
                             </div>
                           </div>
 
                           <div class="col-sm-12 mb30">
                             <div class="form-check form-check-inline">有無家族慢性病史：
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">有 </label>
+                              <input class="form-check-input" type="radio" name="has_family_disease_history" id="disease_yes" value="1">
+                              <label class="form-check-label" for="disease_yes">有 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">疾病名稱： </label>
-                              <input type="text">
+                              <input class="form-check-input" type="radio" name="has_family_disease_history" id="disease_no" value="0">
+                              <label class="form-check-label" for="disease_no">無 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                              <label class="form-check-label" for="inlineRadio4">無 </label>
+                              <label class="form-check-label">疾病名稱： </label>
+                              <input type="text" name="disease_name">
                             </div>
                           </div>
 
@@ -91,45 +89,45 @@
                                   </div>
                                   <div class="row mb30">
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">經常頭痛 </label>
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_headache" value="經常頭痛">
+                                      <label class="form-check-label" for="health_headache">經常頭痛 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">過敏問題 </label>
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_allergy" value="過敏問題">
+                                      <label class="form-check-label" for="health_allergy">過敏問題 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">睡眠不佳 </label>
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_sleep" value="睡眠不佳">
+                                      <label class="form-check-label" for="health_sleep">睡眠不佳 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">骨關節問題 </label>
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_joints" value="骨關節問題">
+                                      <label class="form-check-label" for="health_joints">骨關節問題 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">三高問題(血糖/血脂肪/血壓) </label>
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_three_high" value="三高問題">
+                                      <label class="form-check-label" for="health_three_high">三高問題(血糖/血脂肪/血壓) </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">腸胃健康問題 </label>
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_digestive" value="腸胃健康問題">
+                                      <label class="form-check-label" for="health_digestive">腸胃健康問題 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">視力問題 </label>
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_vision" value="視力問題">
+                                      <label class="form-check-label" for="health_vision">視力問題 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">免疫力 </label>
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_immunity" value="免疫力">
+                                      <label class="form-check-label" for="health_immunity">免疫力 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">體重困擾 </label>
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_weight" value="體重困擾">
+                                      <label class="form-check-label" for="health_weight">體重困擾 </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                      <label class="form-check-label" for="inlineRadio4">其他： </label>
-                                      <input type="text">
+                                      <input class="form-check-input" type="checkbox" name="health_concerns[]" id="health_other_check" value="其他">
+                                      <label class="form-check-label" for="health_other_check">其他： </label>
+                                      <input type="text" name="health_concerns_other">
                                     </div>
                                   </div>
 
@@ -140,12 +138,12 @@
 
                           <div class="col-sm-12 mb30">
                             <label class="label-custom">微循環檢測:</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="" />
+                            <input type="text" name="microcirculation_test" class="form-control form-control-custom" placeholder="" />
                           </div>
 
                           <div class="col-sm-12 mb30">
                             <label class="label-custom">日常飲食建議:</label>
-                            <input type="text" class="form-control form-control-custom" placeholder="" />
+                            <input type="text" name="dietary_advice" class="form-control form-control-custom" placeholder="" />
                           </div>
 
                           <div class="col-sm-12 mb30">
@@ -153,9 +151,9 @@
                             <div class="row">
                               <div class="col-sm-12 mb20">
                                 <div class="form-check form-check-inline">
-                                  <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                  <label class="form-check-label" for="inlineRadio4">活力精萃： </label>
-                                  <input type="text" placeholder="請填建議用量…">
+                                  <input class="form-check-input" type="checkbox" name="recommended_products[]" id="product_energy_essence" value="活力精萃">
+                                  <label class="form-check-label" for="product_energy_essence">活力精萃： </label>
+                                  <input type="text" name="energy_essence_dosage" placeholder="請填建議用量…">
                                 </div>
                               </div>
                             </div>
@@ -163,9 +161,9 @@
                             <div class="row">
                               <div class="col-sm-12 mb20">
                                 <div class="form-check form-check-inline">
-                                  <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                  <label class="form-check-label" for="inlineRadio4">白鶴靈芝EX： </label>
-                                  <input type="text" placeholder="請填建議用量…">
+                                  <input class="form-check-input" type="checkbox" name="recommended_products[]" id="product_reishi_ex" value="白鶴靈芝EX">
+                                  <label class="form-check-label" for="product_reishi_ex">白鶴靈芝EX： </label>
+                                  <input type="text" name="reishi_ex_dosage" placeholder="請填建議用量…">
                                 </div>
                               </div>
                             </div>
@@ -173,9 +171,9 @@
                             <div class="row">
                               <div class="col-sm-12 mb20">
                                 <div class="form-check form-check-inline">
-                                  <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                  <label class="form-check-label" for="inlineRadio4">美力C錠： </label>
-                                  <input type="text" placeholder="請填建議用量…">
+                                  <input class="form-check-input" type="checkbox" name="recommended_products[]" id="product_vitamin_c" value="美力C錠">
+                                  <label class="form-check-label" for="product_vitamin_c">美力C錠： </label>
+                                  <input type="text" name="vitamin_c_dosage" placeholder="請填建議用量…">
                                 </div>
                               </div>
                             </div>
@@ -183,9 +181,9 @@
                             <div class="row">
                               <div class="col-sm-12 mb20">
                                 <div class="form-check form-check-inline">
-                                  <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                  <label class="form-check-label" for="inlineRadio4">鶴力晶： </label>
-                                  <input type="text" placeholder="請填建議用量…">
+                                  <input class="form-check-input" type="checkbox" name="recommended_products[]" id="product_energy_crystal" value="鶴力晶">
+                                  <label class="form-check-label" for="product_energy_crystal">鶴力晶： </label>
+                                  <input type="text" name="energy_crystal_dosage" placeholder="請填建議用量…">
                                 </div>
                               </div>
                             </div>
@@ -193,9 +191,9 @@
                             <div class="row">
                               <div class="col-sm-12 mb20">
                                 <div class="form-check form-check-inline">
-                                  <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                  <label class="form-check-label" for="inlineRadio4">白鶴靈芝茶： </label>
-                                  <input type="text" placeholder="請填建議用量…">
+                                  <input class="form-check-input" type="checkbox" name="recommended_products[]" id="product_reishi_tea" value="白鶴靈芝茶">
+                                  <label class="form-check-label" for="product_reishi_tea">白鶴靈芝茶： </label>
+                                  <input type="text" name="reishi_tea_dosage" placeholder="請填建議用量…">
                                 </div>
                               </div>
                             </div>
@@ -211,7 +209,7 @@
                                 <i class="fas fa-flask mr-1"></i>填入測試資料
                               </button>
                             </div>
-                            <a href="#" class="btn btn-outline-danger btn-block">送出表單</a>
+                            <button type="button" class="btn btn-outline-danger btn-block" onclick="showConfirmModal()">送出表單</button>
                           </div>
 
                         </div>
@@ -412,6 +410,7 @@
     <script src="js/jquery.viewport.js"></script>
     <script src="js/jquery.countdown.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <script>
@@ -479,6 +478,140 @@
         }
         $('input[name="birth_date"]').val('1990-01');
         $('input[name="height"]').val('170');
+        
+        // 職業選項測試資料（可多選）
+        $('input[name="occupation[]"][value="服務業"]').prop('checked', true);
+        $('input[name="occupation[]"][value="上班族"]').prop('checked', true);
+        
+        // 藥物習慣測試資料
+        $('input[name="has_medication_habit"][value="1"]').prop('checked', true);
+        $('input[name="medication_name"]').val('測試藥物名稱');
+        
+        // 家族病史測試資料
+        $('input[name="has_family_disease_history"][value="1"]').prop('checked', true);
+        $('input[name="disease_name"]').val('測試疾病名稱'); 
+        
+        // 健康困擾測試資料
+        $('input[name="health_concerns[]"][value="經常頭痛"]').prop('checked', true);
+        $('input[name="health_concerns[]"][value="睡眠不佳"]').prop('checked', true);
+        $('input[name="health_concerns[]"][value="免疫力"]').prop('checked', true);
+        $('input[name="health_concerns[]"][value="其他"]').prop('checked', true);
+        $('input[name="health_concerns_other"]').val('其他健康問題描述');
+        
+        // 產品推薦測試資料
+        $('input[name="recommended_products[]"][value="活力精萃"]').prop('checked', true);
+        $('input[name="energy_essence_dosage"]').val('每日1-2包，餐前30分鐘');
+        $('input[name="recommended_products[]"][value="白鶴靈芝EX"]').prop('checked', true);
+        $('input[name="reishi_ex_dosage"]').val('每日2-3粒，餐後服用');
+        $('input[name="recommended_products[]"][value="美力C錠"]').prop('checked', true);
+        $('input[name="vitamin_c_dosage"]').val('每日1-2錠，飯後服用');
+        
+        $('input[name="microcirculation_test"]').val('測試微循環檢測結果');
+        $('input[name="dietary_advice"]').val('測試日常飲食建議');
+      }
+      
+      function showConfirmModal() {
+        // Basic validation
+        var memberName = $('input[name="member_name"]').val();
+        var memberId = $('input[name="member_id"]').val();
+        var birthDate = $('input[name="birth_date"]').val();
+        var height = $('input[name="height"]').val();
+
+        if (!memberName || !memberId || !birthDate || !height) {
+          Swal.fire({
+            title: '欄位未完整',
+            text: '請填寫所有必填欄位',
+            icon: 'warning',
+            confirmButtonText: '確定'
+          });
+          return;
+        }
+
+        submitForm();
+      }
+
+      function submitForm() {
+        // Collect occupation data
+        var occupations = [];
+        $('input[name="occupation[]"]:checked').each(function() {
+          occupations.push($(this).val());
+        });
+
+        // Collect health concerns data
+        var healthConcerns = [];
+        $('input[name="health_concerns[]"]:checked').each(function() {
+          healthConcerns.push($(this).val());
+        });
+
+        // Collect recommended products data
+        var recommendedProducts = [];
+        $('input[name="recommended_products[]"]:checked').each(function() {
+          recommendedProducts.push($(this).val());
+        });
+
+        var formData = {
+          member_name: $('input[name="member_name"]').val(),
+          member_id: $('input[name="member_id"]').val(),
+          birth_date: $('input[name="birth_date"]').val(),
+          height: $('input[name="height"]').val(),
+          occupation: occupations,
+          has_medication_habit: $('input[name="has_medication_habit"]:checked').val() || '0',
+          medication_name: $('input[name="medication_name"]').val(),
+          has_family_disease_history: $('input[name="has_family_disease_history"]:checked').val() || '0',
+          disease_name: $('input[name="disease_name"]').val(),
+          health_concerns: healthConcerns,
+          health_concerns_other: $('input[name="health_concerns_other"]').val(),
+          recommended_products: recommendedProducts,
+          energy_essence_dosage: $('input[name="energy_essence_dosage"]').val(),
+          reishi_ex_dosage: $('input[name="reishi_ex_dosage"]').val(),
+          vitamin_c_dosage: $('input[name="vitamin_c_dosage"]').val(),
+          energy_crystal_dosage: $('input[name="energy_crystal_dosage"]').val(),
+          reishi_tea_dosage: $('input[name="reishi_tea_dosage"]').val(),
+          microcirculation_test: $('input[name="microcirculation_test"]').val(),
+          dietary_advice: $('input[name="dietary_advice"]').val()
+        };
+
+        $.ajax({
+          url: '<?php echo base_url("api/eeform5/submit"); ?>',
+          method: 'POST',
+          data: JSON.stringify(formData),
+          contentType: 'application/json',
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              Swal.fire({
+                title: '提交成功！',
+                text: '表單已成功提交，1.5秒後自動返回列表頁面',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              }).then(() => {
+                if (document.referrer) {
+                  window.location.href = document.referrer;
+                } else {
+                  window.location.href = '<?php echo base_url("eform"); ?>';
+                }
+              });
+            } else {
+              Swal.fire({
+                title: '提交失敗',
+                text: '提交失敗：' + (response.message || '未知錯誤'),
+                icon: 'error',
+                confirmButtonText: '確定'
+              });
+            }
+          },
+          error: function(xhr, status, error) {
+            Swal.fire({
+              title: '提交錯誤',
+              text: '提交失敗，請稍後再試',
+              icon: 'error',
+              confirmButtonText: '確定'
+            });
+          }
+        });
       }
     </script>
 
