@@ -423,6 +423,263 @@ class Eeform1 extends MY_Controller
     }
 
     /**
+     * 取得管理員列表資料 (分頁)
+     * GET /api/eeform1/list
+     */
+    public function list() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得查詢參數
+            $page = (int)$this->input->get('page') ?: 1;
+            $limit = (int)$this->input->get('limit') ?: 20;
+            $search = $this->input->get('search');
+            $start_date = $this->input->get('start_date');
+            $end_date = $this->input->get('end_date');
+
+            $results = $this->eform1_model->get_all_submissions_paginated(
+                $page, 
+                $limit, 
+                $search,
+                $start_date, 
+                $end_date
+            );
+
+            $this->_send_success('取得列表資料成功', $results);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得列表資料失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
+     * 匯出單一表單
+     * GET /api/eeform1/export_single/{id}
+     */
+    public function export_single($id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id) {
+                $this->_send_error('缺少表單ID', 400);
+                return;
+            }
+
+            // 取得表單詳細資料
+            $submission = $this->eform1_model->get_submission_detail($id);
+            
+            if (!$submission) {
+                $this->_send_error('找不到指定的表單', 404);
+                return;
+            }
+
+            // 載入 PHPSpreadsheet
+            $this->load->library('excel');
+            
+            // 建立新的試算表
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle('肌膚諮詢記錄表');
+
+            // 設定表頭
+            $sheet->setCellValue('A1', '肌膚諮詢記錄表');
+            $sheet->mergeCells('A1:B1');
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
+            
+            $row = 3;
+            
+            // 基本資料
+            $sheet->setCellValue('A' . $row, '會員姓名');
+            $sheet->setCellValue('B' . $row, $submission['member_name'] ?? '');
+            $row++;
+            
+            $sheet->setCellValue('A' . $row, '出生年月');
+            $sheet->setCellValue('B' . $row, ($submission['birth_year'] ?? '') . '年' . ($submission['birth_month'] ?? '') . '月');
+            $row++;
+            
+            $sheet->setCellValue('A' . $row, '電話');
+            $sheet->setCellValue('B' . $row, $submission['phone'] ?? '');
+            $row++;
+            
+            // 職業
+            if (isset($submission['occupations']) && is_array($submission['occupations'])) {
+                $occupations = [];
+                $occupationMap = [
+                    'service' => '服務業',
+                    'office' => '上班族', 
+                    'restaurant' => '餐飲業',
+                    'housewife' => '家管'
+                ];
+                foreach ($submission['occupations'] as $occ) {
+                    if ($occ['is_selected'] == 1) {
+                        $occupations[] = $occupationMap[$occ['occupation_type']] ?? $occ['occupation_type'];
+                    }
+                }
+                $sheet->setCellValue('A' . $row, '職業');
+                $sheet->setCellValue('B' . $row, implode('、', $occupations));
+                $row++;
+            }
+            
+            // 生活習慣
+            if (isset($submission['lifestyle']) && is_array($submission['lifestyle'])) {
+                $lifestyle = [];
+                foreach ($submission['lifestyle'] as $item) {
+                    if ($item['is_selected'] == 1) {
+                        $lifestyle[] = $item['category'] . ': ' . $item['item_key'];
+                    }
+                }
+                $sheet->setCellValue('A' . $row, '生活習慣');
+                $sheet->setCellValue('B' . $row, implode('、', $lifestyle));
+                $row++;
+            }
+            
+            // 使用產品
+            if (isset($submission['products']) && is_array($submission['products'])) {
+                $products = [];
+                $productMap = [
+                    'honey_soap' => '蜜皂',
+                    'mud_mask' => '泥膜',
+                    'toner' => '化妝水',
+                    'serum' => '精華液',
+                    'premium' => '極緻系列',
+                    'sunscreen' => '防曬',
+                    'other' => '其他'
+                ];
+                foreach ($submission['products'] as $prod) {
+                    if ($prod['is_selected'] == 1) {
+                        $productName = $productMap[$prod['product_type']] ?? $prod['product_type'];
+                        if ($prod['product_type'] === 'other' && $prod['product_name']) {
+                            $productName .= ': ' . $prod['product_name'];
+                        }
+                        $products[] = $productName;
+                    }
+                }
+                $sheet->setCellValue('A' . $row, '使用產品');
+                $sheet->setCellValue('B' . $row, implode('、', $products));
+                $row++;
+            }
+            
+            // 肌膚困擾
+            if (isset($submission['skin_issues']) && is_array($submission['skin_issues'])) {
+                $issues = [];
+                $issueMap = [
+                    'elasticity' => '沒有彈性',
+                    'luster' => '沒有光澤',
+                    'dull' => '暗沉',
+                    'spots' => '斑點',
+                    'pores' => '毛孔粗大',
+                    'acne' => '痘痘粉刺',
+                    'wrinkles' => '皺紋細紋',
+                    'rough' => '粗糙',
+                    'irritation' => '癢、紅腫',
+                    'dry' => '乾燥',
+                    'makeup' => '上妝不服貼',
+                    'other' => '其他'
+                ];
+                foreach ($submission['skin_issues'] as $issue) {
+                    if ($issue['is_selected'] == 1) {
+                        $issueName = $issueMap[$issue['issue_type']] ?? $issue['issue_type'];
+                        if ($issue['issue_type'] === 'other' && $issue['issue_description']) {
+                            $issueName .= ': ' . $issue['issue_description'];
+                        }
+                        $issues[] = $issueName;
+                    }
+                }
+                $sheet->setCellValue('A' . $row, '肌膚困擾');
+                $sheet->setCellValue('B' . $row, implode('、', $issues));
+                $row++;
+            }
+            
+            // 過敏狀況
+            if (isset($submission['allergies']) && is_array($submission['allergies'])) {
+                $allergies = [];
+                $allergyMap = [
+                    'frequent' => '經常',
+                    'seasonal' => '偶爾(換季時)',
+                    'never' => '不會'
+                ];
+                foreach ($submission['allergies'] as $allergy) {
+                    if ($allergy['is_selected'] == 1) {
+                        $allergies[] = $allergyMap[$allergy['allergy_type']] ?? $allergy['allergy_type'];
+                    }
+                }
+                $sheet->setCellValue('A' . $row, '過敏狀況');
+                $sheet->setCellValue('B' . $row, implode('、', $allergies));
+                $row++;
+            }
+            
+            // 建議內容
+            if (isset($submission['suggestions'])) {
+                $sheet->setCellValue('A' . $row, '化妝水建議');
+                $sheet->setCellValue('B' . $row, $submission['suggestions']['toner_suggestion'] ?? '');
+                $row++;
+                
+                $sheet->setCellValue('A' . $row, '精華液建議');
+                $sheet->setCellValue('B' . $row, $submission['suggestions']['serum_suggestion'] ?? '');
+                $row++;
+                
+                $sheet->setCellValue('A' . $row, '建議內容');
+                $sheet->setCellValue('B' . $row, $submission['suggestions']['suggestion_content'] ?? '');
+                $row++;
+            }
+            
+            // 肌膚檢測
+            $sheet->setCellValue('A' . $row, '肌膚類型');
+            $skinTypeMap = [
+                'normal' => '中性',
+                'combination' => '混合性',
+                'oily' => '油性',
+                'dry' => '乾性',
+                'sensitive' => '敏感性'
+            ];
+            $sheet->setCellValue('B' . $row, $skinTypeMap[$submission['skin_type']] ?? $submission['skin_type'] ?? '');
+            $row++;
+            
+            $sheet->setCellValue('A' . $row, '肌膚年齡');
+            $sheet->setCellValue('B' . $row, ($submission['skin_age'] ?? '') . '歲');
+            $row++;
+            
+            // 提交資訊
+            $sheet->setCellValue('A' . $row, '提交日期');
+            $sheet->setCellValue('B' . $row, $submission['submission_date'] ?? '');
+            $row++;
+
+            // 調整欄位寬度
+            $sheet->getColumnDimension('A')->setWidth(20);
+            $sheet->getColumnDimension('B')->setWidth(50);
+
+            // 設定檔案名稱
+            $filename = '肌膚諮詢記錄表_' . ($submission['member_name'] ?? 'ID' . $id) . '_' . date('Y-m-d') . '.xlsx';
+            
+            // 輸出檔案
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="' . $filename . '"');
+            header('Cache-Control: max-age=0');
+            
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $writer->save('php://output');
+            exit;
+
+        } catch (Exception $e) {
+            $this->_send_error('匯出失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
      * 發送成功回應
      * @param string $message 
      * @param mixed $data 
