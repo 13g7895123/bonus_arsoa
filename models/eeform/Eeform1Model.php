@@ -764,4 +764,112 @@ class Eeform1Model extends MY_Model
             'member_id' => $member_id
         ];
     }
+
+    /**
+     * 取得所有提交記錄（分頁）
+     * @param int $page
+     * @param int $limit
+     * @param string $search
+     * @param string $start_date
+     * @param string $end_date
+     * @return array
+     */
+    public function get_all_submissions_paginated($page = 1, $limit = 20, $search = null, $start_date = null, $end_date = null) {
+        try {
+            $offset = ($page - 1) * $limit;
+            
+            // 建立查詢
+            $this->db->select('
+                s.id,
+                s.member_id,
+                s.member_name,
+                s.birth_year,
+                s.birth_month,
+                s.phone,
+                s.skin_type,
+                s.skin_age,
+                s.submission_date,
+                s.created_at,
+                s.updated_at
+            ');
+            $this->db->from('eeform1_submissions s');
+            
+            // 套用搜尋條件
+            if (!empty($search)) {
+                $this->db->group_start();
+                $this->db->like('s.member_name', $search);
+                $this->db->or_like('s.phone', $search);
+                $this->db->group_end();
+            }
+            
+            // 套用日期條件
+            if (!empty($start_date)) {
+                $this->db->where('DATE(s.submission_date) >=', $start_date);
+            }
+            
+            if (!empty($end_date)) {
+                $this->db->where('DATE(s.submission_date) <=', $end_date);
+            }
+            
+            // 取得總數（分頁前）
+            $total_query = clone $this->db;
+            $total = $total_query->count_all_results();
+            
+            // 重建查詢並套用分頁
+            $this->db->select('
+                s.id,
+                s.member_id,
+                s.member_name,
+                s.birth_year,
+                s.birth_month,
+                s.phone,
+                s.skin_type,
+                s.skin_age,
+                s.submission_date,
+                s.created_at,
+                s.updated_at
+            ');
+            $this->db->from('eeform1_submissions s');
+            
+            // 重新套用搜尋條件
+            if (!empty($search)) {
+                $this->db->group_start();
+                $this->db->like('s.member_name', $search);
+                $this->db->or_like('s.phone', $search);
+                $this->db->group_end();
+            }
+            
+            // 重新套用日期條件
+            if (!empty($start_date)) {
+                $this->db->where('DATE(s.submission_date) >=', $start_date);
+            }
+            
+            if (!empty($end_date)) {
+                $this->db->where('DATE(s.submission_date) <=', $end_date);
+            }
+            
+            $this->db->order_by('s.submission_date', 'DESC');
+            $this->db->limit($limit, $offset);
+            $submissions = $this->db->get()->result_array();
+            
+            // 計算分頁資訊
+            $total_pages = ceil($total / $limit);
+            
+            return [
+                'data' => $submissions,
+                'pagination' => [
+                    'current_page' => $page,
+                    'per_page' => $limit,
+                    'total' => $total,
+                    'total_pages' => $total_pages,
+                    'has_next' => $page < $total_pages,
+                    'has_prev' => $page > 1
+                ]
+            ];
+            
+        } catch (Exception $e) {
+            log_message('error', 'Eeform1Model::get_all_submissions_paginated error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 }

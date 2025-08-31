@@ -489,6 +489,43 @@ class Eeform3 extends MY_Controller
     }
 
     /**
+     * 取得管理員列表資料 (分頁)
+     * GET /api/eeform3/list
+     */
+    public function list() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得查詢參數
+            $page = (int)$this->input->get('page') ?: 1;
+            $limit = (int)$this->input->get('limit') ?: 20;
+            $search = $this->input->get('search');
+            $start_date = $this->input->get('start_date');
+            $end_date = $this->input->get('end_date');
+
+            $results = $this->eform3_model->get_all_submissions_paginated(
+                $page, 
+                $limit, 
+                $search,
+                $start_date, 
+                $end_date
+            );
+
+            $this->_send_success('取得列表資料成功', $results);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得列表資料失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
      * 發送成功回應
      * @param string $message 
      * @param mixed $data 
