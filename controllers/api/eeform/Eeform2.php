@@ -1198,6 +1198,56 @@ class Eeform2 extends MY_Controller
         
         return $html;
     }
+
+    /**
+     * 查詢會員資料
+     * GET /api/eeform2/member_lookup/{member_id}
+     */
+    public function member_lookup($member_id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$member_id) {
+                $this->_send_error('缺少會員編號', 400);
+                return;
+            }
+
+            // 查詢會員資料：Select c_no, c_name from member where c_no=@x or d_spno=@x
+            $this->db->select('c_no, c_name');
+            $this->db->from('member');
+            $this->db->group_start();
+            $this->db->where('c_no', $member_id);
+            $this->db->or_where('d_spno', $member_id);
+            $this->db->group_end();
+            
+            $query = $this->db->get();
+            
+            if (!$query) {
+                throw new Exception('Database query failed: ' . $this->db->error()['message']);
+            }
+
+            $members = $query->result_array();
+            
+            // 返回查詢結果
+            $result = [
+                'count' => count($members),
+                'members' => $members,
+                'search_id' => $member_id
+            ];
+
+            $this->_send_success('查詢會員資料成功', $result);
+
+        } catch (Exception $e) {
+            $this->_send_error('查詢會員資料失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
     
     private function _send_success($message, $data = null, $code = 200) {
         $response = [

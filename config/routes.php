@@ -106,6 +106,7 @@ $route['api/eeform1/member_lookup/(:any)'] = 'api/eeform/eeform1/member_lookup/$
 $route['api/eeform1/export_single/(:any)'] = 'api/eeform/eeform1/export_single/$1';
 
 $route['api/eeform2/health'] = 'api/eeform/eeform2/health';
+$route['api/eeform2/member_lookup/(:any)'] = 'api/eeform/eeform2/member_lookup/$1';
 $route['api/eeform2/submit'] = 'api/eeform/eeform2/submit';
 $route['api/eeform2/submissions/(:any)'] = 'api/eeform/eeform2/submissions/$1';
 $route['api/eeform2/submission/(:any)'] = 'api/eeform/eeform2/submission/$1';
@@ -129,6 +130,7 @@ $route['api/eeform3/list'] = 'api/eeform/eeform3/list';
 $route['api/eeform3/export_single/(:any)'] = 'api/eeform/eeform3/export_single/$1';
 
 $route['api/eeform4/health'] = 'api/eeform/eeform4/health';
+$route['api/eeform4/member_lookup/(:any)'] = 'api/eeform/eeform4/member_lookup/$1';
 $route['api/eeform4/submit'] = 'api/eeform/eeform4/submit';
 $route['api/eeform4/submissions/(:any)'] = 'api/eeform/eeform4/submissions/$1';
 $route['api/eeform4/submission/(:any)'] = 'api/eeform/eeform4/submission/$1';

@@ -20,12 +20,15 @@
                           <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
                           <div class="col-sm-3 mb30">
-                            <label class="label-custom">姓名</label>
-                            <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
+                            <label class="label-custom">會員編號</label>
+                            <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" readonly required />
                           </div>
                           <div class="col-sm-3 mb30">
-                            <label class="label-custom">會員編號</label>
-                            <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" required />
+                            <label class="label-custom">姓名</label>
+                            <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
+                            <select name="member_name_select" class="form-control form-control-custom" style="display: none;" required>
+                              <option value="">請選擇會員</option>
+                            </select>
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">入會日</label>
@@ -621,6 +624,229 @@
           }
         });
       }
+
+      // Point 62: Member lookup functionality (同步 Point 57 功能到 eform4)
+      // 取得目前登入使用者資訊
+      var currentUserData = {
+        member_id: '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>',
+        member_name: '<?php echo isset($userdata['c_name']) ? $userdata['c_name'] : ''; ?>'
+      };
+
+      // 會員資料相關變數
+      var memberData = [];
+      var isMultipleMembers = false;
+
+      // 初始化會員資料
+      function initializeMemberData() {
+        console.log('[Point 62 - eform4] ===== 初始化會員資料功能開始 =====');
+        console.log('[Point 62 - eform4] 當前使用者資料:', currentUserData);
+        console.log('[Point 62 - eform4] 會員編號是否存在:', !!currentUserData.member_id);
+        
+        // 設定會員編號欄位
+        $('input[name="member_id"]').val(currentUserData.member_id);
+        console.log('[Point 62 - eform4] 設定會員編號欄位為:', currentUserData.member_id);
+        
+        // Point 60: 無論是否有會員編號，都進行測試API呼叫來確認端點是否正常
+        console.log('[Point 62 - eform4] ===== 開始測試API端點 =====');
+        if (currentUserData.member_id && currentUserData.member_id.trim() !== '') {
+          console.log('[Point 62 - eform4] 有會員編號，開始查詢相關會員資料...');
+          console.log('[Point 62 - eform4] 正常API呼叫，member_id:', currentUserData.member_id);
+          lookupMemberData(currentUserData.member_id);
+        } else {
+          console.log('[Point 62 - eform4] 沒有會員編號，但仍進行測試API呼叫來確認端點...');
+          // 使用測試ID來確認API端點是否正常運作
+          console.log('[Point 62 - eform4] 使用測試ID "TEST123" 進行API測試');
+          lookupMemberData('TEST123');
+          
+          // 設定預設姓名
+          console.log('[Point 62 - eform4] 使用預設姓名:', currentUserData.member_name);
+          $('input[name="member_name"]').val(currentUserData.member_name);
+        }
+      }
+
+      // 查詢會員資料
+      function lookupMemberData(memberId) {
+        var apiUrl = '<?php echo base_url("api/eeform4/member_lookup/"); ?>' + memberId;
+        console.log('[Point 62 - eform4] ===== API 呼叫詳細資訊 =====');
+        console.log('[Point 62 - eform4] 開始查詢會員資料 API');
+        console.log('[Point 62 - eform4] API URL:', apiUrl);
+        console.log('[Point 62 - eform4] 查詢會員ID:', memberId);
+        console.log('[Point 62 - eform4] Base URL:', '<?php echo base_url(); ?>');
+        console.log('[Point 62 - eform4] 完整 API 路徑:', apiUrl);
+        console.log('[Point 62 - eform4] 開始發送 AJAX 請求...');
+        
+        $.ajax({
+          url: apiUrl,
+          method: 'GET',
+          dataType: 'json',
+          beforeSend: function(xhr) {
+            console.log('[Point 62 - eform4] ===== AJAX 請求即將發送 =====');
+            console.log('[Point 62 - eform4] 請求方法: GET');
+            console.log('[Point 62 - eform4] 請求 URL:', apiUrl);
+            console.log('[Point 62 - eform4] 資料類型: json');
+            console.log('[Point 62 - eform4] AJAX 請求已發送，等待回應...');
+          },
+          success: function(response) {
+            console.log('[Point 62 - eform4] API 回應成功:', response);
+            
+            if (response.success && response.data) {
+              memberData = response.data.members;
+              console.log('[Point 62 - eform4] 找到會員資料數量:', memberData.length);
+              console.log('[Point 62 - eform4] 會員資料內容:', memberData);
+              
+              if (memberData.length > 1) {
+                // 多個會員：顯示下拉選單
+                console.log('[Point 62 - eform4] 多個會員匹配，顯示下拉選單');
+                isMultipleMembers = true;
+                setupMemberDropdown();
+              } else if (memberData.length === 1) {
+                // 單個會員：使用文字輸入框
+                console.log('[Point 62 - eform4] 單個會員匹配，使用文字輸入框');
+                console.log('[Point 62 - eform4] 會員姓名:', memberData[0].c_name);
+                isMultipleMembers = false;
+                $('input[name="member_name"]').val(memberData[0].c_name);
+                currentUserData.member_name = memberData[0].c_name;
+              } else {
+                // 沒有找到會員：使用預設值
+                console.log('[Point 62 - eform4] 沒有找到會員，使用預設值');
+                isMultipleMembers = false;
+                $('input[name="member_name"]').val(currentUserData.member_name);
+              }
+            } else {
+              console.log('[Point 62 - eform4] API 回應格式不正確:', response);
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('[Point 62 - eform4] ===== API 呼叫失敗詳細資訊 =====');
+            console.error('[Point 62 - eform4] API 查詢失敗:', {
+              status: status,
+              error: error,
+              xhr: xhr,
+              responseText: xhr.responseText
+            });
+            console.error('[Point 62 - eform4] HTTP 狀態碼:', xhr.status);
+            console.error('[Point 62 - eform4] HTTP 狀態文字:', xhr.statusText);
+            console.error('[Point 62 - eform4] 回應內容:', xhr.responseText);
+            console.error('[Point 62 - eform4] AJAX 狀態:', status);
+            console.error('[Point 62 - eform4] 錯誤類型:', error);
+            console.error('[Point 62 - eform4] 請求的 URL:', apiUrl);
+            
+            // 出錯時使用預設值
+            console.log('[Point 62 - eform4] 因為API失敗，使用預設會員姓名:', currentUserData.member_name);
+            $('input[name="member_name"]').val(currentUserData.member_name);
+          },
+          complete: function(xhr, status) {
+            console.log('[Point 62 - eform4] ===== AJAX 請求完成 =====');
+            console.log('[Point 62 - eform4] 最終狀態:', status);
+            console.log('[Point 62 - eform4] HTTP 狀態碼:', xhr.status);
+            console.log('[Point 62 - eform4] 請求已完成 (成功或失敗)');
+          }
+        });
+      }
+
+      // 設定會員下拉選單
+      function setupMemberDropdown() {
+        console.log('[Point 62 - eform4] ===== 設定會員下拉選單 =====');
+        console.log('[Point 62 - eform4] 會員資料:', memberData);
+        
+        var $nameInput = $('input[name="member_name"]');
+        var $nameSelect = $('select[name="member_name_select"]');
+        
+        console.log('[Point 62 - eform4] 找到姓名輸入框:', $nameInput.length > 0);
+        console.log('[Point 62 - eform4] 找到姓名下拉選單:', $nameSelect.length > 0);
+        
+        // 清空下拉選單選項
+        $nameSelect.empty();
+        $nameSelect.append('<option value="">請選擇會員</option>');
+        
+        // 加入會員選項
+        memberData.forEach(function(member) {
+          $nameSelect.append('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
+                            member.c_name + ' (' + member.c_no + ')</option>');
+        });
+        
+        // 隱藏輸入框，顯示下拉選單
+        $nameInput.hide();
+        $nameSelect.show();
+        
+        console.log('[Point 62 - eform4] 下拉選單設定完成，已隱藏輸入框');
+        
+        // 綁定選擇事件
+        $nameSelect.off('change.memberLookup').on('change.memberLookup', function() {
+          var selectedOption = $(this).find('option:selected');
+          var newMemberId = selectedOption.val();
+          var newMemberName = selectedOption.data('name');
+          
+          console.log('[Point 62 - eform4] 會員選擇變更:', {
+            newMemberId: newMemberId,
+            newMemberName: newMemberName
+          });
+          
+          if (newMemberId) {
+            // 更新會員編號和姓名
+            $('input[name="member_id"]').val(newMemberId);
+            currentUserData.member_id = newMemberId;
+            currentUserData.member_name = newMemberName;
+            
+            console.log('[Point 62 - eform4] 更新後的會員資料:', currentUserData);
+          }
+        });
+      }
+
+      // 修改提交表單函數以處理會員選擇
+      var originalSubmitForm = submitForm;
+      submitForm = function() {
+        console.log('[Point 62 - eform4] ===== 表單提交開始 =====');
+        console.log('[Point 62 - eform4] 是否為多重會員:', isMultipleMembers);
+        console.log('[Point 62 - eform4] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
+        
+        // 收集表單資料
+        var memberId, memberName;
+        
+        // 根據是否為多重會員選擇不同的取值方式
+        if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
+          console.log('[Point 62 - eform4] 使用下拉選單模式取得會員資料');
+          // 使用下拉選單的值
+          var selectedOption = $('select[name="member_name_select"]').find('option:selected');
+          memberId = selectedOption.val();
+          memberName = selectedOption.data('name');
+          console.log('[Point 62 - eform4] 從下拉選單取得:', {
+            memberId: memberId,
+            memberName: memberName
+          });
+        } else {
+          console.log('[Point 62 - eform4] 使用輸入框模式取得會員資料');
+          // 使用輸入框和當前會員資料
+          memberId = currentUserData.member_id;
+          memberName = $('input[name="member_name"]').val();
+          console.log('[Point 62 - eform4] 從輸入框取得:', {
+            memberId: memberId,
+            memberName: memberName
+          });
+        }
+        
+        console.log('[Point 62 - eform4] 最終會員資料:', {
+          member_id: memberId,
+          member_name: memberName
+        });
+        
+        // 確保表單欄位有正確的值
+        $('input[name="member_id"]').val(memberId);
+        $('input[name="member_name"]').val(memberName);
+        
+        // 呼叫原始的提交函數
+        originalSubmitForm();
+      }
+
+      // 頁面載入時初始化會員資料
+      $(document).ready(function() {
+        console.log('[Point 62 - eform4] ===== 頁面載入完成，開始初始化會員查詢功能 =====');
+        
+        // 延遲執行以確保其他初始化完成
+        setTimeout(function() {
+          initializeMemberData();
+        }, 500);
+      });
     </script>
 
   </body>
