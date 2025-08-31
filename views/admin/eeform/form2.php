@@ -990,8 +990,12 @@
             const container = $('#products-container');
             container.empty();
 
-            // products 現在是數組格式，不再是物件格式
-            const sortedProducts = Array.isArray(products) ? products.sort((a, b) => a.product_code.localeCompare(b.product_code)) : [];
+            // products 現在是數組格式，按照 sort_order 排序（新產品會在最後面）
+            const sortedProducts = Array.isArray(products) ? products.sort((a, b) => {
+                const orderA = parseInt(a.sort_order) || 0;
+                const orderB = parseInt(b.sort_order) || 0;
+                return orderA - orderB;
+            }) : [];
             
             if (sortedProducts.length === 0) {
                 container.append('<div class="text-center text-muted py-3">尚無產品，請點擊「新增產品」按鈕新增產品</div>');

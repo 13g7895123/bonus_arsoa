@@ -449,6 +449,16 @@ class Eeform2Model extends MY_Model {
      */
     public function add_product($data) {
         try {
+            // 如果沒有設定 sort_order，自動設定為最大值+1（加在最後面）
+            if (!isset($data['sort_order'])) {
+                $this->db->select('MAX(sort_order) as max_order');
+                $this->db->from($this->table_product_master);
+                $query = $this->db->get();
+                $result = $query->row_array();
+                $max_order = $result['max_order'] ?? 0;
+                $data['sort_order'] = $max_order + 1;
+            }
+            
             $this->db->insert($this->table_product_master, $data);
             return $this->db->insert_id();
             
@@ -506,6 +516,13 @@ class Eeform2Model extends MY_Model {
             $current_products = $this->get_all_products();
             $current_product_ids = array_column($current_products, 'id');
             
+            // 取得目前最大的 sort_order 值，用於新增產品
+            $max_sort_order = 0;
+            if (!empty($current_products)) {
+                $sort_orders = array_column($current_products, 'sort_order');
+                $max_sort_order = max($sort_orders);
+            }
+            
             // 記錄提交的產品ID清單
             $submitted_product_ids = [];
             
@@ -526,13 +543,14 @@ class Eeform2Model extends MY_Model {
                     $this->db->where('id', $product['id']);
                     $this->db->update($this->table_product_master, $update_data);
                 } else {
-                    // 新增產品
+                    // 新增產品 - 新產品加在最後面
+                    $max_sort_order++;
                     $insert_data = [
                         'product_code' => $product['code'],
                         'product_name' => $product['name'],
                         'product_category' => isset($product['category']) ? $product['category'] : 'other',
                         'description' => isset($product['description']) ? $product['description'] : null,
-                        'sort_order' => isset($product['sort_order']) ? $product['sort_order'] : 0,
+                        'sort_order' => $max_sort_order,
                         'is_active' => isset($product['is_active']) ? $product['is_active'] : true
                     ];
                     
