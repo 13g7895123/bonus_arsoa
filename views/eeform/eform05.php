@@ -1,64 +1,3 @@
-  <style>
-    /* Enhanced styling for occupation and health concerns sections */
-    .section-highlight {
-      background-color: #f8f9fa;
-      border: 1px solid #e9ecef;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .section-highlight .card-body {
-      padding: 1rem;
-    }
-    
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #495057;
-      margin-bottom: 15px;
-      display: block;
-    }
-    
-    .form-check-inline {
-      margin-right: 25px;
-      margin-bottom: 10px;
-      display: inline-flex;
-      align-items: center;
-    }
-    
-    .form-check-input {
-      width: 18px;
-      height: 18px;
-      margin-right: 8px;
-      cursor: pointer;
-    }
-    
-    .form-check-label {
-      font-size: 16px;
-      color: #495057;
-      cursor: pointer;
-      margin-bottom: 0;
-      line-height: 1.2;
-    }
-    
-    .form-check-label:hover {
-      color: #007bff;
-    }
-    
-    /* Ensure card styling is consistent */
-    .card.bg-light {
-      background-color: #f8f9fa !important;
-      border: 1px solid #e9ecef;
-      border-radius: 8px;
-    }
-    
-    .mb20 {
-      margin-bottom: 20px;
-    }
-  </style>
-  
   <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
       <div class="wrapper">
@@ -93,32 +32,21 @@
                           </div>
 
                           <div class="col-sm-12 mb30">
-                            <div class="card bg-light">
-                              <div class="card-body">
-                                <div class="container">
-                                  <div class="row">
-                                    <p class="mb-0"><strong>職業（可複選）：</strong></p>
-                                  </div>
-                                  <div class="row mb20">
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_service" value="服務業">
-                                      <label class="form-check-label" for="occupation_service">服務業 </label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_office" value="上班族">
-                                      <label class="form-check-label" for="occupation_office">上班族 </label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_food" value="餐飲業">
-                                      <label class="form-check-label" for="occupation_food">餐飲業 </label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_freelance" value="自由業">
-                                      <label class="form-check-label" for="occupation_freelance">自由業 </label>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                            <div class="form-check form-check-inline">職業：
+                              <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_service" value="服務業">
+                              <label class="form-check-label" for="occupation_service">服務業 </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_office" value="上班族">
+                              <label class="form-check-label" for="occupation_office">上班族 </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_food" value="餐飲業">
+                              <label class="form-check-label" for="occupation_food">餐飲業 </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="checkbox" name="occupation[]" id="occupation_freelance" value="自由業">
+                              <label class="form-check-label" for="occupation_freelance">自由業 </label>
                             </div>
                           </div>
 
@@ -157,7 +85,7 @@
                               <div class="card-body">
                                 <div class="container">
                                   <div class="row">
-                                    <p class="mb-0"><strong>健康困擾（可複選）：</strong></p>
+                                    <p class="mb-0">健康困擾：</p>
                                   </div>
                                   <div class="row mb30">
                                     <div class="form-check form-check-inline">

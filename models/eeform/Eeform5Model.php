@@ -226,7 +226,7 @@ class Eeform5Model extends MY_Model {
                     'submission_id' => $submission_id,
                     'product_code' => $recommendation['product_code'],
                     'product_name' => $recommendation['product_name'],
-                    'dosage' => $recommendation['dosage']
+                    'recommended_dosage' => $recommendation['dosage']
                 ];
                 $this->db->insert($this->table_product_recommendations, $data);
             }

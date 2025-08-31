@@ -149,9 +149,16 @@ class Eeform5 extends MY_Controller
             // 保存職業資料
             if (isset($input_data['occupation']) && is_array($input_data['occupation'])) {
                 $occupations = [];
+                $occupation_type_map = [
+                    '服務業' => 'service',
+                    '上班族' => 'office', 
+                    '餐飲業' => 'restaurant',
+                    '自由業' => 'freelance'
+                ];
+                
                 foreach ($input_data['occupation'] as $occupation) {
                     $occupations[] = [
-                        'type' => 'checkbox',
+                        'type' => $occupation_type_map[$occupation] ?? 'other',
                         'name' => $occupation
                     ];
                 }

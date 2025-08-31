@@ -9,7 +9,8 @@
       "Bash(head:*)",
       "Bash(sed:*)",
       "Bash(curl:*)",
-      "Bash(mysql:*)"
+      "Bash(mysql:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
