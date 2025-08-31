@@ -383,7 +383,7 @@ class Eeform5Model extends MY_Model {
             $submission['health_issues'] = $health_issues_query ? $health_issues_query->result_array() : [];
             
             // 取得產品推薦資料
-            $this->db->select('product_code, product_name, dosage');
+            $this->db->select('product_code, product_name, recommended_dosage as dosage');
             $this->db->from($this->table_product_recommendations);
             $this->db->where('submission_id', $id);  
             $products_query = $this->db->get();
