@@ -102,6 +102,12 @@
         border-color: #28a745;
     }
     
+    .btn-sm {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.875rem !important;
+        border-radius: 4px !important;
+    }
+    
     .btn-outline-primary {
         color: #28a745;
         border-color: #28a745;
@@ -127,6 +133,14 @@
         flex-shrink: 0;
     }
     
+    /* Make modals extra wide - matching form2 */
+    #detailModal .modal-dialog,
+    #productModal .modal-dialog {
+        max-width: 1800px !important;
+        margin: 1.75rem auto;
+        width: 95vw;
+    }
+    
     .modal-xl {
         max-width: 90% !important;
         width: 90% !important;
@@ -140,91 +154,143 @@
     
     .modal-header {
         border-bottom: 1px solid #e9ecef !important;
-        border-radius: 8px 8px 0 0 !important;
-        padding: 1rem 1.5rem !important;
+        padding: 1rem 1.25rem;
+        background-color: #f8f9fa !important;
     }
     
     .modal-body {
+        padding: 1.25rem;
+    }
+    
+    /* View Detail Modal Specific Styling - matching form2 */
+    #detailModal .modal-body {
         padding: 2rem !important;
-        max-height: 80vh;
-        overflow-y: auto;
+        background-color: #f8f9fa;
     }
     
-    .submission-detail {
-        background: #fff;
+    #detailModal .modal-body::-webkit-scrollbar {
+        width: 8px;
     }
     
-    .submission-detail .border {
-        border: 1px solid #e9ecef !important;
-        border-radius: 8px !important;
-        padding: 1.5rem !important;
-        margin-bottom: 2rem !important;
-        background: #fafafa;
+    #detailModal .modal-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
     }
     
-    .submission-detail .border h6 {
+    #detailModal .modal-body::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    #detailModal .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+    
+    #detailModal .border {
+        border-color: #e9ecef !important;
+        background-color: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    #detailModal .form-group label {
+        font-size: 1rem;
+        font-weight: 700;
         color: #495057;
-        font-weight: 600;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    #detailModal .form-group > div {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        min-height: 1.5em;
+    }
+    
+    #detailModal .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Improve section headers */
+    #detailModal .border .bg-light h6 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #495057;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Consistent input-style formatting for all modal content */
+    #detailModal .form-group > div {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 0.75rem 1rem !important;
+        min-height: 38px;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+    
+    #detailModal .form-group > div:hover {
+        background-color: #e9ecef;
+    }
+    
+    /* Special styling for product quantities */
+    #detailModal .form-group strong {
+        color: #28a745;
         font-size: 1.1rem;
     }
     
-    .submission-detail .form-group {
-        margin-bottom: 1rem;
+    /* Modal header enhancement */
+    #detailModal .modal-header {
+        background-color: #fff;
+        color: #495057;
+        border-bottom: 1px solid #e9ecef;
+        border-radius: 8px 8px 0 0;
     }
     
-    .submission-detail .form-label {
+    #detailModal .modal-title {
         font-weight: 600;
-        color: #495057;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-    
-    .submission-detail .form-control {
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.9rem;
-        background: #fff;
+        font-size: 1.25rem;
         color: #495057;
     }
     
-    .submission-detail .form-control[readonly] {
-        background-color: #f8f9fa;
-        border-color: #e9ecef;
-        color: #6c757d;
-    }
-    
-    .product-item {
-        border: 1px solid #e9ecef !important;
-        border-radius: 8px !important;
-        padding: 1rem !important;
-        margin-bottom: 1rem !important;
-        background: #fff;
+    /* Section borders */
+    #detailModal .border {
+        border: 2px solid #e9ecef !important;
+        border-radius: 10px !important;
+        overflow: hidden;
         transition: box-shadow 0.2s ease;
     }
     
-    .product-item:hover {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .product-item .form-label {
-        font-weight: 600;
-        color: #495057;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-    
-    .product-item .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
+    #detailModal .border:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     
     .modal-footer {
         border-top: 1px solid #e9ecef !important;
         padding: 1rem 1.5rem !important;
+    }
+    
+    /* Responsive adjustments - matching form2 */
+    @media (max-width: 768px) {
+        .dashboard-card {
+            margin-bottom: 1rem;
+        }
+        
+        .table-actions .btn {
+            padding: 0.25rem;
+            margin: 0 1px;
+        }
+        
+        .table-actions .btn i {
+            font-size: 0.75rem;
+        }
+        
+        .filters-section .row > div {
+            margin-bottom: 1rem;
+        }
     }
     
     #searchBtn {
@@ -319,6 +385,98 @@
         background-color: #1e7e34 !important;
         border-color: #1c7430 !important;
         color: #fff !important;
+    }
+    
+    /* Custom margin-bottom for better block spacing - matching form2 */
+    .mb-6 {
+        margin-bottom: 3rem !important;
+    }
+    
+    /* Make blocks wider and add more padding */
+    #detailModal .border {
+        margin: 0 -1rem 3rem -1rem !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Add inner padding to border mb-6 rounded elements in modal */
+    #detailModal .border.mb-6.rounded {
+        padding: 2rem !important;
+    }
+    
+    /* Adjust content padding inside border elements to avoid double padding */
+    #detailModal .border.mb-6.rounded .p-5 {
+        padding: 0 !important;
+    }
+    
+    /* Adjust header padding to match the new structure */
+    #detailModal .border.mb-6.rounded .bg-light {
+        margin: -2rem -2rem 1.5rem -2rem !important;
+        padding: 1rem 2rem !important;
+    }
+    
+    #detailModal .container-fluid {
+        padding: 0 2rem !important;
+    }
+    
+    .alert {
+        border-radius: 6px !important;
+        border: none !important;
+        font-weight: 500;
+    }
+    
+    .spinner-border {
+        color: #28a745 !important;
+    }
+    
+    /* Product modal scrollable styles - matching form2 */
+    #productModal .modal-body {
+        max-height: 70vh !important;
+        overflow-y: auto !important;
+    }
+    
+    #productModal .modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    #productModal .modal-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    #productModal .modal-body::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    #productModal .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+    
+    #productModal .product-item {
+        border: 1px solid #e9ecef !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+        background: #fff;
+        transition: box-shadow 0.2s ease;
+    }
+    
+    #productModal .product-item:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    #productModal .product-item .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    #productModal .product-item .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
     }
 </style>
 
