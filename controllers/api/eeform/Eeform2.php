@@ -372,38 +372,6 @@ class Eeform2 extends MY_Controller
         }
     }
 
-    /**
-     * 刪除表單記錄
-     * DELETE /api/eeform2/delete/{id}
-     */
-    public function delete($id = null) {
-        try {
-            if (!in_array($this->input->method(TRUE), ['DELETE', 'POST'])) {
-                $this->_send_error('Method not allowed', 405);
-                return;
-            }
-
-            if (!$id || !is_numeric($id)) {
-                $this->_send_error('缺少有效的表單ID', 400);
-                return;
-            }
-
-            $result = $this->eform2_model->delete_submission($id);
-            
-            if ($result) {
-                $this->_send_success('刪除記錄成功', [
-                    'id' => $id
-                ]);
-            } else {
-                $this->_send_error('刪除記錄失敗', 500);
-            }
-
-        } catch (Exception $e) {
-            $this->_send_error('刪除記錄失敗: ' . $e->getMessage(), 500, [
-                'trace' => $e->getTraceAsString()
-            ]);
-        }
-    }
 
     /**
      * 取得統計資料

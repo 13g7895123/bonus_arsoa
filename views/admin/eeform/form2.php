@@ -666,9 +666,6 @@
                             <button class="btn btn-sm btn-success" onclick="admin.exportSingleForm(${item.id})" title="匯出此表單" data-toggle="tooltip">
                                 <i class="lnr lnr-download"></i>
                             </button>
-                            <button class="btn btn-sm btn-danger" onclick="admin.deleteSubmission(${item.id})" title="刪除記錄" data-toggle="tooltip">
-                                <i class="lnr lnr-trash"></i>
-                            </button>
                         </td>
                     </tr>
                 `;
@@ -921,47 +918,6 @@
             }
         }
 
-        async deleteSubmission(id) {
-            // 使用 Sweet Alert 確認刪除
-            let confirmed = false;
-            if (typeof Swal !== 'undefined') {
-                const result = await Swal.fire({
-                    title: '確定要刪除此記錄嗎？',
-                    text: '此操作無法復原！',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: '確定刪除',
-                    cancelButtonText: '取消'
-                });
-                confirmed = result.isConfirmed;
-            } else {
-                confirmed = confirm('確定要刪除此記錄嗎？此操作無法復原。');
-            }
-            
-            if (!confirmed) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`/api/eeform/eeform2/delete/${id}`, {
-                    method: 'DELETE'
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    this.showAlert('刪除成功', 'success');
-                    this.loadData();
-                } else {
-                    this.showAlert('刪除失敗: ' + result.message, 'danger');
-                }
-            } catch (error) {
-                console.error('刪除失敗:', error);
-                this.showAlert('刪除失敗，請稍後再試', 'danger');
-            }
-        }
 
         async showProductModal() {
             try {
