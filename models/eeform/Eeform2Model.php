@@ -502,8 +502,17 @@ class Eeform2Model extends MY_Model {
         try {
             $this->db->trans_start();
             
+            // 先取得目前所有啟用的產品清單
+            $current_products = $this->get_all_products();
+            $current_product_ids = array_column($current_products, 'id');
+            
+            // 記錄提交的產品ID清單
+            $submitted_product_ids = [];
+            
             foreach ($products as $product) {
                 if (isset($product['id']) && $product['id']) {
+                    $submitted_product_ids[] = $product['id'];
+                    
                     // 更新現有產品
                     $update_data = [
                         'product_code' => $product['code'],
@@ -529,6 +538,17 @@ class Eeform2Model extends MY_Model {
                     
                     $this->db->insert($this->table_product_master, $insert_data);
                 }
+            }
+            
+            // 找出需要停用的產品（目前啟用但不在提交清單中的產品）
+            $products_to_deactivate = array_diff($current_product_ids, $submitted_product_ids);
+            
+            // 停用被刪除的產品
+            if (!empty($products_to_deactivate)) {
+                $this->db->where_in('id', $products_to_deactivate);
+                $this->db->update($this->table_product_master, [
+                    'is_active' => false
+                ]);
             }
             
             $this->db->trans_complete();
