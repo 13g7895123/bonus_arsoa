@@ -1205,14 +1205,38 @@
     </script>
 
     <script>
+      // Point 59: 添加全域錯誤處理，防止 JS 錯誤影響 console 功能
+      window.addEventListener('error', function(e) {
+        console.log('[Point 59] JavaScript 錯誤被捕獲:', {
+          message: e.message,
+          filename: e.filename,
+          lineno: e.lineno,
+          colno: e.colno,
+          error: e.error
+        });
+        console.log('[Point 59] 錯誤不會中斷其他功能執行');
+        return true; // 防止錯誤中斷執行
+      });
+      
+      console.log('[Point 59] 全域錯誤處理已設定');
+      console.log('[Point 59] jQuery 版本:', typeof $ !== 'undefined' ? $.fn.jquery : '未載入');
+      
       // 控制測試按鈕顯示的變數
       var showTestButton = true; // 設為 false 可隱藏測試按鈕
       
-      // 取得目前登入使用者資訊
+      // 取得目前登入使用者資訊 - Point 60 加強除錯
+      console.log('[Point 60] ===== PHP 傳入的原始資料 =====');
+      console.log('[Point 60] PHP $userdata[c_no]:', '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : 'EMPTY'; ?>');
+      console.log('[Point 60] PHP $userdata[c_name]:', '<?php echo isset($userdata['c_name']) ? $userdata['c_name'] : 'EMPTY'; ?>');
+      
       var currentUserData = {
         member_id: '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>',
         member_name: '<?php echo isset($userdata['c_name']) ? $userdata['c_name'] : ''; ?>'
       };
+      
+      console.log('[Point 60] JavaScript 處理後的資料:', currentUserData);
+      console.log('[Point 60] member_id 長度:', currentUserData.member_id.length);
+      console.log('[Point 60] member_id 類型:', typeof currentUserData.member_id);
 
       // 會員資料相關變數
       var memberData = [];
@@ -1223,18 +1247,27 @@
         console.log('[Point 57] ===== 初始化會員資料功能開始 =====');
         console.log('[Point 57] 當前使用者資料:', currentUserData);
         console.log('[Point 57] 會員編號是否存在:', !!currentUserData.member_id);
+        console.log('[Point 60] 會員編號字符長度:', currentUserData.member_id.length);
+        console.log('[Point 60] 會員編號是否為空字串:', currentUserData.member_id === '');
         
         // 設定會員編號欄位
         $('input[name="member_id"]').val(currentUserData.member_id);
         console.log('[Point 57] 設定會員編號欄位為:', currentUserData.member_id);
         
-        // 如果有會員編號，查詢相關會員資料
-        if (currentUserData.member_id) {
+        // Point 60: 無論是否有會員編號，都進行測試API呼叫來確認端點是否正常
+        console.log('[Point 60] ===== 開始測試API端點 =====');
+        if (currentUserData.member_id && currentUserData.member_id.trim() !== '') {
           console.log('[Point 57] 有會員編號，開始查詢相關會員資料...');
+          console.log('[Point 60] 正常API呼叫，member_id:', currentUserData.member_id);
           lookupMemberData(currentUserData.member_id);
         } else {
-          console.log('[Point 57] 沒有會員編號，使用預設姓名:', currentUserData.member_name);
-          // 沒有會員編號時，使用預設的姓名
+          console.log('[Point 60] 沒有會員編號，但仍進行測試API呼叫來確認端點...');
+          // 使用測試ID來確認API端點是否正常運作
+          console.log('[Point 60] 使用測試ID "TEST123" 進行API測試');
+          lookupMemberData('TEST123');
+          
+          // 設定預設姓名
+          console.log('[Point 57] 使用預設姓名:', currentUserData.member_name);
           $('input[name="member_name"]').val(currentUserData.member_name);
         }
       }
@@ -1242,14 +1275,25 @@
       // 查詢會員資料
       function lookupMemberData(memberId) {
         var apiUrl = '<?php echo base_url("api/eeform1/member_lookup/"); ?>' + memberId;
+        console.log('[Point 60] ===== API 呼叫詳細資訊 =====');
         console.log('[Point 57] 開始查詢會員資料 API');
         console.log('[Point 57] API URL:', apiUrl);
         console.log('[Point 57] 查詢會員ID:', memberId);
+        console.log('[Point 60] Base URL:', '<?php echo base_url(); ?>');
+        console.log('[Point 60] 完整 API 路徑:', apiUrl);
+        console.log('[Point 60] 開始發送 AJAX 請求...');
         
         $.ajax({
           url: apiUrl,
           method: 'GET',
           dataType: 'json',
+          beforeSend: function(xhr) {
+            console.log('[Point 60] ===== AJAX 請求即將發送 =====');
+            console.log('[Point 60] 請求方法: GET');
+            console.log('[Point 60] 請求 URL:', apiUrl);
+            console.log('[Point 60] 資料類型: json');
+            console.log('[Point 60] AJAX 請求已發送，等待回應...');
+          },
           success: function(response) {
             console.log('[Point 57] API 回應成功:', response);
             
@@ -1281,14 +1325,29 @@
             }
           },
           error: function(xhr, status, error) {
+            console.error('[Point 60] ===== API 呼叫失敗詳細資訊 =====');
             console.error('[Point 57] API 查詢失敗:', {
               status: status,
               error: error,
               xhr: xhr,
               responseText: xhr.responseText
             });
+            console.error('[Point 60] HTTP 狀態碼:', xhr.status);
+            console.error('[Point 60] HTTP 狀態文字:', xhr.statusText);
+            console.error('[Point 60] 回應內容:', xhr.responseText);
+            console.error('[Point 60] AJAX 狀態:', status);
+            console.error('[Point 60] 錯誤類型:', error);
+            console.error('[Point 60] 請求的 URL:', apiUrl);
+            
             // 出錯時使用預設值
+            console.log('[Point 60] 因為API失敗，使用預設會員姓名:', currentUserData.member_name);
             $('input[name="member_name"]').val(currentUserData.member_name);
+          },
+          complete: function(xhr, status) {
+            console.log('[Point 60] ===== AJAX 請求完成 =====');
+            console.log('[Point 60] 最終狀態:', status);
+            console.log('[Point 60] HTTP 狀態碼:', xhr.status);
+            console.log('[Point 60] 請求已完成 (成功或失敗)');
           }
         });
       }
@@ -1355,6 +1414,21 @@
 
       // 頁面載入時檢查是否顯示測試按鈕 - jQuery版本
       $(document).ready(function() {
+        console.log('[Point 59] ===== 修復 lazyload 錯誤並初始化 =====');
+        
+        // 修復 lazyload 錯誤 - 檢查並安全初始化 lazyload
+        if (typeof $.fn.lazyload !== 'undefined') {
+          console.log('[Point 59] lazyload 插件已載入，正常初始化');
+          try {
+            $("img.lazy").lazyload({threshold: 200});
+            console.log('[Point 59] lazyload 初始化成功');
+          } catch (e) {
+            console.log('[Point 59] lazyload 初始化失敗，但不影響其他功能:', e.message);
+          }
+        } else {
+          console.log('[Point 59] lazyload 插件未載入，跳過初始化，繼續其他功能');
+        }
+        
         console.log('[Point 57] ===== 頁面載入完成，開始初始化 =====');
         console.log('[Point 57] 測試按鈕顯示狀態:', showTestButton);
         
@@ -1365,6 +1439,25 @@
         console.log('[Point 57] 準備初始化會員資料...');
         // 初始化會員資料
         initializeMemberData();
+        
+        console.log('[Point 59] ===== 所有初始化完成 =====');
+        
+        // Point 59: 驗證功能是否正常運作
+        setTimeout(function() {
+          console.log('[Point 59] ===== 功能驗證測試 =====');
+          console.log('[Point 59] Console 功能正常:', typeof console !== 'undefined');
+          console.log('[Point 59] jQuery 功能正常:', typeof $ !== 'undefined');
+          console.log('[Point 59] Point 57 變數狀態:', {
+            memberData: memberData,
+            isMultipleMembers: isMultipleMembers,
+            currentUserData: currentUserData
+          });
+          console.log('[Point 59] DOM 元素檢查:');
+          console.log('[Point 59] - 會員編號欄位:', $('input[name="member_id"]').length > 0);
+          console.log('[Point 59] - 會員姓名輸入框:', $('input[name="member_name"]').length > 0);
+          console.log('[Point 59] - 會員姓名下拉選單:', $('select[name="member_name_select"]').length > 0);
+          console.log('[Point 59] ===== 功能驗證完成 =====');
+        }, 1000);
       });
 
       // 填入測試資料的函數 - jQuery版本

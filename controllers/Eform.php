@@ -52,7 +52,7 @@ class Eform extends MY_Controller
             'apiUrl' => $this->apiBaseUrl . $this->router->fetch_method() . '/submit'
         );
 
-        $this->layout->view('./eeform/eform02', $data);
+        $this->layout->view('./eeform/eform01', $data);
     }
 
     public function eform1_list()
