@@ -850,7 +850,13 @@ class Eeform1Model extends MY_Model
             
             $this->db->order_by('s.submission_date', 'DESC');
             $this->db->limit($limit, $offset);
-            $submissions = $this->db->get()->result_array();
+            $query = $this->db->get();
+            
+            if (!$query) {
+                throw new Exception('Database query failed: ' . $this->db->error()['message']);
+            }
+            
+            $submissions = $query->result_array();
             
             // 計算分頁資訊
             $total_pages = ceil($total / $limit);

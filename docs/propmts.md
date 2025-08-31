@@ -72,3 +72,4 @@
 52. 51點的api路徑錯了，應該要到的eeform資料夾中才對，我檔案拉進去了，幫我同步調整其他地方
 53. 目前目前form1與form3後台載入資料都有問題，請確認API是否正常，並且，該兩份表單，在前台是兩層的，幫我確認後台這樣的結構是否符合
 54. eeform3的controller幫我移到eeform這個資料夾中，並同步調整路由的配置，確認功能可以正常運行
+55. /api/eeform/eeform1/list這隻API一樣是錯的，Call to a member function result_array() on bool，同步確認eeform3是否有一樣的錯誤
