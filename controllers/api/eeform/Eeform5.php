@@ -141,14 +141,70 @@ class Eeform5 extends MY_Controller
             // 提交表單資料
             $submission_id = $this->eform5_model->create_submission($submission_data);
             
-            if ($submission_id) {
-                $this->_send_success('表單提交成功', [
-                    'submission_id' => $submission_id,
-                    'submission_date' => date('Y-m-d H:i:s')
-                ]);
-            } else {
+            if (!$submission_id) {
                 $this->_send_error('表單提交失敗', 500);
+                return;
             }
+            
+            // 保存職業資料
+            if (isset($input_data['occupation']) && is_array($input_data['occupation'])) {
+                $occupations = [];
+                foreach ($input_data['occupation'] as $occupation) {
+                    $occupations[] = [
+                        'type' => 'checkbox',
+                        'name' => $occupation
+                    ];
+                }
+                $this->eform5_model->save_occupations($submission_id, $occupations);
+            }
+            
+            // 保存健康困擾資料  
+            if (isset($input_data['health_concerns']) && is_array($input_data['health_concerns'])) {
+                $health_issues = [];
+                foreach ($input_data['health_concerns'] as $concern) {
+                    $issue = [
+                        'code' => str_replace(' ', '_', strtolower($concern)),
+                        'name' => $concern
+                    ];
+                    if ($concern === '其他' && isset($input_data['health_concerns_other'])) {
+                        $issue['other_description'] = trim($input_data['health_concerns_other']);
+                    }
+                    $health_issues[] = $issue;
+                }
+                $this->eform5_model->save_health_issues($submission_id, $health_issues);
+            }
+            
+            // 保存產品推薦資料
+            if (isset($input_data['recommended_products']) && is_array($input_data['recommended_products'])) {
+                $product_recommendations = [];
+                $dosage_fields = [
+                    '活力精萃' => 'energy_essence_dosage',
+                    '白鶴靈芝EX' => 'reishi_ex_dosage', 
+                    '美力C錠' => 'vitamin_c_dosage',
+                    '鶴力晶' => 'energy_crystal_dosage',
+                    '白鶴靈芝茶' => 'reishi_tea_dosage'
+                ];
+                
+                foreach ($input_data['recommended_products'] as $product) {
+                    $recommendation = [
+                        'product_code' => str_replace(' ', '_', strtolower($product)),
+                        'product_name' => $product,
+                        'dosage' => ''
+                    ];
+                    
+                    if (isset($dosage_fields[$product]) && isset($input_data[$dosage_fields[$product]])) {
+                        $recommendation['dosage'] = trim($input_data[$dosage_fields[$product]]);
+                    }
+                    
+                    $product_recommendations[] = $recommendation;
+                }
+                $this->eform5_model->save_product_recommendations($submission_id, $product_recommendations);
+            }
+            
+            $this->_send_success('表單提交成功', [
+                'submission_id' => $submission_id,
+                'submission_date' => date('Y-m-d H:i:s')
+            ]);
 
         } catch (Exception $e) {
             $this->_send_error('表單提交失敗: ' . $e->getMessage(), 500);
@@ -181,6 +237,93 @@ class Eeform5 extends MY_Controller
 
         } catch (Exception $e) {
             $this->_send_error('取得提交記錄失敗: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * 取得分頁提交記錄列表 (管理後台用)
+     * GET /api/eeform5/list
+     */
+    public function list() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            $page = (int)$this->input->get('page', TRUE) ?: 1;
+            $limit = (int)$this->input->get('limit', TRUE) ?: 20;
+            $search = $this->input->get('search', TRUE);
+            $start_date = $this->input->get('start_date', TRUE);
+            $end_date = $this->input->get('end_date', TRUE);
+
+            $result = $this->eform5_model->get_all_submissions_paginated($page, $limit, $search, $start_date, $end_date);
+            
+            $this->_send_success('取得提交記錄列表成功', $result);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得提交記錄列表失敗: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * 取得單一提交記錄詳細資料 (管理後台用)
+     * GET /api/eeform5/submission/{id}
+     */
+    public function submission($id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id) {
+                $this->_send_error('缺少提交記錄ID', 400);
+                return;
+            }
+
+            $submission = $this->eform5_model->get_submission_with_details($id);
+            
+            if (!$submission) {
+                $this->_send_error('找不到該提交記錄', 404);
+                return;
+            }
+
+            $this->_send_success('取得提交記錄詳細資料成功', $submission);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得提交記錄詳細資料失敗: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * 匯出單一表單 (管理後台用)
+     * GET /api/eeform5/export_single/{id}
+     */
+    public function export_single($id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id) {
+                $this->_send_error('缺少提交記錄ID', 400);
+                return;
+            }
+
+            $submission = $this->eform5_model->get_submission_with_details($id);
+            
+            if (!$submission) {
+                $this->_send_error('找不到該提交記錄', 404);
+                return;
+            }
+
+            // 匯出Excel
+            $this->eform5_model->export_single_submission($submission);
+
+        } catch (Exception $e) {
+            $this->_send_error('匯出失敗: ' . $e->getMessage(), 500);
         }
     }
 

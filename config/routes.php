@@ -133,6 +133,8 @@ $route['api/eeform5/submit'] = 'api/eeform/eeform5/submit';
 $route['api/eeform5/submissions/(:any)'] = 'api/eeform/eeform5/submissions/$1';
 $route['api/eeform5/submission/(:any)'] = 'api/eeform/eeform5/submission/$1';
 $route['api/eeform5/stats/(:any)'] = 'api/eeform/eeform5/stats/$1';
+$route['api/eeform/eeform5/list'] = 'api/eeform/eeform5/list';
+$route['api/eeform/eeform5/export_single/(:any)'] = 'api/eeform/eeform5/export_single/$1';
 
 $route['api/eform5/submit'] = 'api/eform/form5/submit';
 
