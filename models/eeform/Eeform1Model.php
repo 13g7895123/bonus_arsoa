@@ -39,7 +39,8 @@ class Eeform1Model extends MY_Model
         
         foreach ($required_tables as $table => $is_critical) {
             $check_query = "SHOW TABLES LIKE '{$table}'";
-            $exists = $this->db->query($check_query)->num_rows() > 0;
+            $query_result = $this->db->query($check_query);
+            $exists = $query_result && $query_result->num_rows() > 0;
             
             $results[$table] = [
                 'exists' => $exists,
@@ -420,7 +421,7 @@ class Eeform1Model extends MY_Model
         // Debug: 檢查資料表是否存在
         $table_exists_query = "SHOW TABLES LIKE 'eeform1_skin_scores'";
         $table_check = $this->db->query($table_exists_query);
-        $table_exists = $table_check->num_rows() > 0;
+        $table_exists = $table_check && $table_check->num_rows() > 0;
         error_log('Table eeform1_skin_scores exists: ' . ($table_exists ? 'YES' : 'NO'));
         
         // 如果表不存在，嘗試檢查所有必要的表
@@ -434,7 +435,7 @@ class Eeform1Model extends MY_Model
             error_log('WARNING: eeform1_skin_scores table does not exist! Creating fallback solution...');
             // 檢查是否還在使用舊的表名
             $old_table_check = $this->db->query("SHOW TABLES LIKE 'eeform1_moisture_scores'");
-            $old_table_exists = $old_table_check->num_rows() > 0;
+            $old_table_exists = $old_table_check && $old_table_check->num_rows() > 0;
             error_log('Old table eeform1_moisture_scores exists: ' . ($old_table_exists ? 'YES' : 'NO'));
             
             if ($old_table_exists) {
@@ -781,7 +782,7 @@ class Eeform1Model extends MY_Model
             // 先取得總數
             $this->db->from('eeform1_submissions s');
             $this->_apply_search_conditions($search, $start_date, $end_date);
-            $total = $this->db->count_all_results('eeform1_submissions s', FALSE);
+            $total = $this->db->count_all_results('', FALSE);
             
             // 重新建立查詢取得實際資料
             $this->db->flush_cache();

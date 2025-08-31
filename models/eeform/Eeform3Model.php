@@ -982,7 +982,7 @@ class Eeform3Model extends MY_Model {
             // 先取得總數
             $this->db->from($this->table_submissions . ' s');
             $this->_apply_search_conditions_paginated($search, $start_date, $end_date);
-            $total = $this->db->count_all_results($this->table_submissions . ' s', FALSE);
+            $total = $this->db->count_all_results('', FALSE);
             
             // 重新建立查詢取得實際資料
             $this->db->flush_cache();
