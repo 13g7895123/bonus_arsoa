@@ -370,10 +370,10 @@
         tableRows += '<ul class="list-inline text-left" style="margin-top: -10px;">';
         tableRows += '<li class="list-inline-item">';
         tableRows += '<span title="填寫時間：' + displayDate + '">' + displayDate + '</span>　　';
-        tableRows += '<a href="javascript:void(0);" onclick="question_reply_show(\'' + (submission.id || index) + '\',\'' + (submission.member_name || '會員') + ' 的肌膚諮詢記錄表\');" data-toggle="modal" data-target="#exampleModal">';
+        tableRows += '<a href="javascript:void(0);" onclick="question_reply_show(\'' + (submission.id || index) + '\',\'' + (submission.member_name || '會員') + ' 的肌膚諮詢記錄表\');" data-toggle="modal" data-target="#exampleModal" title="檢視">';
         tableRows += '<i class="icon ion-clipboard" style="font-size: 1.1rem;"></i>';
         tableRows += '</a>　｜　';
-        tableRows += '<a href="javascript:void(0);" onclick="question_reply_edit(\'' + (submission.id || index) + '\',\'' + (submission.member_name || '會員') + ' 的肌膚諮詢記錄表\');" data-toggle="modal" data-target="#exampleModal">';
+        tableRows += '<a href="javascript:void(0);" onclick="question_reply_edit(\'' + (submission.id || index) + '\',\'' + (submission.member_name || '會員') + ' 的肌膚諮詢記錄表\');" data-toggle="modal" data-target="#exampleModal" title="編輯">';
         tableRows += '<i class="icon ion-edit" style="font-size: 1.1rem;"></i>';
         tableRows += '</a>';
         tableRows += '</li>';

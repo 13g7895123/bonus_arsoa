@@ -19,6 +19,69 @@ class Eeform1Model extends MY_Model
     }
 
     /**
+     * 檢查並創建缺失的資料表
+     * @return array 返回檢查結果
+     */
+    public function check_and_create_tables() 
+    {
+        $required_tables = [
+            'eeform1_submissions' => false,
+            'eeform1_occupations' => false,
+            'eeform1_lifestyle' => false,
+            'eeform1_products' => false,
+            'eeform1_skin_issues' => false,
+            'eeform1_allergies' => false,
+            'eeform1_skin_scores' => true, // 這是經常缺失的表
+            'eeform1_suggestions' => false,
+        ];
+
+        $results = [];
+        
+        foreach ($required_tables as $table => $is_critical) {
+            $check_query = "SHOW TABLES LIKE '{$table}'";
+            $exists = $this->db->query($check_query)->num_rows() > 0;
+            
+            $results[$table] = [
+                'exists' => $exists,
+                'critical' => $is_critical,
+                'message' => $exists ? 'OK' : 'MISSING'
+            ];
+            
+            if (!$exists && $is_critical) {
+                error_log("CRITICAL: Missing table {$table} - skin_scores will be empty");
+            }
+        }
+        
+        return $results;
+    }
+
+    /**
+     * 創建 eeform1_skin_scores 表（如果不存在）
+     */
+    public function create_skin_scores_table() 
+    {
+        $sql = "CREATE TABLE IF NOT EXISTS eeform1_skin_scores (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            submission_id INT NOT NULL COMMENT '提交記錄ID',
+            category ENUM('moisture', 'complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore') NOT NULL COMMENT '評分類別',
+            score_type ENUM('severe', 'warning', 'healthy') NOT NULL COMMENT '評分類型',
+            score_value TINYINT NOT NULL DEFAULT 0 COMMENT '評分值 (0-10)',
+            measurement_date DATE NULL COMMENT '測量日期',
+            measurement_number INT NULL COMMENT '測量數值',
+            notes TEXT NULL COMMENT '備註',
+            
+            FOREIGN KEY (submission_id) REFERENCES eeform1_submissions(id) ON DELETE CASCADE,
+            UNIQUE KEY uk_submission_category_score (submission_id, category, score_type),
+            INDEX idx_submission_id (submission_id),
+            INDEX idx_category (category),
+            INDEX idx_score_type (score_type),
+            INDEX idx_measurement_date (measurement_date)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='肌膚評分記錄表'";
+        
+        return $this->db->query($sql);
+    }
+
+    /**
      * 驗證提交資料
      * @param array $data
      * @return array
@@ -357,15 +420,24 @@ class Eeform1Model extends MY_Model
         // Debug: 檢查資料表是否存在
         $table_exists_query = "SHOW TABLES LIKE 'eeform1_skin_scores'";
         $table_check = $this->db->query($table_exists_query);
-        error_log('Table eeform1_skin_scores exists: ' . ($table_check->num_rows() > 0 ? 'YES' : 'NO'));
+        $table_exists = $table_check->num_rows() > 0;
+        error_log('Table eeform1_skin_scores exists: ' . ($table_exists ? 'YES' : 'NO'));
         
-        if ($table_check->num_rows() === 0) {
-            error_log('ERROR: eeform1_skin_scores table does not exist!');
+        // 如果表不存在，嘗試檢查所有必要的表
+        if (!$table_exists) {
+            error_log('Running complete table check...');
+            $table_status = $this->check_and_create_tables();
+            error_log('Table status check result: ' . json_encode($table_status));
+        }
+        
+        if (!$table_exists) {
+            error_log('WARNING: eeform1_skin_scores table does not exist! Creating fallback solution...');
             // 檢查是否還在使用舊的表名
             $old_table_check = $this->db->query("SHOW TABLES LIKE 'eeform1_moisture_scores'");
-            error_log('Old table eeform1_moisture_scores exists: ' . ($old_table_check->num_rows() > 0 ? 'YES' : 'NO'));
+            $old_table_exists = $old_table_check->num_rows() > 0;
+            error_log('Old table eeform1_moisture_scores exists: ' . ($old_table_exists ? 'YES' : 'NO'));
             
-            if ($old_table_check->num_rows() > 0) {
+            if ($old_table_exists) {
                 error_log('Falling back to old table structure');
                 // 使用舊表結構作為臨時解決方案
                 $this->db->from('eeform1_moisture_scores');
@@ -397,40 +469,60 @@ class Eeform1Model extends MY_Model
                 $submission['suggestions'] = $suggestions;
                 
                 return $submission;
+            } else {
+                error_log('ERROR: Neither eeform1_skin_scores nor eeform1_moisture_scores table exists!');
+                // 返回空的skin_scores陣列
+                $skin_scores = [];
             }
         }
         
-        // 取得肌膚評分資料（新版統一資料表）
-        $this->db->from('eeform1_skin_scores');
-        $this->db->where('submission_id', $id);
+        // 初始化 skin_scores 變數
+        $skin_scores = [];
         
-        // Debug: 檢查SQL查詢
-        $sql_query = $this->db->get_compiled_select();
-        log_message('debug', 'SQL Query: ' . $sql_query);
-        error_log('SQL Query for skin_scores: ' . $sql_query);
-        
-        // 重新設定查詢 (get_compiled_select 會清除查詢)
-        $this->db->from('eeform1_skin_scores');
-        $this->db->where('submission_id', $id);
-        $skin_scores = $this->db->get()->result_array();
-        
-        // Check for database errors
-        $db_error = $this->db->error();
-        if ($db_error['code'] != 0) {
-            error_log('Database error when querying skin_scores: ' . json_encode($db_error));
-        }
-        
-        // Debug: 檢查查詢結果
-        log_message('debug', 'Querying eeform1_skin_scores for submission_id: ' . $id);
-        log_message('debug', 'Found skin_scores records: ' . count($skin_scores));
-        error_log('Found skin_scores records count: ' . count($skin_scores) . ' for submission_id: ' . $id);
-        
-        if (!empty($skin_scores)) {
-            $sample_data = json_encode(array_slice($skin_scores, 0, 3));
-            log_message('debug', 'Sample skin_scores: ' . $sample_data);
-            error_log('Sample skin_scores: ' . $sample_data);
-        } else {
-            error_log('No skin_scores found - checking if table exists or data was inserted');
+        if ($table_exists) {
+            // 取得肌膚評分資料（新版統一資料表）
+            $this->db->from('eeform1_skin_scores');
+            $this->db->where('submission_id', $id);
+            
+            // Debug: 檢查SQL查詢
+            $sql_query = $this->db->get_compiled_select();
+            log_message('debug', 'SQL Query: ' . $sql_query);
+            error_log('SQL Query for skin_scores: ' . $sql_query);
+            
+            // 重新設定查詢 (get_compiled_select 會清除查詢)
+            $this->db->from('eeform1_skin_scores');
+            $this->db->where('submission_id', $id);
+            $skin_scores = $this->db->get()->result_array();
+            
+            // Check for database errors
+            $db_error = $this->db->error();
+            if ($db_error['code'] != 0) {
+                error_log('Database error when querying skin_scores: ' . json_encode($db_error));
+            }
+            
+            // Debug: 檢查查詢結果
+            log_message('debug', 'Querying eeform1_skin_scores for submission_id: ' . $id);
+            log_message('debug', 'Found skin_scores records: ' . count($skin_scores));
+            error_log('Found skin_scores records count: ' . count($skin_scores) . ' for submission_id: ' . $id);
+            
+            if (!empty($skin_scores)) {
+                $sample_data = json_encode(array_slice($skin_scores, 0, 3));
+                log_message('debug', 'Sample skin_scores: ' . $sample_data);
+                error_log('Sample skin_scores: ' . $sample_data);
+            } else {
+                error_log('No skin_scores found for submission_id: ' . $id . ' - table exists but no data');
+                
+                // 檢查該submission_id是否在主表中存在
+                $this->db->from('eeform1_submissions');
+                $this->db->where('id', $id);
+                $submission_exists = $this->db->count_all_results() > 0;
+                error_log('Submission exists in main table: ' . ($submission_exists ? 'YES' : 'NO'));
+                
+                // 檢查是否有任何skin_scores資料
+                $this->db->from('eeform1_skin_scores');
+                $total_scores = $this->db->count_all_results();
+                error_log('Total skin_scores records in table: ' . $total_scores);
+            }
         }
         
         // 取得建議內容
