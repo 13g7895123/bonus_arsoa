@@ -176,6 +176,434 @@ class Eeform4 extends MY_Controller
         }
     }
 
+    /**
+     * 取得單一表單記錄
+     * GET /api/eeform4/submission/{id}
+     */
+    public function submission($id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id || !is_numeric($id)) {
+                $this->_send_error('缺少有效的表單ID', 400);
+                return;
+            }
+
+            $submission = $this->eform4_model->get_submission_by_id($id);
+            
+            if ($submission) {
+                $this->_send_success('取得表單記錄成功', $submission);
+            } else {
+                $this->_send_error('找不到指定的表單記錄', 404);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('取得表單記錄失敗: ' . $e->getMessage(), 500, [
+                'id' => $id,
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * 管理員取得所有表單記錄 (分頁)
+     * GET /api/eeform4/list
+     */
+    public function list() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得查詢參數
+            $page = (int)($this->input->get('page') ?? 1);
+            $limit = (int)($this->input->get('limit') ?? 20);
+            $search = $this->input->get('search') ?? '';
+            $status = $this->input->get('status') ?? '';
+            $start_date = $this->input->get('start_date') ?? '';
+            $end_date = $this->input->get('end_date') ?? '';
+
+            // 驗證參數
+            if ($page < 1) $page = 1;
+            if ($limit < 1 || $limit > 100) $limit = 20;
+
+            $filters = [
+                'search' => $search,
+                'status' => $status,
+                'start_date' => $start_date,
+                'end_date' => $end_date
+            ];
+
+            $result = $this->eform4_model->get_all_submissions_paginated($page, $limit, $filters);
+            
+            $this->_send_success('取得表單列表成功', [
+                'data' => $result['data'],
+                'pagination' => [
+                    'current_page' => $page,
+                    'per_page' => $limit,
+                    'total' => $result['total'],
+                    'total_pages' => ceil($result['total'] / $limit)
+                ],
+                'filters' => $filters
+            ]);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得表單列表失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * 更新表單狀態
+     * PUT /api/eeform4/update_status/{id}
+     */
+    public function update_status($id = null) {
+        try {
+            if (!in_array($this->input->method(TRUE), ['PUT', 'POST'])) {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id || !is_numeric($id)) {
+                $this->_send_error('缺少有效的表單ID', 400);
+                return;
+            }
+
+            $raw_input = $this->input->raw_input_stream;
+            $input_data = json_decode($raw_input, true);
+            
+            if (!$input_data) {
+                $input_data = $this->input->post();
+            }
+
+            if (empty($input_data['status'])) {
+                $this->_send_error('缺少狀態參數', 400);
+                return;
+            }
+
+            $allowed_statuses = ['submitted', 'processing', 'completed', 'cancelled'];
+            if (!in_array($input_data['status'], $allowed_statuses)) {
+                $this->_send_error('無效的狀態值', 400, [
+                    'allowed_statuses' => $allowed_statuses
+                ]);
+                return;
+            }
+
+            $update_data = [
+                'status' => $input_data['status'],
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+            if (!empty($input_data['admin_note'])) {
+                $update_data['admin_note'] = trim($input_data['admin_note']);
+            }
+
+            $result = $this->eform4_model->update_submission_status($id, $update_data);
+            
+            if ($result) {
+                $this->_send_success('更新狀態成功', [
+                    'id' => $id,
+                    'new_status' => $input_data['status']
+                ]);
+            } else {
+                $this->_send_error('更新狀態失敗', 500);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('更新狀態失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * 取得統計資料
+     * GET /api/eeform4/stats
+     */
+    public function stats() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            $stats = $this->eform4_model->get_submission_stats();
+            
+            $this->_send_success('取得統計資料成功', $stats);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得統計資料失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * 取得/更新產品設定
+     * GET/POST /api/eeform4/products
+     */
+    public function products() {
+        try {
+            $method = $this->input->method(TRUE);
+            
+            if ($method === 'GET') {
+                // 從資料庫取得產品設定
+                $products = $this->eform4_model->get_all_products();
+                
+                $this->_send_success('取得產品設定成功', $products);
+                
+            } else if ($method === 'POST') {
+                // 更新產品設定
+                $raw_input = $this->input->raw_input_stream;
+                $input_data = json_decode($raw_input, true);
+                
+                if (!$input_data) {
+                    $input_data = $this->input->post();
+                }
+                
+                if (empty($input_data['products'])) {
+                    $this->_send_error('缺少產品資料', 400);
+                    return;
+                }
+                
+                // 使用資料庫儲存產品設定
+                $result = $this->eform4_model->batch_update_products($input_data['products']);
+                
+                if ($result) {
+                    $this->_send_success('產品設定更新成功', $input_data['products']);
+                } else {
+                    $this->_send_error('產品設定更新失敗', 500);
+                }
+                
+            } else {
+                $this->_send_error('Method not allowed', 405);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('產品設定操作失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * 匯出單一表單 (Excel格式)
+     * GET /api/eeform4/export_single/{id}
+     */
+    public function export_single($id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id || !is_numeric($id)) {
+                $this->_send_error('缺少有效的表單ID', 400);
+                return;
+            }
+
+            $submission = $this->eform4_model->get_submission_by_id($id);
+            
+            if (!$submission) {
+                $this->_send_error('找不到指定的表單記錄', 404);
+                return;
+            }
+
+            // 使用 PHPExcel 創建真正的 Excel 檔案 (欄位值格式)
+            $this->load->library("PHPExcel");
+            $objPHPExcel = new PHPExcel();
+            
+            // 設定工作表屬性
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objPHPExcel->getActiveSheet()->setTitle('會員服務追蹤管理表');
+            
+            $status_map = [
+                'submitted' => '已提交',
+                'processing' => '處理中', 
+                'completed' => '已完成',
+                'cancelled' => '已取消'
+            ];
+            
+            // 設定欄位寬度 (A欄:欄位名稱, B欄:值)
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(60);
+            
+            $row = 1;
+            
+            // 表單標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '會員服務追蹤管理表(保健)');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('004472C4');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true)->setColor(new PHPExcel_Style_Color('FFFFFFFF'));
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            // 空行
+            $row++;
+            
+            // 基本資料標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '基本資料');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('00D9EDF7');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            // 基本資料欄位
+            $basic_fields = [
+                'ID' => $submission['id'],
+                '會員姓名' => $submission['member_name'] ?? '',
+                '性別' => $submission['gender'] ?? '',
+                '年齡' => isset($submission['age']) ? $submission['age'] . ' 歲' : '',
+                '入會日' => $submission['join_date'] ?? '',
+                '見面日' => $submission['meeting_date'] ?? ''
+            ];
+            
+            foreach ($basic_fields as $field => $value) {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                $row++;
+            }
+            
+            // 空行
+            $row++;
+            
+            // 健康狀況標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '健康狀況');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('00D9EDF7');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '肌膚/健康狀況');
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $submission['skin_health_condition'] ?? '');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
+            $row++;
+            
+            // 空行
+            $row++;
+            
+            // 產品資料標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '產品訂購');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('00D4EDDA');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            // 產品資料
+            if (isset($submission['products']) && is_array($submission['products']) && !empty($submission['products'])) {
+                foreach ($submission['products'] as $product) {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $product['product_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $product['quantity'] . ' 個');
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                    $row++;
+                }
+            } else {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '訂購產品');
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, '未訂購任何產品');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                $row++;
+            }
+            
+            // 空行
+            $row++;
+            
+            // 聯絡資訊標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '聯絡資訊');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('00FFF3CD');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            $contact_fields = [
+                'LINE聯絡' => $submission['line_contact'] ?? '',
+                '電話聯絡' => $submission['tel_contact'] ?? ''
+            ];
+            
+            foreach ($contact_fields as $field => $value) {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
+                $row++;
+            }
+            
+            // 空行
+            $row++;
+            
+            // 表單資訊標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '表單資訊');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('00F8D7DA');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            $form_fields = [
+                '提交日期' => $submission['submission_date'] ?? '',
+                '建立時間' => $submission['created_at'] ?? '',
+                '狀態' => $status_map[$submission['status']] ?? $submission['status']
+            ];
+            
+            if (!empty($submission['admin_note'])) {
+                $form_fields['管理員備註'] = $submission['admin_note'];
+            }
+            
+            foreach ($form_fields as $field => $value) {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
+                $row++;
+            }
+            
+            // 設定對齊方式
+            $objPHPExcel->getActiveSheet()->getStyle('A1:B'.($row-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+            
+            $filename = 'eform04_表單_' . $id . '_' . date('Y-m-d_H-i-s');
+            
+            // 創建Excel2007格式的Writer
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+            
+            // 設定Headers
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"');
+            
+            // 輸出到瀏覽器
+            $objWriter->save("php://output");
+            
+            // 清理記憶體
+            $objPHPExcel->disconnectWorksheets();
+            unset($objWriter, $objPHPExcel);
+            exit();
+
+        } catch (Exception $e) {
+            $this->_send_error('匯出表單失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
     // Helper methods
     private function _send_success($message, $data = null, $code = 200) {
         $response = [
