@@ -315,6 +315,38 @@
         color: #007bff !important;
     }
     
+    /* Button hover effects - darker colors */
+    .btn-primary:hover {
+        background-color: #0056b3 !important;
+        border-color: #004085 !important;
+    }
+    
+    .btn-success:hover {
+        background-color: #1e7e34 !important;
+        border-color: #1c7430 !important;
+    }
+    
+    .btn-info:hover {
+        background-color: #138496 !important;
+        border-color: #117a8b !important;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #545b62 !important;
+        border-color: #4e555b !important;
+    }
+    
+    .btn-danger:hover {
+        background-color: #bd2130 !important;
+        border-color: #b21f2d !important;
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: #0056b3 !important;
+        border-color: #004085 !important;
+        color: #fff !important;
+    }
+    
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .dashboard-card {

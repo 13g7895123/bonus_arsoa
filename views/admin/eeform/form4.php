@@ -231,6 +231,20 @@
         margin-top: 8px;
     }
     
+    /* Search button enhancement - matching form2 style with green theme */
+    #apply-filters {
+        height: calc(1.5em + 0.75rem + 2px);
+        font-weight: 600;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(40,167,69,0.3);
+        transition: all 0.2s ease;
+    }
+    
+    #apply-filters:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(40,167,69,0.4);
+    }
+    
     .table th,
     .table td {
         font-size: 1rem !important;
@@ -239,6 +253,72 @@
     
     .table th {
         font-weight: 600 !important;
+    }
+    
+    /* Form spacing improvements - matching form2 */
+    .filters-section {
+        margin-bottom: 2rem !important;
+    }
+    
+    .filters-section .row > div {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    
+    /* Fix any potential conflicts with admin template - matching form2 */
+    .eform4-admin .form-control {
+        display: block !important;
+        width: 100% !important;
+        padding: 0.375rem 0.75rem !important;
+        font-size: 1rem !important;
+        font-weight: 400 !important;
+        line-height: 1.5 !important;
+        color: #495057 !important;
+        background-color: #fff !important;
+        background-image: none !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 0.25rem !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    }
+    
+    .eform4-admin .form-control:focus {
+        color: #495057 !important;
+        background-color: #fff !important;
+        border-color: #80c7a3 !important;
+        outline: 0 !important;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+    }
+    
+    /* Button hover effects - darker colors */
+    .btn-primary:hover {
+        background-color: #0056b3 !important;
+        border-color: #004085 !important;
+    }
+    
+    .btn-success:hover {
+        background-color: #1e7e34 !important;
+        border-color: #1c7430 !important;
+    }
+    
+    .btn-info:hover {
+        background-color: #138496 !important;
+        border-color: #117a8b !important;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #545b62 !important;
+        border-color: #4e555b !important;
+    }
+    
+    .btn-danger:hover {
+        background-color: #bd2130 !important;
+        border-color: #b21f2d !important;
+    }
+    
+    .btn-outline-success:hover {
+        background-color: #1e7e34 !important;
+        border-color: #1c7430 !important;
+        color: #fff !important;
     }
 </style>
 
