@@ -64,3 +64,4 @@
 44. 幫我實作eform/eform5這個頁面的後台管理，請存取git log，實作完成包含側邊欄設定的完整項目，需要留意model與controller在做的時候，不要重複新增一樣的function
 45. 檢視詳細資料的時候會跳出載入失敗，幫我確認一下問題，Call to a member function result_array() on bool
 46. 目前職業與建議都是有填資料的，但後台的檢視詳細資料都沒有顯示這部分的資料
+47. 前台還是一樣沒有顯示職業與健康困擾的資訊
