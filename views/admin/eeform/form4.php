@@ -524,7 +524,7 @@
                     </td>
                 </tr>
             `;
-            tbody.append(row);
+            tbody.innerHTML += row;
         });
         
         // Initialize tooltips for new buttons

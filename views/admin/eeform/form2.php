@@ -173,8 +173,9 @@
         background-color: #f8f9fa !important;
     }
     
-    /* Make modal extra wide */
-    #detailModal .modal-dialog {
+    /* Make modals extra wide */
+    #detailModal .modal-dialog,
+    #productModal .modal-dialog {
         max-width: 1800px !important;
         margin: 1.75rem auto;
         width: 95vw;
