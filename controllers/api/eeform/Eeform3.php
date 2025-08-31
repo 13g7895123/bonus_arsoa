@@ -696,6 +696,208 @@ class Eeform3 extends MY_Controller
     }
 
     /**
+     * Admin: 取得表單列表 (分頁)
+     * GET /api/eeform3/list
+     */
+    public function list() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            $page = (int)$this->input->get('page', TRUE) ?: 1;
+            $limit = (int)$this->input->get('limit', TRUE) ?: 20;
+            $search = $this->input->get('search', TRUE);
+            $start_date = $this->input->get('start_date', TRUE);
+            $end_date = $this->input->get('end_date', TRUE);
+
+            // 構建查詢條件
+            $this->db->select('s.*, bd.weight, bd.blood_pressure_high, bd.blood_pressure_low, bd.waist');
+            $this->db->from('eeform3_submissions s');
+            $this->db->join('eeform3_body_data bd', 's.id = bd.submission_id', 'left');
+
+            // 搜尋條件
+            if ($search) {
+                $this->db->group_start();
+                $this->db->like('s.member_name', $search);
+                $this->db->or_like('s.member_id', $search);
+                $this->db->group_end();
+            }
+
+            // 日期篩選
+            if ($start_date) {
+                $this->db->where('s.submission_date >=', $start_date);
+            }
+            if ($end_date) {
+                $this->db->where('s.submission_date <=', $end_date);
+            }
+
+            // 計算總數
+            $total_count = $this->db->count_all_results('', false);
+
+            // 分頁
+            $offset = ($page - 1) * $limit;
+            $this->db->order_by('s.submission_date', 'DESC');
+            $this->db->limit($limit, $offset);
+
+            $results = $this->db->get()->result_array();
+
+            // 為每個結果添加活動資料
+            foreach ($results as &$result) {
+                // 直接從activity_records表獲取活動資料
+                $this->db->select('ar.*, ai.item_key');
+                $this->db->from('eeform3_activity_records ar');
+                $this->db->join('eeform3_activity_items ai', 'ar.activity_item_id = ai.id');
+                $this->db->where('ar.submission_id', $result['id']);
+                $this->db->where('ar.is_completed', 1);
+                
+                $activities = $this->db->get()->result_array();
+                
+                // 設定活動布林值
+                $activity_keys = ['hand_measure', 'exercise', 'health_supplement', 'weika', 'water_intake'];
+                foreach ($activity_keys as $key) {
+                    $result[$key] = false;
+                }
+                
+                foreach ($activities as $activity) {
+                    if (isset($activity['item_key'])) {
+                        $result[$activity['item_key']] = true;
+                    }
+                }
+            }
+
+            $pagination = [
+                'current_page' => $page,
+                'per_page' => $limit,
+                'total' => $total_count,
+                'total_pages' => ceil($total_count / $limit)
+            ];
+
+            $this->_send_success('取得表單列表成功', [
+                'data' => $results,
+                'pagination' => $pagination
+            ]);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得表單列表失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
+     * Admin: 匯出單一表單 (CSV)
+     * GET /api/eeform3/export_single/{id}
+     */
+    public function export_single($id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$id) {
+                $this->_send_error('缺少提交記錄ID', 400);
+                return;
+            }
+
+            // 取得詳細資料
+            $submission = $this->eform3_model->get_submission_detail_enhanced($id);
+            
+            if (!$submission) {
+                $this->_send_error('找不到指定的提交記錄', 404);
+                return;
+            }
+
+            // 準備CSV資料
+            $csvData = [];
+            
+            // CSV標題
+            $headers = [
+                '記錄ID', '會員姓名', '會員編號', '年齡', '身高', '目標',
+                '自身行動計畫1', '自身行動計畫2',
+                '體重', '血壓(收縮)', '血壓(舒張)', '腰圍',
+                '用手測量', '運動(30分)', '保健食品', '微微卡', '飲水量',
+                '計畫A', '計畫B', '其他計畫',
+                '提交日期', '狀態', '建立時間'
+            ];
+            
+            // CSV資料行
+            $row = [
+                $submission['id'] ?? '',
+                $submission['member_name'] ?? '',
+                $submission['member_id'] ?? '',
+                $submission['age'] ?? '',
+                $submission['height'] ?? '',
+                $submission['goal'] ?? '',
+                $submission['action_plan_1'] ?? '',
+                $submission['action_plan_2'] ?? '',
+                $submission['weight'] ?? '',
+                $submission['blood_pressure_high'] ?? '',
+                $submission['blood_pressure_low'] ?? '',
+                $submission['waist'] ?? '',
+                $submission['hand_measure'] ? '是' : '否',
+                $submission['exercise'] ? '是' : '否',
+                $submission['health_supplement'] ? '是' : '否',
+                $submission['weika'] ? '是' : '否',
+                $submission['water_intake'] ? '是' : '否'
+            ];
+
+            // 添加計畫內容
+            $plans = $submission['plans'] ?? [];
+            $plan_a = $plan_b = $other = '';
+            foreach ($plans as $plan) {
+                switch ($plan['plan_type']) {
+                    case 'plan_a': $plan_a = $plan['plan_content']; break;
+                    case 'plan_b': $plan_b = $plan['plan_content']; break;
+                    case 'other': $other = $plan['plan_content']; break;
+                }
+            }
+            
+            $row[] = $plan_a;
+            $row[] = $plan_b;
+            $row[] = $other;
+            $row[] = $submission['submission_date'] ?? '';
+            $row[] = $submission['status'] ?? '';
+            $row[] = $submission['created_at'] ?? '';
+
+            $csvData[] = $headers;
+            $csvData[] = $row;
+
+            // 設定下載標頭
+            $filename = "weika_diary_" . $submission['member_id'] . "_" . date('Y-m-d') . ".csv";
+            
+            header('Content-Type: text/csv; charset=UTF-8');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Cache-Control: no-cache, must-revalidate');
+            header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+
+            // 輸出CSV
+            $output = fopen('php://output', 'w');
+            
+            // 新增UTF-8 BOM for Excel compatibility
+            fwrite($output, "\xEF\xBB\xBF");
+            
+            foreach ($csvData as $row) {
+                fputcsv($output, $row);
+            }
+            
+            fclose($output);
+            exit();
+
+        } catch (Exception $e) {
+            $this->_send_error('匯出表單失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
      * Insert initial activity items data
      */
     private function _insert_initial_activity_items() {

@@ -572,6 +572,13 @@
 				<權限>2</權限>
 			</KIND>
 			<KIND 權限檢查="1">
+				<資料>微微卡日記管理</資料>
+				<傳回值>E003</傳回值>
+				<網址>admin_eeform/eeform_manage_eeform03</網址>
+				<層級>1</層級>
+				<權限>2</權限>
+			</KIND>
+			<KIND 權限檢查="1">
 				<資料>會員服務追蹤管理表(保健)</資料>
 				<傳回值>E004</傳回值>
 				<網址>admin_eeform/eeform_manage_eeform04</網址>
