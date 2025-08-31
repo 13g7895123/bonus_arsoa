@@ -16,8 +16,16 @@
                           <div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
 
                           <div class="col-sm-4 mb30">
+                            <label class="label-custom">會員編號</label>
+                            <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" readonly />
+                          </div>
+                          
+                          <div class="col-sm-4 mb30">
                             <label class="label-custom">會員姓名</label>
                             <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" required />
+                            <select name="member_name_select" class="form-control form-control-custom" style="display: none;" required>
+                              <option value="">請選擇會員</option>
+                            </select>
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">出生西元年</label>
@@ -1206,11 +1214,95 @@
         member_name: '<?php echo isset($userdata['c_name']) ? $userdata['c_name'] : ''; ?>'
       };
 
+      // 會員資料相關變數
+      var memberData = [];
+      var isMultipleMembers = false;
+
+      // 初始化會員資料
+      function initializeMemberData() {
+        // 設定會員編號欄位
+        $('input[name="member_id"]').val(currentUserData.member_id);
+        
+        // 如果有會員編號，查詢相關會員資料
+        if (currentUserData.member_id) {
+          lookupMemberData(currentUserData.member_id);
+        } else {
+          // 沒有會員編號時，使用預設的姓名
+          $('input[name="member_name"]').val(currentUserData.member_name);
+        }
+      }
+
+      // 查詢會員資料
+      function lookupMemberData(memberId) {
+        $.ajax({
+          url: '<?php echo base_url("api/eeform1/member_lookup/"); ?>' + memberId,
+          method: 'GET',
+          dataType: 'json',
+          success: function(response) {
+            if (response.success && response.data) {
+              memberData = response.data.members;
+              
+              if (memberData.length > 1) {
+                // 多個會員：顯示下拉選單
+                isMultipleMembers = true;
+                setupMemberDropdown();
+              } else if (memberData.length === 1) {
+                // 單個會員：使用文字輸入框
+                isMultipleMembers = false;
+                $('input[name="member_name"]').val(memberData[0].c_name);
+                currentUserData.member_name = memberData[0].c_name;
+              } else {
+                // 沒有找到會員：使用預設值
+                isMultipleMembers = false;
+                $('input[name="member_name"]').val(currentUserData.member_name);
+              }
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('查詢會員資料失敗:', error);
+            // 出錯時使用預設值
+            $('input[name="member_name"]').val(currentUserData.member_name);
+          }
+        });
+      }
+
+      // 設定會員下拉選單
+      function setupMemberDropdown() {
+        var $nameInput = $('input[name="member_name"]');
+        var $nameSelect = $('select[name="member_name_select"]');
+        
+        // 隱藏輸入框，顯示下拉選單
+        $nameInput.hide().prop('required', false);
+        $nameSelect.show().prop('required', true);
+        
+        // 清空並重新填充選項
+        $nameSelect.empty().append('<option value="">請選擇會員</option>');
+        
+        memberData.forEach(function(member) {
+          $nameSelect.append('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
+                           member.c_name + ' (' + member.c_no + ')</option>');
+        });
+        
+        // 綁定選擇事件
+        $nameSelect.off('change').on('change', function() {
+          var selectedOption = $(this).find('option:selected');
+          if (selectedOption.val()) {
+            // 更新會員編號和姓名
+            $('input[name="member_id"]').val(selectedOption.val());
+            currentUserData.member_id = selectedOption.val();
+            currentUserData.member_name = selectedOption.data('name');
+          }
+        });
+      }
+
       // 頁面載入時檢查是否顯示測試按鈕 - jQuery版本
       $(document).ready(function() {
         if (showTestButton) {
           $('#testDataButton').show();
         }
+        
+        // 初始化會員資料
+        initializeMemberData();
       });
 
       // 填入測試資料的函數 - jQuery版本
@@ -1502,10 +1594,25 @@
 
       function submitForm() {
         // 收集表單資料
+        var memberName = '';
+        var memberId = '';
+        
+        // 根據是否為多重會員選擇不同的取值方式
+        if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
+          // 使用下拉選單的值
+          var selectedOption = $('select[name="member_name_select"]').find('option:selected');
+          memberId = selectedOption.val();
+          memberName = selectedOption.data('name');
+        } else {
+          // 使用輸入框和當前會員資料
+          memberId = currentUserData.member_id;
+          memberName = $('input[name="member_name"]').val();
+        }
+        
         var formData = {
           // 使用者識別資訊
-          member_id: currentUserData.member_id,
-          member_name: $('input[name="member_name"]').val(),
+          member_id: memberId,
+          member_name: memberName,
           birth_year: $('select[name="birth_year"]').val(),
           birth_month: $('select[name="birth_month"]').val(),
           phone: $('input[name="phone"]').val(),
