@@ -384,12 +384,30 @@
     }
     
     #productModal .product-item {
-        transition: all 0.2s ease;
+        border: 1px solid #e9ecef !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+        background: #fff;
+        transition: box-shadow 0.2s ease;
     }
     
     #productModal .product-item:hover {
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        transform: translateY(-1px);
+    }
+    
+    #productModal .product-item .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    #productModal .product-item .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
     }
 </style>
     <div class="container-fluid py-4 eform2-admin">

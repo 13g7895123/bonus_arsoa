@@ -231,8 +231,14 @@
         margin-top: 8px;
     }
     
-    .table {
-        font-size: 14px;
+    .table th,
+    .table td {
+        font-size: 1rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    .table th {
+        font-weight: 600 !important;
     }
 </style>
 
