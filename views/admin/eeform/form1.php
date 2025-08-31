@@ -492,7 +492,7 @@
         currentPage: 1,
         pageSize: 20,
         totalRecords: 0,
-        apiBaseUrl: '/api/eeform1'
+        apiBaseUrl: '/api/eeform/eeform1'
     };
 
     // 頁面載入完成後初始化

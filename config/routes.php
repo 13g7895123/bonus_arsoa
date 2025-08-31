@@ -93,16 +93,16 @@ $route['sitemap'] = 'rss/sitemap';
 // API路由配置 - Debug route first
 $route['eform/api/form5/submit'] = 'eform/Api/form5';
 
-$route['api/test'] = 'api/eeform1/test';
-$route['api/eeform1/test'] = 'api/eeform1/test';
-$route['api/eeform1/health'] = 'api/eeform1/health';
-$route['api/eeform1/submit'] = 'api/eeform1/submit';
-$route['api/eeform1/submissions/(:any)'] = 'api/eeform1/submissions/$1';
-$route['api/eeform1/submission/(:any)'] = 'api/eeform1/submission/$1';
-$route['api/eeform1/update/(:any)'] = 'api/eeform1/update/$1';
-$route['api/eeform1/stats/(:any)'] = 'api/eeform1/stats/$1';
-$route['api/eeform1/list'] = 'api/eeform1/list';
-$route['api/eeform1/export_single/(:any)'] = 'api/eeform1/export_single/$1';
+$route['api/test'] = 'api/eeform/eeform1/test';
+$route['api/eeform1/test'] = 'api/eeform/eeform1/test';
+$route['api/eeform1/health'] = 'api/eeform/eeform1/health';
+$route['api/eeform1/submit'] = 'api/eeform/eeform1/submit';
+$route['api/eeform1/submissions/(:any)'] = 'api/eeform/eeform1/submissions/$1';
+$route['api/eeform1/submission/(:any)'] = 'api/eeform/eeform1/submission/$1';
+$route['api/eeform1/update/(:any)'] = 'api/eeform/eeform1/update/$1';
+$route['api/eeform1/stats/(:any)'] = 'api/eeform/eeform1/stats/$1';
+$route['api/eeform1/list'] = 'api/eeform/eeform1/list';
+$route['api/eeform1/export_single/(:any)'] = 'api/eeform/eeform1/export_single/$1';
 
 $route['api/eeform2/health'] = 'api/eeform/eeform2/health';
 $route['api/eeform2/submit'] = 'api/eeform/eeform2/submit';
