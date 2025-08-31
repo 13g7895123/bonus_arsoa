@@ -392,71 +392,91 @@
     }
 </style>
     <div class="container-fluid py-4 eform2-admin">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">會員服務追蹤管理表(肌膚)</h2>
-            <button class="btn btn-primary" onclick="admin.showProductModal()">
-                <i class="lnr lnr-cog"></i> 編輯商品
-            </button>
-        </div>
-
-        <!-- 搜尋區域 -->
-        <div class="filters-section">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="search-section">
-                        <div class="form-group">
-                            <label for="searchInput" class="form-label">搜尋</label>
-                            <input type="text" class="form-control" id="searchInput" placeholder="搜尋會員姓名、聯絡資訊...">
-                        </div>
-                        <button class="btn btn-outline-primary" id="searchBtn" onclick="admin.loadData()">
-                            <i class="lnr lnr-magnifier"></i> 搜尋
-                        </button>
-                    </div>
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <h2>會員服務追蹤管理表(肌膚)</h2>
+                <div class="header-buttons">
+                    <button class="btn btn-outline-primary" id="edit-products-btn">
+                        <i class="lnr lnr-cog"></i> 編輯商品
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- 表格區域 -->
+        <!-- 篩選器 -->
+        <div class="filters-section">
+            <div class="row d-flex align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">搜尋</label>
+                    <input type="text" class="form-control" id="search-input" placeholder="會員姓名、聯絡方式">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">開始日期</label>
+                    <input type="date" class="form-control" id="start-date">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">結束日期</label>
+                    <input type="date" class="form-control" id="end-date">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">每頁筆數</label>
+                    <select class="form-control" id="per-page">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100" id="apply-filters" style="margin-top: 25px">
+                        <i class="lnr lnr-magnifier"></i> 搜尋
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 資料表 -->
         <div class="card">
-            <div class="card-body p-0">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">提交記錄列表</h5>
+                <button class="btn btn-success btn-sm" id="refresh-data">
+                    <i class="lnr lnr-sync"></i> 重新整理
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="loading-indicator" class="text-center py-3" style="display: none;">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">載入中...</span>
+                    </div>
+                </div>
+                
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th style="display: none;">ID</th>
                                 <th>會員姓名</th>
-                                <th>性別/年齡</th>
-                                <th>入會日</th>
-                                <th>肌膚/健康狀況</th>
-                                <th>聯絡資訊</th>
-                                <th>填寫日期</th>
+                                <th>性別</th>
+                                <th>年齡</th>
+                                <th>加入日期</th>
+                                <th>預約見面日</th>
+                                <th>聯絡方式</th>
+                                <th>提交日期</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
-                        <tbody id="submissionsTableBody">
-                            <tr>
-                                <td colspan="7" class="text-center py-4">
-                                    <div class="spinner-border" role="status">
-                                        <span class="sr-only">載入中...</span>
-                                    </div>
-                                    <div class="mt-2">正在載入資料...</div>
-                                </td>
-                            </tr>
+                        <tbody id="data-table-body">
+                            <!-- 動態載入資料 -->
                         </tbody>
                     </table>
                 </div>
-                
+
                 <!-- 分頁 -->
-                <div class="d-flex justify-content-between align-items-center p-3">
-                    <div class="text-muted">
-                        <small id="recordInfo">顯示第 0-0 筆，共 0 筆資料</small>
-                    </div>
-                    <nav>
-                        <ul class="pagination pagination-sm mb-0" id="pagination">
-                            <!-- 分頁按鈕會動態生成 -->
-                        </ul>
-                    </nav>
-                </div>
+                <nav aria-label="分頁導覽">
+                    <ul class="pagination justify-content-center" id="pagination">
+                        <!-- 動態生成分頁 -->
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>

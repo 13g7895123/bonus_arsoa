@@ -438,28 +438,39 @@
 
         tbody.innerHTML = '';
         data.forEach(item => {
+            // Helper function to escape HTML
+            const escapeHtml = (text) => {
+                if (!text) return '';
+                return text.toString()
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            };
+
             const healthCondition = item.skin_health_condition 
                 ? (item.skin_health_condition.length > 50 
-                    ? item.skin_health_condition.substring(0, 50) + '...' 
-                    : item.skin_health_condition)
+                    ? escapeHtml(item.skin_health_condition.substring(0, 50) + '...') 
+                    : escapeHtml(item.skin_health_condition))
                 : '';
 
             const row = `
                 <tr>
                     <td style="display: none;">${item.id}</td>
                     <td>
-                        <strong>${item.member_name || ''}</strong>
+                        <strong>${escapeHtml(item.member_name || '')}</strong>
                     </td>
                     <td>
-                        ${item.gender || ''} / ${item.age || ''}歲
+                        ${escapeHtml(item.gender || '')} / ${escapeHtml(item.age || '')}歲
                     </td>
-                    <td>${item.join_date || ''}</td>
-                    <td title="${item.skin_health_condition || ''}">${healthCondition}</td>
+                    <td>${escapeHtml(item.join_date || '')}</td>
+                    <td title="${escapeHtml(item.skin_health_condition || '')}">${healthCondition}</td>
                     <td class="text-sm">
-                        ${item.line_contact ? `LINE: ${item.line_contact}<br>` : ''}
-                        ${item.tel_contact ? `TEL: ${item.tel_contact}` : ''}
+                        ${item.line_contact ? `LINE: ${escapeHtml(item.line_contact)}<br>` : ''}
+                        ${item.tel_contact ? `TEL: ${escapeHtml(item.tel_contact)}` : ''}
                     </td>
-                    <td>${item.submission_date}</td>
+                    <td>${escapeHtml(item.submission_date || '')}</td>
                     <td class="table-actions">
                         <button class="btn btn-sm btn-info" onclick="admin.viewDetail(${item.id})" title="檢視詳細資料" data-toggle="tooltip">
                             <i class="lnr lnr-eye"></i>
@@ -623,7 +634,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label class="form-label">肌膚/健康狀況</label>
-                            <textarea class="form-control" rows="3" readonly>${data.skin_health_condition || ''}</textarea>
+                            <input type="text" class="form-control" value="${(data.skin_health_condition || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}" readonly>
                         </div>
                     </div>
                 </div>
@@ -663,13 +674,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">LINE聯絡狀況</label>
-                            <textarea class="form-control" rows="3" readonly>${data.line_contact || ''}</textarea>
+                            <input type="text" class="form-control" value="${(data.line_contact || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}" readonly>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">電話聯絡狀況</label>
-                            <textarea class="form-control" rows="3" readonly>${data.tel_contact || ''}</textarea>
+                            <input type="text" class="form-control" value="${(data.tel_contact || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}" readonly>
                         </div>
                     </div>
                 </div>
