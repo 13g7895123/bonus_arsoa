@@ -163,10 +163,12 @@ class Eeform2Model extends MY_Model {
      */
     public function get_products_by_submission($submission_id) {
         try {
-            $this->db->select('*');
-            $this->db->from($this->table_products);
-            $this->db->where('submission_id', $submission_id);
-            $this->db->order_by('product_code', 'ASC');
+            $this->db->select('p.*, pm.sort_order');
+            $this->db->from($this->table_products . ' p');
+            $this->db->join($this->table_product_master . ' pm', 'p.product_code = pm.product_code', 'left');
+            $this->db->where('p.submission_id', $submission_id);
+            $this->db->order_by('pm.sort_order', 'ASC');
+            $this->db->order_by('p.product_code', 'ASC');
             
             $query = $this->db->get();
             return $query->result_array();
