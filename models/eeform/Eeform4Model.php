@@ -68,26 +68,6 @@ class Eeform4Model extends MY_Model {
         }
     }
 
-    /**
-     * 根據ID取得單一提交記錄
-     * @param int $id 提交記錄ID
-     * @return array|null
-     */
-    public function get_submission_by_id($id) {
-        try {
-            $this->db->select('*');
-            $this->db->from($this->table_submissions);
-            $this->db->where('id', $id);
-            
-            $query = $this->db->get();
-            $submission = $query->row_array();
-            
-            return $submission;
-            
-        } catch (Exception $e) {
-            throw new Exception('取得提交記錄失敗: ' . $e->getMessage());
-        }
-    }
 
     /**
      * 更新提交記錄
