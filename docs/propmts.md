@@ -75,3 +75,4 @@
 55. /api/eeform/eeform1/list這隻API一樣是錯的，Call to a member function result_array() on bool，同步確認eeform3是否有一樣的錯誤
 56. 承55，錯誤訊息為"Call to a member function num_rows() on bool"
 57. 幫我在/eform/eform1的會員自動帶入資料的部分加入調整，原先controller代入的不變，但在進入網頁後，幫我多打一支API，執行這個SQL"Select c_no from member where c_no=@x or d_spno=@x"，@x的部分是會員編號，如果有傳回一筆以上的會員資料，幫我把姓名的地方改成下拉選單，內容為取得的會員資料，會員編號改成readonly，會依據他選擇的姓名更新會員編號，同時需要留意送出時有抓到正確資料
+58. 目前沒有看到任何57點的功能有實現，幫我多加一點console以判斷功能是否正常

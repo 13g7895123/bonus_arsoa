@@ -1220,13 +1220,20 @@
 
       // 初始化會員資料
       function initializeMemberData() {
+        console.log('[Point 57] ===== 初始化會員資料功能開始 =====');
+        console.log('[Point 57] 當前使用者資料:', currentUserData);
+        console.log('[Point 57] 會員編號是否存在:', !!currentUserData.member_id);
+        
         // 設定會員編號欄位
         $('input[name="member_id"]').val(currentUserData.member_id);
+        console.log('[Point 57] 設定會員編號欄位為:', currentUserData.member_id);
         
         // 如果有會員編號，查詢相關會員資料
         if (currentUserData.member_id) {
+          console.log('[Point 57] 有會員編號，開始查詢相關會員資料...');
           lookupMemberData(currentUserData.member_id);
         } else {
+          console.log('[Point 57] 沒有會員編號，使用預設姓名:', currentUserData.member_name);
           // 沒有會員編號時，使用預設的姓名
           $('input[name="member_name"]').val(currentUserData.member_name);
         }
@@ -1234,32 +1241,52 @@
 
       // 查詢會員資料
       function lookupMemberData(memberId) {
+        var apiUrl = '<?php echo base_url("api/eeform1/member_lookup/"); ?>' + memberId;
+        console.log('[Point 57] 開始查詢會員資料 API');
+        console.log('[Point 57] API URL:', apiUrl);
+        console.log('[Point 57] 查詢會員ID:', memberId);
+        
         $.ajax({
-          url: '<?php echo base_url("api/eeform1/member_lookup/"); ?>' + memberId,
+          url: apiUrl,
           method: 'GET',
           dataType: 'json',
           success: function(response) {
+            console.log('[Point 57] API 回應成功:', response);
+            
             if (response.success && response.data) {
               memberData = response.data.members;
+              console.log('[Point 57] 找到會員資料數量:', memberData.length);
+              console.log('[Point 57] 會員資料內容:', memberData);
               
               if (memberData.length > 1) {
                 // 多個會員：顯示下拉選單
+                console.log('[Point 57] 多個會員匹配，顯示下拉選單');
                 isMultipleMembers = true;
                 setupMemberDropdown();
               } else if (memberData.length === 1) {
                 // 單個會員：使用文字輸入框
+                console.log('[Point 57] 單個會員匹配，使用文字輸入框');
+                console.log('[Point 57] 會員姓名:', memberData[0].c_name);
                 isMultipleMembers = false;
                 $('input[name="member_name"]').val(memberData[0].c_name);
                 currentUserData.member_name = memberData[0].c_name;
               } else {
                 // 沒有找到會員：使用預設值
+                console.log('[Point 57] 沒有找到會員，使用預設值');
                 isMultipleMembers = false;
                 $('input[name="member_name"]').val(currentUserData.member_name);
               }
+            } else {
+              console.log('[Point 57] API 回應格式不正確:', response);
             }
           },
           error: function(xhr, status, error) {
-            console.error('查詢會員資料失敗:', error);
+            console.error('[Point 57] API 查詢失敗:', {
+              status: status,
+              error: error,
+              xhr: xhr,
+              responseText: xhr.responseText
+            });
             // 出錯時使用預設值
             $('input[name="member_name"]').val(currentUserData.member_name);
           }
@@ -1268,39 +1295,74 @@
 
       // 設定會員下拉選單
       function setupMemberDropdown() {
+        console.log('[Point 57] ===== 設定會員下拉選單 =====');
+        console.log('[Point 57] 會員資料列表:', memberData);
+        
         var $nameInput = $('input[name="member_name"]');
         var $nameSelect = $('select[name="member_name_select"]');
+        
+        console.log('[Point 57] 找到姓名輸入框:', $nameInput.length > 0);
+        console.log('[Point 57] 找到姓名下拉選單:', $nameSelect.length > 0);
         
         // 隱藏輸入框，顯示下拉選單
         $nameInput.hide().prop('required', false);
         $nameSelect.show().prop('required', true);
+        console.log('[Point 57] UI 切換完成：隱藏輸入框，顯示下拉選單');
         
         // 清空並重新填充選項
         $nameSelect.empty().append('<option value="">請選擇會員</option>');
+        console.log('[Point 57] 清空並添加預設選項');
         
-        memberData.forEach(function(member) {
-          $nameSelect.append('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
-                           member.c_name + ' (' + member.c_no + ')</option>');
+        memberData.forEach(function(member, index) {
+          var optionHtml = '<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
+                          member.c_name + ' (' + member.c_no + ')</option>';
+          $nameSelect.append(optionHtml);
+          console.log('[Point 57] 添加會員選項 ' + (index + 1) + ':', {
+            c_no: member.c_no,
+            c_name: member.c_name,
+            html: optionHtml
+          });
         });
+        
+        console.log('[Point 57] 下拉選單總選項數:', $nameSelect.find('option').length);
         
         // 綁定選擇事件
         $nameSelect.off('change').on('change', function() {
+          console.log('[Point 57] 用戶選擇了會員選項');
           var selectedOption = $(this).find('option:selected');
+          console.log('[Point 57] 選中的選項值:', selectedOption.val());
+          console.log('[Point 57] 選中的選項文字:', selectedOption.text());
+          
           if (selectedOption.val()) {
+            var newMemberId = selectedOption.val();
+            var newMemberName = selectedOption.data('name');
+            
+            console.log('[Point 57] 更新會員資料:');
+            console.log('[Point 57] 新會員編號:', newMemberId);
+            console.log('[Point 57] 新會員姓名:', newMemberName);
+            
             // 更新會員編號和姓名
-            $('input[name="member_id"]').val(selectedOption.val());
-            currentUserData.member_id = selectedOption.val();
-            currentUserData.member_name = selectedOption.data('name');
+            $('input[name="member_id"]').val(newMemberId);
+            currentUserData.member_id = newMemberId;
+            currentUserData.member_name = newMemberName;
+            
+            console.log('[Point 57] 更新後的會員資料:', currentUserData);
           }
         });
+        
+        console.log('[Point 57] 下拉選單設定完成');
       }
 
       // 頁面載入時檢查是否顯示測試按鈕 - jQuery版本
       $(document).ready(function() {
+        console.log('[Point 57] ===== 頁面載入完成，開始初始化 =====');
+        console.log('[Point 57] 測試按鈕顯示狀態:', showTestButton);
+        
         if (showTestButton) {
           $('#testDataButton').show();
         }
         
+        console.log('[Point 57] 準備初始化會員資料...');
         // 初始化會員資料
         initializeMemberData();
       });
@@ -1593,21 +1655,42 @@
       }
 
       function submitForm() {
+        console.log('[Point 57] ===== 表單提交開始 =====');
+        console.log('[Point 57] 是否為多重會員:', isMultipleMembers);
+        console.log('[Point 57] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
+        
         // 收集表單資料
         var memberName = '';
         var memberId = '';
         
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
+          console.log('[Point 57] 使用下拉選單模式取得會員資料');
           // 使用下拉選單的值
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
           memberId = selectedOption.val();
           memberName = selectedOption.data('name');
+          console.log('[Point 57] 從下拉選單取得:', {
+            memberId: memberId,
+            memberName: memberName,
+            optionText: selectedOption.text()
+          });
         } else {
+          console.log('[Point 57] 使用輸入框模式取得會員資料');
           // 使用輸入框和當前會員資料
           memberId = currentUserData.member_id;
           memberName = $('input[name="member_name"]').val();
+          console.log('[Point 57] 從輸入框取得:', {
+            memberId: memberId,
+            memberName: memberName,
+            currentUserData: currentUserData
+          });
         }
+        
+        console.log('[Point 57] 最終會員資料:', {
+          member_id: memberId,
+          member_name: memberName
+        });
         
         var formData = {
           // 使用者識別資訊
