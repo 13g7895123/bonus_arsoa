@@ -979,7 +979,13 @@ class Eeform3Model extends MY_Model {
         try {
             $offset = ($page - 1) * $limit;
             
-            // 建立查詢
+            // 先取得總數
+            $this->db->from($this->table_submissions . ' s');
+            $this->_apply_search_conditions_paginated($search, $start_date, $end_date);
+            $total = $this->db->count_all_results($this->table_submissions . ' s', FALSE);
+            
+            // 重新建立查詢取得實際資料
+            $this->db->flush_cache();
             $this->db->select('
                 s.id,
                 s.member_id,
@@ -990,57 +996,10 @@ class Eeform3Model extends MY_Model {
                 s.status
             ');
             $this->db->from($this->table_submissions . ' s');
-            
-            // 套用搜尋條件
-            if (!empty($search)) {
-                $this->db->group_start();
-                $this->db->like('s.member_name', $search);
-                $this->db->group_end();
-            }
-            
-            // 套用日期條件
-            if (!empty($start_date)) {
-                $this->db->where('DATE(s.submission_date) >=', $start_date);
-            }
-            
-            if (!empty($end_date)) {
-                $this->db->where('DATE(s.submission_date) <=', $end_date);
-            }
-            
-            // 取得總數（分頁前）
-            $total_query = clone $this->db;
-            $total = $total_query->count_all_results();
-            
-            // 重建查詢並套用分頁
-            $this->db->select('
-                s.id,
-                s.member_id,
-                s.member_name,
-                s.submission_date,
-                s.created_at,
-                s.updated_at,
-                s.status
-            ');
-            $this->db->from($this->table_submissions . ' s');
-            
-            // 重新套用搜尋條件
-            if (!empty($search)) {
-                $this->db->group_start();
-                $this->db->like('s.member_name', $search);
-                $this->db->group_end();
-            }
-            
-            // 重新套用日期條件
-            if (!empty($start_date)) {
-                $this->db->where('DATE(s.submission_date) >=', $start_date);
-            }
-            
-            if (!empty($end_date)) {
-                $this->db->where('DATE(s.submission_date) <=', $end_date);
-            }
-            
+            $this->_apply_search_conditions_paginated($search, $start_date, $end_date);
             $this->db->order_by('s.submission_date', 'DESC');
             $this->db->limit($limit, $offset);
+            
             $query = $this->db->get();
             
             if (!$query) {
@@ -1067,6 +1026,27 @@ class Eeform3Model extends MY_Model {
         } catch (Exception $e) {
             log_message('error', 'Eeform3Model::get_all_submissions_paginated error: ' . $e->getMessage());
             throw $e;
+        }
+    }
+
+    /**
+     * 套用搜尋和日期條件的輔助方法 (分頁用)
+     */
+    private function _apply_search_conditions_paginated($search, $start_date, $end_date) {
+        // 套用搜尋條件
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('s.member_name', $search);
+            $this->db->group_end();
+        }
+        
+        // 套用日期條件
+        if (!empty($start_date)) {
+            $this->db->where('DATE(s.submission_date) >=', $start_date);
+        }
+        
+        if (!empty($end_date)) {
+            $this->db->where('DATE(s.submission_date) <=', $end_date);
         }
     }
 }
