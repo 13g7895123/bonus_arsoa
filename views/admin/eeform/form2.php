@@ -392,557 +392,549 @@
     }
 </style>
     <div class="container-fluid py-4 eform2-admin">
-        <div class="row mb-4">
-            <div class="col-12 d-flex justify-content-between align-items-center">
-                <h2>會員服務追蹤管理表(肌膚)</h2>
-                <div class="header-buttons">
-                    <button class="btn btn-outline-primary" id="edit-products-btn">
-                        <i class="lnr lnr-cog"></i> 編輯商品
-                    </button>
-                </div>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">會員服務追蹤管理表(肌膚)</h2>
+            <button class="btn btn-primary" onclick="admin.showProductModal()">
+                <i class="lnr lnr-cog"></i> 編輯商品
+            </button>
         </div>
 
-
-        <!-- 篩選器 -->
+        <!-- 搜尋區域 -->
         <div class="filters-section">
-            <div class="row d-flex align-items-end">
-                <div class="col-md-3">
-                    <label class="form-label">搜尋</label>
-                    <input type="text" class="form-control" id="search-input" placeholder="會員姓名、聯絡方式">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">開始日期</label>
-                    <input type="date" class="form-control" id="start-date">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">結束日期</label>
-                    <input type="date" class="form-control" id="end-date">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">每頁筆數</label>
-                    <select class="form-control" id="per-page">
-                        <option value="10">10</option>
-                        <option value="20" selected>20</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-primary w-100" id="apply-filters" style="margin-top: 25px">
-                        <i class="lnr lnr-magnifier"></i> 搜尋
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 資料表 -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">提交記錄列表</h5>
-                <button class="btn btn-success btn-sm" id="refresh-data">
-                    <i class="lnr lnr-sync"></i> 重新整理
-                </button>
-            </div>
-            <div class="card-body">
-                <div id="loading-indicator" class="text-center py-3" style="display: none;">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">載入中...</span>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="search-section">
+                        <div class="form-group">
+                            <label for="searchInput" class="form-label">搜尋</label>
+                            <input type="text" class="form-control" id="searchInput" placeholder="搜尋會員姓名、聯絡資訊...">
+                        </div>
+                        <button class="btn btn-outline-primary" id="searchBtn" onclick="admin.loadData()">
+                            <i class="lnr lnr-magnifier"></i> 搜尋
+                        </button>
                     </div>
                 </div>
-                
+            </div>
+        </div>
+
+        <!-- 表格區域 -->
+        <div class="card">
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover mb-0">
                         <thead>
                             <tr>
                                 <th style="display: none;">ID</th>
                                 <th>會員姓名</th>
-                                <th>性別</th>
-                                <th>年齡</th>
-                                <th>加入日期</th>
-                                <th>預約見面日</th>
-                                <th>聯絡方式</th>
-                                <th>提交日期</th>
+                                <th>性別/年齡</th>
+                                <th>入會日</th>
+                                <th>肌膚/健康狀況</th>
+                                <th>聯絡資訊</th>
+                                <th>填寫日期</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
-                        <tbody id="data-table-body">
-                            <!-- 動態載入資料 -->
+                        <tbody id="submissionsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">載入中...</span>
+                                    </div>
+                                    <div class="mt-2">正在載入資料...</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-
+                
                 <!-- 分頁 -->
-                <nav aria-label="分頁導覽">
-                    <ul class="pagination justify-content-center" id="pagination">
-                        <!-- 動態生成分頁 -->
-                    </ul>
-                </nav>
+                <div class="d-flex justify-content-between align-items-center p-3">
+                    <div class="text-muted">
+                        <small id="recordInfo">顯示第 0-0 筆，共 0 筆資料</small>
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0" id="pagination">
+                            <!-- 分頁按鈕會動態生成 -->
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 詳細資料模態框 -->
-    <div class="modal fade" id="detailModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
+    <!-- 檢視詳細資料的 Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">會員服務追蹤管理表(肌膚) - 詳細資料</h5>
+                    <h5 class="modal-title">表單詳細資料</h5>
                 </div>
-                <div class="modal-body" id="detail-content" style="max-height: 70vh; overflow-y: auto;">
-                    <!-- 動態載入詳細資料 -->
+                <div class="modal-body submission-detail" id="detailContent">
+                    <!-- 詳細資料內容會在這裡動態載入 -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-secondary" onclick="admin.closeDetailModal()">關閉</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 狀態更新模態框 -->
-    <div class="modal fade" id="statusModal" tabindex="-1">
-        <div class="modal-dialog">
+    <!-- 編輯商品的 Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">更新狀態</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">編輯商品設定</h5>
                 </div>
                 <div class="modal-body">
-                    <form id="status-form">
-                        <input type="hidden" id="status-submission-id">
-                        <div class="mb-3">
-                            <label class="form-label">新狀態</label>
-                            <select class="form-control" id="new-status" required>
-                                <option value="submitted">已提交</option>
-                                <option value="processing">處理中</option>
-                                <option value="completed">已完成</option>
-                                <option value="cancelled">已取消</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">管理員備註</label>
-                            <textarea class="form-control" id="admin-note" rows="3" placeholder="選填"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="save-status">儲存</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 產品管理模態框 -->
-    <div class="modal fade" id="productModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">eform02 產品管理</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="text-muted mb-0">產品列表</h6>
-                        <button type="button" class="btn btn-primary btn-sm" id="add-product-btn">
+                    <div class="mb-3">
+                        <button class="btn btn-primary btn-sm" onclick="admin.addProduct()">
                             <i class="lnr lnr-plus-circle"></i> 新增產品
                         </button>
                     </div>
-                    <form id="product-form">
-                        <div id="products-container">
-                            <!-- 動態載入產品列表 -->
-                        </div>
-                    </form>
+                    <div id="products-container">
+                        <!-- 產品清單會在這裡動態載入 -->
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="save-products">儲存變更</button>
+                    <button type="button" class="btn btn-secondary" onclick="admin.closeProductModal()">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="admin.saveProducts()">儲存變更</button>
                 </div>
             </div>
         </div>
     </div>
 
-<script>
-    class EForm2Admin {
-        constructor() {
-            this.currentPage = 1;
-            this.perPage = 20;
-            this.filters = {};
-            this.init();
-        }
+    <script>
+        // 全域變數
+        const admin = {
+            currentPage: 1,
+            pageSize: 20,
+            totalRecords: 0,
+            apiBaseUrl: '/api/eeform/eeform2',
+            productsData: []
+        };
 
-        init() {
-            this.loadData();
-            this.bindEvents();
-        }
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            admin.init();
+        });
 
-        bindEvents() {
-            // 篩選器事件
-            $('#apply-filters').on('click', () => this.applyFilters());
-            $('#search-input').on('keypress', (e) => {
-                if (e.which === 13) this.applyFilters();
-            });
+        admin.init = function() {
+            // 載入資料
+            admin.loadData();
             
-            // 重新整理
-            $('#refresh-data').on('click', () => {
-                this.loadData();
-            });
-
-            // 狀態更新
-            $('#save-status').on('click', () => this.updateStatus());
-
-            // 每頁筆數變更
-            $('#per-page').on('change', () => {
-                this.perPage = parseInt($('#per-page').val());
-                this.currentPage = 1;
-                this.loadData();
-            });
-
-            // 編輯商品按鈕
-            $('#edit-products-btn').on('click', () => this.showProductModal());
-
-            // 儲存產品變更
-            $('#save-products').on('click', () => this.saveProducts());
-
-            // 新增產品按鈕
-            $(document).on('click', '#add-product-btn', () => this.addProduct());
-        }
-
-
-        async loadData() {
-            $('#loading-indicator').show();
-            
-            try {
-                const params = new URLSearchParams({
-                    page: this.currentPage,
-                    limit: this.perPage,
-                    ...this.filters
-                });
-
-                const response = await fetch(`/api/eeform/eeform2/list?${params}`);
-                const result = await response.json();
-                
-                if (result.success) {
-                    this.renderTable(result.data.data);
-                    this.renderPagination(result.data.pagination);
-                } else {
-                    this.showAlert('載入資料失敗: ' + result.message, 'danger');
+            // 綁定搜尋框 Enter 事件
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    admin.loadData();
                 }
-            } catch (error) {
-                console.error('載入資料失敗:', error);
-                this.showAlert('載入資料失敗，請稍後再試', 'danger');
-            } finally {
-                $('#loading-indicator').hide();
+            });
+        };
+
+        admin.loadData = function(page = 1) {
+            admin.currentPage = page;
+            const searchValue = document.getElementById('searchInput').value.trim();
+            
+            // 顯示載入中
+            const tbody = document.getElementById('submissionsTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">載入中...</span>
+                        </div>
+                        <div class="mt-2">正在載入資料...</div>
+                    </td>
+                </tr>
+            `;
+
+            // 構建請求參數
+            const params = new URLSearchParams({
+                page: page,
+                limit: admin.pageSize
+            });
+            
+            if (searchValue) {
+                params.append('search', searchValue);
             }
-        }
 
-        renderTable(data) {
-            const tbody = $('#data-table-body');
-            tbody.empty();
+            // 發送請求
+            fetch(`${admin.apiBaseUrl}/list?${params.toString()}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        admin.renderTable(data.data.data);
+                        admin.totalRecords = data.data.pagination.total;
+                        admin.renderPagination(data.data.pagination);
+                        admin.updateRecordInfo(data.data.pagination);
+                    } else {
+                        admin.showError('載入資料失敗: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('載入資料失敗:', error);
+                    admin.showError('載入資料失敗，請稍後再試');
+                });
+        };
 
+        admin.renderTable = function(data) {
+            const tbody = document.getElementById('submissionsTableBody');
+            
             if (!data || data.length === 0) {
-                tbody.append('<tr><td colspan="8" class="text-center">無資料</td></tr>');
-                return;
-            }
-
-            data.forEach(item => {
-                const statusBadge = this.getStatusBadge(item.status);
-                const row = `
+                tbody.innerHTML = `
                     <tr>
-                        <td style="display: none;">${item.id}</td>
-                        <td>${item.member_name}</td>
-                        <td>${item.gender}</td>
-                        <td>${item.age}</td>
-                        <td>${item.join_date}</td>
-                        <td>${item.meeting_date || '-'}</td>
-                        <td>
-                            ${item.line_contact ? `LINE: ${item.line_contact}<br>` : ''}
-                            ${item.tel_contact ? `TEL: ${item.tel_contact}` : ''}
-                        </td>
-                        <td>${item.submission_date}</td>
-                        <td class="table-actions">
-                            <button class="btn btn-sm btn-info" onclick="admin.viewDetail(${item.id})" title="檢視詳細資料" data-toggle="tooltip">
-                                <i class="lnr lnr-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-success" onclick="admin.exportSingleForm(${item.id})" title="匯出此表單" data-toggle="tooltip">
-                                <i class="lnr lnr-download"></i>
-                            </button>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="lnr lnr-warning" style="font-size: 2rem;"></i>
+                            <div class="mt-2">暫無資料</div>
                         </td>
                     </tr>
                 `;
-                tbody.append(row);
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach(item => {
+                const healthCondition = item.skin_health_condition 
+                    ? (item.skin_health_condition.length > 50 
+                        ? item.skin_health_condition.substring(0, 50) + '...' 
+                        : item.skin_health_condition)
+                    : '';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="display: none;">${item.id}</td>
+                    <td>
+                        <strong>${item.member_name || ''}</strong>
+                    </td>
+                    <td>
+                        ${item.gender || ''} / ${item.age || ''}歲
+                    </td>
+                    <td>${item.join_date || ''}</td>
+                    <td title="${item.skin_health_condition || ''}">${healthCondition}</td>
+                    <td class="text-sm">
+                        ${item.line_contact ? `LINE: ${item.line_contact}<br>` : ''}
+                        ${item.tel_contact ? `TEL: ${item.tel_contact}` : ''}
+                    </td>
+                    <td>${item.submission_date}</td>
+                    <td class="table-actions">
+                        <button class="btn btn-sm btn-info" onclick="admin.viewDetail(${item.id})" title="檢視詳細資料" data-toggle="tooltip">
+                            <i class="lnr lnr-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-success" onclick="admin.exportSingleForm(${item.id})" title="匯出此表單" data-toggle="tooltip">
+                            <i class="lnr lnr-download"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
             });
             
             // Initialize tooltips for new buttons
             $('[data-toggle="tooltip"]').tooltip();
-        }
+        };
 
-        renderPagination(pagination) {
-            const paginationEl = $('#pagination');
-            paginationEl.empty();
-
-            if (pagination.total_pages <= 1) return;
-
-            // 上一頁
-            const prevDisabled = pagination.current_page === 1 ? 'disabled' : '';
-            paginationEl.append(`
-                <li class="page-item ${prevDisabled}">
-                    <a class="page-link" href="#" onclick="admin.changePage(${pagination.current_page - 1})">上一頁</a>
-                </li>
-            `);
-
-            // 頁碼
-            const startPage = Math.max(1, pagination.current_page - 2);
-            const endPage = Math.min(pagination.total_pages, pagination.current_page + 2);
-
-            for (let i = startPage; i <= endPage; i++) {
-                const active = i === pagination.current_page ? 'active' : '';
-                paginationEl.append(`
-                    <li class="page-item ${active}">
-                        <a class="page-link" href="#" onclick="admin.changePage(${i})">${i}</a>
-                    </li>
-                `);
-            }
-
-            // 下一頁
-            const nextDisabled = pagination.current_page === pagination.total_pages ? 'disabled' : '';
-            paginationEl.append(`
-                <li class="page-item ${nextDisabled}">
-                    <a class="page-link" href="#" onclick="admin.changePage(${pagination.current_page + 1})">下一頁</a>
-                </li>
-            `);
-        }
-
-        getStatusBadge(status) {
-            const statusMap = {
-                'submitted': { class: 'bg-primary', text: '已提交' },
-                'processing': { class: 'bg-warning', text: '處理中' },
-                'completed': { class: 'bg-success', text: '已完成' },
-                'cancelled': { class: 'bg-secondary', text: '已取消' }
-            };
-            
-            const statusInfo = statusMap[status] || { class: 'bg-secondary', text: status };
-            return `<span class="badge ${statusInfo.class} status-badge">${statusInfo.text}</span>`;
-        }
-
-        applyFilters() {
-            this.filters = {
-                search: $('#search-input').val(),
-                start_date: $('#start-date').val(),
-                end_date: $('#end-date').val()
-            };
-            
-            // 移除空值
-            Object.keys(this.filters).forEach(key => {
-                if (!this.filters[key]) delete this.filters[key];
-            });
-
-            this.currentPage = 1;
-            this.loadData();
-        }
-
-        changePage(page) {
-            if (page < 1) return;
-            this.currentPage = page;
-            this.loadData();
-        }
-
-        async viewDetail(id) {
-            try {
-                const response = await fetch(`/api/eeform/eeform2/submission/${id}`);
-                const result = await response.json();
-                
-                if (result.success) {
-                    const data = result.data;
-                    
-                    // 產品資料處理
-                    let productHtml = '';
-                    if (data.products && data.products.length > 0) {
-                        productHtml = '<div class="row">';
-                        data.products.forEach((product, index) => {
-                            productHtml += `
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-group">
-                                        <label class="text-muted small mb-1">${product.product_name}</label>
-                                        <div class="text-dark font-weight-normal"><strong>${product.quantity}</strong> 個</div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        productHtml += '</div>';
-                    } else {
-                        productHtml = '<div class="form-group"><div class="text-center py-2"><span class="text-muted">未訂購任何產品</span></div></div>';
-                    }
-                    
-                    const content = `
-                        <div class="container-fluid">
-                            <!-- 基本資料 -->
-                            <div class="border mb-6 rounded">
-                                <div class="bg-light p-3 border-bottom">
-                                    <h6 class="m-0 font-weight-bold text-dark">基本資料</h6>
-                                </div>
-                                <div class="p-5">
-                                    <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">姓名</label>
-                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word; word-break: break-all;">${data.member_name || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">會員編號</label>
-                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word;">${data.member_id || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">性別</label>
-                                                <div class="text-dark font-weight-normal">${data.gender || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">年齡</label>
-                                                <div class="text-dark font-weight-normal">${data.age ? data.age + ' 歲' : '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">入會日</label>
-                                                <div class="text-dark font-weight-normal">${data.join_date || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">見面日</label>
-                                                <div class="text-dark font-weight-normal">${data.meeting_date || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">健康狀況</label>
-                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word; white-space: pre-wrap;">${data.skin_health_condition || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 產品訂購 -->
-                            <div class="border mb-6 rounded">
-                                <div class="bg-light p-3 border-bottom">
-                                    <h6 class="m-0 font-weight-bold text-dark">產品訂購</h6>
-                                </div>
-                                <div class="p-5">
-                                    ${productHtml}
-                                </div>
-                            </div>
-
-                            <!-- 聯絡資訊 -->
-                            <div class="border mb-6 rounded">
-                                <div class="bg-light p-3 border-bottom">
-                                    <h6 class="m-0 font-weight-bold text-dark">聯絡資訊</h6>
-                                </div>
-                                <div class="p-5">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">LINE 聯絡</label>
-                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word; white-space: pre-wrap;">${data.line_contact || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label class="text-muted small mb-1">電話聯絡</label>
-                                                <div class="text-dark font-weight-normal" style="word-wrap: break-word; white-space: pre-wrap;">${data.tel_contact || '(未填寫)'}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    $('#detail-content').html(content);
-                    $('#detailModal').modal('show');
-                } else {
-                    this.showAlert('載入詳細資料失敗: ' + result.message, 'danger');
-                }
-            } catch (error) {
-                console.error('載入詳細資料失敗:', error);
-                this.showAlert('載入詳細資料失敗，請稍後再試', 'danger');
-            }
-        }
-
-        showStatusModal(id, currentStatus) {
-            $('#status-submission-id').val(id);
-            $('#new-status').val(currentStatus);
-            $('#admin-note').val('');
-            $('#statusModal').modal('show');
-        }
-
-        async updateStatus() {
-            const id = $('#status-submission-id').val();
-            const status = $('#new-status').val();
-            const adminNote = $('#admin-note').val();
-
-            if (!status) {
-                this.showAlert('請選擇狀態', 'warning');
+        admin.renderPagination = function(pagination) {
+            const paginationElement = document.getElementById('pagination');
+            if (!pagination || pagination.total_pages <= 1) {
+                paginationElement.innerHTML = '';
                 return;
             }
 
-            try {
-                const response = await fetch(`/api/eeform/eeform2/update_status/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        status: status,
-                        admin_note: adminNote
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    $('#statusModal').modal('hide');
-                    this.showAlert('狀態更新成功', 'success');
-                    this.loadData();
-                } else {
-                    this.showAlert('更新失敗: ' + result.message, 'danger');
-                }
-            } catch (error) {
-                console.error('更新狀態失敗:', error);
-                this.showAlert('更新狀態失敗，請稍後再試', 'danger');
+            let paginationHtml = '';
+            
+            // 上一頁按鈕
+            if (pagination.current_page > 1) {
+                paginationHtml += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="admin.loadData(${pagination.current_page - 1})">&laquo;</a>
+                    </li>
+                `;
             }
-        }
 
+            // 頁碼按鈕
+            const startPage = Math.max(1, pagination.current_page - 2);
+            const endPage = Math.min(pagination.total_pages, pagination.current_page + 2);
 
-        async showProductModal() {
+            if (startPage > 1) {
+                paginationHtml += '<li class="page-item"><a class="page-link" href="#" onclick="admin.loadData(1)">1</a></li>';
+                if (startPage > 2) {
+                    paginationHtml += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const activeClass = i === pagination.current_page ? 'active' : '';
+                paginationHtml += `
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link" href="#" onclick="admin.loadData(${i})">${i}</a>
+                    </li>
+                `;
+            }
+
+            if (endPage < pagination.total_pages) {
+                if (endPage < pagination.total_pages - 1) {
+                    paginationHtml += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                }
+                paginationHtml += `<li class="page-item"><a class="page-link" href="#" onclick="admin.loadData(${pagination.total_pages})">${pagination.total_pages}</a></li>`;
+            }
+
+            // 下一頁按鈕
+            if (pagination.current_page < pagination.total_pages) {
+                paginationHtml += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="admin.loadData(${pagination.current_page + 1})">&raquo;</a>
+                    </li>
+                `;
+            }
+
+            paginationElement.innerHTML = paginationHtml;
+        };
+
+        admin.updateRecordInfo = function(pagination) {
+            const start = (pagination.current_page - 1) * pagination.per_page + 1;
+            const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
+            document.getElementById('recordInfo').textContent = `顯示第 ${start}-${end} 筆，共 ${pagination.total} 筆資料`;
+        };
+
+        admin.viewDetail = async function(id) {
             try {
-                // 載入目前的產品設定從資料庫
-                const response = await fetch('/api/eeform/eeform2/products');
+                const response = await fetch(`${admin.apiBaseUrl}/submission/${id}`);
                 const result = await response.json();
                 
                 if (result.success && result.data) {
-                    this.renderProducts(result.data);
+                    admin.renderDetailModal(result.data);
+                    $('#detailModal').modal('show');
                 } else {
-                    // 如果沒有資料，顯示空的產品列表
-                    this.renderProducts([]);
+                    admin.showAlert('載入詳細資料失敗: ' + (result.message || '未知錯誤'), 'danger');
+                }
+            } catch (error) {
+                console.error('載入詳細資料失敗:', error);
+                admin.showAlert('載入詳細資料失敗，請稍後再試', 'danger');
+            }
+        };
+
+        admin.renderDetailModal = function(data) {
+            const container = document.getElementById('detailContent');
+            
+            // 系統資料區塊
+            let systemDataHtml = `
+                <div class="border mb-6 rounded" style="padding: 1.5rem;">
+                    <h6 class="mb-3">系統資料</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">記錄ID</label>
+                                <input type="text" class="form-control" value="${data.id || ''}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">建立時間</label>
+                                <input type="text" class="form-control" value="${data.created_at || ''}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 基本資料區塊
+            let basicDataHtml = `
+                <div class="border mb-6 rounded" style="padding: 1.5rem;">
+                    <h6 class="mb-3">基本資料</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">會員姓名</label>
+                                <input type="text" class="form-control" value="${data.member_name || ''}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">性別</label>
+                                <input type="text" class="form-control" value="${data.gender || ''}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">年齡</label>
+                                <input type="text" class="form-control" value="${data.age ? data.age + ' 歲' : ''}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">入會日</label>
+                                <input type="text" class="form-control" value="${data.join_date || ''}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">見面日</label>
+                                <input type="text" class="form-control" value="${data.meeting_date || ''}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">肌膚/健康狀況</label>
+                                <textarea class="form-control" rows="3" readonly>${data.skin_health_condition || ''}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 產品資料區塊
+            let productsHtml = `
+                <div class="border mb-6 rounded" style="padding: 1.5rem;">
+                    <h6 class="mb-3">產品訂購</h6>
+            `;
+            
+            if (data.products && data.products.length > 0) {
+                productsHtml += '<div class="row">';
+                data.products.forEach(product => {
+                    productsHtml += `
+                        <div class="col-md-4 mb-3">
+                            <div class="form-group">
+                                <label class="form-label">${product.product_name}</label>
+                                <input type="text" class="form-control" value="${product.quantity} 個" readonly>
+                            </div>
+                        </div>
+                    `;
+                });
+                productsHtml += '</div>';
+            } else {
+                productsHtml += '<p class="text-muted">未訂購任何產品</p>';
+            }
+            
+            productsHtml += '</div>';
+
+            // 聯絡資訊區塊
+            let contactHtml = `
+                <div class="border mb-6 rounded" style="padding: 1.5rem;">
+                    <h6 class="mb-3">聯絡資訊</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">LINE聯絡狀況</label>
+                                <textarea class="form-control" rows="3" readonly>${data.line_contact || ''}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">電話聯絡狀況</label>
+                                <textarea class="form-control" rows="3" readonly>${data.tel_contact || ''}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">填寫日期</label>
+                                <input type="text" class="form-control" value="${data.submission_date || ''}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = systemDataHtml + basicDataHtml + productsHtml + contactHtml;
+        };
+
+        admin.closeDetailModal = function() {
+            $('#detailModal').modal('hide');
+        };
+
+        admin.exportSingleForm = function(id) {
+            const url = `${admin.apiBaseUrl}/export_single/${id}`;
+            window.open(url, '_blank');
+        };
+
+        admin.showAlert = function(message, type = 'info') {
+            if (typeof Swal !== 'undefined') {
+                let icon = 'info';
+                switch(type) {
+                    case 'success': icon = 'success'; break;
+                    case 'danger': case 'error': icon = 'error'; break;
+                    case 'warning': icon = 'warning'; break;
+                }
+                
+                Swal.fire({
+                    title: type === 'error' || type === 'danger' ? '錯誤' : '通知',
+                    text: message,
+                    icon: icon,
+                    confirmButtonText: '確定',
+                    confirmButtonColor: '#007bff'
+                });
+            } else {
+                alert(message);
+            }
+        };
+
+        admin.showError = function(message) {
+            admin.showAlert(message, 'error');
+            
+            // 同時在表格中顯示錯誤訊息
+            const tbody = document.getElementById('submissionsTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-danger">
+                        <i class="lnr lnr-warning" style="font-size: 2rem;"></i>
+                        <div class="mt-2">${message}</div>
+                        <button class="btn btn-outline-primary btn-sm mt-2" onclick="admin.loadData()">重新載入</button>
+                    </td>
+                </tr>
+            `;
+        };
+
+        // 產品管理相關功能
+        admin.showProductModal = async function() {
+            try {
+                // 載入目前的產品設定從資料庫
+                const response = await fetch(`${admin.apiBaseUrl}/products`);
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    admin.productsData = result.data;
+                    admin.renderProducts(result.data);
+                } else {
+                    admin.productsData = admin.getDefaultProducts();
+                    admin.renderProducts(admin.productsData);
                 }
                 
                 $('#productModal').modal('show');
             } catch (error) {
-                console.error('載入產品資料失敗:', error);
-                this.showAlert('載入產品資料失敗', 'danger');
-                // 顯示空的產品列表作為備援
-                this.renderProducts([]);
+                console.error('載入產品設定失敗:', error);
+                admin.productsData = admin.getDefaultProducts();
+                admin.renderProducts(admin.productsData);
                 $('#productModal').modal('show');
             }
-        }
+        };
 
-        renderProducts(products) {
+        admin.getDefaultProducts = function() {
+            return [
+                {product_code: 'SOAP001', product_name: '淨白活膚蜜皂', product_category: 'soap', sort_order: 1},
+                {product_code: 'SOAP002', product_name: 'AP柔敏潔顏皂', product_category: 'soap', sort_order: 2},
+                {product_code: 'MASK001', product_name: '活顏泥膜', product_category: 'other', sort_order: 3},
+                {product_code: 'TONER001', product_name: '安露莎化粧水I', product_category: 'toner', sort_order: 4},
+                {product_code: 'TONER002', product_name: '安露莎化粧水II', product_category: 'toner', sort_order: 5},
+                {product_code: 'TONER003', product_name: '安露莎活膚化粧水', product_category: 'toner', sort_order: 6},
+                {product_code: 'TONER004', product_name: '柔敏化粧水', product_category: 'toner', sort_order: 7},
+                {product_code: 'SERUM001', product_name: '安露莎精華液I', product_category: 'serum', sort_order: 8},
+                {product_code: 'SERUM002', product_name: '安露莎精華液II', product_category: 'serum', sort_order: 9},
+                {product_code: 'SERUM003', product_name: '安露莎活膚精華液', product_category: 'serum', sort_order: 10},
+                {product_code: 'SERUM004', product_name: '美白精華液', product_category: 'serum', sort_order: 11},
+                {product_code: 'LOTION001', product_name: '保濕潤膚液', product_category: 'lotion', sort_order: 12},
+                {product_code: 'OIL001', product_name: '美容防皺油', product_category: 'other', sort_order: 13},
+                {product_code: 'GEL001', product_name: '保濕凝膠', product_category: 'other', sort_order: 14},
+                {product_code: 'ESSENCE001', product_name: '亮采晶萃', product_category: 'other', sort_order: 15},
+                {product_code: 'SUNSCREEN001', product_name: '防曬隔離液', product_category: 'other', sort_order: 16},
+                {product_code: 'FOUNDATION001', product_name: '保濕粉底液', product_category: 'foundation', sort_order: 17},
+                {product_code: 'POWDER001', product_name: '絲柔粉餅', product_category: 'foundation', sort_order: 18}
+            ];
+        };
+
+        admin.renderProducts = function(products) {
             const container = $('#products-container');
             container.empty();
 
@@ -968,254 +960,141 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">產品名稱</label>
-                                <input type="text" class="form-control product-name" value="${productData.product_name || ''}" placeholder="請輸入產品名稱">
+                                <input type="text" class="form-control product-name" value="${productData.product_name || ''}" placeholder="例：淨白活膚蜜皂">
                             </div>
-                            <div class="col-md-2 text-end">
-                                <label class="form-label">&nbsp;</label>
+                            <div class="col-md-2">
+                                <label class="form-label">操作</label>
                                 <div>
-                                    <button type="button" class="btn btn-danger btn-sm delete-product-btn" title="刪除產品">
-                                        <i class="lnr lnr-trash"></i>
-                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="admin.removeProduct(this)">刪除</button>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <label class="form-label">產品類別</label>
+                                <select class="form-control product-category">
+                                    <option value="soap" ${productData.product_category === 'soap' ? 'selected' : ''}>清潔</option>
+                                    <option value="toner" ${productData.product_category === 'toner' ? 'selected' : ''}>化妝水</option>
+                                    <option value="serum" ${productData.product_category === 'serum' ? 'selected' : ''}>精華液</option>
+                                    <option value="lotion" ${productData.product_category === 'lotion' ? 'selected' : ''}>乳液</option>
+                                    <option value="foundation" ${productData.product_category === 'foundation' ? 'selected' : ''}>底妝</option>
+                                    <option value="other" ${productData.product_category === 'other' ? 'selected' : ''}>其他</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label">產品描述</label>
+                                <input type="text" class="form-control product-description" value="${productData.description || ''}" placeholder="產品描述（選填）">
                             </div>
                         </div>
                     </div>
                 `;
                 container.append(productHtml);
             });
+        };
 
-            // 綁定刪除按鈕事件
-            container.find('.delete-product-btn').on('click', (e) => {
-                const productItem = $(e.target).closest('.product-item');
-                this.deleteProduct(productItem);
-            });
-        }
-
-        addProduct() {
+        admin.addProduct = function() {
             const container = $('#products-container');
-            
-            // 移除空狀態訊息
-            container.find('.text-center.text-muted').remove();
-            
-            // 生成新的產品識別符（新產品沒有ID）
-            const timestamp = Date.now();
-            const newProductId = `new_product_${timestamp}`;
-            
             const productHtml = `
-                <div class="product-item mb-3 p-3 border rounded bg-light" data-product-id="" data-product-code="${newProductId}">
+                <div class="product-item mb-3 p-3 border rounded" data-product-id="" data-product-code="">
                     <div class="row align-items-center">
                         <div class="col-md-4">
-                            <label class="form-label">產品代碼 <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control product-code" value="" placeholder="例：SOAP001" required>
+                            <label class="form-label">產品代碼</label>
+                            <input type="text" class="form-control product-code" value="" placeholder="例：SOAP003">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">產品名稱 <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control product-name" value="" placeholder="請輸入產品名稱" required>
+                            <label class="form-label">產品名稱</label>
+                            <input type="text" class="form-control product-name" value="" placeholder="例：新產品名稱">
                         </div>
-                        <div class="col-md-2 text-end">
-                            <label class="form-label">&nbsp;</label>
+                        <div class="col-md-2">
+                            <label class="form-label">操作</label>
                             <div>
-                                <button type="button" class="btn btn-danger btn-sm delete-product-btn" title="刪除產品">
-                                    <i class="lnr lnr-trash"></i>
-                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="admin.removeProduct(this)">刪除</button>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <label class="form-label">產品類別</label>
+                            <select class="form-control product-category">
+                                <option value="soap">清潔</option>
+                                <option value="toner">化妝水</option>
+                                <option value="serum">精華液</option>
+                                <option value="lotion">乳液</option>
+                                <option value="foundation">底妝</option>
+                                <option value="other" selected>其他</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">產品描述</label>
+                            <input type="text" class="form-control product-description" value="" placeholder="產品描述（選填）">
                         </div>
                     </div>
                 </div>
             `;
-            
             container.append(productHtml);
-            
-            // 綁定新增產品的刪除按鈕事件
-            const newItem = container.find(`[data-product-code="${newProductId}"]`);
-            newItem.find('.delete-product-btn').on('click', (e) => {
-                const productItem = $(e.target).closest('.product-item');
-                this.deleteProduct(productItem);
-            });
-            
-            // 聚焦到第一個輸入框
-            newItem.find('.product-code').focus();
-        }
+        };
 
-        deleteProduct(productItem) {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    title: '確定要刪除此產品嗎？',
-                    text: '此操作無法復原！',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: '確定刪除',
-                    cancelButtonText: '取消'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        productItem.remove();
-                        
-                        // 如果沒有產品了，顯示空狀態
-                        if ($('#products-container .product-item').length === 0) {
-                            $('#products-container').append('<div class="text-center text-muted py-3">尚無產品，請點擊「新增產品」按鈕新增產品</div>');
-                        }
-                    }
-                });
-            } else {
-                if (confirm('確定要刪除此產品嗎？此操作無法復原。')) {
-                    productItem.remove();
-                    
-                    // 如果沒有產品了，顯示空狀態
-                    if ($('#products-container .product-item').length === 0) {
-                        $('#products-container').append('<div class="text-center text-muted py-3">尚無產品，請點擊「新增產品」按鈕新增產品</div>');
-                    }
-                }
-            }
-        }
+        admin.removeProduct = function(button) {
+            $(button).closest('.product-item').remove();
+        };
 
-        async saveProducts() {
-            try {
-                // 驗證所有產品資料
-                const productItems = $('#products-container .product-item');
-                const products = [];
-                const errors = [];
+        admin.saveProducts = async function() {
+            const productItems = $('.product-item');
+            const products = [];
+            
+            productItems.each(function() {
+                const $item = $(this);
+                const code = $item.find('.product-code').val().trim();
+                const name = $item.find('.product-name').val().trim();
+                const category = $item.find('.product-category').val();
+                const description = $item.find('.product-description').val().trim();
+                const id = $item.data('product-id');
                 
-                productItems.each(function() {
-                    const $item = $(this);
-                    const productId = $item.data('product-id'); // 現有產品的ID，新產品為空
-                    const code = $item.find('.product-code').val().trim().toUpperCase();
-                    const name = $item.find('.product-name').val().trim();
-                    
-                    // 驗證必填欄位
-                    if (!code) {
-                        errors.push('所有產品都必須填寫產品代碼');
-                        return false;
-                    }
-                    if (!name) {
-                        errors.push('所有產品都必須填寫產品名稱');
-                        return false;
-                    }
-                    
-                    // 檢查代碼是否重複
-                    const existingProduct = products.find(p => p.code === code);
-                    if (existingProduct) {
-                        errors.push(`產品代碼 "${code}" 重複，請使用不同的代碼`);
-                        return false;
-                    }
-                    
-                    // 準備產品資料
+                if (code && name) {
                     const product = {
                         code: code,
                         name: name,
-                        is_active: true
+                        category: category,
+                        description: description || null
                     };
                     
-                    // 如果有ID，表示是更新現有產品
-                    if (productId) {
-                        product.id = productId;
+                    if (id) {
+                        product.id = id;
                     }
                     
                     products.push(product);
-                });
-                
-                if (errors.length > 0) {
-                    this.showAlert(errors[0], 'warning');
-                    return;
                 }
-                
-                const response = await fetch('/api/eeform/eeform2/products', {
+            });
+            
+            if (products.length === 0) {
+                admin.showAlert('請至少新增一個產品', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${admin.apiBaseUrl}/products`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ products: products })
+                    body: JSON.stringify({products: products})
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
+                    admin.showAlert('產品設定儲存成功', 'success');
                     $('#productModal').modal('hide');
-                    this.showAlert('產品設定更新成功', 'success');
-                    // 重新載入資料以反映變更
-                    this.loadData();
                 } else {
-                    this.showAlert('更新失敗: ' + result.message, 'danger');
+                    admin.showAlert('儲存失敗: ' + result.message, 'danger');
                 }
             } catch (error) {
-                console.error('更新產品設定失敗:', error);
-                this.showAlert('更新產品設定失敗，請稍後再試', 'danger');
+                console.error('儲存產品設定失敗:', error);
+                admin.showAlert('儲存失敗，請稍後再試', 'danger');
             }
-        }
+        };
 
-
-        async exportSingleForm(id) {
-            try {
-                const response = await fetch(`/api/eeform/eeform2/export_single/${id}`);
-                
-                if (!response.ok) {
-                    throw new Error('匯出請求失敗');
-                }
-                
-                const blob = await response.blob();
-                
-                // 創建下載連結
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                
-                // 設定檔名
-                const now = new Date();
-                const timestamp = now.toISOString().slice(0, 19).replace(/:/g, '-');
-                a.download = `eform02_表單_${id}_${timestamp}.xlsx`;
-                
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-                
-                this.showAlert('表單已成功匯出', 'success');
-            } catch (error) {
-                console.error('匯出表單失敗:', error);
-                this.showAlert('匯出表單失敗，請稍後再試', 'danger');
-            }
-        }
-
-        showAlert(message, type) {
-            // 使用 Sweet Alert 顯示通知
-            if (typeof Swal !== 'undefined') {
-                // 判斷通知類型
-                let icon = 'info';
-                if (type === 'success') icon = 'success';
-                else if (type === 'danger' || type === 'error') icon = 'error';
-                else if (type === 'warning') icon = 'warning';
-                
-                Swal.fire({
-                    title: message,
-                    icon: icon,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    toast: true,
-                    position: 'top-end'
-                });
-            } else {
-                // 備援：使用原本的 Bootstrap alert
-                $('.alert').remove();
-                const alert = `
-                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
-                $('body').prepend(alert);
-                setTimeout(() => {
-                    $('.alert').alert('close');
-                }, 3000);
-            }
-        }
-    }
-
-    // 頁面載入完成後初始化
-    $(document).ready(function() {
-        const admin = new EForm2Admin();
-        window.admin = admin; // 設為全域變數供按鈕使用
-    });
-</script>
+        admin.closeProductModal = function() {
+            $('#productModal').modal('hide');
+        };
+    </script>

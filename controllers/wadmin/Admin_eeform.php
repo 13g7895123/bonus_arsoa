@@ -23,8 +23,13 @@ class Admin_eeform extends MY_Controller
 
     public function eeform_manage_eeform02()
     {
-        $test = 'eeform_manage_eeform2';
-        $data = array('text' => $test);
+        $data = array();
         $this->layout->view('admin/eeform/form2', $data);
+    }
+
+    public function eeform_manage_eeform04()
+    {
+        $data = array();
+        $this->layout->view('admin/eeform/form4', $data);
     }
 }
