@@ -373,21 +373,21 @@ class Eeform5Model extends MY_Model {
             $this->db->from($this->table_occupations);
             $this->db->where('submission_id', $id);
             $occupations_query = $this->db->get();
-            $submission['occupations'] = $occupations_query->result_array();
+            $submission['occupations'] = $occupations_query ? $occupations_query->result_array() : [];
             
             // 取得健康困擾資料  
             $this->db->select('issue_code, issue_name, other_description, severity');
             $this->db->from($this->table_health_issues);
             $this->db->where('submission_id', $id);
             $health_issues_query = $this->db->get();
-            $submission['health_issues'] = $health_issues_query->result_array();
+            $submission['health_issues'] = $health_issues_query ? $health_issues_query->result_array() : [];
             
             // 取得產品推薦資料
             $this->db->select('product_code, product_name, dosage');
             $this->db->from($this->table_product_recommendations);
             $this->db->where('submission_id', $id);  
             $products_query = $this->db->get();
-            $submission['product_recommendations'] = $products_query->result_array();
+            $submission['product_recommendations'] = $products_query ? $products_query->result_array() : [];
             
             return $submission;
             
