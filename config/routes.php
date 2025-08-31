@@ -117,13 +117,15 @@ $route['api/eeform/eeform2/delete/(:any)'] = 'api/eeform/eeform2/delete/$1';
 $route['api/eeform/eeform2/export'] = 'api/eeform/eeform2/export';
 $route['api/eeform/eeform2/export_single/(:any)'] = 'api/eeform/eeform2/export_single/$1';
 
-$route['api/eeform3/health'] = 'api/eeform3/health';
-$route['api/eeform3/submit'] = 'api/eeform3/submit';
-$route['api/eeform3/activity_items'] = 'api/eeform3/activity_items';
-$route['api/eeform3/submissions/(:any)'] = 'api/eeform3/submissions/$1';
-$route['api/eeform3/submission/(:any)'] = 'api/eeform3/submission/$1';
-$route['api/eeform3/submission/(:any)/status'] = 'api/eeform3/update_status/$1';
-$route['api/eeform3/stats/(:any)'] = 'api/eeform3/stats/$1';
+$route['api/eeform3/health'] = 'api/eeform/eeform3/health';
+$route['api/eeform3/submit'] = 'api/eeform/eeform3/submit';
+$route['api/eeform3/activity_items'] = 'api/eeform/eeform3/activity_items';
+$route['api/eeform3/submissions/(:any)'] = 'api/eeform/eeform3/submissions/$1';
+$route['api/eeform3/submission/(:any)'] = 'api/eeform/eeform3/submission/$1';
+$route['api/eeform3/submission/(:any)/status'] = 'api/eeform/eeform3/update_status/$1';
+$route['api/eeform3/stats/(:any)'] = 'api/eeform/eeform3/stats/$1';
+$route['api/eeform3/list'] = 'api/eeform/eeform3/list';
+$route['api/eeform3/export_single/(:any)'] = 'api/eeform/eeform3/export_single/$1';
 
 $route['api/eeform4/health'] = 'api/eeform/eeform4/health';
 $route['api/eeform4/submit'] = 'api/eeform/eeform4/submit';
