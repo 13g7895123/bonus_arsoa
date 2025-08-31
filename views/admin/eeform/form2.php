@@ -543,22 +543,46 @@
             admin.loadData();
             
             // 綁定搜尋框 Enter 事件
-            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            document.getElementById('search-input').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     admin.loadData();
                 }
+            });
+
+            // 綁定編輯商品按鈕
+            document.getElementById('edit-products-btn').addEventListener('click', function() {
+                admin.showProductModal();
+            });
+
+            // 綁定搜尋按鈕
+            document.getElementById('apply-filters').addEventListener('click', function() {
+                admin.loadData();
+            });
+
+            // 綁定重新整理按鈕
+            document.getElementById('refresh-data').addEventListener('click', function() {
+                admin.loadData();
+            });
+
+            // 綁定每頁筆數變更
+            document.getElementById('per-page').addEventListener('change', function() {
+                admin.pageSize = parseInt(this.value);
+                admin.currentPage = 1;
+                admin.loadData();
             });
         };
 
         admin.loadData = function(page = 1) {
             admin.currentPage = page;
-            const searchValue = document.getElementById('searchInput').value.trim();
+            const searchValue = document.getElementById('search-input').value.trim();
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
             
             // 顯示載入中
-            const tbody = document.getElementById('submissionsTableBody');
+            const tbody = document.getElementById('data-table-body');
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="7" class="text-center py-4">
+                    <td colspan="8" class="text-center py-4">
                         <div class="spinner-border" role="status">
                             <span class="sr-only">載入中...</span>
                         </div>
@@ -575,6 +599,14 @@
             
             if (searchValue) {
                 params.append('search', searchValue);
+            }
+            
+            if (startDate) {
+                params.append('start_date', startDate);
+            }
+            
+            if (endDate) {
+                params.append('end_date', endDate);
             }
 
             // 發送請求
@@ -597,7 +629,7 @@
         };
 
         admin.renderTable = function(data) {
-            const tbody = document.getElementById('submissionsTableBody');
+            const tbody = document.getElementById('data-table-body');
             
             if (!data || data.length === 0) {
                 tbody.innerHTML = `
@@ -709,9 +741,10 @@
         };
 
         admin.updateRecordInfo = function(pagination) {
-            const start = (pagination.current_page - 1) * pagination.per_page + 1;
-            const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
-            document.getElementById('recordInfo').textContent = `顯示第 ${start}-${end} 筆，共 ${pagination.total} 筆資料`;
+            // Record info element doesn't exist in reverted layout - commenting out
+            // const start = (pagination.current_page - 1) * pagination.per_page + 1;
+            // const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
+            // document.getElementById('recordInfo').textContent = `顯示第 ${start}-${end} 筆，共 ${pagination.total} 筆資料`;
         };
 
         admin.viewDetail = async function(id) {
@@ -895,7 +928,7 @@
             admin.showAlert(message, 'error');
             
             // 同時在表格中顯示錯誤訊息
-            const tbody = document.getElementById('submissionsTableBody');
+            const tbody = document.getElementById('data-table-body');
             tbody.innerHTML = `
                 <tr>
                     <td colspan="7" class="text-center py-4 text-danger">
