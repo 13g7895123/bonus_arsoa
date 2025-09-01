@@ -347,3 +347,140 @@ ORDER BY (data_length + index_length) DESC;
 - **分類顯示**：基本資料、行動計畫、身體數據、執行項目、其他計畫
 - **素樸風格**：簡潔的視覺設計，無圓角樣式
 - **響應式**：支援各種螢幕尺寸的顯示
+
+## 刪除所有資料的 SQL 語句
+
+### 方法一：利用外鍵級聯刪除（推薦）
+
+```sql
+-- 由於所有子表都設定了 ON DELETE CASCADE，
+-- 只需要刪除主表，相關資料會自動級聯刪除
+DELETE FROM eeform3_submissions;
+
+-- 清空活動項目主表（如需要）
+-- DELETE FROM eeform3_activity_items;
+
+-- 清空審計日誌表（如需要）
+-- DELETE FROM eeform3_audit_log;
+
+-- 清空歷史歸檔表
+-- DELETE FROM eeform3_submissions_archive;
+
+-- 重設自增ID（可選）
+ALTER TABLE eeform3_submissions AUTO_INCREMENT = 1;
+ALTER TABLE eeeform3_body_data AUTO_INCREMENT = 1;
+ALTER TABLE eeform3_activity_items AUTO_INCREMENT = 1;
+ALTER TABLE eeform3_activity_records AUTO_INCREMENT = 1;
+ALTER TABLE eeform3_audit_log AUTO_INCREMENT = 1;
+ALTER TABLE eeform3_submissions_archive AUTO_INCREMENT = 1;
+```
+
+### 方法二：逐步刪除（明確控制）
+
+```sql
+-- 先刪除子表資料（按外鍵依賴順序）
+DELETE FROM eeform3_activity_records;
+DELETE FROM eeeform3_body_data;
+
+-- 刪除主表資料
+DELETE FROM eeform3_submissions;
+
+-- 可選：清空活動項目主表
+-- DELETE FROM eeform3_activity_items;
+
+-- 清空審計日誌表
+DELETE FROM eeform3_audit_log;
+
+-- 清空歷史歸檔表
+DELETE FROM eeform3_submissions_archive;
+
+-- 重設自增ID
+ALTER TABLE eeform3_submissions AUTO_INCREMENT = 1;
+ALTER TABLE eeeform3_body_data AUTO_INCREMENT = 1;
+ALTER TABLE eeform3_activity_items AUTO_INCREMENT = 1;
+ALTER TABLE eeform3_activity_records AUTO_INCREMENT = 1;
+ALTER TABLE eeform3_audit_log AUTO_INCREMENT = 1;
+ALTER TABLE eeform3_submissions_archive AUTO_INCREMENT = 1;
+```
+
+### 方法三：使用 TRUNCATE（最快速，但會重設ID）
+
+```sql
+-- 注意：由於外鍵約束，需要先停用外鍵檢查
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 清空所有資料表
+TRUNCATE TABLE eeform3_activity_records;
+TRUNCATE TABLE eeeform3_body_data;
+TRUNCATE TABLE eeform3_submissions;
+TRUNCATE TABLE eeform3_audit_log;
+TRUNCATE TABLE eeform3_submissions_archive;
+
+-- 可選：清空活動項目主表
+-- TRUNCATE TABLE eeform3_activity_items;
+
+-- 重新啟用外鍵檢查
+SET FOREIGN_KEY_CHECKS = 1;
+```
+
+### 條件式刪除範例
+
+```sql
+-- 刪除特定日期範圍的資料
+DELETE FROM eeform3_submissions 
+WHERE submission_date BETWEEN '2024-01-01' AND '2024-12-31';
+
+-- 刪除特定會員的所有記錄
+DELETE FROM eeform3_submissions 
+WHERE member_id = 'M001234';
+
+-- 刪除草稿狀態的記錄
+DELETE FROM eeform3_submissions 
+WHERE status = 'draft';
+
+-- 刪除指定天數前的舊資料
+DELETE FROM eeform3_submissions 
+WHERE created_at < DATE_SUB(NOW(), INTERVAL 365 DAY);
+
+-- 刪除特定時期的身體數據記錄
+DELETE FROM eeeform3_body_data 
+WHERE measurement_time < DATE_SUB(NOW(), INTERVAL 180 DAY);
+
+-- 刪除舊的審計日誌
+DELETE FROM eeform3_audit_log 
+WHERE created_at < DATE_SUB(NOW(), INTERVAL 90 DAY);
+```
+
+### 重設活動項目為預設資料
+
+```sql
+-- 如果需要重設活動項目主表為預設狀態
+TRUNCATE TABLE eeform3_activity_items;
+
+-- 重新插入預設活動項目
+INSERT INTO eeform3_activity_items (item_name, item_key, is_active) VALUES
+('用手測量', 'hand_measure', TRUE),
+('運動(30分)', 'exercise', TRUE),
+('保健食品', 'health_supplement', TRUE),
+('微微卡', 'weika', TRUE),
+('飲水量', 'water_intake', TRUE);
+```
+
+### 安全刪除前的備份
+
+```sql
+-- 在執行大量刪除前，建議先備份資料
+CREATE TABLE eeform3_backup_before_delete AS
+SELECT 
+    s.*,
+    'eeform3_submissions' as table_name,
+    NOW() as backup_time
+FROM eeform3_submissions s;
+
+-- 同樣方式備份其他表
+CREATE TABLE eeform3_body_data_backup AS SELECT * FROM eeeform3_body_data;
+CREATE TABLE eeform3_activity_records_backup AS SELECT * FROM eeform3_activity_records;
+CREATE TABLE eeform3_activity_items_backup AS SELECT * FROM eeform3_activity_items;
+CREATE TABLE eeform3_audit_log_backup AS SELECT * FROM eeform3_audit_log;
+CREATE TABLE eeform3_archive_backup AS SELECT * FROM eeform3_submissions_archive;
+```

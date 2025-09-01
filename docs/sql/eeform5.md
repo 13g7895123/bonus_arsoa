@@ -368,3 +368,162 @@ INSERT INTO eeform5_product_master (product_code, product_name, product_type, de
 ('CRYSTAL001', '鶴力晶', 'supplement', '每日1次，每次1包', 4),
 ('TEA001', '白鶴靈芝茶', 'tea', '每日1-2包', 5);
 ```
+
+## 刪除所有資料的 SQL 語句
+
+### 方法一：利用外鍵級聯刪除（推薦）
+
+```sql
+-- 由於所有子表都設定了 ON DELETE CASCADE，
+-- 只需要刪除主表，相關資料會自動級聯刪除
+DELETE FROM eeform5_submissions;
+
+-- 如需清空主檔表（注意：這會移除所有預設設定）
+-- DELETE FROM eeform5_health_issues_master;
+-- DELETE FROM eeform5_product_master;
+
+-- 清空歷史歸檔表
+DELETE FROM eeform5_submissions_archive;
+
+-- 重設自增ID（可選）
+ALTER TABLE eeform5_submissions AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_occupations AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_health_issues AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_health_issues_master AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_product_recommendations AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_product_master AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_consultation_records AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_submissions_archive AUTO_INCREMENT = 1;
+```
+
+### 方法二：逐步刪除（明確控制）
+
+```sql
+-- 先刪除子表資料（按外鍵依賴順序）
+DELETE FROM eeform5_occupations;
+DELETE FROM eeform5_health_issues;
+DELETE FROM eeform5_product_recommendations;
+DELETE FROM eeform5_consultation_records;
+
+-- 刪除主表資料
+DELETE FROM eeform5_submissions;
+
+-- 清空歷史歸檔表
+DELETE FROM eeform5_submissions_archive;
+
+-- 可選：清空主檔表（會移除所有預設設定）
+-- DELETE FROM eeform5_health_issues_master;
+-- DELETE FROM eeform5_product_master;
+
+-- 重設自增ID
+ALTER TABLE eeform5_submissions AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_occupations AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_health_issues AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_health_issues_master AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_product_recommendations AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_product_master AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_consultation_records AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_submissions_archive AUTO_INCREMENT = 1;
+```
+
+### 方法三：使用 TRUNCATE（最快速，但會重設ID）
+
+```sql
+-- 注意：由於外鍵約束，需要先停用外鍵檢查
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 清空所有資料表
+TRUNCATE TABLE eeform5_occupations;
+TRUNCATE TABLE eeform5_health_issues;
+TRUNCATE TABLE eeform5_product_recommendations;
+TRUNCATE TABLE eeform5_consultation_records;
+TRUNCATE TABLE eeform5_submissions;
+TRUNCATE TABLE eeform5_submissions_archive;
+
+-- 可選：清空主檔表
+-- TRUNCATE TABLE eeform5_health_issues_master;
+-- TRUNCATE TABLE eeform5_product_master;
+
+-- 重新啟用外鍵檢查
+SET FOREIGN_KEY_CHECKS = 1;
+```
+
+### 條件式刪除範例
+
+```sql
+-- 刪除特定日期範圍的資料
+DELETE FROM eeform5_submissions 
+WHERE submission_date BETWEEN '2024-01-01' AND '2024-12-31';
+
+-- 刪除特定會員的所有記錄
+DELETE FROM eeform5_submissions 
+WHERE member_name = '王小明';
+
+-- 刪除草稿狀態的記錄
+DELETE FROM eeform5_submissions 
+WHERE status = 'draft';
+
+-- 刪除指定天數前的舊資料
+DELETE FROM eeform5_submissions 
+WHERE created_at < DATE_SUB(NOW(), INTERVAL 365 DAY);
+
+-- 刪除特定年齡範圍的記錄
+DELETE FROM eeform5_submissions 
+WHERE YEAR(NOW()) - birth_year BETWEEN 18 AND 30;
+
+-- 刪除特定諮詢記錄
+DELETE FROM eeform5_consultation_records 
+WHERE consultation_date < DATE_SUB(NOW(), INTERVAL 180 DAY);
+```
+
+### 重設主檔為預設資料
+
+```sql
+-- 重設健康困擾主檔為預設狀態
+TRUNCATE TABLE eeform5_health_issues_master;
+
+-- 重新插入預設健康困擾項目
+INSERT INTO eeform5_health_issues_master (issue_code, issue_name, issue_category, sort_order) VALUES
+('HEADACHE', '經常頭痛', 'neurological', 1),
+('ALLERGY', '過敏問題', 'immune', 2),
+('SLEEP', '睡眠不佳', 'mental', 3),
+('JOINT', '骨關節問題', 'musculoskeletal', 4),
+('METABOLIC', '三高問題(血糖/血脂肪/血壓)', 'metabolic', 5),
+('DIGESTIVE', '腸胃健康問題', 'digestive', 6),
+('VISION', '視力問題', 'sensory', 7),
+('IMMUNITY', '免疫力', 'immune', 8),
+('WEIGHT', '體重困擾', 'metabolic', 9),
+('OTHER', '其他', 'other', 10);
+
+-- 重設產品主檔為預設狀態
+TRUNCATE TABLE eeform5_product_master;
+
+-- 重新插入預設產品資料
+INSERT INTO eeform5_product_master (product_code, product_name, product_type, default_dosage, sort_order) VALUES
+('VITAL001', '活力精萃', 'supplement', '每日2次，每次1包', 1),
+('LINGZHI001', '白鶴靈芝EX', 'supplement', '每日1-2次，每次2粒', 2),
+('VITC001', '美力C錠', 'supplement', '每日1次，每次2錠', 3),
+('CRYSTAL001', '鶴力晶', 'supplement', '每日1次，每次1包', 4),
+('TEA001', '白鶴靈芝茶', 'tea', '每日1-2包', 5);
+```
+
+### 安全刪除前的備份
+
+```sql
+-- 在執行大量刪除前，建議先備份資料
+CREATE TABLE eeform5_backup_before_delete AS
+SELECT 
+    s.*,
+    'eeform5_submissions' as table_name,
+    NOW() as backup_time
+FROM eeform5_submissions s;
+
+-- 同樣方式備份其他表
+CREATE TABLE eeform5_occupations_backup AS SELECT * FROM eeform5_occupations;
+CREATE TABLE eeform5_health_issues_backup AS SELECT * FROM eeform5_health_issues;
+CREATE TABLE eeform5_health_issues_master_backup AS SELECT * FROM eeform5_health_issues_master;
+CREATE TABLE eeform5_product_recommendations_backup AS SELECT * FROM eeform5_product_recommendations;
+CREATE TABLE eeform5_product_master_backup AS SELECT * FROM eeform5_product_master;
+CREATE TABLE eeform5_consultation_records_backup AS SELECT * FROM eeform5_consultation_records;
+CREATE TABLE eeform5_archive_backup AS SELECT * FROM eeform5_submissions_archive;
+```

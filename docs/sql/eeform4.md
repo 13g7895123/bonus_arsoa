@@ -263,3 +263,138 @@ INSERT INTO eeform4_product_master (product_code, product_name, product_category
 ('MASK001', '活顏泥膜', 'skincare', 7),
 ('TONER001', '化粧水', 'skincare', 8);
 ```
+
+## 刪除所有資料的 SQL 語句
+
+### 方法一：利用外鍵級聯刪除（推薦）
+
+```sql
+-- 由於相關子表都設定了 ON DELETE CASCADE，
+-- 刪除主表時會自動級聯刪除相關資料
+DELETE FROM eeform4_submissions;
+
+-- 如需清空產品主檔（注意：這會移除所有產品設定）
+-- DELETE FROM eeform4_product_master;
+
+-- 清空歷史歸檔表
+DELETE FROM eeform4_submissions_archive;
+
+-- 重設自增ID（可選）
+ALTER TABLE eeform4_submissions AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_products AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_product_master AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_contact_history AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_health_tracking AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_submissions_archive AUTO_INCREMENT = 1;
+```
+
+### 方法二：逐步刪除（明確控制）
+
+```sql
+-- 先刪除子表資料（按外鍵依賴順序）
+DELETE FROM eeform4_products;
+DELETE FROM eeform4_contact_history;
+DELETE FROM eeform4_health_tracking;
+
+-- 刪除主表資料
+DELETE FROM eeform4_submissions;
+
+-- 清空歷史歸檔表
+DELETE FROM eeform4_submissions_archive;
+
+-- 可選：清空產品主檔（會移除所有產品設定）
+-- DELETE FROM eeform4_product_master;
+
+-- 重設自增ID
+ALTER TABLE eeform4_submissions AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_products AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_product_master AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_contact_history AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_health_tracking AUTO_INCREMENT = 1;
+ALTER TABLE eeform4_submissions_archive AUTO_INCREMENT = 1;
+```
+
+### 方法三：使用 TRUNCATE（最快速，但會重設ID）
+
+```sql
+-- 注意：由於外鍵約束，需要先停用外鍵檢查
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 清空所有資料表
+TRUNCATE TABLE eeform4_products;
+TRUNCATE TABLE eeform4_contact_history;
+TRUNCATE TABLE eeform4_health_tracking;
+TRUNCATE TABLE eeform4_submissions;
+TRUNCATE TABLE eeform4_submissions_archive;
+
+-- 可選：清空產品主檔
+-- TRUNCATE TABLE eeform4_product_master;
+
+-- 重新啟用外鍵檢查
+SET FOREIGN_KEY_CHECKS = 1;
+```
+
+### 條件式刪除範例
+
+```sql
+-- 刪除特定日期範圍的資料
+DELETE FROM eeform4_submissions 
+WHERE submission_date BETWEEN '2024-01-01' AND '2024-12-31';
+
+-- 刪除特定會員的所有記錄
+DELETE FROM eeform4_submissions 
+WHERE member_name = '王小明';
+
+-- 刪除草稿狀態的記錄
+DELETE FROM eeform4_submissions 
+WHERE status = 'draft';
+
+-- 刪除指定天數前的舊資料
+DELETE FROM eeform4_submissions 
+WHERE created_at < DATE_SUB(NOW(), INTERVAL 365 DAY);
+
+-- 刪除特定聯絡歷史記錄
+DELETE FROM eeform4_contact_history 
+WHERE contact_date < DATE_SUB(NOW(), INTERVAL 180 DAY);
+
+-- 刪除特定健康追蹤記錄
+DELETE FROM eeform4_health_tracking 
+WHERE tracking_date < DATE_SUB(NOW(), INTERVAL 180 DAY);
+```
+
+### 重設產品主檔為預設資料
+
+```sql
+-- 如果需要重設產品主檔為預設狀態
+TRUNCATE TABLE eeform4_product_master;
+
+-- 重新插入預設產品資料
+INSERT INTO eeform4_product_master (product_code, product_name, product_category, sort_order) VALUES
+('SUPP001', '活力發酵精萃', 'supplement', 1),
+('SUPP002', '白鶴靈芝EX', 'supplement', 2),
+('SUPP003', '美力C錠', 'supplement', 3),
+('SUPP004', '鶴力晶', 'supplement', 4),
+('TEA001', '白鶴靈芝茶', 'tea', 5),
+('SOAP001', '淨白活膚蜜皂', 'skincare', 6),
+('MASK001', '活顏泥膜', 'skincare', 7),
+('TONER001', '化粧水', 'skincare', 8);
+```
+
+### 安全刪除前的備份
+
+```sql
+-- 在執行大量刪除前，建議先備份資料
+CREATE TABLE eeform4_backup_before_delete AS
+SELECT 
+    s.*,
+    'eeform4_submissions' as table_name,
+    NOW() as backup_time
+FROM eeform4_submissions s;
+
+-- 同樣方式備份其他表
+CREATE TABLE eeform4_products_backup AS SELECT * FROM eeform4_products;
+CREATE TABLE eeform4_contact_history_backup AS SELECT * FROM eeform4_contact_history;
+CREATE TABLE eeform4_health_tracking_backup AS SELECT * FROM eeform4_health_tracking;
+CREATE TABLE eeform4_product_master_backup AS SELECT * FROM eeform4_product_master;
+CREATE TABLE eeform4_archive_backup AS SELECT * FROM eeform4_submissions_archive;
+```
