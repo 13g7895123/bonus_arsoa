@@ -474,7 +474,7 @@
       /*Scroll to top when arrow up clicked END*/
     </script>
     <script>
-      var showTestButton = true;
+      var showTestButton = false;
       
       $(document).ready(function() {
         // 自動填入當天日期

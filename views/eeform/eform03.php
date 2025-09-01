@@ -105,12 +105,12 @@
                                   </div>
 
                                   <div class="col-sm-12 mb20">
-                                    <label class="label-custom">計畫a.</label>
+                                    <label class="label-custom">計畡1.</label>
                                     <input type="text" name="plan_a" class="form-control form-control-custom" placeholder="請填寫目標…" />
                                   </div>
 
                                   <div class="col-sm-12 mb20">
-                                    <label class="label-custom">計畫b.</label>
+                                    <label class="label-custom">計畡2.</label>
                                     <input type="text" name="plan_b" class="form-control form-control-custom" placeholder="請填寫目標…" />
                                   </div>
 
@@ -300,13 +300,13 @@
                 <div class="row">
                   <div class="col-md-4 mb-3">
                     <div class="d-flex align-items-start">
-                      <span class="text-muted mr-3" style="min-width: 70px;">計畫a：</span>
+                      <span class="text-muted mr-3" style="min-width: 70px;">計畡1：</span>
                       <span class="text-dark" id="confirm-plan-a"></span>
                     </div>
                   </div>
                   <div class="col-md-4 mb-3">
                     <div class="d-flex align-items-start">
-                      <span class="text-muted mr-3" style="min-width: 70px;">計畫b：</span>
+                      <span class="text-muted mr-3" style="min-width: 70px;">計畡2：</span>
                       <span class="text-dark" id="confirm-plan-b"></span>
                     </div>
                   </div>
@@ -553,7 +553,7 @@
   </script>
   <script>
     // 控制測試按鈕顯示的變數
-    var showTestButton = true; // 設為 false 隱藏測試按鈕
+    var showTestButton = false; // 設為 false 隱藏測試按鈕
     
     // 頁面載入時檢查是否顯示測試按鈕
     $(document).ready(function() {

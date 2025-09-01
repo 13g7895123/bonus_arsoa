@@ -1222,7 +1222,7 @@
       console.log('[Point 59] jQuery 版本:', typeof $ !== 'undefined' ? $.fn.jquery : '未載入');
       
       // 控制測試按鈕顯示的變數
-      var showTestButton = true; // 設為 false 可隱藏測試按鈕
+      var showTestButton = false; // 設為 false 可隱藏測試按鈕
       
       // 取得目前登入使用者資訊 - Point 60 加強除錯
       console.log('[Point 60] ===== PHP 傳入的原始資料 =====');

@@ -465,7 +465,7 @@
       /*Scroll to top when arrow up clicked END*/
       
       // 控制測試按鈕顯示的變數
-      var showTestButton = true;
+      var showTestButton = false;
       
       // 填入測試資料的函數
       function fillTestData() {
