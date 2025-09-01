@@ -398,3 +398,110 @@ CREATE TABLE eeform1_submissions_backup AS
 SELECT * FROM eeform1_submissions 
 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR);
 ```
+
+## 刪除所有資料的 SQL 語句
+
+### 方法一：利用外鍵級聯刪除（推薦）
+
+```sql
+-- 由於所有子表都設定了 ON DELETE CASCADE，
+-- 只需要刪除主表，相關資料會自動級聯刪除
+DELETE FROM eeform1_submissions;
+
+-- 重設自增ID（可選）
+ALTER TABLE eeform1_submissions AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_occupations AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_lifestyle AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_products AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_skin_issues AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_allergies AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_skin_scores AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_suggestions AUTO_INCREMENT = 1;
+```
+
+### 方法二：逐步刪除（明確控制）
+
+```sql
+-- 先刪除子表資料（按外鍵依賴順序）
+DELETE FROM eeform1_occupations;
+DELETE FROM eeform1_lifestyle;
+DELETE FROM eeform1_products;
+DELETE FROM eeform1_skin_issues;
+DELETE FROM eeform1_allergies;
+DELETE FROM eeform1_skin_scores;
+DELETE FROM eeform1_suggestions;
+
+-- 最後刪除主表資料
+DELETE FROM eeform1_submissions;
+
+-- 重設自增ID
+ALTER TABLE eeform1_submissions AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_occupations AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_lifestyle AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_products AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_skin_issues AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_allergies AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_skin_scores AUTO_INCREMENT = 1;
+ALTER TABLE eeform1_suggestions AUTO_INCREMENT = 1;
+```
+
+### 方法三：使用 TRUNCATE（最快速，但會重設ID）
+
+```sql
+-- 注意：由於外鍵約束，需要先停用外鍵檢查
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 清空所有資料表
+TRUNCATE TABLE eeform1_occupations;
+TRUNCATE TABLE eeform1_lifestyle;
+TRUNCATE TABLE eeform1_products;
+TRUNCATE TABLE eeform1_skin_issues;
+TRUNCATE TABLE eeform1_allergies;
+TRUNCATE TABLE eeform1_skin_scores;
+TRUNCATE TABLE eeform1_suggestions;
+TRUNCATE TABLE eeform1_submissions;
+
+-- 重新啟用外鍵檢查
+SET FOREIGN_KEY_CHECKS = 1;
+```
+
+### 條件式刪除範例
+
+```sql
+-- 刪除特定日期範圍的資料
+DELETE FROM eeform1_submissions 
+WHERE submission_date BETWEEN '2024-01-01' AND '2024-12-31';
+
+-- 刪除特定會員的所有記錄
+DELETE FROM eeform1_submissions 
+WHERE member_id = 'MEMBER001';
+
+-- 刪除草稿狀態的記錄
+DELETE FROM eeform1_submissions 
+WHERE status = 'draft';
+
+-- 刪除指定天數前的舊資料
+DELETE FROM eeform1_submissions 
+WHERE created_at < DATE_SUB(NOW(), INTERVAL 365 DAY);
+```
+
+### 安全刪除前的備份
+
+```sql
+-- 在執行大量刪除前，建議先備份資料
+CREATE TABLE eeform1_backup_before_delete AS
+SELECT 
+    s.*,
+    'eeform1_submissions' as table_name,
+    NOW() as backup_time
+FROM eeform1_submissions s;
+
+-- 同樣方式備份其他表
+CREATE TABLE eeform1_occupations_backup AS SELECT * FROM eeform1_occupations;
+CREATE TABLE eeform1_lifestyle_backup AS SELECT * FROM eeform1_lifestyle;
+CREATE TABLE eeform1_products_backup AS SELECT * FROM eeform1_products;
+CREATE TABLE eeform1_skin_issues_backup AS SELECT * FROM eeform1_skin_issues;
+CREATE TABLE eeform1_allergies_backup AS SELECT * FROM eeform1_allergies;
+CREATE TABLE eeform1_skin_scores_backup AS SELECT * FROM eeform1_skin_scores;
+CREATE TABLE eeform1_suggestions_backup AS SELECT * FROM eeform1_suggestions;
+```
