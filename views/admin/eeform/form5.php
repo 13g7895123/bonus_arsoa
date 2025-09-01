@@ -432,7 +432,7 @@
 <div class="eform5-admin">
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h2>會員服務追蹤管理表(健康諮詢)</h2>
+            <h2>健康諮詢表</h2>
         </div>
     </div>
 
@@ -767,27 +767,6 @@
     admin.renderDetailModal = function(data) {
         const container = document.getElementById('detailContent');
         
-        // 系統資料區塊
-        let systemDataHtml = `
-            <div class="border mb-6 rounded" style="padding: 1.5rem;">
-                <h6 class="mb-3">系統資料</h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">記錄ID</label>
-                            <input type="text" class="form-control" value="${data.id || ''}" readonly>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">建立時間</label>
-                            <input type="text" class="form-control" value="${data.created_at || ''}" readonly>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
         // 基本資料區塊
         let basicDataHtml = `
             <div class="border mb-6 rounded" style="padding: 1.5rem;">
@@ -950,28 +929,7 @@
         
         productsHtml += '</div>';
 
-        // 提交資訊區塊
-        let submissionHtml = `
-            <div class="border mb-6 rounded" style="padding: 1.5rem;">
-                <h6 class="mb-3">提交資訊</h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">提交日期</label>
-                            <input type="text" class="form-control" value="${data.submission_date || ''}" readonly>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">狀態</label>
-                            <input type="text" class="form-control" value="${data.status || 'submitted'}" readonly>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        container.innerHTML = systemDataHtml + basicDataHtml + occupationHtml + medicalHtml + healthHtml + testHtml + productsHtml + submissionHtml;
+        container.innerHTML = basicDataHtml + occupationHtml + medicalHtml + healthHtml + testHtml + productsHtml;
     };
 
     admin.closeDetailModal = function() {
