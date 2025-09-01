@@ -80,3 +80,9 @@
 60. 承57.為甚麼我進頁面沒有看到打API確認的request
 61. 為甚麼/eform/eform1的路徑顯示/eform/eform2的表格
 62. 請幫我把57製作在/eform/eform1的功能，同步製作到/eform/eform2、/eform/eform4中
+63. 幫我移除/wadmin/admin_eeform/eeform_manage_eeform05這個頁面表單詳細資料中的系統資料與提交資訊兩個區塊
+64. 幫我完成以下功能
+    - 先幫我add commit push
+    - 關閉/eform/eform1~/eform/eform5的填入測試資料的功能
+    - /eform/eform3的計畫A改成計畫1，B改成2
+    - 幫我add commit push

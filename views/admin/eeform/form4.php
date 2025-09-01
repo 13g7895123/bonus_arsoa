@@ -88,18 +88,18 @@
     }
     
     .table-hover tbody tr:hover {
-        background-color: rgba(40,167,69,0.05) !important;
+        background-color: rgba(0,123,255,0.05) !important;
     }
     
     .pagination .page-link {
-        color: #28a745;
+        color: #007bff;
         border-color: #dee2e6;
         padding: 0.5rem 0.75rem;
     }
     
     .pagination .page-item.active .page-link {
-        background-color: #28a745;
-        border-color: #28a745;
+        background-color: #007bff !important;
+        border-color: #007bff !important;
     }
     
     .btn-sm {
@@ -109,13 +109,14 @@
     }
     
     .btn-outline-primary {
-        color: #28a745;
-        border-color: #28a745;
+        color: #007bff;
+        border-color: #007bff;
     }
     
     .btn-outline-primary:hover {
-        background-color: #28a745;
-        border-color: #28a745;
+        background-color: #0056b3 !important;
+        border-color: #004085 !important;
+        color: #fff !important;
     }
     
     .search-section {
@@ -238,7 +239,7 @@
     
     /* Special styling for product quantities */
     #detailModal .form-group strong {
-        color: #28a745;
+        color: #007bff;
         font-size: 1.1rem;
     }
     
@@ -297,18 +298,18 @@
         margin-top: 8px;
     }
     
-    /* Search button enhancement - matching form2 style with green theme */
+    /* Search button enhancement - matching form2 style */
     #apply-filters {
         height: calc(1.5em + 0.75rem + 2px);
         font-weight: 600;
         border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(40,167,69,0.3);
+        box-shadow: 0 2px 4px rgba(0,123,255,0.3);
         transition: all 0.2s ease;
     }
     
     #apply-filters:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(40,167,69,0.4);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.4);
     }
     
     .table th,
@@ -350,9 +351,9 @@
     .eform4-admin .form-control:focus {
         color: #495057 !important;
         background-color: #fff !important;
-        border-color: #80c7a3 !important;
+        border-color: #80bdff !important;
         outline: 0 !important;
-        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
     }
     
     /* Button hover effects - darker colors */
@@ -381,11 +382,6 @@
         border-color: #b21f2d !important;
     }
     
-    .btn-outline-success:hover {
-        background-color: #1e7e34 !important;
-        border-color: #1c7430 !important;
-        color: #fff !important;
-    }
     
     /* Custom margin-bottom for better block spacing - matching form2 */
     .mb-6 {
@@ -425,7 +421,7 @@
     }
     
     .spinner-border {
-        color: #28a745 !important;
+        color: #007bff !important;
     }
     
     /* Product modal scrollable styles - matching form2 */
@@ -485,7 +481,7 @@
         <div class="col-12 d-flex justify-content-between align-items-center">
             <h2>會員服務追蹤管理表(保健)</h2>
             <div class="header-buttons">
-                <button class="btn btn-outline-success" id="edit-products-btn">
+                <button class="btn btn-outline-primary" id="edit-products-btn">
                     <i class="lnr lnr-cog"></i> 編輯商品
                 </button>
             </div>
@@ -518,7 +514,7 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-success w-100" id="apply-filters" style="margin-top: 25px">
+                <button class="btn btn-primary w-100" id="apply-filters" style="margin-top: 25px">
                     <i class="lnr lnr-magnifier"></i> 搜尋
                 </button>
             </div>
@@ -1009,7 +1005,7 @@
                 text: message,
                 icon: icon,
                 confirmButtonText: '確定',
-                confirmButtonColor: '#28a745'
+                confirmButtonColor: '#007bff'
             });
         } else {
             alert(message);
