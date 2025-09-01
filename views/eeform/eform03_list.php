@@ -834,8 +834,8 @@
         if (data.water_intake == 1 || data.water_intake === true) $('#form03view .form-check-input').eq(4).prop('checked', true);
       }
       
-      $('#form03view .card .row .col-sm-12:has(label:contains("計畫a.")) p').text(data.plans[0].plan_content || '未填寫');
-      $('#form03view .card .row .col-sm-12:has(label:contains("計畫b.")) p').text(data.plans[1].plan_content || '未填寫');
+      $('#form03view .card .row .col-sm-12:has(label:contains("計畫1.")) p').text(data.plans[0].plan_content || '未填寫');
+      $('#form03view .card .row .col-sm-12:has(label:contains("計畫2.")) p').text(data.plans[1].plan_content || '未填寫');
       $('#form03view .card .row .col-sm-12:has(label:contains("其他")) p').text(data.plans[2].plan_content || '未填寫');
     }
     
@@ -898,8 +898,8 @@
         if (data.water_intake == 1 || data.water_intake === true) $('#form03edit .form-check-input').eq(4).prop('checked', true);
       }
             
-      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a.")) input').val(data.plans[0].plan_content || '');
-      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b.")) input').val(data.plans[1].plan_content || '');
+      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫1.")) input').val(data.plans[0].plan_content || '');
+      $('#form03edit .card .row .col-sm-12:has(label:contains("計畫2.")) input').val(data.plans[1].plan_content || '');
       $('#form03edit .card .row .col-sm-12:has(label:contains("其他")) input').val(data.plans[2].plan_content || '');
     }
     
@@ -990,8 +990,8 @@
         water_intake: $('#form03edit .form-check-input:eq(4)').is(':checked') ? 1 : 0,
         
         // 其他計畫 - 使用更精確的選擇器（注意標籤包含點號）
-        plan_a: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫a.")) input').val() || '',
-        plan_b: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫b.")) input').val() || '',
+        plan_a: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫1.")) input').val() || '',
+        plan_b: $('#form03edit .card .row .col-sm-12:has(label:contains("計畫2.")) input').val() || '',
         other: $('#form03edit .card .row .col-sm-12:has(label:contains("其他")) input').val() || ''
       };
     }

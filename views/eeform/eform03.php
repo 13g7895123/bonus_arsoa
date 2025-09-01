@@ -105,12 +105,12 @@
                                   </div>
 
                                   <div class="col-sm-12 mb20">
-                                    <label class="label-custom">計畡1.</label>
+                                    <label class="label-custom">計畫1.</label>
                                     <input type="text" name="plan_a" class="form-control form-control-custom" placeholder="請填寫目標…" />
                                   </div>
 
                                   <div class="col-sm-12 mb20">
-                                    <label class="label-custom">計畡2.</label>
+                                    <label class="label-custom">計畫2.</label>
                                     <input type="text" name="plan_b" class="form-control form-control-custom" placeholder="請填寫目標…" />
                                   </div>
 
