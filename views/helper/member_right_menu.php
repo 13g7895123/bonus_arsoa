@@ -104,7 +104,9 @@ if ($active > '') {
     <div class="card-body">
       <a href="<?php echo base_url('eform/eform1_list'); ?>" class="d-none btn btn-outline-secondary btn-block text-left">肌膚諮詢記錄表</a>
       <a href="<?php echo base_url('eform/eform2'); ?>" class="d-none btn btn-outline-secondary btn-block text-left">會員服務追蹤表(肌膚)</a>
+<?php endif; ?>
       <a href="<?php echo base_url('eform/eform3_list') . "?code=" . $this->session->userdata('member_session')['c_no'] . "&name=" . urlencode($this->session->userdata('member_session')['c_name']); ?>" class="btn btn-outline-secondary btn-block text-left">微微卡日記</a>
+<?php if ($this->session->userdata('member_session')['c_no'] === '000000'): ?>
       <a href="<?php echo base_url('eform/eform4'); ?>" class="d-none btn btn-outline-secondary btn-block text-left">會員服務追蹤表(保健)</a>
       <a href="<?php echo base_url('eform/eform5'); ?>" class="d-none btn btn-outline-secondary btn-block text-left">健康諮詢表</a>
     </div>

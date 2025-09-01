@@ -12,7 +12,7 @@
                   <div class="container">
                     <form action="#" method="POST" class="text-left" id="eform03">
                       <div class="row">
-                        <div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
+                        <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
                         <div class="col-sm-4 mb30">
                           <label class="label-custom">會員姓名</label>
@@ -630,6 +630,19 @@
         }
       });
     }
+
+    $(document).ready(function() {
+      // 自動填入當天日期
+      var today = new Date();
+      var currentDate = today.getFullYear() + '-' + 
+                        String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                        String(today.getDate()).padStart(2, '0');
+      
+      $('#current-date').text(currentDate);
+      $('input[name="join_date"]').val(currentDate);
+      
+      if (showTestButton) $('#testDataButton').show();
+    });
     
     // 填入測試資料的函數
     function fillTestData() {
