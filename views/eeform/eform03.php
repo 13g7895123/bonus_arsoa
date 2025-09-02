@@ -15,12 +15,20 @@
                         <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
                         <div class="col-sm-4 mb30">
-                          <label class="label-custom">會員姓名</label>
+                          <label class="label-custom required-field">會員姓名 <span class="text-danger">*</span></label>
                           <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
                         </div>
                         <div class="col-sm-4 mb30">
                           <label class="label-custom">會員編號</label>
                           <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" required />
+                        </div>
+                        <div class="col-sm-4 mb30">
+                          <label class="label-custom required-field">生日 <span class="text-danger">*</span></label>
+                          <input type="date" name="birthday" class="form-control form-control-custom" placeholder="請選擇生日" required />
+                        </div>
+                        <div class="col-sm-4 mb30">
+                          <label class="label-custom required-field">電話 <span class="text-danger">*</span></label>
+                          <input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填寫電話" pattern="[0-9]{9,10}" required />
                         </div>
                         <div class="col-sm-2 mb30">
                           <label class="label-custom">年齡</label>
@@ -191,6 +199,18 @@
                     <div class="d-flex align-items-center">
                       <span class="text-muted mr-3" style="min-width: 60px;">編號：</span>
                       <span class="text-dark" id="confirm-member-id"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 60px;">生日：</span>
+                      <span class="text-dark" id="confirm-birthday"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 60px;">電話：</span>
+                      <span class="text-dark" id="confirm-phone"></span>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
@@ -530,6 +550,16 @@
     .modal-body::-webkit-scrollbar-thumb:hover {
       background: #a8a8a8;
     }
+    
+    /* Required field labels in red */
+    .required-field {
+      color: #dc3545 !important;
+      font-weight: 500;
+    }
+    
+    .required-field .text-danger {
+      font-weight: bold;
+    }
   </style>
 
   <script>
@@ -623,12 +653,12 @@
                 $('input[name="action_plan_2"]').val(firstSubmission.action_plan_2).attr('readonly', true).css('background-color', '#f8f9fa');
               }
               
-              // 自動填入年齡和身高（第二次填寫時）
+              // 自動填入年齡和身高（第二次填寫時）並設為唯讀
               if (firstSubmission.age && !$('input[name="age"]').val()) {
-                $('input[name="age"]').val(firstSubmission.age);
+                $('input[name="age"]').val(firstSubmission.age).attr('readonly', true).css('background-color', '#f8f9fa');
               }
               if (firstSubmission.height && !$('input[name="height"]').val()) {
-                $('input[name="height"]').val(firstSubmission.height);
+                $('input[name="height"]').val(firstSubmission.height).attr('readonly', true).css('background-color', '#f8f9fa');
               }
             }
           }
@@ -655,6 +685,8 @@
     // 填入測試資料的函數
     function fillTestData() {
       // 會員姓名與編號已自動填入，不需要在測試資料中覆蓋
+      $('input[name="birthday"]').val('1989-01-15');
+      $('input[name="phone"]').val('0912345678');
       $('input[name="age"]').val('35');
       $('input[name="height"]').val('170');
       
@@ -685,11 +717,23 @@
       // 驗證必填欄位
       var memberName = $('input[name="member_name"]').val();
       var memberId = $('input[name="member_id"]').val();
+      var birthday = $('input[name="birthday"]').val();
+      var phone = $('input[name="phone"]').val();
       var age = $('input[name="age"]').val();
       var height = $('input[name="height"]').val();
       var goal = $('input[name="goal"]').val();
 
-      if (!memberName || !memberId || !age || !height || !goal) {
+      if (!memberName || !birthday || !phone) {
+        Swal.fire({
+          title: '欄位未完整',
+          text: '請填寫所有必填欄位（姓名、生日、電話）',
+          icon: 'warning',
+          confirmButtonText: '確定'
+        });
+        return;
+      }
+
+      if (!memberId || !age || !height || !goal) {
         Swal.fire({
           title: '欄位未完整',
           text: '請填寫所有必填欄位',
@@ -702,6 +746,8 @@
       // 填入確認視窗的內容
       $('#confirm-member-name').text(memberName);
       $('#confirm-member-id').text(memberId);
+      $('#confirm-birthday').text(birthday);
+      $('#confirm-phone').text(phone);
       $('#confirm-age').text(age);
       $('#confirm-height').text(height);
       $('#confirm-goal').text(goal);
@@ -753,6 +799,8 @@
       var formData = {
         member_name: $('input[name="member_name"]').val(),
         member_id: $('input[name="member_id"]').val(),
+        birthday: $('input[name="birthday"]').val(),
+        phone: $('input[name="phone"]').val(),
         age: $('input[name="age"]').val(),
         height: $('input[name="height"]').val(),
         goal: $('input[name="goal"]').val(),

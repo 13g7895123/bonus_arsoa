@@ -31,6 +31,8 @@ class Eeform3Model extends MY_Model {
         $required_fields = [
             'member_name' => '會員姓名',
             'member_id' => '會員編號',
+            'birthday' => '生日',
+            'phone' => '電話',
             'age' => '年齡',
             'height' => '身高',
             'goal' => '目標'
@@ -93,6 +95,21 @@ class Eeform3Model extends MY_Model {
             }
         }
         
+        // 電話格式驗證
+        if (!empty($data['phone'])) {
+            if (!preg_match('/^[0-9]{9,10}$/', $data['phone'])) {
+                $errors[] = '電話號碼必須為9-10位數字';
+            }
+        }
+        
+        // 生日格式驗證
+        if (!empty($data['birthday'])) {
+            $date_parts = explode('-', $data['birthday']);
+            if (count($date_parts) != 3 || !checkdate($date_parts[1] ?? 0, $date_parts[2] ?? 0, $date_parts[0] ?? 0)) {
+                $errors[] = '生日格式不正確';
+            }
+        }
+        
         // 字串長度驗證
         $string_fields = [
             'member_name' => ['max' => 100, 'label' => '會員姓名'],
@@ -133,6 +150,8 @@ class Eeform3Model extends MY_Model {
             $submission_data = [
                 'member_name' => $cleaned_data['member_name'],
                 'member_id' => $cleaned_data['member_id'],
+                'birthday' => $cleaned_data['birthday'],
+                'phone' => $cleaned_data['phone'],
                 'age' => (int)$cleaned_data['age'],
                 'height' => (int)$cleaned_data['height'],
                 'goal' => $cleaned_data['goal'],

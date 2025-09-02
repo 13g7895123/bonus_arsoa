@@ -12,7 +12,8 @@
       "Bash(mysql:*)",
       "Bash(git checkout:*)",
       "Bash(git rm:*)",
-      "Bash(diff:*)"
+      "Bash(diff:*)",
+      "Bash(tail:*)"
     ],
     "deny": [],
     "ask": []

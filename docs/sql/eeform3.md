@@ -11,6 +11,8 @@ CREATE TABLE eeeform3_submissions (
     id INT PRIMARY KEY AUTO_INCREMENT,
     member_name VARCHAR(100) NOT NULL COMMENT '會員姓名',
     member_id VARCHAR(50) NOT NULL COMMENT '會員編號',
+    birthday DATE NOT NULL COMMENT '生日',
+    phone VARCHAR(20) NOT NULL COMMENT '電話',
     age TINYINT UNSIGNED NOT NULL COMMENT '年齡',
     height SMALLINT UNSIGNED NOT NULL COMMENT '身高(cm)',
     goal TEXT NOT NULL COMMENT '目標',
@@ -483,4 +485,18 @@ CREATE TABLE eeform3_activity_records_backup AS SELECT * FROM eeform3_activity_r
 CREATE TABLE eeform3_activity_items_backup AS SELECT * FROM eeform3_activity_items;
 CREATE TABLE eeform3_audit_log_backup AS SELECT * FROM eeform3_audit_log;
 CREATE TABLE eeform3_archive_backup AS SELECT * FROM eeform3_submissions_archive;
+```
+
+### ALTER TABLE statements for adding new columns
+
+```sql
+-- 為現有的 eeform3_submissions 表新增 birthday 和 phone 欄位
+ALTER TABLE eeform3_submissions 
+ADD COLUMN birthday DATE AFTER member_id,
+ADD COLUMN phone VARCHAR(20) AFTER birthday;
+
+-- 如果需要設定為必填，請先確認現有資料都有值，或使用預設值
+-- ALTER TABLE eeform3_submissions 
+-- MODIFY COLUMN birthday DATE NOT NULL DEFAULT '2000-01-01',
+-- MODIFY COLUMN phone VARCHAR(20) NOT NULL DEFAULT '0900000000';
 ```
