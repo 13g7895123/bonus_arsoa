@@ -86,3 +86,6 @@
     - 關閉/eform/eform1~/eform/eform5的填入測試資料的功能
     - /eform/eform3的計畫A改成計畫1，B改成2
     - 幫我add commit push
+65. 幫我讀取docs\sql\eeform1.md，針對這個功能的sql寫一個刪除所有資料的sql加在最下面
+66. 幫我參考65點，同步新增docs\sql\eeform2.md~docs\sql\eeform5.md的部分
+67. /eform/eform3這個頁面，如果第二次填的話，請幫我自動帶入年齡與身高

@@ -622,6 +622,14 @@
               if (firstSubmission.action_plan_2 && !$('input[name="action_plan_2"]').val()) {
                 $('input[name="action_plan_2"]').val(firstSubmission.action_plan_2).attr('readonly', true).css('background-color', '#f8f9fa');
               }
+              
+              // 自動填入年齡和身高（第二次填寫時）
+              if (firstSubmission.age && !$('input[name="age"]').val()) {
+                $('input[name="age"]').val(firstSubmission.age);
+              }
+              if (firstSubmission.height && !$('input[name="height"]').val()) {
+                $('input[name="height"]').val(firstSubmission.height);
+              }
             }
           }
         },

@@ -948,7 +948,7 @@
             data.plans.forEach((plan, index) => {
                 let planTitle = '';
                 switch(plan.plan_type) {
-                    case 'plan_a': planTitle = '計畫1; break;
+                    case 'plan_a': planTitle = '計畫1'; break;
                     case 'plan_b': planTitle = '計畫2'; break;
                     case 'other': planTitle = '其他計畫'; break;
                     default: planTitle = '計畫' + (index + 1);
