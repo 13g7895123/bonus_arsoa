@@ -20,23 +20,15 @@
                         </div>
                         <div class="col-sm-4 mb30">
                           <label class="label-custom">會員編號</label>
-                          <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" required />
-                        </div>
-                        <div class="col-sm-4 mb30">
-                          <label class="label-custom required-field">生日 <span class="text-danger">*</span></label>
-                          <input type="date" name="birthday" class="form-control form-control-custom" placeholder="請選擇生日" required />
-                        </div>
-                        <div class="col-sm-4 mb30">
-                          <label class="label-custom required-field">電話 <span class="text-danger">*</span></label>
-                          <input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填寫電話" pattern="[0-9]{9,10}" required />
+                          <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" />
                         </div>
                         <div class="col-sm-2 mb30">
                           <label class="label-custom">年齡</label>
-                          <input type="number" name="age" class="form-control form-control-custom" placeholder="限填數字" required />
+                          <input type="number" name="age" class="form-control form-control-custom" placeholder="限填數字" />
                         </div>
                         <div class="col-sm-2 mb30">
                           <label class="label-custom">身高</label>
-                          <input type="number" name="height" class="form-control form-control-custom" placeholder="限填數字" required />
+                          <input type="number" name="height" class="form-control form-control-custom" placeholder="限填數字" />
                         </div>
                         <div class="col-sm-12 mb30">
                           <label class="label-custom">目標</label>
@@ -199,18 +191,6 @@
                     <div class="d-flex align-items-center">
                       <span class="text-muted mr-3" style="min-width: 60px;">編號：</span>
                       <span class="text-dark" id="confirm-member-id"></span>
-                    </div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <div class="d-flex align-items-center">
-                      <span class="text-muted mr-3" style="min-width: 60px;">生日：</span>
-                      <span class="text-dark" id="confirm-birthday"></span>
-                    </div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <div class="d-flex align-items-center">
-                      <span class="text-muted mr-3" style="min-width: 60px;">電話：</span>
-                      <span class="text-dark" id="confirm-phone"></span>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
@@ -685,8 +665,6 @@
     // 填入測試資料的函數
     function fillTestData() {
       // 會員姓名與編號已自動填入，不需要在測試資料中覆蓋
-      $('input[name="birthday"]').val('1989-01-15');
-      $('input[name="phone"]').val('0912345678');
       $('input[name="age"]').val('35');
       $('input[name="height"]').val('170');
       
@@ -717,16 +695,14 @@
       // 驗證必填欄位
       var memberName = $('input[name="member_name"]').val();
       var memberId = $('input[name="member_id"]').val();
-      var birthday = $('input[name="birthday"]').val();
-      var phone = $('input[name="phone"]').val();
       var age = $('input[name="age"]').val();
       var height = $('input[name="height"]').val();
       var goal = $('input[name="goal"]').val();
 
-      if (!memberName || !birthday || !phone) {
+      if (!memberName) {
         Swal.fire({
           title: '欄位未完整',
-          text: '請填寫所有必填欄位（姓名、生日、電話）',
+          text: '請填寫會員姓名',
           icon: 'warning',
           confirmButtonText: '確定'
         });
@@ -746,8 +722,6 @@
       // 填入確認視窗的內容
       $('#confirm-member-name').text(memberName);
       $('#confirm-member-id').text(memberId);
-      $('#confirm-birthday').text(birthday);
-      $('#confirm-phone').text(phone);
       $('#confirm-age').text(age);
       $('#confirm-height').text(height);
       $('#confirm-goal').text(goal);
@@ -799,8 +773,6 @@
       var formData = {
         member_name: $('input[name="member_name"]').val(),
         member_id: $('input[name="member_id"]').val(),
-        birthday: $('input[name="birthday"]').val(),
-        phone: $('input[name="phone"]').val(),
         age: $('input[name="age"]').val(),
         height: $('input[name="height"]').val(),
         goal: $('input[name="goal"]').val(),
