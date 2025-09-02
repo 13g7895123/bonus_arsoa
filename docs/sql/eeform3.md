@@ -487,4 +487,4 @@ CREATE TABLE eeform3_archive_backup AS SELECT * FROM eeform3_submissions_archive
 
 ### 注意事項
 
-此表單設計僅會員姓名為必填欄位，其他欄位均為可選填。如需修改必填欄位，請同步更新前端驗證和後端Model驗證邏輯。
+此表單設計所有欄位均為可選填，會員姓名與會員編號在前端為唯讀欄位。如需修改必填欄位，請同步更新前端驗證和後端Model驗證邏輯。

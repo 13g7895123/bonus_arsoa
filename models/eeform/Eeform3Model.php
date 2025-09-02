@@ -27,10 +27,8 @@ class Eeform3Model extends MY_Model {
     public function validate_submission_data($data) {
         $errors = [];
         
-        // 必填欄位驗證
-        $required_fields = [
-            'member_name' => '會員姓名'
-        ];
+        // 必填欄位驗證 (目前沒有必填欄位)
+        $required_fields = [];
         
         foreach ($required_fields as $field => $label) {
             if (empty($data[$field])) {

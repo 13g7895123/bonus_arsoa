@@ -15,12 +15,12 @@
                         <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
                         <div class="col-sm-4 mb30">
-                          <label class="label-custom required-field">會員姓名 <span class="text-danger">*</span></label>
-                          <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
+                          <label class="label-custom">會員姓名</label>
+                          <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" readonly style="background-color: #f8f9fa;" />
                         </div>
                         <div class="col-sm-4 mb30">
                           <label class="label-custom">會員編號</label>
-                          <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" />
+                          <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" readonly style="background-color: #f8f9fa;" />
                         </div>
                         <div class="col-sm-2 mb30">
                           <label class="label-custom">年齡</label>
@@ -698,16 +698,6 @@
       var age = $('input[name="age"]').val();
       var height = $('input[name="height"]').val();
       var goal = $('input[name="goal"]').val();
-
-      if (!memberName) {
-        Swal.fire({
-          title: '欄位未完整',
-          text: '請填寫會員姓名',
-          icon: 'warning',
-          confirmButtonText: '確定'
-        });
-        return;
-      }
 
       if (!memberId || !age || !height || !goal) {
         Swal.fire({
