@@ -546,7 +546,7 @@
     };
 
     // 頁面載入完成後初始化
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
         admin.init();
     });
 
@@ -555,24 +555,24 @@
         admin.loadData();
         
         // 綁定搜尋框 Enter 事件
-        document.getElementById('search-input').addEventListener('keypress', function(e) {
+        $('#search-input').on('keypress', function(e) {
             if (e.key === 'Enter') {
                 admin.loadData();
             }
         });
 
         // 綁定搜尋按鈕
-        document.getElementById('apply-filters').addEventListener('click', function() {
+        $('#apply-filters').on('click', function() {
             admin.loadData();
         });
 
         // 綁定重新整理按鈕
-        document.getElementById('refresh-data').addEventListener('click', function() {
+        $('#refresh-data').on('click', function() {
             admin.loadData();
         });
 
         // 綁定每頁筆數變更
-        document.getElementById('per-page').addEventListener('change', function() {
+        $('#per-page').on('change', function() {
             admin.pageSize = parseInt(this.value);
             admin.currentPage = 1;
             admin.loadData();
@@ -581,13 +581,13 @@
 
     admin.loadData = function(page = 1) {
         admin.currentPage = page;
-        const searchValue = document.getElementById('search-input').value.trim();
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
+        const searchValue = $('#search-input').val().trim();
+        const startDate = $('#start-date').val();
+        const endDate = $('#end-date').val();
         
         // 顯示載入中
-        const tbody = document.getElementById('data-table-body');
-        tbody.innerHTML = `
+        const tbody = $('#data-table-body');
+        tbody.html(`
             <tr>
                 <td colspan="8" class="text-center py-4">
                     <div class="spinner-border" role="status">
@@ -596,7 +596,7 @@
                     <div class="mt-2">正在載入資料...</div>
                 </td>
             </tr>
-        `;
+        `);
 
         // 構建請求參數
         const params = new URLSearchParams({
@@ -617,9 +617,11 @@
         }
 
         // 發送請求
-        fetch(`${admin.apiBaseUrl}/list?${params.toString()}`)
-            .then(response => response.json())
-            .then(data => {
+        $.ajax({
+            url: `${admin.apiBaseUrl}/list?${params.toString()}`,
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
                 if (data.success) {
                     admin.renderTable(data.data.data);
                     admin.totalRecords = data.data.pagination.total;
@@ -628,30 +630,31 @@
                 } else {
                     admin.showError('載入資料失敗: ' + data.message);
                 }
-            })
-            .catch(error => {
+            },
+            error: function(xhr, status, error) {
                 console.error('載入資料失敗:', error);
                 admin.showError('載入資料失敗，請稍後再試');
-            });
+            }
+        });
     };
 
     admin.renderTable = function(data) {
-        const tbody = document.getElementById('data-table-body');
+        const tbody = $('#data-table-body');
         
         if (!data || data.length === 0) {
-            tbody.innerHTML = `
+            tbody.html(`
                 <tr>
                     <td colspan="8" class="text-center py-4 text-muted">
                         <i class="lnr lnr-warning" style="font-size: 2rem;"></i>
                         <div class="mt-2">暫無資料</div>
                     </td>
                 </tr>
-            `;
+            `);
             return;
         }
 
-        tbody.innerHTML = '';
-        data.forEach(item => {
+        tbody.html('');
+        $.each(data, function(index, item) {
             // Helper function to escape HTML
             const escapeHtml = (text) => {
                 if (!text) return '';
@@ -674,7 +677,7 @@
                 'water_intake': '飲水'
             };
             
-            activities.forEach(activity => {
+            $.each(activities, function(index, activity) {
                 if (item[activity]) {
                     activityBadges += `<span class="activity-badge">${activityNames[activity]}</span>`;
                 }
@@ -700,7 +703,7 @@
                     </td>
                 </tr>
             `;
-            tbody.innerHTML += row;
+            tbody.append(row);
         });
         
         // Initialize tooltips for new buttons
@@ -708,9 +711,9 @@
     };
 
     admin.renderPagination = function(pagination) {
-        const paginationElement = document.getElementById('pagination');
+        const paginationElement = $('#pagination');
         if (!pagination || pagination.total_pages <= 1) {
-            paginationElement.innerHTML = '';
+            paginationElement.html('');
             return;
         }
 
@@ -761,32 +764,35 @@
             `;
         }
 
-        paginationElement.innerHTML = paginationHtml;
+        paginationElement.html(paginationHtml);
     };
 
     admin.updateRecordInfo = function(pagination) {
         // Record info can be added here if needed
     };
 
-    admin.viewDetail = async function(id) {
-        try {
-            const response = await fetch(`${admin.apiBaseUrl}/submission/${id}`);
-            const result = await response.json();
-            
-            if (result.success && result.data) {
-                admin.renderDetailModal(result.data);
-                $('#detailModal').modal('show');
-            } else {
-                admin.showAlert('載入詳細資料失敗: ' + (result.message || '未知錯誤'), 'danger');
+    admin.viewDetail = function(id) {
+        $.ajax({
+            url: `${admin.apiBaseUrl}/submission/${id}`,
+            method: 'GET',
+            dataType: 'json',
+            success: function(result) {
+                if (result.success && result.data) {
+                    admin.renderDetailModal(result.data);
+                    $('#detailModal').modal('show');
+                } else {
+                    admin.showAlert('載入詳細資料失敗: ' + (result.message || '未知錯誤'), 'danger');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('載入詳細資料失敗:', error);
+                admin.showAlert('載入詳細資料失敗，請稍後再試', 'danger');
             }
-        } catch (error) {
-            console.error('載入詳細資料失敗:', error);
-            admin.showAlert('載入詳細資料失敗，請稍後再試', 'danger');
-        }
+        });
     };
 
     admin.renderDetailModal = function(data) {
-        const container = document.getElementById('detailContent');
+        const container = $('#detailContent');
         
         // 系統資料區塊
         let systemDataHtml = `
@@ -911,23 +917,36 @@
         `;
         
         const activityNames = {
-            'hand_measure': '用手測量飲食',
+            'hand_measure': '用手測量',
             'exercise': '運動(30分)',
             'health_supplement': '保健食品',
             'weika': '微微卡',
-            'water_intake': '飲水量記錄'
+            'water_intake': '飲水量'
         };
         
         let activityItems = [];
-        Object.keys(activityNames).forEach(key => {
-            if (data[key]) {
-                activityItems.push(activityNames[key]);
-            }
-        });
+        
+        // 從 activity_summary 中獲取活動資料
+        if (data.activity_summary && Array.isArray(data.activity_summary)) {
+            $.each(data.activity_summary, function(index, activity) {
+                if (activity.completed) {
+                    activityItems.push(activity.name);
+                }
+            });
+        }
+        // 如果沒有 activity_summary，嘗試從 activities 中獲取
+        else if (data.activities && Array.isArray(data.activities)) {
+            $.each(data.activities, function(index, activity) {
+                let activityName = activityNames[activity.item_key] || activity.item_name;
+                if ($.inArray(activityName, activityItems) === -1) {
+                    activityItems.push(activityName);
+                }
+            });
+        }
         
         if (activityItems.length > 0) {
             activityHtml += '<div class="d-flex flex-wrap">';
-            activityItems.forEach(item => {
+            $.each(activityItems, function(index, item) {
                 activityHtml += `<span class="activity-badge me-2 mb-2">${item}</span>`;
             });
             activityHtml += '</div>';
@@ -945,7 +964,7 @@
         
         if (data.plans && data.plans.length > 0) {
             plansHtml += '<div class="row">';
-            data.plans.forEach((plan, index) => {
+            $.each(data.plans, function(index, plan) {
                 let planTitle = '';
                 switch(plan.plan_type) {
                     case 'plan_a': planTitle = '計畫1'; break;
@@ -991,7 +1010,7 @@
             </div>
         `;
 
-        container.innerHTML = systemDataHtml + basicDataHtml + actionPlanHtml + bodyDataHtml + activityHtml + plansHtml + submissionHtml;
+        container.html(systemDataHtml + basicDataHtml + actionPlanHtml + bodyDataHtml + activityHtml + plansHtml + submissionHtml);
     };
 
     admin.closeDetailModal = function() {
@@ -1028,7 +1047,7 @@
         admin.showAlert(message, 'error');
         
         // 同時在表格中顯示錯誤訊息
-        const tbody = document.getElementById('data-table-body');
+        const tbody = $('#data-table-body');
         tbody.innerHTML = `
             <tr>
                 <td colspan="8" class="text-center py-4 text-danger">

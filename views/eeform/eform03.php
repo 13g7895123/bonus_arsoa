@@ -15,23 +15,23 @@
                         <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
                         <div class="col-sm-4 mb30">
-                          <label class="label-custom">會員姓名</label>
+                          <label class="label-custom"><span style="color: red;">*</span>會員姓名</label>
                           <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" readonly style="background-color: #f8f9fa;" />
                         </div>
                         <div class="col-sm-4 mb30">
-                          <label class="label-custom">會員編號</label>
+                          <label class="label-custom"><span style="color: red;">*</span></label>
                           <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" readonly style="background-color: #f8f9fa;" />
                         </div>
                         <div class="col-sm-2 mb30">
-                          <label class="label-custom">年齡</label>
+                          <label class="label-custom"><span style="color: red;">*</span>年齡</label>
                           <input type="number" name="age" class="form-control form-control-custom" placeholder="限填數字" />
                         </div>
                         <div class="col-sm-2 mb30">
-                          <label class="label-custom">身高</label>
+                          <label class="label-custom"><span style="color: red;">*</span>身高</label>
                           <input type="number" name="height" class="form-control form-control-custom" placeholder="限填數字" />
                         </div>
                         <div class="col-sm-12 mb30">
-                          <label class="label-custom">目標</label>
+                          <label class="label-custom"><span style="color: red;">*</span>目標</label>
                           <input type="text" name="goal" class="form-control form-control-custom" placeholder="請填寫目標…" required />
                         </div>
 

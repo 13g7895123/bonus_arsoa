@@ -774,7 +774,7 @@ class Eeform3Model extends MY_Model {
         // 清理數字欄位
         $numeric_fields = ['age', 'height', 'weight', 'blood_pressure_high', 'blood_pressure_low', 'waist'];
         foreach ($numeric_fields as $field) {
-            if (isset($data[$field]) && $data[$field] !== '') {
+            if (isset($data[$field])) {
                 $cleaned[$field] = is_numeric($data[$field]) ? $data[$field] : null;
             }
         }

@@ -228,18 +228,18 @@
                             </div>
 
                             <div class="col-sm-12 mb20">
-                              <label class="label-custom">計畫a.</label>
-                              <p>教棵抄了，頭南貓躲幼古成家片，牠亮爬信安。走怕害目裝笑訴、王語車進有免成犬光歌帶起又種活因固父石生？草幼祖苦，食竹福鼻蝴小五。</p>
+                              <label class="label-custom">計畫1.</label>
+                              <p></p>
                             </div>
 
                             <div class="col-sm-12 mb20">
-                              <label class="label-custom">計畫b.</label>
-                              <p>魚車起公原蝸干地雨即抓真文「欠次日成細孝孝穿玉花」給吧午現這學下甲真在者共忍院過祖奶春元寫、冒玩錯清！有胡頁，寫三登扒筆安心坐菜安園根草比綠首意，完松麼更貓雨。</p>
+                              <label class="label-custom">計畫2.</label>
+                              <p></p>
                             </div>
 
                             <div class="col-sm-12 mb30">
                               <label class="label-custom">其他</label>
-                              <p>原重白哭怕去兩丁雨找玩因春也收松同「扒者清或洋貫汗」流打戊里、像活胡肉道科昔示那田兔那笑友菜口亭上、根問夕從尤像而國言貫工耍一呀米吹前尼；做口牙種香、抓世連，首香家出屋乙，唱同意羊想您。</p>
+                              <p></p>
                             </div>
 
                           </div>
@@ -373,12 +373,12 @@
                             </div>
 
                             <div class="col-sm-12 mb20">
-                              <label class="label-custom">計畫a.</label>
+                              <label class="label-custom">計畫1.</label>
                               <input type="text" class="form-control form-control-custom" placeholder="請填寫目標…" />
                             </div>
 
                             <div class="col-sm-12 mb20">
-                              <label class="label-custom">計畫b.</label>
+                              <label class="label-custom">計畫2.</label>
                               <input type="text" class="form-control form-control-custom" placeholder="請填寫目標…" />
                             </div>
 
