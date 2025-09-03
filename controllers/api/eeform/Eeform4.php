@@ -156,13 +156,20 @@ class Eeform4 extends MY_Controller
                 }
                 
                 // 保存產品資料
+                log_message('debug', 'Controller: 收集到的產品資料: ' . json_encode($products));
+                log_message('debug', 'Controller: 產品數量: ' . count($products));
+                
                 if (!empty($products)) {
                     try {
-                        $this->eform4_model->save_products($submission_id, $products);
+                        $result = $this->eform4_model->save_products($submission_id, $products);
+                        log_message('debug', 'Controller: 產品保存結果: ' . ($result ? 'success' : 'failed'));
                     } catch (Exception $e) {
                         // 如果產品保存失敗，記錄錯誤但不回傳失敗
                         log_message('error', 'eform4產品保存失敗: ' . $e->getMessage());
+                        log_message('error', 'eform4產品保存失敗 trace: ' . $e->getTraceAsString());
                     }
+                } else {
+                    log_message('debug', 'Controller: 沒有產品資料需要保存');
                 }
                 
                 $this->_send_success('表單提交成功', [

@@ -17,6 +17,104 @@ class Eeform4Model extends MY_Model {
         ini_set('display_errors', 1);
         
         $this->load->database();
+        
+        // 初始化產品主檔
+        $this->init_product_master();
+    }
+    
+    /**
+     * 初始化產品主檔資料
+     */
+    private function init_product_master() {
+        try {
+            // 檢查產品主檔是否為空
+            $count = $this->db->count_all($this->table_product_master);
+            
+            if ($count == 0) {
+                log_message('debug', 'Initializing product master table');
+                
+                $products = [
+                    [
+                        'product_code' => 'ENERGY_ESSENCE001',
+                        'product_name' => '活力發酵精萃',
+                        'product_category' => 'supplement',
+                        'description' => '活力發酵精萃',
+                        'sort_order' => 1,
+                        'is_active' => true,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ],
+                    [
+                        'product_code' => 'REISHI_EX001',
+                        'product_name' => '白鶴靈芝EX',
+                        'product_category' => 'supplement',
+                        'description' => '白鶴靈芝EX',
+                        'sort_order' => 2,
+                        'is_active' => true,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ],
+                    [
+                        'product_code' => 'VITAMIN_C001',
+                        'product_name' => '美力C錠',
+                        'product_category' => 'supplement',
+                        'description' => '美力C錠',
+                        'sort_order' => 3,
+                        'is_active' => true,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ],
+                    [
+                        'product_code' => 'ENERGY_CRYSTAL001',
+                        'product_name' => '鶴力晶',
+                        'product_category' => 'supplement',
+                        'description' => '鶴力晶',
+                        'sort_order' => 4,
+                        'is_active' => true,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ],
+                    [
+                        'product_code' => 'REISHI_TEA001',
+                        'product_name' => '白鶴靈芝茶',
+                        'product_category' => 'tea',
+                        'description' => '白鶴靈芝茶',
+                        'sort_order' => 5,
+                        'is_active' => true,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ],
+                    [
+                        'product_code' => 'SOAP001',
+                        'product_name' => '淨白活膚蜜皂',
+                        'product_category' => 'skincare',
+                        'description' => '淨白活膚蜜皂',
+                        'sort_order' => 6,
+                        'is_active' => true,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ],
+                    [
+                        'product_code' => 'MASK001',
+                        'product_name' => '活顏泥膜',
+                        'product_category' => 'skincare',
+                        'description' => '活顏泥膜',
+                        'sort_order' => 7,
+                        'is_active' => true,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ],
+                    [
+                        'product_code' => 'TONER001',
+                        'product_name' => '化粧水',
+                        'product_category' => 'skincare',
+                        'description' => '化粧水',
+                        'sort_order' => 8,
+                        'is_active' => true,
+                        'created_at' => date('Y-m-d H:i:s')
+                    ]
+                ];
+                
+                $this->db->insert_batch($this->table_product_master, $products);
+                log_message('debug', 'Product master table initialized with ' . count($products) . ' products');
+            }
+            
+        } catch (Exception $e) {
+            log_message('error', 'Failed to initialize product master: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -128,14 +226,20 @@ class Eeform4Model extends MY_Model {
      */
     public function save_products($submission_id, $products) {
         try {
+            log_message('debug', 'save_products called with submission_id: ' . $submission_id);
+            log_message('debug', 'save_products products data: ' . json_encode($products));
+            
             $this->db->trans_start();
             
             // 刪除現有的產品記錄
             $this->db->where('submission_id', $submission_id);
-            $this->db->delete($this->table_products);
+            $deleted = $this->db->delete($this->table_products);
+            log_message('debug', 'Deleted existing products for submission ' . $submission_id . ': ' . ($deleted ? 'success' : 'failed'));
             
             // 取得產品主檔資料來建立映射
             $product_master = $this->get_all_products();
+            log_message('debug', 'Product master data: ' . json_encode($product_master));
+            
             $product_mapping = [];
             
             foreach ($product_master as $product) {
@@ -147,33 +251,63 @@ class Eeform4Model extends MY_Model {
                 ];
             }
             
+            log_message('debug', 'Product mapping: ' . json_encode($product_mapping));
+            
+            $saved_count = 0;
+            
             // 插入產品記錄
             foreach ($products as $key => $product) {
+                log_message('debug', 'Processing product key: ' . $key . ', data: ' . json_encode($product));
+                
                 if (isset($product_mapping[$key])) {
                     $quantity = isset($product['quantity']) ? (int)$product['quantity'] : 0;
+                    
+                    log_message('debug', 'Found mapping for ' . $key . ', quantity: ' . $quantity);
                     
                     if ($quantity > 0) {
                         $product_data = [
                             'submission_id' => $submission_id,
                             'product_code' => $product_mapping[$key]['code'],
                             'product_name' => $product_mapping[$key]['name'],
-                            'quantity' => $quantity
+                            'quantity' => $quantity,
+                            'created_at' => date('Y-m-d H:i:s')
                         ];
                         
-                        $this->db->insert($this->table_products, $product_data);
+                        log_message('debug', 'Inserting product data: ' . json_encode($product_data));
+                        
+                        $insert_result = $this->db->insert($this->table_products, $product_data);
+                        
+                        if ($insert_result) {
+                            $saved_count++;
+                            log_message('debug', 'Product saved successfully: ' . $key);
+                        } else {
+                            $db_error = $this->db->error();
+                            log_message('error', 'Failed to insert product ' . $key . ': ' . json_encode($db_error));
+                        }
+                    } else {
+                        log_message('debug', 'Skipping product ' . $key . ' - quantity is 0');
                     }
+                } else {
+                    log_message('warning', 'No mapping found for product key: ' . $key);
+                    log_message('debug', 'Available mappings: ' . implode(', ', array_keys($product_mapping)));
                 }
             }
+            
+            log_message('debug', 'Total products saved: ' . $saved_count);
             
             $this->db->trans_complete();
             
             if ($this->db->trans_status() === FALSE) {
-                throw new Exception('保存產品資料失敗');
+                $db_error = $this->db->error();
+                log_message('error', 'Transaction failed: ' . json_encode($db_error));
+                throw new Exception('保存產品資料失敗 - 事務回滾');
             }
             
+            log_message('debug', 'save_products completed successfully');
             return true;
             
         } catch (Exception $e) {
+            log_message('error', 'save_products exception: ' . $e->getMessage());
             $this->db->trans_rollback();
             throw new Exception('保存產品資料失敗: ' . $e->getMessage());
         }
@@ -186,6 +320,18 @@ class Eeform4Model extends MY_Model {
      */
     public function get_products_by_submission($submission_id) {
         try {
+            log_message('debug', 'get_products_by_submission called for submission_id: ' . $submission_id);
+            
+            $this->db->select('p.*, pm.sort_order');
+            $this->db->from($this->table_products . ' p');
+            $this->db->join($this->table_product_master . ' pm', 'p.product_code = pm.product_code', 'left');
+            $this->db->where('p.submission_id', $submission_id);
+            $this->db->order_by('pm.sort_order', 'ASC');
+            $this->db->order_by('p.product_code', 'ASC');
+            
+            $compiled_query = $this->db->get_compiled_select();
+            log_message('debug', 'get_products_by_submission query: ' . $compiled_query);
+            
             $this->db->select('p.*, pm.sort_order');
             $this->db->from($this->table_products . ' p');
             $this->db->join($this->table_product_master . ' pm', 'p.product_code = pm.product_code', 'left');
@@ -194,9 +340,21 @@ class Eeform4Model extends MY_Model {
             $this->db->order_by('p.product_code', 'ASC');
             
             $query = $this->db->get();
-            return $query->result_array();
+            
+            if (!$query) {
+                $db_error = $this->db->error();
+                log_message('error', 'get_products_by_submission query failed: ' . json_encode($db_error));
+                return [];
+            }
+            
+            $products = $query->result_array();
+            log_message('debug', 'get_products_by_submission found ' . count($products) . ' products');
+            log_message('debug', 'get_products_by_submission results: ' . json_encode($products));
+            
+            return $products;
             
         } catch (Exception $e) {
+            log_message('error', 'get_products_by_submission exception: ' . $e->getMessage());
             throw new Exception('取得產品資料失敗: ' . $e->getMessage());
         }
     }
