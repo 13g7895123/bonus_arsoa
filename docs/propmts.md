@@ -97,3 +97,4 @@
     - 922行的部分請調整，923的data[key]不會有資料，他的API回傳格式在activity_summary，請確認完API格式後幫我調整成正確的
     - js原生的部分改為jquery
 72. 幫我讀取views\admin\eeform\form3.php這支檔案，他匯出EXCEL的部分會顯示html與亂碼，請幫我修正這個問題
+73. 承72，匯出會出現這個錯誤Undefined index: hand_measure

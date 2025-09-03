@@ -979,7 +979,7 @@
             </div>
         `;
 
-        container.innerHTML = systemDataHtml + basicDataHtml + productsHtml + contactHtml;
+        container.innerHTML = basicDataHtml + productsHtml + contactHtml;
     };
 
     admin.closeDetailModal = function() {

@@ -837,6 +837,24 @@ class Eeform3 extends MY_Controller
                 '提交日期', '狀態', '建立時間'
             ];
             
+            // 處理活動資料 - 從 activities 陣列中檢查是否完成各項活動
+            $activities = $submission['activities'] ?? [];
+            $activity_flags = [
+                'hand_measure' => false,
+                'exercise' => false,
+                'health_supplement' => false,
+                'weika' => false,
+                'water_intake' => false
+            ];
+            
+            // 根據活動記錄設定標記
+            foreach ($activities as $activity) {
+                $item_key = $activity['item_key'] ?? '';
+                if (isset($activity_flags[$item_key])) {
+                    $activity_flags[$item_key] = true;
+                }
+            }
+
             // CSV資料行 - 清理所有可能包含HTML的欄位
             $row = [
                 clean_text($submission['id'] ?? ''),
@@ -851,11 +869,11 @@ class Eeform3 extends MY_Controller
                 clean_text($submission['blood_pressure_high'] ?? ''),
                 clean_text($submission['blood_pressure_low'] ?? ''),
                 clean_text($submission['waist'] ?? ''),
-                $submission['hand_measure'] ? '是' : '否',
-                $submission['exercise'] ? '是' : '否',
-                $submission['health_supplement'] ? '是' : '否',
-                $submission['weika'] ? '是' : '否',
-                $submission['water_intake'] ? '是' : '否'
+                $activity_flags['hand_measure'] ? '是' : '否',
+                $activity_flags['exercise'] ? '是' : '否',
+                $activity_flags['health_supplement'] ? '是' : '否',
+                $activity_flags['weika'] ? '是' : '否',
+                $activity_flags['water_intake'] ? '是' : '否'
             ];
 
             // 添加計畫內容 - 清理HTML標籤
