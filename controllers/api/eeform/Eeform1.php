@@ -433,12 +433,40 @@ class Eeform1 extends MY_Controller
                 return;
             }
 
+            // 驗證模型是否正確載入
+            if (!isset($this->eform1_model)) {
+                $this->_send_error('Model not loaded', 500, [
+                    'debug' => 'eform1_model is not available'
+                ]);
+                return;
+            }
+
+            // 驗證模型方法是否存在
+            if (!method_exists($this->eform1_model, 'get_all_submissions_paginated')) {
+                $this->_send_error('Model method not found', 500, [
+                    'debug' => 'get_all_submissions_paginated method does not exist'
+                ]);
+                return;
+            }
+
             // 取得查詢參數
             $page = (int)$this->input->get('page') ?: 1;
             $limit = (int)$this->input->get('limit') ?: 20;
             $search = $this->input->get('search');
             $start_date = $this->input->get('start_date');
             $end_date = $this->input->get('end_date');
+            
+            // 參數驗證
+            if ($page < 1) $page = 1;
+            if ($limit < 1 || $limit > 100) $limit = 20;
+
+            log_message('debug', 'Eeform1::list called with params: ' . json_encode([
+                'page' => $page,
+                'limit' => $limit,
+                'search' => $search,
+                'start_date' => $start_date,
+                'end_date' => $end_date
+            ]));
 
             $results = $this->eform1_model->get_all_submissions_paginated(
                 $page, 
@@ -448,13 +476,23 @@ class Eeform1 extends MY_Controller
                 $end_date
             );
 
+            if (!$results) {
+                $this->_send_error('No results returned from model', 500);
+                return;
+            }
+
             $this->_send_success('取得列表資料成功', $results);
 
         } catch (Exception $e) {
+            log_message('error', 'Eeform1::list exception: ' . $e->getMessage());
+            log_message('error', 'Eeform1::list trace: ' . $e->getTraceAsString());
+            
             $this->_send_error('取得列表資料失敗: ' . $e->getMessage(), 500, [
                 'trace' => $e->getTraceAsString(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'line' => $e->getLine(),
+                'model_loaded' => isset($this->eform1_model),
+                'method_exists' => method_exists($this->eform1_model ?? null, 'get_all_submissions_paginated')
             ]);
         }
     }

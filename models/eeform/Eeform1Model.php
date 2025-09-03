@@ -777,14 +777,70 @@ class Eeform1Model extends MY_Model
      */
     public function get_all_submissions_paginated($page = 1, $limit = 20, $search = null, $start_date = null, $end_date = null) {
         try {
+            // 驗證資料庫連接
+            if (!$this->db) {
+                throw new Exception('Database connection not available');
+            }
+            
             $offset = ($page - 1) * $limit;
+            
+            // 檢查表是否存在
+            if (!$this->db->table_exists('eeform1_submissions')) {
+                log_message('error', 'Table eeform1_submissions does not exist');
+                return [
+                    'data' => [],
+                    'pagination' => [
+                        'current_page' => $page,
+                        'per_page' => $limit,
+                        'total' => 0,
+                        'total_pages' => 0,
+                        'has_next' => false,
+                        'has_prev' => false
+                    ]
+                ];
+            }
             
             // 先取得總數
             $this->db->from('eeform1_submissions s');
             $this->_apply_search_conditions($search, $start_date, $end_date);
+            
+            $count_query = $this->db->get_compiled_select();
+            log_message('debug', 'Count query: ' . $count_query);
+            
+            $this->db->flush_cache();
+            $this->db->from('eeform1_submissions s');
+            $this->_apply_search_conditions($search, $start_date, $end_date);
             $total = $this->db->count_all_results('', FALSE);
             
+            if ($total === FALSE) {
+                $db_error = $this->db->error();
+                log_message('error', 'Count query failed: ' . json_encode($db_error));
+                throw new Exception('Failed to count submissions: ' . $db_error['message']);
+            }
+            
             // 重新建立查詢取得實際資料
+            $this->db->flush_cache();
+            $this->db->select('
+                s.id,
+                s.member_id,
+                s.member_name,
+                s.birth_year,
+                s.birth_month,
+                s.phone,
+                s.skin_type,
+                s.skin_age,
+                s.submission_date,
+                s.created_at,
+                s.updated_at
+            ');
+            $this->db->from('eeform1_submissions s');
+            $this->_apply_search_conditions($search, $start_date, $end_date);
+            $this->db->order_by('s.submission_date', 'DESC');
+            $this->db->limit($limit, $offset);
+            
+            $data_query = $this->db->get_compiled_select();
+            log_message('debug', 'Data query: ' . $data_query);
+            
             $this->db->flush_cache();
             $this->db->select('
                 s.id,
@@ -807,10 +863,18 @@ class Eeform1Model extends MY_Model
             $query = $this->db->get();
             
             if (!$query) {
-                throw new Exception('Database query failed: ' . $this->db->error()['message']);
+                $db_error = $this->db->error();
+                log_message('error', 'Data query failed: ' . json_encode($db_error));
+                throw new Exception('Database query failed: ' . $db_error['message']);
             }
             
             $submissions = $query->result_array();
+            
+            if ($submissions === FALSE) {
+                $db_error = $this->db->error();
+                log_message('error', 'Result_array failed: ' . json_encode($db_error));
+                throw new Exception('Failed to fetch submissions: ' . $db_error['message']);
+            }
             
             // 計算分頁資訊
             $total_pages = ceil($total / $limit);
@@ -829,6 +893,7 @@ class Eeform1Model extends MY_Model
             
         } catch (Exception $e) {
             log_message('error', 'Eeform1Model::get_all_submissions_paginated error: ' . $e->getMessage());
+            log_message('error', 'Eeform1Model::get_all_submissions_paginated trace: ' . $e->getTraceAsString());
             throw $e;
         }
     }
