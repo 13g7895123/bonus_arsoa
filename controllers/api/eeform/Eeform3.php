@@ -812,6 +812,18 @@ class Eeform3 extends MY_Controller
                 return;
             }
 
+            // Helper function to strip HTML tags and decode entities
+            function clean_text($text) {
+                if (empty($text)) return '';
+                // Remove HTML tags
+                $text = strip_tags($text);
+                // Decode HTML entities
+                $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                // Remove extra whitespaces
+                $text = trim(preg_replace('/\s+/', ' ', $text));
+                return $text;
+            }
+
             // 準備CSV資料
             $csvData = [];
             
@@ -821,24 +833,24 @@ class Eeform3 extends MY_Controller
                 '自身行動計畫1', '自身行動計畫2',
                 '體重', '血壓(收縮)', '血壓(舒張)', '腰圍',
                 '用手測量', '運動(30分)', '保健食品', '微微卡', '飲水量',
-                '計畫A', '計畫B', '其他計畫',
+                '計畫1', '計畫2', '其他計畫',
                 '提交日期', '狀態', '建立時間'
             ];
             
-            // CSV資料行
+            // CSV資料行 - 清理所有可能包含HTML的欄位
             $row = [
-                $submission['id'] ?? '',
-                $submission['member_name'] ?? '',
-                $submission['member_id'] ?? '',
-                $submission['age'] ?? '',
-                $submission['height'] ?? '',
-                $submission['goal'] ?? '',
-                $submission['action_plan_1'] ?? '',
-                $submission['action_plan_2'] ?? '',
-                $submission['weight'] ?? '',
-                $submission['blood_pressure_high'] ?? '',
-                $submission['blood_pressure_low'] ?? '',
-                $submission['waist'] ?? '',
+                clean_text($submission['id'] ?? ''),
+                clean_text($submission['member_name'] ?? ''),
+                clean_text($submission['member_id'] ?? ''),
+                clean_text($submission['age'] ?? ''),
+                clean_text($submission['height'] ?? ''),
+                clean_text($submission['goal'] ?? ''),
+                clean_text($submission['action_plan_1'] ?? ''),
+                clean_text($submission['action_plan_2'] ?? ''),
+                clean_text($submission['weight'] ?? ''),
+                clean_text($submission['blood_pressure_high'] ?? ''),
+                clean_text($submission['blood_pressure_low'] ?? ''),
+                clean_text($submission['waist'] ?? ''),
                 $submission['hand_measure'] ? '是' : '否',
                 $submission['exercise'] ? '是' : '否',
                 $submission['health_supplement'] ? '是' : '否',
@@ -846,43 +858,64 @@ class Eeform3 extends MY_Controller
                 $submission['water_intake'] ? '是' : '否'
             ];
 
-            // 添加計畫內容
+            // 添加計畫內容 - 清理HTML標籤
             $plans = $submission['plans'] ?? [];
             $plan_a = $plan_b = $other = '';
             foreach ($plans as $plan) {
                 switch ($plan['plan_type']) {
-                    case 'plan_a': $plan_a = $plan['plan_content']; break;
-                    case 'plan_b': $plan_b = $plan['plan_content']; break;
-                    case 'other': $other = $plan['plan_content']; break;
+                    case 'plan_a': $plan_a = clean_text($plan['plan_content'] ?? ''); break;
+                    case 'plan_b': $plan_b = clean_text($plan['plan_content'] ?? ''); break;
+                    case 'other': $other = clean_text($plan['plan_content'] ?? ''); break;
                 }
             }
             
             $row[] = $plan_a;
             $row[] = $plan_b;
             $row[] = $other;
-            $row[] = $submission['submission_date'] ?? '';
-            $row[] = $submission['status'] ?? '';
-            $row[] = $submission['created_at'] ?? '';
+            $row[] = clean_text($submission['submission_date'] ?? '');
+            $row[] = clean_text($submission['status'] ?? '');
+            $row[] = clean_text($submission['created_at'] ?? '');
 
-            $csvData[] = $headers;
-            $csvData[] = $row;
-
-            // 設定下載標頭
-            $filename = "weika_diary_" . $submission['member_id'] . "_" . date('Y-m-d') . ".csv";
+            // 準備輸出資料
+            $exportData = [];
             
-            header('Content-Type: text/csv; charset=UTF-8');
+            // 欄位與值的配對格式
+            for ($i = 0; $i < count($headers); $i++) {
+                $exportData[] = [$headers[$i], $row[$i]];
+            }
+
+            // 設定下載標頭 - 使用CSV格式但設定為Excel可開啟
+            $filename = "微微卡日記_" . clean_text($submission['member_id']) . "_" . date('Y-m-d') . ".csv";
+            
+            // 設定正確的編碼和標頭
+            header('Content-Type: application/vnd.ms-excel; charset=UTF-8');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
-            header('Cache-Control: no-cache, must-revalidate');
-            header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+            header('Cache-Control: max-age=0');
+            header('Pragma: public');
 
             // 輸出CSV
             $output = fopen('php://output', 'w');
             
-            // 新增UTF-8 BOM for Excel compatibility
-            fwrite($output, "\xEF\xBB\xBF");
+            // 加入BOM以確保Excel正確識別UTF-8
+            fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
             
-            foreach ($csvData as $row) {
-                fputcsv($output, $row);
+            // 輸出資料 - 欄位名稱與值的配對格式
+            foreach ($exportData as $dataRow) {
+                // 確保所有欄位都正確編碼
+                $cleanRow = array_map(function($value) {
+                    // 如果值包含逗號、引號或換行，則用引號包圍
+                    if (strpos($value, ',') !== false || 
+                        strpos($value, '"') !== false || 
+                        strpos($value, "\n") !== false || 
+                        strpos($value, "\r") !== false) {
+                        // 將引號替換為雙引號
+                        $value = str_replace('"', '""', $value);
+                        return '"' . $value . '"';
+                    }
+                    return $value;
+                }, $dataRow);
+                
+                fputcsv($output, $cleanRow, ',', '"', '\\');
             }
             
             fclose($output);

@@ -95,4 +95,5 @@
 71. 完成以下功能
     - 幫我讀取views\admin\eeform\form3.php這支檔案
     - 922行的部分請調整，923的data[key]不會有資料，他的API回傳格式在activity_summary，請確認完API格式後幫我調整成正確的
-    - js原生的部分改為jquery，
+    - js原生的部分改為jquery
+72. 幫我讀取views\admin\eeform\form3.php這支檔案，他匯出EXCEL的部分會顯示html與亂碼，請幫我修正這個問題
