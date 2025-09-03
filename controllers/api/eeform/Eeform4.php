@@ -134,9 +134,41 @@ class Eeform4 extends MY_Controller
             $submission_id = $this->eform4_model->create_submission($submission_data);
             
             if ($submission_id) {
+                // 收集產品資料
+                $products = [];
+                $product_fields = [
+                    'product_energy_essence001',
+                    'product_reishi_ex001', 
+                    'product_vitamin_c001',
+                    'product_energy_crystal001',
+                    'product_reishi_tea001',
+                    'product_soap001',
+                    'product_mask001',
+                    'product_toner001'
+                ];
+                
+                foreach ($product_fields as $field) {
+                    if (isset($input_data[$field]) && !empty($input_data[$field]) && (int)$input_data[$field] > 0) {
+                        $products[$field] = [
+                            'quantity' => (int)$input_data[$field]
+                        ];
+                    }
+                }
+                
+                // 保存產品資料
+                if (!empty($products)) {
+                    try {
+                        $this->eform4_model->save_products($submission_id, $products);
+                    } catch (Exception $e) {
+                        // 如果產品保存失敗，記錄錯誤但不回傳失敗
+                        log_message('error', 'eform4產品保存失敗: ' . $e->getMessage());
+                    }
+                }
+                
                 $this->_send_success('表單提交成功', [
                     'submission_id' => $submission_id,
-                    'submission_date' => date('Y-m-d H:i:s')
+                    'submission_date' => date('Y-m-d H:i:s'),
+                    'products_saved' => count($products)
                 ]);
             } else {
                 $this->_send_error('表單提交失敗', 500);

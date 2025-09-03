@@ -98,3 +98,5 @@
     - js原生的部分改為jquery
 72. 幫我讀取views\admin\eeform\form3.php這支檔案，他匯出EXCEL的部分會顯示html與亂碼，請幫我修正這個問題
 73. 承72，匯出會出現這個錯誤Undefined index: hand_measure
+74. /eform/eform4，產品沒有正常存入資料庫中，請幫我確認，另外，他有調整載入會員資料的功能，請幫我下拉選單預設為當前使用這
+75. /api/eeform/eeform1/list?page=1&limit=20這支API有錯誤，"#0 C:\\inetpub\\wwwroot\\controllers\\api\\eeform\\Eeform1.php(444): Eeform1Model->get_all_submissions_paginated(1, 20, NULL, NULL, NULL)\n#1 C:\\inetpub\\system3.1.2\\core\\CodeIgniter.php(530): Eeform1->list()\n#2 C:\\inetpub\\wwwroot\\index.php(338): require_once('C:\\\\inetpub\\\\syst...')\n#3 {main}"

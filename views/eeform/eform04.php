@@ -600,7 +600,7 @@
                 showConfirmButton: false
               }).then(() => {
                 if (document.referrer) {
-                  window.location.href = document.referrer;
+                  history.go(0);
                 } else {
                   window.location.href = '<?php echo base_url("eform"); ?>';
                 }
@@ -759,15 +759,44 @@
         $nameSelect.empty();
         $nameSelect.append('<option value="">請選擇會員</option>');
         
-        // 加入會員選項
+        // 加入會員選項並預設選擇當前使用者
+        var currentUserSelected = false;
         memberData.forEach(function(member) {
-          $nameSelect.append('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
-                            member.c_name + ' (' + member.c_no + ')</option>');
+          var option = $('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
+                         member.c_name + ' (' + member.c_no + ')</option>');
+          
+          // 檢查是否為當前使用者，如果是則設為預設選擇
+          if (member.c_no === currentUserData.member_id || 
+              member.c_name === currentUserData.member_name) {
+            option.prop('selected', true);
+            currentUserSelected = true;
+            console.log('[Point 62 - eform4] 預設選擇當前使用者:', member.c_name, member.c_no);
+          }
+          
+          $nameSelect.append(option);
         });
+        
+        // 如果沒有找到當前使用者的完全匹配，選擇第一個選項（除了"請選擇會員"）
+        if (!currentUserSelected && memberData.length > 0) {
+          $nameSelect.find('option:eq(1)').prop('selected', true);
+          console.log('[Point 62 - eform4] 未找到當前使用者完全匹配，預設選擇第一個會員:', memberData[0].c_name);
+        }
         
         // 隱藏輸入框，顯示下拉選單
         $nameInput.hide();
         $nameSelect.show();
+        
+        // 更新會員編號（根據目前選擇的會員）
+        var selectedOption = $nameSelect.find('option:selected');
+        if (selectedOption.val()) {
+          $('input[name="member_id"]').val(selectedOption.val());
+          currentUserData.member_id = selectedOption.val();
+          currentUserData.member_name = selectedOption.data('name');
+          console.log('[Point 62 - eform4] 根據預設選擇更新會員資料:', {
+            memberId: currentUserData.member_id,
+            memberName: currentUserData.member_name
+          });
+        }
         
         console.log('[Point 62 - eform4] 下拉選單設定完成，已隱藏輸入框');
         
