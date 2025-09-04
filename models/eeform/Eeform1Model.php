@@ -90,28 +90,43 @@ class Eeform1Model extends MY_Model
     public function validate_submission_data($data)
     {
         $errors = [];
-        $required_fields = ['member_name', 'birth_year', 'birth_month', 'phone'];
-        
-        // 檢查必填欄位
+        // 檢查必填欄位 - 支援新的 birth_date 或舊的 birth_year/birth_month
+        $required_fields = ['member_name', 'phone'];
         foreach ($required_fields as $field) {
             if (empty($data[$field])) {
                 $errors[] = "必填欄位 {$field} 不能為空";
             }
         }
         
-        // 驗證出生年份
-        if (!empty($data['birth_year'])) {
-            $year = intval($data['birth_year']);
-            if ($year < 1950 || $year > date('Y')) {
-                $errors[] = '出生年份不在有效範圍內';
+        // 驗證出生日期 - 支援新的 birth_date 或舊的 birth_year/birth_month
+        if (!empty($data['birth_date'])) {
+            // 使用新的日期欄位
+            $birth_date = $data['birth_date'];
+            if (!strtotime($birth_date)) {
+                $errors[] = '出生日期格式不正確';
+            } else {
+                $year = date('Y', strtotime($birth_date));
+                $month = date('n', strtotime($birth_date));
+                if ($year < 1950 || $year > date('Y')) {
+                    $errors[] = '出生年份不在有效範圍內';
+                }
+                // 為往後相容性，將日期拆解為年月
+                $data['birth_year'] = $year;
+                $data['birth_month'] = $month;
             }
-        }
-        
-        // 驗證出生月份
-        if (!empty($data['birth_month'])) {
-            $month = intval($data['birth_month']);
-            if ($month < 1 || $month > 12) {
-                $errors[] = '出生月份不在有效範圍內';
+        } else {
+            // 使用舊的年月欄位
+            if (empty($data['birth_year']) || empty($data['birth_month'])) {
+                $errors[] = '出生日期或出生年月是必填欄位';
+            } else {
+                $year = intval($data['birth_year']);
+                $month = intval($data['birth_month']);
+                if ($year < 1950 || $year > date('Y')) {
+                    $errors[] = '出生年份不在有效範圍內';
+                }
+                if ($month < 1 || $month > 12) {
+                    $errors[] = '出生月份不在有效範圍內';
+                }
             }
         }
         

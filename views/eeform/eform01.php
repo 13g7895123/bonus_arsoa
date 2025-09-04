@@ -27,60 +27,12 @@
                               <option value="">請選擇會員</option>
                             </select>
                           </div>
-                          <div class="col-sm-3 mb30">
-                            <label class="label-custom">出生西元年</label>
-                            <select name="birth_year" class="form-control form-control-custom" required>
-                              <option value="">請選擇</option>
-                              <option value="2010">2010</option>
-                              <option value="2009">2009</option>
-                              <option value="2008">2008</option>
-                              <option value="2007">2007</option>
-                              <option value="2006">2006</option>
-                              <option value="2005">2005</option>
-                              <option value="2004">2004</option>
-                              <option value="2003">2003</option>
-                              <option value="2002">2002</option>
-                              <option value="2001">2001</option>
-                              <option value="2000">2000</option>
-                              <option value="1999">1999</option>
-                              <option value="1998">1998</option>
-                              <option value="1997">1997</option>
-                              <option value="1996">1996</option>
-                              <option value="1995">1995</option>
-                              <option value="1994">1994</option>
-                              <option value="1993">1993</option>
-                              <option value="1992">1992</option>
-                              <option value="1991">1991</option>
-                              <option value="1990">1990</option>
-                              <option value="1989">1989</option>
-                              <option value="1988">1988</option>
-                              <option value="1987">1987</option>
-                              <option value="1986">1986</option>
-                              <option value="1985">1985</option>
-                              <option value="1984">1984</option>
-                              <option value="1983">1983</option>
-                              <option value="1982">1982</option>
-                              <option value="1981">1981</option>
-                              <option value="1980">1980</option>
-                            </select>
-                          </div>
-                          <div class="col-sm-2 mb30">
-                            <label class="label-custom">出生西元月</label>
-                            <select name="birth_month" class="form-control form-control-custom" required>
-                              <option value="">請選擇</option>
-                              <option value="1">1月</option>
-                              <option value="2">2月</option>
-                              <option value="3">3月</option>
-                              <option value="4">4月</option>
-                              <option value="5">5月</option>
-                              <option>6月</option>
-                              <option value="7">7月</option>
-                              <option>8月</option>
-                              <option value="9">9月</option>
-                              <option value="10">10月</option>
-                              <option value="11">11月</option>
-                              <option value="12">12月</option>
-                            </select>
+                          <div class="col-sm-5 mb30">
+                            <label class="label-custom">出生日期</label>
+                            <input type="date" name="birth_date" class="form-control form-control-custom" min="1980-01-01" max="2010-12-31" required />
+                            <!-- Keep hidden fields for backward compatibility -->
+                            <input type="hidden" name="birth_year" />
+                            <input type="hidden" name="birth_month" />
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">電話</label>
@@ -825,16 +777,10 @@
                         <span class="text-dark" id="confirm-member-name"></span>
                       </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-6 mb-3">
                       <div class="d-flex align-items-center">
-                        <span class="text-muted mr-3" style="min-width: 80px;">出生年：</span>
-                        <span class="text-dark" id="confirm-birth-year"></span>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                      <div class="d-flex align-items-center">
-                        <span class="text-muted mr-3" style="min-width: 80px;">出生月：</span>
-                        <span class="text-dark" id="confirm-birth-month"></span>
+                        <span class="text-muted mr-3" style="min-width: 80px;">出生日期：</span>
+                        <span class="text-dark" id="confirm-birth-date"></span>
                       </div>
                     </div>
                     <div class="col-md-2 mb-3">
@@ -1207,36 +1153,36 @@
     <script>
       // Point 59: 添加全域錯誤處理，防止 JS 錯誤影響 console 功能
       window.addEventListener('error', function(e) {
-        // console.log('[Point 59] JavaScript 錯誤被捕獲:', {
+        console.log('[Point 59] JavaScript 錯誤被捕獲:', {
           message: e.message,
           filename: e.filename,
           lineno: e.lineno,
           colno: e.colno,
           error: e.error
         });
-        // console.log('[Point 59] 錯誤不會中斷其他功能執行');
+        console.log('[Point 59] 錯誤不會中斷其他功能執行');
         return true; // 防止錯誤中斷執行
       });
       
-      // console.log('[Point 59] 全域錯誤處理已設定');
-      // console.log('[Point 59] jQuery 版本:', typeof $ !== 'undefined' ? $.fn.jquery : '未載入');
+      console.log('[Point 59] 全域錯誤處理已設定');
+      console.log('[Point 59] jQuery 版本:', typeof $ !== 'undefined' ? $.fn.jquery : '未載入');
       
       // 控制測試按鈕顯示的變數
       var showTestButton = false; // 設為 false 可隱藏測試按鈕
       
       // 取得目前登入使用者資訊 - Point 60 加強除錯
-      // console.log('[Point 60] ===== PHP 傳入的原始資料 =====');
-      // console.log('[Point 60] PHP $userdata[c_no]:', '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : 'EMPTY'; ?>');
-      // console.log('[Point 60] PHP $userdata[c_name]:', '<?php echo isset($userdata['c_name']) ? $userdata['c_name'] : 'EMPTY'; ?>');
+      console.log('[Point 60] ===== PHP 傳入的原始資料 =====');
+      console.log('[Point 60] PHP $userdata[c_no]:', '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : 'EMPTY'; ?>');
+      console.log('[Point 60] PHP $userdata[c_name]:', '<?php echo isset($userdata['c_name']) ? $userdata['c_name'] : 'EMPTY'; ?>');
       
       var currentUserData = {
         member_id: '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>',
         member_name: '<?php echo isset($userdata['c_name']) ? $userdata['c_name'] : ''; ?>'
       };
       
-      // console.log('[Point 60] JavaScript 處理後的資料:', currentUserData);
-      // console.log('[Point 60] member_id 長度:', currentUserData.member_id.length);
-      // console.log('[Point 60] member_id 類型:', typeof currentUserData.member_id);
+      console.log('[Point 60] JavaScript 處理後的資料:', currentUserData);
+      console.log('[Point 60] member_id 長度:', currentUserData.member_id.length);
+      console.log('[Point 60] member_id 類型:', typeof currentUserData.member_id);
 
       // 會員資料相關變數
       var memberData = [];
@@ -1244,30 +1190,30 @@
 
       // 初始化會員資料
       function initializeMemberData() {
-        // console.log('[Point 57] ===== 初始化會員資料功能開始 =====');
-        // console.log('[Point 57] 當前使用者資料:', currentUserData);
-        // console.log('[Point 57] 會員編號是否存在:', !!currentUserData.member_id);
-        // console.log('[Point 60] 會員編號字符長度:', currentUserData.member_id.length);
-        // console.log('[Point 60] 會員編號是否為空字串:', currentUserData.member_id === '');
+        console.log('[Point 57] ===== 初始化會員資料功能開始 =====');
+        console.log('[Point 57] 當前使用者資料:', currentUserData);
+        console.log('[Point 57] 會員編號是否存在:', !!currentUserData.member_id);
+        console.log('[Point 60] 會員編號字符長度:', currentUserData.member_id.length);
+        console.log('[Point 60] 會員編號是否為空字串:', currentUserData.member_id === '');
         
         // 設定會員編號欄位
         $('input[name="member_id"]').val(currentUserData.member_id);
-        // console.log('[Point 57] 設定會員編號欄位為:', currentUserData.member_id);
+        console.log('[Point 57] 設定會員編號欄位為:', currentUserData.member_id);
         
         // Point 60: 無論是否有會員編號，都進行測試API呼叫來確認端點是否正常
-        // console.log('[Point 60] ===== 開始測試API端點 =====');
+        console.log('[Point 60] ===== 開始測試API端點 =====');
         if (currentUserData.member_id && currentUserData.member_id.trim() !== '') {
-          // console.log('[Point 57] 有會員編號，開始查詢相關會員資料...');
-          // console.log('[Point 60] 正常API呼叫，member_id:', currentUserData.member_id);
+          console.log('[Point 57] 有會員編號，開始查詢相關會員資料...');
+          console.log('[Point 60] 正常API呼叫，member_id:', currentUserData.member_id);
           lookupMemberData(currentUserData.member_id);
         } else {
-          // console.log('[Point 60] 沒有會員編號，但仍進行測試API呼叫來確認端點...');
+          console.log('[Point 60] 沒有會員編號，但仍進行測試API呼叫來確認端點...');
           // 使用測試ID來確認API端點是否正常運作
-          // console.log('[Point 60] 使用測試ID "TEST123" 進行API測試');
+          console.log('[Point 60] 使用測試ID "TEST123" 進行API測試');
           lookupMemberData('TEST123');
           
           // 設定預設姓名
-          // console.log('[Point 57] 使用預設姓名:', currentUserData.member_name);
+          console.log('[Point 57] 使用預設姓名:', currentUserData.member_name);
           $('input[name="member_name"]').val(currentUserData.member_name);
         }
       }
@@ -1275,102 +1221,95 @@
       // 查詢會員資料
       function lookupMemberData(memberId) {
         var apiUrl = '<?php echo base_url("api/eeform1/member_lookup/"); ?>' + memberId;
-        // console.log('[Point 60] ===== API 呼叫詳細資訊 =====');
-        // console.log('[Point 57] 開始查詢會員資料 API');
-        // console.log('[Point 57] API URL:', apiUrl);
-        // console.log('[Point 57] 查詢會員ID:', memberId);
-        // console.log('[Point 60] Base URL:', '<?php echo base_url(); ?>');
-        // console.log('[Point 60] 完整 API 路徑:', apiUrl);
-        // console.log('[Point 60] 開始發送 AJAX 請求...');
         
         $.ajax({
           url: apiUrl,
           method: 'GET',
           dataType: 'json',
           beforeSend: function(xhr) {
-            // console.log('[Point 60] ===== AJAX 請求即將發送 =====');
-            // console.log('[Point 60] 請求方法: GET');
-            // console.log('[Point 60] 請求 URL:', apiUrl);
-            // console.log('[Point 60] 資料類型: json');
-            // console.log('[Point 60] AJAX 請求已發送，等待回應...');
+            console.log('[Point 60] ===== AJAX 請求即將發送 =====');
+            console.log('[Point 60] 請求方法: GET');
+            console.log('[Point 60] 請求 URL:', apiUrl);
+            console.log('[Point 60] 資料類型: json');
+            console.log('[Point 60] AJAX 請求已發送，等待回應...');
           },
           success: function(response) {
-            // console.log('[Point 57] API 回應成功:', response);
+            console.log('[Point 57] API 回應成功:', response);
             
             if (response.success && response.data) {
               memberData = response.data.members;
-              // console.log('[Point 57] 找到會員資料數量:', memberData.length);
-              // console.log('[Point 57] 會員資料內容:', memberData);
+              console.log('[Point 57] 找到會員資料數量:', memberData.length);
+              console.log('[Point 57] 會員資料內容:', memberData);
               
               if (memberData.length > 1) {
                 // 多個會員：顯示下拉選單
-                // console.log('[Point 57] 多個會員匹配，顯示下拉選單');
+                console.log('[Point 57] 多個會員匹配，顯示下拉選單');
                 isMultipleMembers = true;
                 setupMemberDropdown();
               } else if (memberData.length === 1) {
                 // 單個會員：使用文字輸入框
-                // console.log('[Point 57] 單個會員匹配，使用文字輸入框');
-                // console.log('[Point 57] 會員姓名:', memberData[0].c_name);
+                console.log('[Point 57] 單個會員匹配，使用文字輸入框');
+                console.log('[Point 57] 會員姓名:', memberData[0].c_name);
                 isMultipleMembers = false;
                 $('input[name="member_name"]').val(memberData[0].c_name);
                 currentUserData.member_name = memberData[0].c_name;
               } else {
                 // 沒有找到會員：使用預設值
-                // console.log('[Point 57] 沒有找到會員，使用預設值');
+                console.log('[Point 57] 沒有找到會員，使用預設值');
                 isMultipleMembers = false;
                 $('input[name="member_name"]').val(currentUserData.member_name);
               }
             } else {
-              // console.log('[Point 57] API 回應格式不正確:', response);
+              console.log('[Point 57] API 回應格式不正確:', response);
             }
           },
           error: function(xhr, status, error) {
-            // console.error('[Point 60] ===== API 呼叫失敗詳細資訊 =====');
-            // console.error('[Point 57] API 查詢失敗:', {
+            console.error('[Point 60] ===== API 呼叫失敗詳細資訊 =====');
+            console.error('[Point 57] API 查詢失敗:', {
               status: status,
               error: error,
               xhr: xhr,
               responseText: xhr.responseText
             });
-            // console.error('[Point 60] HTTP 狀態碼:', xhr.status);
-            // console.error('[Point 60] HTTP 狀態文字:', xhr.statusText);
-            // console.error('[Point 60] 回應內容:', xhr.responseText);
-            // console.error('[Point 60] AJAX 狀態:', status);
-            // console.error('[Point 60] 錯誤類型:', error);
-            // console.error('[Point 60] 請求的 URL:', apiUrl);
+            console.error('[Point 60] HTTP 狀態碼:', xhr.status);
+            console.error('[Point 60] HTTP 狀態文字:', xhr.statusText);
+            console.error('[Point 60] 回應內容:', xhr.responseText);
+            console.error('[Point 60] AJAX 狀態:', status);
+            console.error('[Point 60] 錯誤類型:', error);
+            console.error('[Point 60] 請求的 URL:', apiUrl);
             
             // 出錯時使用預設值
-            // console.log('[Point 60] 因為API失敗，使用預設會員姓名:', currentUserData.member_name);
+            console.log('[Point 60] 因為API失敗，使用預設會員姓名:', currentUserData.member_name);
             $('input[name="member_name"]').val(currentUserData.member_name);
           },
           complete: function(xhr, status) {
-            // console.log('[Point 60] ===== AJAX 請求完成 =====');
-            // console.log('[Point 60] 最終狀態:', status);
-            // console.log('[Point 60] HTTP 狀態碼:', xhr.status);
-            // console.log('[Point 60] 請求已完成 (成功或失敗)');
+            console.log('[Point 60] ===== AJAX 請求完成 =====');
+            console.log('[Point 60] 最終狀態:', status);
+            console.log('[Point 60] HTTP 狀態碼:', xhr.status);
+            console.log('[Point 60] 請求已完成 (成功或失敗)');
           }
         });
       }
 
       // 設定會員下拉選單
       function setupMemberDropdown() {
-        // console.log('[Point 57] ===== 設定會員下拉選單 =====');
-        // console.log('[Point 57] 會員資料列表:', memberData);
+        console.log('[Point 57] ===== 設定會員下拉選單 =====');
+        console.log('[Point 57] 會員資料列表:', memberData);
         
         var $nameInput = $('input[name="member_name"]');
         var $nameSelect = $('select[name="member_name_select"]');
         
-        // console.log('[Point 57] 找到姓名輸入框:', $nameInput.length > 0);
-        // console.log('[Point 57] 找到姓名下拉選單:', $nameSelect.length > 0);
+        console.log('[Point 57] 找到姓名輸入框:', $nameInput.length > 0);
+        console.log('[Point 57] 找到姓名下拉選單:', $nameSelect.length > 0);
         
         // 隱藏輸入框，顯示下拉選單
         $nameInput.hide().prop('required', false);
         $nameSelect.show().prop('required', true);
-        // console.log('[Point 57] UI 切換完成：隱藏輸入框，顯示下拉選單');
+        console.log('[Point 57] UI 切換完成：隱藏輸入框，顯示下拉選單');
         
         // 清空並重新填充選項
         $nameSelect.empty().append('<option value="">請選擇會員</option>');
-        // console.log('[Point 57] 清空並添加預設選項');
+        console.log('[Point 57] 清空並添加預設選項');
         
         var currentUserSelected = false;
         memberData.forEach(function(member, index) {
@@ -1382,7 +1321,7 @@
               member.c_name === currentUserData.member_name) {
             option.prop('selected', true);
             currentUserSelected = true;
-            // console.log('[Point 77 - eform1] 預設選擇當前使用者:', member.c_name, member.c_no);
+            console.log('[Point 77 - eform1] 預設選擇當前使用者:', member.c_name, member.c_no);
           }
           
           $nameSelect.append(option);
@@ -1394,13 +1333,13 @@
           $('input[name="member_id"]').val(selectedOption.val());
           currentUserData.member_id = selectedOption.val();
           currentUserData.member_name = selectedOption.data('name');
-          // console.log('[Point 77 - eform1] 根據預設選擇更新會員資料:', {
+          console.log('[Point 77 - eform1] 根據預設選擇更新會員資料:', {
             memberId: currentUserData.member_id,
             memberName: currentUserData.member_name
           });
         }
         
-        // console.log('[Point 57] 下拉選單總選項數:', $nameSelect.find('option').length);
+        console.log('[Point 57] 下拉選單總選項數:', $nameSelect.find('option').length);
         
         // 綁定選擇事件
         $nameSelect.off('change').on('change', function() {
@@ -1422,58 +1361,58 @@
             currentUserData.member_id = newMemberId;
             currentUserData.member_name = newMemberName;
             
-            // console.log('[Point 57] 更新後的會員資料:', currentUserData);
+            console.log('[Point 57] 更新後的會員資料:', currentUserData);
           }
         });
         
-        // console.log('[Point 57] 下拉選單設定完成');
+        console.log('[Point 57] 下拉選單設定完成');
       }
 
       // 頁面載入時檢查是否顯示測試按鈕 - jQuery版本
       $(document).ready(function() {
-        // console.log('[Point 59] ===== 修復 lazyload 錯誤並初始化 =====');
+        console.log('[Point 59] ===== 修復 lazyload 錯誤並初始化 =====');
         
         // 修復 lazyload 錯誤 - 檢查並安全初始化 lazyload
         if (typeof $.fn.lazyload !== 'undefined') {
-          // console.log('[Point 59] lazyload 插件已載入，正常初始化');
+          console.log('[Point 59] lazyload 插件已載入，正常初始化');
           try {
             $("img.lazy").lazyload({threshold: 200});
-            // console.log('[Point 59] lazyload 初始化成功');
+            console.log('[Point 59] lazyload 初始化成功');
           } catch (e) {
-            // console.log('[Point 59] lazyload 初始化失敗，但不影響其他功能:', e.message);
+            console.log('[Point 59] lazyload 初始化失敗，但不影響其他功能:', e.message);
           }
         } else {
-          // console.log('[Point 59] lazyload 插件未載入，跳過初始化，繼續其他功能');
+          console.log('[Point 59] lazyload 插件未載入，跳過初始化，繼續其他功能');
         }
         
-        // console.log('[Point 57] ===== 頁面載入完成，開始初始化 =====');
-        // console.log('[Point 57] 測試按鈕顯示狀態:', showTestButton);
+        console.log('[Point 57] ===== 頁面載入完成，開始初始化 =====');
+        console.log('[Point 57] 測試按鈕顯示狀態:', showTestButton);
         
         if (showTestButton) {
           $('#testDataButton').show();
         }
         
-        // console.log('[Point 57] 準備初始化會員資料...');
+        console.log('[Point 57] 準備初始化會員資料...');
         // 初始化會員資料
         initializeMemberData();
         
-        // console.log('[Point 59] ===== 所有初始化完成 =====');
+        console.log('[Point 59] ===== 所有初始化完成 =====');
         
         // Point 59: 驗證功能是否正常運作
         setTimeout(function() {
-          // console.log('[Point 59] ===== 功能驗證測試 =====');
-          // console.log('[Point 59] Console 功能正常:', typeof console !== 'undefined');
-          // console.log('[Point 59] jQuery 功能正常:', typeof $ !== 'undefined');
-          // console.log('[Point 59] Point 57 變數狀態:', {
+          console.log('[Point 59] ===== 功能驗證測試 =====');
+          console.log('[Point 59] Console 功能正常:', typeof console !== 'undefined');
+          console.log('[Point 59] jQuery 功能正常:', typeof $ !== 'undefined');
+          console.log('[Point 59] Point 57 變數狀態:', {
             memberData: memberData,
             isMultipleMembers: isMultipleMembers,
             currentUserData: currentUserData
           });
-          // console.log('[Point 59] DOM 元素檢查:');
-          // console.log('[Point 59] - 會員編號欄位:', $('input[name="member_id"]').length > 0);
-          // console.log('[Point 59] - 會員姓名輸入框:', $('input[name="member_name"]').length > 0);
-          // console.log('[Point 59] - 會員姓名下拉選單:', $('select[name="member_name_select"]').length > 0);
-          // console.log('[Point 59] ===== 功能驗證完成 =====');
+          console.log('[Point 59] DOM 元素檢查:');
+          console.log('[Point 59] - 會員編號欄位:', $('input[name="member_id"]').length > 0);
+          console.log('[Point 59] - 會員姓名輸入框:', $('input[name="member_name"]').length > 0);
+          console.log('[Point 59] - 會員姓名下拉選單:', $('select[name="member_name_select"]').length > 0);
+          console.log('[Point 59] ===== 功能驗證完成 =====');
         }, 1000);
       });
 
@@ -1481,8 +1420,7 @@
       function fillTestData() {
         // 基本資料
         $('input[name="member_name"]').val('王小華');
-        $('select[name="birth_year"]').val('2003');
-        $('select[name="birth_month"]').val('5');
+        $('input[name="birth_date"]').val('2003-05-15');
         $('input[name="phone"]').val('0912345678');
 
         // 職業選擇
@@ -1609,21 +1547,30 @@
           $(this).val((index % 10) + 1);
         });
 
-        // console.log('測試資料已填入完成');
+        console.log('測試資料已填入完成');
       }
 
       function showConfirmModal() {
         // 驗證必填欄位 - jQuery版本
         var memberName = $('input[name="member_name"]').val();
-        var birthYear = $('select[name="birth_year"]').val();
-        var birthMonth = $('select[name="birth_month"]').val();
+        var birthDate = $('input[name="birth_date"]').val();
         var phone = $('input[name="phone"]').val();
 
         var missingFields = [];
         if (!memberName) missingFields.push('會員姓名');
-        if (!birthYear) missingFields.push('出生西元年');
-        if (!birthMonth) missingFields.push('出生西元月');
+        if (!birthDate) missingFields.push('出生日期');
         if (!phone) missingFields.push('電話');
+        
+        // 為往後相容性，從日期中提取年月
+        var birthYear = '', birthMonth = '';
+        if (birthDate) {
+          var dateObj = new Date(birthDate);
+          birthYear = dateObj.getFullYear();
+          birthMonth = dateObj.getMonth() + 1;
+          // 更新隱藏欄位以保持API相容性
+          $('input[name="birth_year"]').val(birthYear);
+          $('input[name="birth_month"]').val(birthMonth);
+        }
 
         if (missingFields.length > 0) {
           alert('請填寫以下必填欄位：\n' + missingFields.join('、'));
@@ -1632,8 +1579,7 @@
 
         // 填入確認視窗的內容 - jQuery版本
         $('#confirm-member-name').text(memberName);
-        $('#confirm-birth-year').text(birthYear + '年');
-        $('#confirm-birth-month').text(birthMonth + '月');
+        $('#confirm-birth-date').text(birthDate ? new Date(birthDate).toLocaleDateString('zh-TW') : '(未填寫)');
         $('#confirm-phone').text(phone);
 
         // 職業選擇
@@ -1765,9 +1711,9 @@
       }
 
       function submitForm() {
-        // console.log('[Point 57] ===== 表單提交開始 =====');
-        // console.log('[Point 57] 是否為多重會員:', isMultipleMembers);
-        // console.log('[Point 57] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
+        console.log('[Point 57] ===== 表單提交開始 =====');
+        console.log('[Point 57] 是否為多重會員:', isMultipleMembers);
+        console.log('[Point 57] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
         
         // 收集表單資料
         var memberName = '';
@@ -1775,29 +1721,29 @@
         
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
-          // console.log('[Point 57] 使用下拉選單模式取得會員資料');
+          console.log('[Point 57] 使用下拉選單模式取得會員資料');
           // 使用下拉選單的值
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
           memberId = selectedOption.val();
           memberName = selectedOption.data('name');
-          // console.log('[Point 57] 從下拉選單取得:', {
+          console.log('[Point 57] 從下拉選單取得:', {
             memberId: memberId,
             memberName: memberName,
             optionText: selectedOption.text()
           });
         } else {
-          // console.log('[Point 57] 使用輸入框模式取得會員資料');
+          console.log('[Point 57] 使用輸入框模式取得會員資料');
           // 使用輸入框和當前會員資料
           memberId = currentUserData.member_id;
           memberName = $('input[name="member_name"]').val();
-          // console.log('[Point 57] 從輸入框取得:', {
+          console.log('[Point 57] 從輸入框取得:', {
             memberId: memberId,
             memberName: memberName,
             currentUserData: currentUserData
           });
         }
         
-        // console.log('[Point 57] 最終會員資料:', {
+        console.log('[Point 57] 最終會員資料:', {
           member_id: memberId,
           member_name: memberName
         });
@@ -1806,8 +1752,9 @@
           // 使用者識別資訊
           member_id: memberId,
           member_name: memberName,
-          birth_year: $('select[name="birth_year"]').val(),
-          birth_month: $('select[name="birth_month"]').val(),
+          birth_date: $('input[name="birth_date"]').val(),
+          birth_year: $('input[name="birth_year"]').val(), // 從日期提取的年份
+          birth_month: $('input[name="birth_month"]').val(), // 從日期提取的月份
           phone: $('input[name="phone"]').val(),
           
           // 職業選擇
@@ -1952,7 +1899,7 @@
             }
           },
           error: function(xhr, status, error) {
-            // console.error('提交失敗:', error);
+            console.error('提交失敗:', error);
             Swal.fire({
               title: '提交失敗',
               text: '網絡錯誤，請稍後再試',
