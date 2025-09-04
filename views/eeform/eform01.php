@@ -28,8 +28,8 @@
                             </select>
                           </div>
                           <div class="col-sm-5 mb30">
-                            <label class="label-custom">出生日期</label>
-                            <input type="date" name="birth_date" class="form-control form-control-custom" min="1980-01-01" max="2010-12-31" required />
+                            <label class="label-custom">出生年月</label>
+                            <input type="month" name="birth_date" class="form-control form-control-custom" min="1980-01" max="2010-12" required />
                             <!-- Keep hidden fields for backward compatibility -->
                             <input type="hidden" name="birth_year" />
                             <input type="hidden" name="birth_month" />
@@ -779,7 +779,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                       <div class="d-flex align-items-center">
-                        <span class="text-muted mr-3" style="min-width: 80px;">出生日期：</span>
+                        <span class="text-muted mr-3" style="min-width: 80px;">出生年月：</span>
                         <span class="text-dark" id="confirm-birth-date"></span>
                       </div>
                     </div>
@@ -1420,7 +1420,7 @@
       function fillTestData() {
         // 基本資料
         $('input[name="member_name"]').val('王小華');
-        $('input[name="birth_date"]').val('2003-05-15');
+        $('input[name="birth_date"]').val('2003-05');
         $('input[name="phone"]').val('0912345678');
 
         // 職業選擇
@@ -1558,18 +1558,21 @@
 
         var missingFields = [];
         if (!memberName) missingFields.push('會員姓名');
-        if (!birthDate) missingFields.push('出生日期');
+        if (!birthDate) missingFields.push('出生年月');
         if (!phone) missingFields.push('電話');
         
-        // 為往後相容性，從日期中提取年月
+        // 為往後相容性，從年月中提取年月
         var birthYear = '', birthMonth = '';
         if (birthDate) {
-          var dateObj = new Date(birthDate);
-          birthYear = dateObj.getFullYear();
-          birthMonth = dateObj.getMonth() + 1;
-          // 更新隱藏欄位以保持API相容性
-          $('input[name="birth_year"]').val(birthYear);
-          $('input[name="birth_month"]').val(birthMonth);
+          // 處理 YYYY-MM 格式
+          var parts = birthDate.split('-');
+          if (parts.length === 2) {
+            birthYear = parseInt(parts[0]);
+            birthMonth = parseInt(parts[1]);
+            // 更新隱藏欄位以保持API相容性
+            $('input[name="birth_year"]').val(birthYear);
+            $('input[name="birth_month"]').val(birthMonth);
+          }
         }
 
         if (missingFields.length > 0) {
@@ -1579,7 +1582,15 @@
 
         // 填入確認視窗的內容 - jQuery版本
         $('#confirm-member-name').text(memberName);
-        $('#confirm-birth-date').text(birthDate ? new Date(birthDate).toLocaleDateString('zh-TW') : '(未填寫)');
+        // 顯示 YYYY-MM 格式為 "YYYY年MM月"
+        var birthDateDisplay = '';
+        if (birthDate) {
+          var parts = birthDate.split('-');
+          if (parts.length === 2) {
+            birthDateDisplay = parts[0] + '年' + parts[1] + '月';
+          }
+        }
+        $('#confirm-birth-date').text(birthDateDisplay || '(未填寫)');
         $('#confirm-phone').text(phone);
 
         // 職業選擇

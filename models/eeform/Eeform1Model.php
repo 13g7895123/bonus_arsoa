@@ -98,26 +98,31 @@ class Eeform1Model extends MY_Model
             }
         }
         
-        // 驗證出生日期 - 支援新的 birth_date 或舊的 birth_year/birth_month
+        // 驗證出生年月 - 支援新的 birth_date (YYYY-MM) 或舊的 birth_year/birth_month
         if (!empty($data['birth_date'])) {
-            // 使用新的日期欄位
+            // 使用新的年月欄位 (YYYY-MM 格式)
             $birth_date = $data['birth_date'];
-            if (!strtotime($birth_date)) {
-                $errors[] = '出生日期格式不正確';
+            // 驗證 YYYY-MM 格式
+            if (!preg_match('/^\d{4}-\d{2}$/', $birth_date) || !strtotime($birth_date . '-01')) {
+                $errors[] = '出生年月格式不正確，請使用 YYYY-MM 格式';
             } else {
-                $year = date('Y', strtotime($birth_date));
-                $month = date('n', strtotime($birth_date));
+                $parts = explode('-', $birth_date);
+                $year = intval($parts[0]);
+                $month = intval($parts[1]);
                 if ($year < 1950 || $year > date('Y')) {
                     $errors[] = '出生年份不在有效範圍內';
                 }
-                // 為往後相容性，將日期拆解為年月
+                if ($month < 1 || $month > 12) {
+                    $errors[] = '出生月份不在有效範圍內';
+                }
+                // 為往後相容性，將年月資料同步到別字欄位
                 $data['birth_year'] = $year;
                 $data['birth_month'] = $month;
             }
         } else {
             // 使用舊的年月欄位
             if (empty($data['birth_year']) || empty($data['birth_month'])) {
-                $errors[] = '出生日期或出生年月是必填欄位';
+                $errors[] = '出生年月是必填欄位';
             } else {
                 $year = intval($data['birth_year']);
                 $month = intval($data['birth_month']);
