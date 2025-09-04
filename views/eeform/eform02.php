@@ -900,10 +900,33 @@
         $nameSelect.append('<option value="">請選擇會員</option>');
         
         // 加入會員選項
+        var currentUserSelected = false;
         memberData.forEach(function(member) {
-          $nameSelect.append('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
-                            member.c_name + ' (' + member.c_no + ')</option>');
+          var option = $('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
+                         member.c_name + ' (' + member.c_no + ')</option>');
+          
+          // Point 77: 檢查是否為當前使用者，如果是則設為預設選擇
+          if (member.c_no === currentUserData.member_id || 
+              member.c_name === currentUserData.member_name) {
+            option.prop('selected', true);
+            currentUserSelected = true;
+            console.log('[Point 77 - eform2] 預設選擇當前使用者:', member.c_name, member.c_no);
+          }
+          
+          $nameSelect.append(option);
         });
+        
+        // Point 77: 更新會員編號（根據目前選擇的會員）
+        var selectedOption = $nameSelect.find('option:selected');
+        if (selectedOption.val()) {
+          $('input[name="member_id"]').val(selectedOption.val());
+          currentUserData.member_id = selectedOption.val();
+          currentUserData.member_name = selectedOption.data('name');
+          console.log('[Point 77 - eform2] 根據預設選擇更新會員資料:', {
+            memberId: currentUserData.member_id,
+            memberName: currentUserData.member_name
+          });
+        }
         
         // 隱藏輸入框，顯示下拉選單
         $nameInput.hide();
