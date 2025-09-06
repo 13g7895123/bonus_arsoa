@@ -166,10 +166,12 @@ class Eeform1Model extends MY_Model
         $this->db->trans_start();
         
         try {
-            // 準備主表資料
+            // 準備主表資料 - Point 80: 支援代填問卷者追蹤
             $submission_data = [
                 'member_id' => isset($data['member_id']) ? $data['member_id'] : null,
-                'member_name' => $data['member_name'],
+                'member_name' => $data['member_name'], // 被填表人姓名
+                'form_filler_id' => isset($data['form_filler_id']) ? $data['form_filler_id'] : null, // 代填問卷者ID
+                'form_filler_name' => isset($data['form_filler_name']) ? $data['form_filler_name'] : null, // 代填問卷者姓名
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
                 'phone' => $data['phone'],

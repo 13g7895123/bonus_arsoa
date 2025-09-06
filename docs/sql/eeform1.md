@@ -21,7 +21,9 @@ EEFORM1 肌膚諮詢記錄表系統需要以下資料表來完整儲存表單數
 CREATE TABLE eeform1_submissions (
     id INT PRIMARY KEY AUTO_INCREMENT COMMENT '記錄ID',
     member_id VARCHAR(50) NULL COMMENT '會員編號',
-    member_name VARCHAR(100) NOT NULL COMMENT '會員姓名',
+    member_name VARCHAR(100) NOT NULL COMMENT '會員姓名（被填表人）',
+    form_filler_id VARCHAR(50) NULL COMMENT '代填問卷者ID（當前登入使用者）',
+    form_filler_name VARCHAR(100) NULL COMMENT '代填問卷者姓名',
     birth_year SMALLINT NOT NULL COMMENT '出生西元年',
     birth_month TINYINT NOT NULL COMMENT '出生西元月',
     phone VARCHAR(20) NOT NULL COMMENT '電話號碼',
@@ -374,8 +376,19 @@ ADD CONSTRAINT chk_skin_age CHECK (skin_age >= 18 AND skin_age <= 80);
 ALTER TABLE eeform1_submissions 
 ADD COLUMN member_id VARCHAR(50) NULL COMMENT '會員編號' AFTER id;
 
+-- Point 80: 新增代填問卷者追蹤欄位
+ALTER TABLE eeform1_submissions 
+ADD COLUMN form_filler_id VARCHAR(50) NULL COMMENT '代填問卷者ID（當前登入使用者）' AFTER member_name,
+ADD COLUMN form_filler_name VARCHAR(100) NULL COMMENT '代填問卷者姓名' AFTER form_filler_id;
+
+-- 修改 member_name 註解
+ALTER TABLE eeform1_submissions 
+MODIFY COLUMN member_name VARCHAR(100) NOT NULL COMMENT '會員姓名（被填表人）';
+
 -- 新增索引
 CREATE INDEX idx_member_id ON eeform1_submissions (member_id);
+CREATE INDEX idx_form_filler_id ON eeform1_submissions (form_filler_id);
+CREATE INDEX idx_form_filler_name ON eeform1_submissions (form_filler_name);
 
 -- 新增複合索引
 CREATE INDEX idx_member_date ON eeform1_submissions (member_id, submission_date);

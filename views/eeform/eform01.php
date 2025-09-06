@@ -1168,7 +1168,7 @@
       console.log('[Point 59] jQuery 版本:', typeof $ !== 'undefined' ? $.fn.jquery : '未載入');
       
       // 控制測試按鈕顯示的變數
-      var showTestButton = false; // 設為 false 可隱藏測試按鈕
+      var showTestButton = true; // 設為 true 顯示測試按鈕
       
       // 取得目前登入使用者資訊 - Point 60 加強除錯
       console.log('[Point 60] ===== PHP 傳入的原始資料 =====');
@@ -1314,7 +1314,7 @@
         var currentUserSelected = false;
         memberData.forEach(function(member, index) {
           var option = $('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
-                         member.c_name + ' (' + member.c_no + ')</option>');
+                         member.c_name + '</option>');
           
           // Point 77: 檢查是否為當前使用者，如果是則設為預設選擇
           if (member.c_no === currentUserData.member_id || 
@@ -1418,136 +1418,129 @@
 
       // 填入測試資料的函數 - jQuery版本
       function fillTestData() {
-        // 基本資料
-        $('input[name="member_name"]').val('王小華');
-        $('input[name="birth_date"]').val('2003-05');
-        $('input[name="phone"]').val('0912345678');
-
-        // 職業選擇
-        $('input[name="occupation_service"]').prop('checked', true);
-        $('input[name="occupation_office"]').prop('checked', true);
-
-        // 戶外日曬時間
-        $('input[name="sunlight_3_4h"]').prop('checked', true);
-
-        // 空調環境時間
-        $('input[name="aircondition_5_8h"]').prop('checked', true);
-
-        // 建議內容
-        $('input[name="toner_suggestion"]').val('麗蓓思朵化妝水');
-        $('input[name="serum_suggestion"]').val('保濕亮采肌底液');
-        $('input[name="suggestion_content"]').val('建議加強保濕護理，每日使用面膜2-3次');
-
-        // 肌膚類型
-        $('input[name="skin_type"][value="combination"]').prop('checked', true);
-
-        // 肌膚年齡
-        $('input[name="skin_age"]').val('25');
-
-        // 評分欄位（水潤）
-        $('input[name="moisture_severe"]').val('0');
-        $('input[name="moisture_warning"]').val('6');
-        $('input[name="moisture_healthy"]').val('8');
+        // 隨機選擇要填入的欄位，模擬真實使用者操作
         
-        // 評分欄位（膚色）
-        $('input[name="complexion_severe"]').val('1');
-        $('input[name="complexion_warning"]').val('5');
-        $('input[name="complexion_healthy"]').val('9');
+        // 基本資料 - 隨機決定是否填寫（會員姓名若是下拉選單就不填）
+        if (Math.random() > 0.2 && !$('select[name="member_name_select"]').is(':visible')) {
+          $('input[name="member_name"]').val('王小華');
+        }
         
-        // 評分欄位（紋理）
-        $('input[name="texture_severe"]').val('2');
-        $('input[name="texture_warning"]').val('4');
-        $('input[name="texture_healthy"]').val('7');
+        if (Math.random() > 0.2) {
+          var randomYear = 1990 + Math.floor(Math.random() * 20);
+          var randomMonth = 1 + Math.floor(Math.random() * 12);
+          $('input[name="birth_date"]').val(randomYear + '-' + (randomMonth < 10 ? '0' : '') + randomMonth);
+        }
         
-        // 評分欄位（敏感）
-        $('input[name="sensitivity_severe"]').val('0');
-        $('input[name="sensitivity_warning"]').val('3');
-        $('input[name="sensitivity_healthy"]').val('8');
-        
-        // 評分欄位（油脂）
-        $('input[name="oil_severe"]').val('1');
-        $('input[name="oil_warning"]').val('7');
-        $('input[name="oil_healthy"]').val('9');
-        
-        // 評分欄位（色素）
-        $('input[name="pigment_severe"]').val('0');
-        $('input[name="pigment_warning"]').val('4');
-        $('input[name="pigment_healthy"]').val('8');
-        
-        // 評分欄位（皺紋）
-        $('input[name="wrinkle_severe"]').val('1');
-        $('input[name="wrinkle_warning"]').val('5');
-        $('input[name="wrinkle_healthy"]').val('9');
-        
-        // 評分欄位（毛孔）
-        $('input[name="pore_severe"]').val('2');
-        $('input[name="pore_warning"]').val('6');
-        $('input[name="pore_healthy"]').val('8');
+        if (Math.random() > 0.1) {
+          var phonePrefix = ['0912', '0933', '0988', '0975', '0910'];
+          var randomPhone = phonePrefix[Math.floor(Math.random() * phonePrefix.length)] + Math.floor(100000 + Math.random() * 900000);
+          $('input[name="phone"]').val(randomPhone);
+        }
 
-        // 填入其他可能存在的評分欄位
-        var scoreFields = [
-          'complexion_severe', 'complexion_warning', 'complexion_healthy',
-          'texture_severe', 'texture_warning', 'texture_healthy',
-          'sensitivity_severe', 'sensitivity_warning', 'sensitivity_healthy',
-          'oil_severe', 'oil_warning', 'oil_healthy',
-          'pigment_severe', 'pigment_warning', 'pigment_healthy',
-          'wrinkle_severe', 'wrinkle_warning', 'wrinkle_healthy',
-          'pore_severe', 'pore_warning', 'pore_healthy'
-        ];
+        // 職業選擇 - 隨機選擇
+        var occupations = ['occupation_service', 'occupation_office', 'occupation_restaurant', 'occupation_housewife'];
+        occupations.forEach(function(occ) {
+          if (Math.random() > 0.5) {
+            $('input[name="' + occ + '"]').prop('checked', Math.random() > 0.5);
+          }
+        });
 
-        $.each(scoreFields, function(index, fieldName) {
-          var $field = $('input[name="' + fieldName + '"]');
-          if ($field.length) {
-            if (fieldName.includes('severe')) {
-              $field.val('1');
-            } else if (fieldName.includes('warning')) {
-              $field.val('6');
-            } else if (fieldName.includes('healthy')) {
-              $field.val('9');
+        // 戶外日曬時間 - 隨機選擇一個
+        var sunlightOptions = ['sunlight_1_2h', 'sunlight_3_4h', 'sunlight_5_6h', 'sunlight_8h_plus'];
+        if (Math.random() > 0.3) {
+          var randomSunlight = sunlightOptions[Math.floor(Math.random() * sunlightOptions.length)];
+          $('input[name="' + randomSunlight + '"]').prop('checked', true);
+        }
+
+        // 空調環境時間 - 隨機選擇一個
+        var airConditionOptions = ['aircondition_1h', 'aircondition_2_4h', 'aircondition_5_8h', 'aircondition_8h_plus'];
+        if (Math.random() > 0.3) {
+          var randomAirCondition = airConditionOptions[Math.floor(Math.random() * airConditionOptions.length)];
+          $('input[name="' + randomAirCondition + '"]').prop('checked', true);
+        }
+
+        // 建議內容 - 隨機填寫
+        var tonerSuggestions = ['麗蓓思朵化妝水', '保濕化妝水', '清爽型化妝水', '滋潤型化妝水'];
+        var serumSuggestions = ['保濕亮采肌底液', '美白精華液', '抗老精華液', '修護精華液'];
+        var suggestions = ['建議加強保濕護理', '建議使用防曬產品', '建議定期清潔', '建議溫和護膚'];
+        
+        if (Math.random() > 0.4) {
+          $('input[name="toner_suggestion"]').val(tonerSuggestions[Math.floor(Math.random() * tonerSuggestions.length)]);
+        }
+        if (Math.random() > 0.4) {
+          $('input[name="serum_suggestion"]').val(serumSuggestions[Math.floor(Math.random() * serumSuggestions.length)]);
+        }
+        if (Math.random() > 0.4) {
+          $('input[name="suggestion_content"]').val(suggestions[Math.floor(Math.random() * suggestions.length)]);
+        }
+
+        // 肌膚類型 - 隨機選擇
+        var skinTypes = ['normal', 'combination', 'oily', 'dry', 'sensitive'];
+        if (Math.random() > 0.3) {
+          var randomSkinType = skinTypes[Math.floor(Math.random() * skinTypes.length)];
+          $('input[name="skin_type"][value="' + randomSkinType + '"]').prop('checked', true);
+        }
+
+        // 肌膚年齡 - 隨機填寫
+        if (Math.random() > 0.4) {
+          $('input[name="skin_age"]').val(20 + Math.floor(Math.random() * 30));
+        }
+
+        // 評分欄位 - 隨機填寫部分欄位
+        var scoreCategories = ['moisture', 'complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
+        scoreCategories.forEach(function(category) {
+          if (Math.random() > 0.4) { // 60%機率填寫這個類別
+            var severeVal = Math.floor(Math.random() * 3);
+            var warningVal = 3 + Math.floor(Math.random() * 4);
+            var healthyVal = 7 + Math.floor(Math.random() * 3);
+            
+            $('input[name="' + category + '_severe"]').val(severeVal);
+            $('input[name="' + category + '_warning"]').val(warningVal);
+            $('input[name="' + category + '_healthy"]').val(healthyVal);
+          }
+        });
+
+        // 睡眠狀況 - 隨機選擇
+        var sleepOptions = ['sleep_9_10', 'sleep_11_12', 'sleep_after_1', 'sleep_other'];
+        if (Math.random() > 0.3) {
+          var randomSleep = sleepOptions[Math.floor(Math.random() * sleepOptions.length)];
+          $('input[name="' + randomSleep + '"]').prop('checked', true);
+          if (randomSleep === 'sleep_other' && Math.random() > 0.5) {
+            $('input[name="sleep_other_text"]').val('不規律睡眠');
+          }
+        }
+
+        // 現在使用產品 - 隨機選擇多個
+        var products = ['product_honey_soap', 'product_mud_mask', 'product_toner', 'product_serum', 'product_premium', 'product_sunscreen', 'product_other'];
+        products.forEach(function(product) {
+          if (Math.random() > 0.6) { // 40%機率選中每個產品
+            $('input[name="' + product + '"]').prop('checked', true);
+            if (product === 'product_other' && Math.random() > 0.5) {
+              $('input[name="product_other_text"]').val('其他保養品');
             }
           }
         });
 
-        // 日期欄位（如果存在） - jQuery版本
-        $('input[placeholder*="請填日期"]').each(function(index) {
-          $(this).val('2025-0' + ((index % 9) + 1) + '-15');
-        });
-
-        // 數字欄位（如果存在） - jQuery版本
-        $('input[placeholder*="限填數字…"]').each(function(index) {
-          $(this).val((index % 10) + 1);
-        });
-
-        // 睡眠狀況
-        $('input[name="sleep_11_12"]').prop('checked', true);
-
-        // 現在使用產品
-        $('input[name="product_toner"]').prop('checked', true);
-        $('input[name="product_serum"]').prop('checked', true);
-
-        // 肌膚困擾
-        $('input[name="skin_issue_dull"]').prop('checked', true);
-        $('input[name="skin_issue_spots"]').prop('checked', true);
-        $('input[name="skin_issue_dry"]').prop('checked', true);
-
-        // 過敏狀況
-        $('input[name="allergy_seasonal"]').prop('checked', true);
-
-        // 其他text input欄位 - jQuery版本
-        $('input[type="text"]:not([name])').each(function(index) {
-          if ($(this).css('width') === '80%') {
-            $(this).val('其他備註' + (index + 1));
-          } else {
-            $(this).val('測試內容' + (index + 1));
+        // 肌膚困擾 - 隨機選擇多個
+        var skinIssues = ['skin_issue_elasticity', 'skin_issue_luster', 'skin_issue_dull', 'skin_issue_spots', 
+                          'skin_issue_pores', 'skin_issue_acne', 'skin_issue_wrinkles', 'skin_issue_rough', 
+                          'skin_issue_irritation', 'skin_issue_dry'];
+        var selectedIssues = 0;
+        skinIssues.forEach(function(issue) {
+          if (Math.random() > 0.7 && selectedIssues < 5) { // 30%機率選中，最多選5個
+            $('input[name="' + issue + '"]').prop('checked', true);
+            selectedIssues++;
           }
         });
 
-        // 所有沒有name屬性的number類型input - jQuery版本
-        $('input[type="number"]:not([name])').each(function(index) {
-          $(this).val((index % 10) + 1);
-        });
+        // 過敏狀況 - 隨機選擇
+        var allergyOptions = ['allergy_none', 'allergy_seasonal', 'allergy_food', 'allergy_cosmetics'];
+        if (Math.random() > 0.4) {
+          var randomAllergy = allergyOptions[Math.floor(Math.random() * allergyOptions.length)];
+          $('input[name="' + randomAllergy + '"]').prop('checked', true);
+        }
 
-        console.log('測試資料已填入完成');
+        console.log('測試資料已隨機填入完成');
       }
 
       function showConfirmModal() {
@@ -1722,47 +1715,49 @@
       }
 
       function submitForm() {
-        console.log('[Point 57] ===== 表單提交開始 =====');
-        console.log('[Point 57] 是否為多重會員:', isMultipleMembers);
-        console.log('[Point 57] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
         
         // 收集表單資料
         var memberName = '';
         var memberId = '';
+        var formFillerID = currentUserData.member_id; // 代填問卷者（當前登入使用者）
+        var formFillerName = currentUserData.member_name; // 代填問卷者姓名
         
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
-          console.log('[Point 57] 使用下拉選單模式取得會員資料');
-          // 使用下拉選單的值
+          // 使用下拉選單的值 - 只取姓名，不取會員編號
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
-          memberId = selectedOption.val();
-          memberName = selectedOption.data('name');
-          console.log('[Point 57] 從下拉選單取得:', {
-            memberId: memberId,
-            memberName: memberName,
-            optionText: selectedOption.text()
+          memberId = selectedOption.val(); // 被填表人編號（僅用於顯示，不送出）
+          memberName = selectedOption.data('name'); // 被填表人姓名
+          console.log('[Point 80] 下拉選單選擇的會員:', {
+            selectedMemberID: memberId,
+            selectedMemberName: memberName,
+            formFillerID: formFillerID,
+            formFillerName: formFillerName
           });
         } else {
-          console.log('[Point 57] 使用輸入框模式取得會員資料');
           // 使用輸入框和當前會員資料
           memberId = currentUserData.member_id;
           memberName = $('input[name="member_name"]').val();
-          console.log('[Point 57] 從輸入框取得:', {
+          console.log('[Point 80] 從輸入框取得:', {
             memberId: memberId,
             memberName: memberName,
-            currentUserData: currentUserData
+            formFillerID: formFillerID,
+            formFillerName: formFillerName
           });
         }
         
-        console.log('[Point 57] 最終會員資料:', {
-          member_id: memberId,
-          member_name: memberName
+        console.log('[Point 80] 最終會員資料:', {
+          form_subject_name: memberName, // 被填表人
+          form_filler_id: formFillerID, // 代填問卷者
+          form_filler_name: formFillerName // 代填問卷者姓名
         });
         
         var formData = {
-          // 使用者識別資訊
-          member_id: memberId,
-          member_name: memberName,
+          // 使用者識別資訊 - Point 80: 調整送出資料
+          member_id: memberId, // 保留欄位但可能為空（相容性）
+          member_name: memberName, // 被填表人姓名
+          form_filler_id: formFillerID, // 代填問卷者ID（當前登入使用者）
+          form_filler_name: formFillerName, // 代填問卷者姓名
           birth_date: $('input[name="birth_date"]').val(),
           birth_year: $('input[name="birth_year"]').val(), // 從日期提取的年份
           birth_month: $('input[name="birth_month"]').val(), // 從日期提取的月份
