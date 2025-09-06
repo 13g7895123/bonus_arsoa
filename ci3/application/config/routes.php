@@ -52,3 +52,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+// eform1 view routes
+$route['eform/eform1'] = 'eform/eform1';
+$route['eform/eform1_list'] = 'eform/eform1_list';
+
+// eform1 API routes
+$route['api/test'] = 'api/eeform/eeform1/test';
+$route['api/eeform1/test'] = 'api/eeform/eeform1/test';
+$route['api/eeform1/health'] = 'api/eeform/eeform1/health';
+$route['api/eeform1/submit'] = 'api/eeform/eeform1/submit';
+$route['api/eeform1/submissions/(:any)'] = 'api/eeform/eeform1/submissions/$1';
+$route['api/eeform1/submission/(:any)'] = 'api/eeform/eeform1/submission/$1';
+$route['api/eeform1/update/(:any)'] = 'api/eeform/eeform1/update/$1';
+$route['api/eeform1/stats/(:any)'] = 'api/eeform/eeform1/stats/$1';
+$route['api/eeform1/list'] = 'api/eeform/eeform1/list';
+$route['api/eeform1/member_lookup/(:any)'] = 'api/eeform/eeform1/member_lookup/$1';
+$route['api/eeform1/export_single/(:any)'] = 'api/eeform/eeform1/export_single/$1';
