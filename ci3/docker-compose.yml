@@ -1,0 +1,61 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: ci3_nginx
+    ports:
+      - "${WEB_PORT}:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - db
+    networks:
+      - ci3_network
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    container_name: ci3_php
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - ci3_network
+
+  db:
+    image: mysql:5.7
+    container_name: ci3_db
+    ports:
+      - "${DB_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - ci3_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ci3_phpmyadmin
+    ports:
+      - "${PMA_PORT}:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    depends_on:
+      - db
+    networks:
+      - ci3_network
+
+volumes:
+  db_data:
+
+networks:
+  ci3_network:
+    driver: bridge

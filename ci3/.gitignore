@@ -1,0 +1,17 @@
+.DS_Store
+.env
+
+application/cache/*
+!application/cache/index.html
+application/logs/*
+!application/logs/index.html
+
+.idea/
+*.iml
+.vscode/
+
+node_modules/
+vendor/
+
+*.sql
+*.dump
