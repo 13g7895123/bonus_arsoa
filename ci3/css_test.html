@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Test - CI3 Project</title>
+    <link href="http://localhost:9126/views/eeform/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://localhost:9126/views/eeform/css/style.css" rel="stylesheet">
+    <style>
+        .test-container {
+            margin: 50px auto;
+            max-width: 800px;
+            padding: 20px;
+        }
+        .test-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-color: #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="text-center mb-4">CI3 CSS Loading Test</h1>
+        
+        <div class="test-item success">
+            <h3>✓ Bootstrap CSS Test</h3>
+            <p>If you can see this styled container with proper Bootstrap classes, Bootstrap CSS is working correctly.</p>
+            <div class="row">
+                <div class="col-md-4"><div class="alert alert-primary">Column 1</div></div>
+                <div class="col-md-4"><div class="alert alert-warning">Column 2</div></div>
+                <div class="col-md-4"><div class="alert alert-success">Column 3</div></div>
+            </div>
+        </div>
+
+        <div class="test-item info">
+            <h3>ℹ Custom Styles Test</h3>
+            <p>If you can see styled containers with colors, custom CSS is also working.</p>
+            <button class="btn btn-primary">Primary Button</button>
+            <button class="btn btn-success ml-2">Success Button</button>
+            <button class="btn btn-danger ml-2">Danger Button</button>
+        </div>
+
+        <div class="test-item">
+            <h3>📋 Form Elements Test</h3>
+            <form>
+                <div class="form-group">
+                    <label for="testInput">Test Input:</label>
+                    <input type="text" class="form-control" id="testInput" placeholder="Enter some text">
+                </div>
+                <div class="form-group">
+                    <label for="testSelect">Test Select:</label>
+                    <select class="form-control" id="testSelect">
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-outline-primary">Test Button</button>
+            </form>
+        </div>
+
+        <div class="test-item success">
+            <h3>🎉 Test Results</h3>
+            <ul>
+                <li><strong>Base URL:</strong> http://localhost:9126/</li>
+                <li><strong>Bootstrap CSS:</strong> http://localhost:9126/views/eeform/css/bootstrap.min.css</li>
+                <li><strong>Custom CSS:</strong> http://localhost:9126/views/eeform/css/style.css</li>
+                <li><strong>Status:</strong> <span class="badge badge-success">CSS Loading Successfully!</span></li>
+            </ul>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="http://localhost:9126/eform/eform1" class="btn btn-lg btn-primary">Go to EForm1</a>
+            <a href="http://localhost:9126/eform/test" class="btn btn-lg btn-secondary ml-2">Test Controller</a>
+        </div>
+    </div>
+</body>
+</html>
