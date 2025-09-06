@@ -118,3 +118,4 @@
     - Call to a member function electronic_form_right_menu() ，views的helper也沒有移過來
     - 確認css可以使用
 86. 你是不是沒有確認已經正常可以使用，我現在使用都一直轉圈圈，請幫我從頭到尾確認，完成後請add commit push
+87. 幫我把docs\sql中的各表單的md轉成ci3的migration，並且幫我執行他，完成後ci3的form1應該可以正常送出，幫我寫測試程式，確保可以正常運行，並且正確存入資料庫中
