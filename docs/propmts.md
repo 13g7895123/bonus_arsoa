@@ -112,3 +112,9 @@
 81. 幫我起一個ci3的專案在根目錄，請命名為ci3，並在其中建置docker-compose.yml，不要version，需要.env控制docker-compose.yml的對外PORT
 82. webserver請幫我改用nginx，完成後請使用目前的.env啟用ci3傳案，並測試能正確顯示ci3的預設畫面
 83. 幫我把views/eeform/eform1.php相關的檔案，包含model與controller等等，有關的檔案幫我複製一份到剛剛新建的ci3專案中
+84. 請幫我把route建立起來，讓我可以使用這個功能，建立完後，請務必確認是正常可以使用的
+85. 修復以下錯誤
+    - Undefined property: CI_Loader::$block_service，報了這個錯誤，幫我補上service的部分，他沒有移過來
+    - Call to a member function electronic_form_right_menu() ，views的helper也沒有移過來
+    - 確認css可以使用
+86. 你是不是沒有確認已經正常可以使用，我現在使用都一直轉圈圈，請幫我從頭到尾確認，完成後請add commit push
