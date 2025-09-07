@@ -1255,7 +1255,7 @@
         if (selectedOption.val()) {
           $('input[name="member_id"]').val(selectedOption.val());
           currentUserData.member_id = selectedOption.val();
-          currentUserData.member_name = selectedOption.data('name');
+          currentUserData.member_name = selectedOption.data('name') ? selectedOption.data('name').trim() : ''; // 純姓名
         }
         
         // 綁定選擇事件
@@ -1264,12 +1264,12 @@
           
           if (selectedOption.val()) {
             var newMemberId = selectedOption.val();
-            var newMemberName = selectedOption.data('name');
+            var newMemberName = selectedOption.data('name') ? selectedOption.data('name').trim() : '';
             
             // 更新會員編號和姓名
             $('input[name="member_id"]').val(newMemberId);
             currentUserData.member_id = newMemberId;
-            currentUserData.member_name = newMemberName;
+            currentUserData.member_name = newMemberName; // 純姓名
           }
         });
       }
@@ -1435,12 +1435,12 @@
         
         // 檢查是否使用下拉選單
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
-          // 使用下拉選單的值
+          // 使用下拉選單的值 - 只取純姓名
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
-          memberName = selectedOption.data('name') || selectedOption.text();
+          memberName = selectedOption.data('name') ? selectedOption.data('name').trim() : '';
         } else {
-          // 使用輸入框的值
-          memberName = $('input[name="member_name"]').val();
+          // 使用輸入框的值 - 只取純姓名
+          memberName = $('input[name="member_name"]').val() ? $('input[name="member_name"]').val().trim() : '';
         }
         
         var birthDate = $('input[name="birth_date"]').val();
@@ -1621,14 +1621,14 @@
         
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
-          // 使用下拉選單的值 - 只取姓名，不取會員編號
+          // 使用下拉選單的值 - 只取純姓名，不取會員編號
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
           memberId = selectedOption.val(); // 被填表人編號（僅用於顯示，不送出）
-          memberName = selectedOption.data('name'); // 被填表人姓名
+          memberName = selectedOption.data('name') ? selectedOption.data('name').trim() : ''; // 被填表人純姓名
         } else {
-          // 使用輸入框和當前會員資料
+          // 使用輸入框和當前會員資料 - 只取純姓名
           memberId = currentUserData.member_id;
-          memberName = $('input[name="member_name"]').val();
+          memberName = $('input[name="member_name"]').val() ? $('input[name="member_name"]').val().trim() : '';
         }
         
         var formData = {
