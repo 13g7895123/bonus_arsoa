@@ -462,7 +462,20 @@ class Eeform1 extends CI_Controller
                 return;
             }
 
-            $this->_send_success('取得列表資料成功', $results);
+            // 調整回應格式以符合前端預期
+            $response = [
+                'success' => true,
+                'message' => '取得列表資料成功',
+                'data' => $results['data'],
+                'total' => $results['pagination']['total'],
+                'page' => $results['pagination']['current_page'],
+                'limit' => $results['pagination']['per_page']
+            ];
+            
+            $this->output
+                ->set_content_type('application/json')
+                ->set_status_header(200)
+                ->set_output(json_encode($response));
 
         } catch (Exception $e) {
             log_message('error', 'Eeform1::list exception: ' . $e->getMessage());

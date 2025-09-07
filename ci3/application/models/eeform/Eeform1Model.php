@@ -851,6 +851,7 @@ class Eeform1Model extends CI_Model
                 s.skin_type,
                 s.skin_age,
                 s.submission_date,
+                s.form_filler_name,
                 s.created_at,
                 s.updated_at
             ');
@@ -873,6 +874,7 @@ class Eeform1Model extends CI_Model
                 s.skin_type,
                 s.skin_age,
                 s.submission_date,
+                s.form_filler_name,
                 s.created_at,
                 s.updated_at
             ');

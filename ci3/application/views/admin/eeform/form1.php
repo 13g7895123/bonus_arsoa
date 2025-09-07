@@ -144,13 +144,14 @@
                             <th>會員編號</th>
                             <th>會員姓名</th>
                             <th>出生年月</th>
+                            <th>代填者</th>
                             <th>提交時間</th>
                             <th>操作</th>
                         </tr>
                     </thead>
                     <tbody id="data-table-body">
                         <tr>
-                            <td colspan="6" class="text-center">載入中...</td>
+                            <td colspan="7" class="text-center">載入中...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -198,7 +199,7 @@
             };
             
             $.ajax({
-                url: '<?php echo base_url("api/eeform/eeform1/list"); ?>',
+                url: '<?php echo base_url("api/eeform1/list"); ?>',
                 method: 'GET',
                 data: {
                     page: page,
@@ -210,11 +211,11 @@
                         renderTable(response.data);
                         renderPagination(response.total, response.page, response.limit);
                     } else {
-                        $('#data-table-body').html('<tr><td colspan="6" class="text-center text-danger">載入失敗</td></tr>');
+                        $('#data-table-body').html('<tr><td colspan="7" class="text-center text-danger">載入失敗</td></tr>');
                     }
                 },
                 error: function() {
-                    $('#data-table-body').html('<tr><td colspan="6" class="text-center text-danger">載入失敗</td></tr>');
+                    $('#data-table-body').html('<tr><td colspan="7" class="text-center text-danger">載入失敗</td></tr>');
                 }
             });
         }
@@ -222,12 +223,12 @@
         // Render table
         function renderTable(data) {
             if (!Array.isArray(data)) {
-                $('#data-table-body').html('<tr><td colspan="6" class="text-center text-danger">資料格式錯誤</td></tr>');
+                $('#data-table-body').html('<tr><td colspan="7" class="text-center text-danger">資料格式錯誤</td></tr>');
                 return;
             }
             
             if (data.length === 0) {
-                $('#data-table-body').html('<tr><td colspan="6" class="text-center">無資料</td></tr>');
+                $('#data-table-body').html('<tr><td colspan="7" class="text-center">無資料</td></tr>');
                 return;
             }
             
@@ -239,6 +240,7 @@
                         <td>${item.member_id || '-'}</td>
                         <td>${item.member_name || '-'}</td>
                         <td>${item.birth_date || '-'}</td>
+                        <td>${item.form_filler_name || '-'}</td>
                         <td>${item.created_at || '-'}</td>
                         <td class="table-actions">
                             <button class="btn btn-sm btn-info view-detail" data-id="${item.id}" title="檢視">

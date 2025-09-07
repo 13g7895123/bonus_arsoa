@@ -158,3 +158,11 @@ AND `s`.`member_id` = '000000'
 ORDER BY `s`.`created_at` DESC
  LIMIT 10</p><p>Filename: models/eeform/Eeform1Model.php</p><p>Line Number: 391</p>
  109. 我選了下拉選單的人員，送出還是一樣被卡在驗證，他說我沒有填會員姓名
+ 110. 會員姓名送出的時候，請送出純姓名就好，不要其他的東西
+ 111. 完成以下功能
+    - /eform/eform1送出的API錯誤了，代填問卷者的資訊請使用會員編號000000，姓名公司
+    - 後台的部分一直顯示資料格式錯誤，但資料室有正確抓到的
+    - 資料表的部分多顯示一個欄位，代填者的資訊
+112. 完成以下功能
+    - /eform/eform1_list的部分，資料請撈取代填者的資訊，不要用會員的資料去撈取
+    - 這支API，/api/eeform1/member_lookup/000000，回傳的資料請用純姓名就好，後面不要帶其他資料
