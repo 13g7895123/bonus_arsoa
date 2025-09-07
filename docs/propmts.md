@@ -134,3 +134,4 @@
 100. 移除目前的資料表，匯入docs\sql\eeform1.md中的建立資料庫的部分，並確保資料可以正常寫入，我開啟資料庫沒有看到，不要騙我，確實執行
 101. 回覆請用繁體中文，目前資料表已經建置完成，幫我寫一支API確認可以寫入資料，我要直接可以打的API，我不要有測試介面的，幫我用GET的方式，不要POST，是不是沒有更新路由，404
 102. Unknown column 'allergy_description' in 'field list'</p><p>INSERT INTO `eeform1_allergies` (`allergy_description`, `allergy_type`, `is_selected`, `submission_id`) VALUES (NULL,'seasonal',1,1)</p><p>Filename: controllers/api/eeform/Eeform1.php，寫入的資料請確認docs\sql\eeform1.md的資料表建立狀況，不要亂加入欄位
+103. Duplicate entry '4-moisture-healthy' for key 'uk_submission_category_score'</p><p>INSERT INTO `eeform1_skin_scores` (`submission_id`, `category`, `score_type`, `score_value`, `measurement_date`) VALUES (4, 'moisture', 'healthy', 15, '2025-09-07')，請全部幫我確認過一遍

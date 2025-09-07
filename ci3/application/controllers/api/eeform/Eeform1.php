@@ -727,15 +727,24 @@ class Eeform1 extends CI_Controller
             $test_results = [];
             $test_results['資料庫連線'] = '成功';
             
+            // 先清理任何現有的測試資料，避免唯一約束衝突
+            $this->db->where('member_id', '999999');
+            $this->db->or_where('phone', '0987654321');
+            $this->db->delete('eeform1_submissions');
+            $test_results['清理舊測試資料'] = '完成';
+            
+            // 使用唯一的時間戳確保不重複
+            $unique_suffix = date('His') . rand(100, 999);
+            
             // 建立測試資料
             $test_submission_data = [
-                'member_id' => '999999',
-                'member_name' => '測試用戶',
+                'member_id' => '999' . $unique_suffix,
+                'member_name' => '測試用戶' . $unique_suffix,
                 'form_filler_id' => '000000',
                 'form_filler_name' => '系統管理員',
                 'birth_year' => 1985,
                 'birth_month' => 10,
-                'phone' => '0987654321',
+                'phone' => '098765' . substr($unique_suffix, -4),
                 'skin_type' => 'combination',
                 'skin_age' => 35,
                 'submission_date' => date('Y-m-d H:i:s'),
@@ -828,13 +837,13 @@ class Eeform1 extends CI_Controller
                 throw new Exception('外鍵關聯驗證失敗');
             }
 
-            // 測試資料約束 - 嘗試插入無效的分數值
+            // 測試資料約束 - 嘗試插入無效的分數值 (使用不同的分類避免唯一約束衝突)
             try {
                 $invalid_score = [
                     'submission_id' => $submission_id,
-                    'category' => 'moisture', 
-                    'score_type' => 'healthy', 
-                    'score_value' => 15, // 超出範圍 (1-10)
+                    'category' => 'pigment', // 使用不同的分類避免唯一約束衝突
+                    'score_type' => 'severe', // 使用不同的評分類型
+                    'score_value' => 15, // 超出範圍 (應該是 0-10)
                     'measurement_date' => date('Y-m-d')
                 ];
                 $this->db->insert('eeform1_skin_scores', $invalid_score);
@@ -842,7 +851,13 @@ class Eeform1 extends CI_Controller
                 // 如果沒有拋出例外，表示約束沒有工作
                 $test_results['資料約束測試'] = '警告 - 分數範圍約束可能未正確設定';
             } catch (Exception $e) {
-                $test_results['資料約束測試'] = '成功 - 分數範圍約束正常運作';
+                // 檢查錯誤類型
+                $error_msg = $e->getMessage();
+                if (strpos($error_msg, 'Duplicate') !== false) {
+                    $test_results['資料約束測試'] = '警告 - 遇到唯一約束衝突，無法完整測試分數範圍約束';
+                } else {
+                    $test_results['資料約束測試'] = '成功 - 資料約束正常運作';
+                }
             }
 
             // 完成交易（但要回滾以清理測試資料）
