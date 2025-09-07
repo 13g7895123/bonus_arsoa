@@ -72,7 +72,8 @@
       "Bash(docker exec:*)",
       "Bash(mkdir:*)",
       "Bash(chmod:*)",
-      "Bash(php:*)"
+      "Bash(php:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

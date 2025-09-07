@@ -1,10 +1,4 @@
-  <body class="theme-orange fixed-footer fixed-footer-lg">
-    <div class="animsition">
-      <div class="wrapper">
-        <?= $this->block_service->load_html_header(); ?>
-
-
-        <div class="section-mini">
+  <div class="section-mini">
 
 
           <div class="section-item text-left">
@@ -236,13 +230,6 @@
           </div>
 
         </div>
-
-
-      </div>
-
-      <?= $this->block_service->load_html_footer(); ?>
-
-    </div>
 
   <!-- Confirm Modal -->
   <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
@@ -1196,7 +1183,4 @@
         }, 500);
       });
     </script>
-
-  </body>
-
-  </html>
+</div>
