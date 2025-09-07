@@ -1431,12 +1431,23 @@
 
       function showConfirmModal() {
         // 驗證必填欄位 - jQuery版本
-        var memberName = $('input[name="member_name"]').val();
+        var memberName = '';
+        
+        // 檢查是否使用下拉選單
+        if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
+          // 使用下拉選單的值
+          var selectedOption = $('select[name="member_name_select"]').find('option:selected');
+          memberName = selectedOption.data('name') || selectedOption.text();
+        } else {
+          // 使用輸入框的值
+          memberName = $('input[name="member_name"]').val();
+        }
+        
         var birthDate = $('input[name="birth_date"]').val();
         var phone = $('input[name="phone"]').val();
 
         var missingFields = [];
-        if (!memberName) missingFields.push('會員姓名');
+        if (!memberName || memberName === '請選擇會員') missingFields.push('會員姓名');
         if (!birthDate) missingFields.push('出生年月');
         if (!phone) missingFields.push('電話');
         

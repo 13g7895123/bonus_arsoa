@@ -157,3 +157,4 @@ WHERE `s`.`member_id` = '000000'
 AND `s`.`member_id` = '000000'
 ORDER BY `s`.`created_at` DESC
  LIMIT 10</p><p>Filename: models/eeform/Eeform1Model.php</p><p>Line Number: 391</p>
+ 109. 我選了下拉選單的人員，送出還是一樣被卡在驗證，他說我沒有填會員姓名
