@@ -940,18 +940,21 @@ class Eeform1 extends CI_Controller
 
             $members_raw = $query->result_array();
             
-            // 只返回純姓名，去除其他資料
-            $pure_names = [];
+            // 確保會員姓名是純淨的，但保留會員編號資料
+            $clean_members = [];
             foreach ($members_raw as $member) {
                 if (!empty($member['c_name'])) {
-                    $pure_names[] = trim($member['c_name']); // 只保留純姓名
+                    $clean_members[] = [
+                        'c_no' => $member['c_no'],
+                        'c_name' => trim($member['c_name']) // 純姓名，無額外格式
+                    ];
                 }
             }
             
-            // 返回查詢結果 - 只有純姓名
+            // 返回查詢結果 - 包含會員編號和純姓名
             $result = [
-                'count' => count($pure_names),
-                'names' => $pure_names, // 只返回姓名陣列
+                'count' => count($clean_members),
+                'members' => $clean_members, // 包含會員編號和純姓名
                 'search_id' => $member_id
             ];
 
