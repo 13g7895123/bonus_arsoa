@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point 97 Test - Member Name Dropdown Validation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .pass { background-color: #d4edda; color: #155724; }
+        .fail { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>Point 97 Test: Member Name Dropdown Validation Fix</h1>
+    
+    <div class="test-section info">
+        <h2>🎯 Test Objective</h2>
+        <p>驗證 /eform/eform1 的會員名稱下拉選單驗證功能是否正常運作</p>
+        <p>Verify that the member name dropdown validation in /eform/eform1 works correctly</p>
+    </div>
+
+    <div class="test-section info">
+        <h2>🔧 Fixed Issues</h2>
+        <ul>
+            <li>✅ 修復驗證邏輯：現在會檢查下拉選單是否可見，並從正確的欄位取值</li>
+            <li>✅ 修復 HTML 結構：正確管理 required 和 disabled 屬性</li>
+            <li>✅ 修復 JavaScript：切換模式時正確設置屬性</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Manual Test Steps</h2>
+        <ol>
+            <li><strong>訪問頁面</strong>: 前往 <code>http://localhost/eform/eform1</code></li>
+            <li><strong>檢查預設狀態</strong>: 
+                <ul>
+                    <li>會員姓名應該顯示輸入框</li>
+                    <li>下拉選單應該隱藏</li>
+                </ul>
+            </li>
+            <li><strong>觸發下拉選單</strong>: 
+                <ul>
+                    <li>輸入會員編號以觸發多會員檢查</li>
+                    <li>確認下拉選單顯示，輸入框隱藏</li>
+                </ul>
+            </li>
+            <li><strong>測試驗證 (關鍵測試)</strong>:
+                <ul>
+                    <li>選擇一個會員從下拉選單</li>
+                    <li>填寫其他必填欄位（出生年月、電話）</li>
+                    <li>點擊「送出表單」</li>
+                    <li>✅ <strong>應該正常進入確認視窗</strong> (不應該出現「請填寫會員姓名」錯誤)</li>
+                </ul>
+            </li>
+            <li><strong>測試確認視窗</strong>:
+                <ul>
+                    <li>確認視窗中的會員姓名應該顯示選擇的會員名稱</li>
+                    <li>點擊確認送出</li>
+                    <li>✅ 表單應該成功提交</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Technical Validation</h2>
+        <p>開發者工具檢查項目:</p>
+        <ul>
+            <li><code>input[name="member_name"]</code> 當下拉選單顯示時應該有：
+                <ul>
+                    <li><code>style="display: none"</code></li>
+                    <li><code>required="false"</code></li>
+                    <li><code>disabled="true"</code></li>
+                </ul>
+            </li>
+            <li><code>select[name="member_name_select"]</code> 當顯示時應該有：
+                <ul>
+                    <li><code>style="display: block" 或沒有 display: none</code></li>
+                    <li><code>required="true"</code></li>
+                    <li><code>disabled="false"</code></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Expected Results</h2>
+        <div class="pass">
+            <h3>✅ Success Criteria</h3>
+            <ul>
+                <li>使用下拉選單選擇會員時，驗證不會失敗</li>
+                <li>確認視窗正確顯示選擇的會員姓名</li>
+                <li>表單可以成功提交</li>
+                <li>沒有 JavaScript 錯誤</li>
+                <li>控制台沒有驗證錯誤訊息</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🏗️ Code Changes Made</h2>
+        <details>
+            <summary>View Technical Details</summary>
+            <pre><code>
+// 1. Fixed validation logic in showConfirmModal()
+var memberName = '';
+if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
+    var selectedOption = $('select[name="member_name_select"]').find('option:selected');
+    memberName = selectedOption.data('name') || selectedOption.text();
+} else {
+    memberName = $('input[name="member_name"]').val();
+}
+
+// 2. Fixed HTML structure
+&lt;input type="text" name="member_name" class="form-control form-control-custom" required /&gt;
+&lt;select name="member_name_select" class="form-control form-control-custom" style="display: none;" disabled required&gt;
+
+// 3. Fixed JavaScript attribute management
+$nameInput.hide().prop('required', false).prop('disabled', true);
+$nameSelect.show().prop('required', true).prop('disabled', false);
+            </code></pre>
+        </details>
+    </div>
+
+    <div class="test-section info">
+        <h2>📅 Test Information</h2>
+        <p><strong>Test Date</strong>: 2025-09-07</p>
+        <p><strong>Point Number</strong>: 97</p>
+        <p><strong>Issue</strong>: 會員名稱下拉選單驗證錯誤</p>
+        <p><strong>Fix Status</strong>: ✅ Implemented</p>
+        <p><strong>Next Step</strong>: Manual testing required</p>
+    </div>
+</body>
+</html>

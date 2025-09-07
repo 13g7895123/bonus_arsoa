@@ -55,7 +55,7 @@
                           <div class="col-sm-4 mb30">
                             <label class="label-custom">會員姓名</label>
                             <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" required />
-                            <select name="member_name_select" class="form-control form-control-custom" style="display: none;" required>
+                            <select name="member_name_select" class="form-control form-control-custom" style="display: none;" disabled required>
                               <option value="">請選擇會員</option>
                             </select>
                           </div>
@@ -1335,8 +1335,8 @@
         console.log('[Point 57] 找到姓名下拉選單:', $nameSelect.length > 0);
         
         // 隱藏輸入框，顯示下拉選單
-        $nameInput.hide().prop('required', false);
-        $nameSelect.show().prop('required', true);
+        $nameInput.hide().prop('required', false).prop('disabled', true);
+        $nameSelect.show().prop('required', true).prop('disabled', false);
         console.log('[Point 57] UI 切換完成：隱藏輸入框，顯示下拉選單');
         
         // 清空並重新填充選項
@@ -1577,7 +1577,18 @@
 
       function showConfirmModal() {
         // 驗證必填欄位 - jQuery版本
-        var memberName = $('input[name="member_name"]').val();
+        var memberName = '';
+        
+        // 檢查是否使用下拉選單 - 與提交邏輯一致
+        if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
+          // 從下拉選單取值
+          var selectedOption = $('select[name="member_name_select"]').find('option:selected');
+          memberName = selectedOption.data('name') || selectedOption.text();
+        } else {
+          // 從輸入框取值
+          memberName = $('input[name="member_name"]').val();
+        }
+        
         var birthDate = $('input[name="birth_date"]').val();
         var phone = $('input[name="phone"]').val();
 
