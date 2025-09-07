@@ -353,11 +353,11 @@ class Eeform1Model extends MY_Model
      * @param string $end_date
      * @return array
      */
-    public function get_member_submissions($member_id, $page = 1, $limit = 10, $start_date = null, $end_date = null)
+    public function get_member_submissions($form_filler_id, $page = 1, $limit = 10, $start_date = null, $end_date = null)
     {
         $this->db->select('s.*, COUNT(*) OVER() as total_count');
         $this->db->from('eeform1_submissions s');
-        $this->db->where('s.member_id', $member_id); // 使用member_id作為會員識別
+        $this->db->where('form_filler_id', $form_filler_id);
         
         if ($start_date) {
             $this->db->where('s.submission_date >=', $start_date);
