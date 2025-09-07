@@ -355,37 +355,27 @@ class Eeform1Model extends CI_Model
      */
     public function get_member_submissions($member_id, $page = 1, $limit = 10, $start_date = null, $end_date = null)
     {
-        // 先取得總數
-        $this->db->from('eeform1_submissions s');
-        $this->db->where('s.member_id', $member_id);
+        // 建構 WHERE 條件的helper函數
+        $apply_conditions = function() use ($member_id, $start_date, $end_date) {
+            $this->db->where('member_id', $member_id);
+            if ($start_date) {
+                $this->db->where('submission_date >=', $start_date);
+            }
+            if ($end_date) {
+                $this->db->where('submission_date <=', $end_date);
+            }
+        };
         
-        if ($start_date) {
-            $this->db->where('s.submission_date >=', $start_date);
-        }
+        // 取得總數 - 使用完全獨立的查詢
+        $this->db->from('eeform1_submissions');
+        $apply_conditions();
+        $total = $this->db->count_all_results();
         
-        if ($end_date) {
-            $this->db->where('s.submission_date <=', $end_date);
-        }
-        
-        $total = $this->db->count_all_results('', FALSE);
-        
-        // 清空查詢快取，重新建立查詢
-        $this->db->flush_cache();
-        
-        // 再取得實際資料
-        $this->db->select('s.*');
-        $this->db->from('eeform1_submissions s');
-        $this->db->where('s.member_id', $member_id);
-        
-        if ($start_date) {
-            $this->db->where('s.submission_date >=', $start_date);
-        }
-        
-        if ($end_date) {
-            $this->db->where('s.submission_date <=', $end_date);
-        }
-        
-        $this->db->order_by('s.created_at', 'DESC');
+        // 取得實際資料 - 重新開始新的查詢
+        $this->db->select('*');
+        $this->db->from('eeform1_submissions');
+        $apply_conditions();
+        $this->db->order_by('created_at', 'DESC');
         $this->db->limit($limit, ($page - 1) * $limit);
         
         $query = $this->db->get();

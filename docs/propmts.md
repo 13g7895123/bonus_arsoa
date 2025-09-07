@@ -151,3 +151,9 @@ WHERE `s`.`member_id` = 'DEMO001'
 AND `s`.`member_id` = 'DEMO001'
 ORDER BY `s`.`created_at` DESC
  LIMIT 10</p><p>Filename: models/eeform/Eeform1Model.php</p><p>Line Number: 388</p>
+ 108. 還是一樣是錯的阿，<p>Not unique table/alias: 's'</p><p>SELECT `s`.*
+FROM `eeform1_submissions` `s`, `eeform1_submissions` `s`
+WHERE `s`.`member_id` = '000000'
+AND `s`.`member_id` = '000000'
+ORDER BY `s`.`created_at` DESC
+ LIMIT 10</p><p>Filename: models/eeform/Eeform1Model.php</p><p>Line Number: 391</p>
