@@ -43,7 +43,7 @@
                   <h1 class="h2-3d font-libre"><strong>肌膚諮詢記錄表</strong></h1>
                   <div class="mb30">
                     <div class="container">
-                      <form action="#" method="POST" class="text-left" id="eform01">
+                      <form action="#" method="POST" class="text-left" id="eform01" novalidate>
                         <div class="row">
                           <div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
 
@@ -1583,10 +1583,29 @@
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
           // 從下拉選單取值
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
-          memberName = selectedOption.data('name') || selectedOption.text();
+          var selectedValue = selectedOption.val();
+          var selectedDataName = selectedOption.data('name');
+          var selectedText = selectedOption.text();
+          
+          console.log('[Point 97 Debug] 下拉選單驗證資訊:', {
+            selectedValue: selectedValue,
+            selectedDataName: selectedDataName,
+            selectedText: selectedText,
+            isEmptyValue: selectedValue === '',
+            isPlaceholder: selectedText === '請選擇會員'
+          });
+          
+          // 檢查是否選擇了實際的會員（不是預設的"請選擇會員"選項）
+          if (selectedValue && selectedValue !== '' && selectedDataName) {
+            memberName = selectedDataName;
+          } else {
+            memberName = ''; // 沒有選擇實際會員，視為空值
+            console.log('[Point 97 Debug] 下拉選單未選擇有效會員');
+          }
         } else {
           // 從輸入框取值
           memberName = $('input[name="member_name"]').val();
+          console.log('[Point 97 Debug] 從輸入框取值:', memberName);
         }
         
         var birthDate = $('input[name="birth_date"]').val();
@@ -1769,8 +1788,28 @@
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
           // 使用下拉選單的值 - 只取姓名，不取會員編號
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
-          memberId = selectedOption.val(); // 被填表人編號（僅用於顯示，不送出）
-          memberName = selectedOption.data('name'); // 被填表人姓名
+          var selectedValue = selectedOption.val();
+          var selectedDataName = selectedOption.data('name');
+          
+          console.log('[Point 97 Debug] 提交時下拉選單資訊:', {
+            selectedValue: selectedValue,
+            selectedDataName: selectedDataName,
+            selectedText: selectedOption.text(),
+            isEmptyValue: selectedValue === '',
+            hasDataName: Boolean(selectedDataName)
+          });
+          
+          // 確保選擇了有效的會員
+          if (selectedValue && selectedValue !== '' && selectedDataName) {
+            memberId = selectedValue; // 被填表人編號（僅用於顯示，不送出）
+            memberName = selectedDataName; // 被填表人姓名
+          } else {
+            // 沒有選擇有效會員，使用空值
+            memberId = '';
+            memberName = '';
+            console.log('[Point 97 Debug] 提交時未選擇有效會員');
+          }
+          
           console.log('[Point 80] 下拉選單選擇的會員:', {
             selectedMemberID: memberId,
             selectedMemberName: memberName,

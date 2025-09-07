@@ -27,6 +27,10 @@
             <li>✅ 修復驗證邏輯：現在會檢查下拉選單是否可見，並從正確的欄位取值</li>
             <li>✅ 修復 HTML 結構：正確管理 required 和 disabled 屬性</li>
             <li>✅ 修復 JavaScript：切換模式時正確設置屬性</li>
+            <li>✅ 新增：禁用 HTML5 驗證避免衝突 (novalidate 屬性)</li>
+            <li>✅ 新增：增強驗證邏輯，正確檢查預設選項 vs 實際選擇</li>
+            <li>✅ 新增：詳細的除錯資訊，協助診斷問題</li>
+            <li>✅ 新增：驗證與提交邏輯一致性檢查</li>
         </ul>
     </div>
 
@@ -34,6 +38,7 @@
         <h2>📋 Manual Test Steps</h2>
         <ol>
             <li><strong>訪問頁面</strong>: 前往 <code>http://localhost/eform/eform1</code></li>
+            <li><strong>開啟開發者工具</strong>: 按 F12 查看 Console 輸出，所有測試過程將會有詳細 debug 資訊</li>
             <li><strong>檢查預設狀態</strong>: 
                 <ul>
                     <li>會員姓名應該顯示輸入框</li>
@@ -44,14 +49,25 @@
                 <ul>
                     <li>輸入會員編號以觸發多會員檢查</li>
                     <li>確認下拉選單顯示，輸入框隱藏</li>
+                    <li>檢查 Console: 應該看到 "[Point 97 Debug]" 訊息</li>
                 </ul>
             </li>
-            <li><strong>測試驗證 (關鍵測試)</strong>:
+            <li><strong>測試無效選擇</strong>:
                 <ul>
-                    <li>選擇一個會員從下拉選單</li>
+                    <li>保持下拉選單在預設「請選擇會員」選項</li>
+                    <li>填寫其他必填欄位（出生年月、電話）</li>
+                    <li>點擊「送出表單」</li>
+                    <li>✅ <strong>應該出現「請填寫會員姓名」錯誤</strong> (正確行為)</li>
+                    <li>檢查 Console: 應該看到 "下拉選單未選擇有效會員" 訊息</li>
+                </ul>
+            </li>
+            <li><strong>測試有效選擇 (關鍵測試)</strong>:
+                <ul>
+                    <li>從下拉選單選擇一個實際的會員 (不是「請選擇會員」)</li>
                     <li>填寫其他必填欄位（出生年月、電話）</li>
                     <li>點擊「送出表單」</li>
                     <li>✅ <strong>應該正常進入確認視窗</strong> (不應該出現「請填寫會員姓名」錯誤)</li>
+                    <li>檢查 Console: 應該看到下拉選單驗證資訊，且 selectedValue 和 selectedDataName 都有值</li>
                 </ul>
             </li>
             <li><strong>測試確認視窗</strong>:
@@ -59,6 +75,7 @@
                     <li>確認視窗中的會員姓名應該顯示選擇的會員名稱</li>
                     <li>點擊確認送出</li>
                     <li>✅ 表單應該成功提交</li>
+                    <li>檢查 Console: 應該看到 "[Point 97 Debug] 提交時下拉選單資訊"</li>
                 </ul>
             </li>
         </ol>
