@@ -174,7 +174,7 @@
 
   <script>
     // 全域變數
-    var currentMemberId = '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>'; // 從控制器取得會員ID
+    var currentMemberId = '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : '000000'; ?>'; // 當前登入使用者ID作為代填者
     var currentSubmissionId = null; // 當前選中的提交記錄ID
     var allSubmissions = []; // 儲存所有提交記錄
     var filteredSubmissions = []; // 儲存過濾後的記錄

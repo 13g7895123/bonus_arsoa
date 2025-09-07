@@ -1616,8 +1616,8 @@
         // 收集表單資料
         var memberName = '';
         var memberId = '';
-        var formFillerID = '000000'; // 代填問卷者ID（固定使用公司帳號）
-        var formFillerName = '公司'; // 代填問卷者姓名（固定使用公司名稱）
+        var formFillerID = currentUserData.member_id || '000000'; // 代填問卷者ID（當前登入使用者）
+        var formFillerName = currentUserData.member_name || '公司'; // 代填問卷者姓名（當前登入使用者）
         
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {

@@ -167,3 +167,10 @@ ORDER BY `s`.`created_at` DESC
     - /eform/eform1_list的部分，資料請撈取代填者的資訊，不要用會員的資料去撈取
     - 這支API，/api/eeform1/member_lookup/000000，回傳的資料請用純姓名就好，後面不要帶其他資料
 113. 112的第二點誤會我的意思了，我指的是會員姓名的部分不要在名字後面加資料，幫我調整回來，我還需要會員編號的資料
+114. 幫我整理eeform1.md中要建立資料表的部分，全部寫在一起放到最下面，我需要一次建立全部
+115. 完成以下功能
+    - 讀取views\eeform\eform01.php，找到載入資料的/api/eeform1/member_lookup/{member_code}這支API，調整他，讓他回傳的資料會員姓名的部分，只要姓名就好，後面不要加其他資料
+    - 再來，打開填入測試資料的功能
+    - 送出的時候，幫我把當前會員的資料寫入代填入者的資訊中
+    - 讀取views\eeform\eform01_list.php，這個頁面取得的資料，改為篩選代填入者的資料
+    - /wadmin/admin_eeform/eeform_manage_eeform01，這個頁面表單，幫我加入一個顯示欄位，顯示代填入者的資訊
