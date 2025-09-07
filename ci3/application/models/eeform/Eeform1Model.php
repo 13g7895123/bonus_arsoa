@@ -952,4 +952,64 @@ class Eeform1Model extends CI_Model
             $this->db->where('DATE(s.submission_date) <=', $end_date);
         }
     }
+
+    /**
+     * 取得代填者的提交記錄 (分頁)
+     * @param string $form_filler_id
+     * @param int $page
+     * @param int $limit
+     * @param string $start_date
+     * @param string $end_date
+     * @return array
+     */
+    public function get_form_filler_submissions($form_filler_id, $page = 1, $limit = 10, $start_date = null, $end_date = null)
+    {
+        try {
+            // 建構 WHERE 條件的helper函數
+            $apply_conditions = function() use ($form_filler_id, $start_date, $end_date) {
+                $this->db->where('form_filler_id', $form_filler_id);
+                if ($start_date) {
+                    $this->db->where('submission_date >=', $start_date);
+                }
+                if ($end_date) {
+                    $this->db->where('submission_date <=', $end_date);
+                }
+            };
+            
+            // 取得總數 - 使用完全獨立的查詢
+            $this->db->from('eeform1_submissions');
+            $apply_conditions();
+            $total = $this->db->count_all_results();
+            
+            // 取得實際資料 - 重新開始新的查詢
+            $this->db->select('*');
+            $this->db->from('eeform1_submissions');
+            $apply_conditions();
+            $this->db->order_by('created_at', 'DESC');
+            $this->db->limit($limit, ($page - 1) * $limit);
+            
+            $query = $this->db->get();
+            $results = $query->result_array();
+            
+            // 構建分頁資訊
+            $total_pages = ceil($total / $limit);
+            
+            return [
+                'data' => $results,
+                'pagination' => [
+                    'current_page' => $page,
+                    'per_page' => $limit,
+                    'total' => $total,
+                    'total_pages' => $total_pages,
+                    'has_next' => $page < $total_pages,
+                    'has_prev' => $page > 1
+                ]
+            ];
+            
+        } catch (Exception $e) {
+            log_message('error', 'Eeform1Model::get_form_filler_submissions error: ' . $e->getMessage());
+            log_message('error', 'Eeform1Model::get_form_filler_submissions trace: ' . $e->getTraceAsString());
+            throw $e;
+        }
+    }
 }

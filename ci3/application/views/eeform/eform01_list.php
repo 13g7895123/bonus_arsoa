@@ -213,7 +213,7 @@
       );
 
       $.ajax({
-        url: '<?php echo base_url("api/eeform1/submissions/"); ?>' + currentMemberId,
+        url: '<?php echo base_url("api/eeform1/submissions/000000"); ?>',
         method: 'GET',
         dataType: 'json',
         success: function(response) {

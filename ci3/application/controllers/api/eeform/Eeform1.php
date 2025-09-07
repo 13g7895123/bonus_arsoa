@@ -188,25 +188,25 @@ class Eeform1 extends CI_Controller
 
     /**
      * 取得表單提交記錄
-     * GET /api/eeform1/submissions/{member_id}
+     * GET /api/eeform1/submissions/{form_filler_id}
      */
-    public function submissions($member_id = null) {
+    public function submissions($form_filler_id = null) {
         try {
             if ($this->input->method(TRUE) !== 'GET') {
                 $this->_send_error('Method not allowed', 405);
                 return;
             }
 
-            if (!$member_id) {
-                $this->_send_error('缺少會員編號', 400);
+            if (!$form_filler_id) {
+                $this->_send_error('缺少代填者編號', 400);
                 return;
             }
 
-            // Add debugging for the member_id received
+            // Add debugging for the form_filler_id received
             $debug_info = [
-                'member_id_received' => $member_id,
-                'member_id_length' => strlen($member_id),
-                'member_id_type' => gettype($member_id)
+                'form_filler_id_received' => $form_filler_id,
+                'form_filler_id_length' => strlen($form_filler_id),
+                'form_filler_id_type' => gettype($form_filler_id)
             ];
 
             // 取得查詢參數
@@ -215,8 +215,8 @@ class Eeform1 extends CI_Controller
             $start_date = $this->input->get('start_date');
             $end_date = $this->input->get('end_date');
 
-            $submissions = $this->eform1_model->get_member_submissions(
-                $member_id, 
+            $submissions = $this->eform1_model->get_form_filler_submissions(
+                $form_filler_id, 
                 $page, 
                 $limit, 
                 $start_date, 
@@ -938,12 +938,20 @@ class Eeform1 extends CI_Controller
                 throw new Exception('Database query failed: ' . $this->db->error()['message']);
             }
 
-            $members = $query->result_array();
+            $members_raw = $query->result_array();
             
-            // 返回查詢結果
+            // 只返回純姓名，去除其他資料
+            $pure_names = [];
+            foreach ($members_raw as $member) {
+                if (!empty($member['c_name'])) {
+                    $pure_names[] = trim($member['c_name']); // 只保留純姓名
+                }
+            }
+            
+            // 返回查詢結果 - 只有純姓名
             $result = [
-                'count' => count($members),
-                'members' => $members,
+                'count' => count($pure_names),
+                'names' => $pure_names, // 只返回姓名陣列
                 'search_id' => $member_id
             ];
 
