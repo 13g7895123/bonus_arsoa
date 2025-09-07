@@ -69,3 +69,35 @@ $route['api/eeform1/stats/(:any)'] = 'api/eeform/eeform1/stats/$1';
 $route['api/eeform1/list'] = 'api/eeform/eeform1/list';
 $route['api/eeform1/member_lookup/(:any)'] = 'api/eeform/eeform1/member_lookup/$1';
 $route['api/eeform1/export_single/(:any)'] = 'api/eeform/eeform1/export_single/$1';
+
+// eform2 view routes
+$route['eform/eform2'] = 'eform/eform2';
+$route['eform/eform2_list'] = 'eform/eform2_list';
+
+// eform2 API routes
+$route['api/eeform2/test'] = 'api/eeform/eeform2/test';
+$route['api/eeform2/health'] = 'api/eeform/eeform2/health';
+$route['api/eeform2/submit'] = 'api/eeform/eeform2/submit';
+$route['api/eeform2/submissions/(:any)'] = 'api/eeform/eeform2/submissions/$1';
+$route['api/eeform2/submission/(:any)'] = 'api/eeform/eeform2/submission/$1';
+$route['api/eeform2/update/(:any)'] = 'api/eeform/eeform2/update/$1';
+$route['api/eeform2/stats/(:any)'] = 'api/eeform/eeform2/stats/$1';
+$route['api/eeform2/list'] = 'api/eeform/eeform2/list';
+$route['api/eeform2/member_lookup/(:any)'] = 'api/eeform/eeform2/member_lookup/$1';
+$route['api/eeform2/export_single/(:any)'] = 'api/eeform/eeform2/export_single/$1';
+
+// eform4 view routes
+$route['eform/eform4'] = 'eform/eform4';
+$route['eform/eform4_list'] = 'eform/eform4_list';
+
+// eform4 API routes
+$route['api/eeform4/test'] = 'api/eeform/eeform4/test';
+$route['api/eeform4/health'] = 'api/eeform/eeform4/health';
+$route['api/eeform4/submit'] = 'api/eeform/eeform4/submit';
+$route['api/eeform4/submissions/(:any)'] = 'api/eeform/eeform4/submissions/$1';
+$route['api/eeform4/submission/(:any)'] = 'api/eeform/eeform4/submission/$1';
+$route['api/eeform4/update/(:any)'] = 'api/eeform/eeform4/update/$1';
+$route['api/eeform4/stats/(:any)'] = 'api/eeform/eeform4/stats/$1';
+$route['api/eeform4/list'] = 'api/eeform/eeform4/list';
+$route['api/eeform4/member_lookup/(:any)'] = 'api/eeform/eeform4/member_lookup/$1';
+$route['api/eeform4/export_single/(:any)'] = 'api/eeform/eeform4/export_single/$1';

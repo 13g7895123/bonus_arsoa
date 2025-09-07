@@ -70,7 +70,9 @@
       "Read(/C:\\Jarvis\\15_bonus\\arsoa\\bonus_arsoa\\ci3\\application\\views\\eeform/**)",
       "Read(/C:\\Jarvis\\15_bonus\\arsoa\\bonus_arsoa\\ci3\\application\\config/**)",
       "Bash(docker exec:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(php:*)"
     ],
     "deny": [],
     "ask": []

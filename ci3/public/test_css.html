@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Test Page</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/animate.min.css">
+    <link rel="stylesheet" href="assets/css/animsition.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <style>
+        .test-container {
+            padding: 20px;
+            margin: 20px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="theme-orange">
+    <div class="container">
+        <h1>CSS Loading Test Page</h1>
+        <div class="test-container">
+            <h2>Bootstrap Test</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="alert alert-success">
+                        If you see this green box with proper styling, Bootstrap CSS is loaded!
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-primary">Bootstrap Button</button>
+                    <button class="btn btn-success">Success Button</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-container">
+            <h2>Form Elements Test</h2>
+            <form>
+                <div class="mb30">
+                    <label class="label-custom">Test Input</label>
+                    <input type="text" class="form-control form-control-custom" placeholder="Test input field">
+                </div>
+                <div class="mb30">
+                    <label class="label-custom">Test Select</label>
+                    <select class="form-control form-control-custom">
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        
+        <div class="test-container">
+            <h2>CSS File Load Status</h2>
+            <ul id="css-status"></ul>
+        </div>
+    </div>
+    
+    <script>
+        // Check if CSS files are loaded
+        window.onload = function() {
+            const cssFiles = [
+                'assets/css/bootstrap.min.css',
+                'assets/css/animate.min.css',
+                'assets/css/animsition.min.css',
+                'assets/css/style.css'
+            ];
+            
+            const statusList = document.getElementById('css-status');
+            const styleSheets = document.styleSheets;
+            
+            cssFiles.forEach(file => {
+                let loaded = false;
+                for (let i = 0; i < styleSheets.length; i++) {
+                    if (styleSheets[i].href && styleSheets[i].href.includes(file)) {
+                        loaded = true;
+                        break;
+                    }
+                }
+                
+                const li = document.createElement('li');
+                li.className = loaded ? 'success' : 'fail';
+                li.textContent = file + ' - ' + (loaded ? '✓ Loaded' : '✗ Not Loaded');
+                statusList.appendChild(li);
+            });
+        };
+    </script>
+</body>
+</html>

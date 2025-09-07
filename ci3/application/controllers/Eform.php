@@ -31,10 +31,20 @@ class Eform extends CI_Controller
     {
         $data = array(
             'userdata' => $this->userdata,
-            'apiUrl' => $this->apiBaseUrl . 'eeform1/submit'
+            'apiUrl' => $this->apiBaseUrl . 'eeform1/submit',
+            'title' => '電子表單1'
         );
 
-        $this->load->view('eeform/eform01', $data);
+        // Load the view content
+        $content = $this->load->view('eeform/eform01', $data, TRUE);
+        
+        // Pass content to layout
+        $layout_data = array(
+            'title' => $data['title'],
+            'content' => $content
+        );
+        
+        $this->load->view('layout/main', $layout_data);
     }
 
     public function eform1_list()
@@ -45,6 +55,66 @@ class Eform extends CI_Controller
         );
         
         $this->load->view('eeform/eform01_list', $data);
+    }
+
+    public function eform2()
+    {
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . 'eeform2/submit',
+            'title' => '會員服務追蹤管理表(肌膚)'
+        );
+
+        // Load the view content
+        $content = $this->load->view('eeform/eform02', $data, TRUE);
+        
+        // Pass content to layout
+        $layout_data = array(
+            'title' => $data['title'],
+            'content' => $content
+        );
+        
+        $this->load->view('layout/main', $layout_data);
+    }
+
+    public function eform2_list()
+    {
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . 'eeform2/submit'
+        );
+        
+        $this->load->view('eeform/eform02_list', $data);
+    }
+
+    public function eform4()
+    {
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . 'eeform4/submit',
+            'title' => '會員服務追蹤管理表(保健)'
+        );
+
+        // Load the view content
+        $content = $this->load->view('eeform/eform04', $data, TRUE);
+        
+        // Pass content to layout
+        $layout_data = array(
+            'title' => $data['title'],
+            'content' => $content
+        );
+        
+        $this->load->view('layout/main', $layout_data);
+    }
+
+    public function eform4_list()
+    {
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . 'eeform4/submit'
+        );
+        
+        $this->load->view('eeform/eform04_list', $data);
     }
 
     // Test method to verify controller is working
