@@ -369,6 +369,9 @@ class Eeform1Model extends CI_Model
         
         $total = $this->db->count_all_results('', FALSE);
         
+        // 清空查詢快取，重新建立查詢
+        $this->db->flush_cache();
+        
         // 再取得實際資料
         $this->db->select('s.*');
         $this->db->from('eeform1_submissions s');

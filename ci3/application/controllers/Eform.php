@@ -18,7 +18,7 @@ class Eform extends CI_Controller
         
         // Set user data for demo purposes - in a real app this would come from authentication
         $this->userdata = array(
-            'c_no' => 'DEMO001',
+            'c_no' => '000000',
             'name' => 'Demo User',
             'email' => 'demo@example.com'
         );

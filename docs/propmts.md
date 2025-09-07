@@ -142,10 +142,12 @@
     - 105的部分請同步確認表2與表4
     - 測試資料沒有用000000會員編號來處理
     - eform/eform1_list，資料取得錯誤，幫我確認API
-107. eform/eform1_list的api出現以下錯誤，<p>You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '() as total_count
-FROM `eeform1_submissions` `s`
-WHERE `s`.`member_id` = 'DEMO00' at line 1</p><p>SELECT `s`.*, COUNT(*) OVER() as total_count
-FROM `eeform1_submissions` `s`
+107. 修復以下錯誤
+    - /eform/eform1的部分，預設資料改為使用000000會員編號
+    - /eform/eform1_list的API出現錯誤，請幫我寫測試，確認撈的資料有正確回覆，錯誤如下
+    <p>Not unique table/alias: 's'</p><p>SELECT `s`.*
+FROM `eeform1_submissions` `s`, `eeform1_submissions` `s`
 WHERE `s`.`member_id` = 'DEMO001'
+AND `s`.`member_id` = 'DEMO001'
 ORDER BY `s`.`created_at` DESC
- LIMIT 10</p><p>Filename: models/eeform/Eeform1Model.php</p><p>Line Number: 373</p>
+ LIMIT 10</p><p>Filename: models/eeform/Eeform1Model.php</p><p>Line Number: 388</p>
