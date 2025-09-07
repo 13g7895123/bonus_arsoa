@@ -53,6 +53,12 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+// Admin routes
+$route['admin/form1'] = 'admin/admin_eeform/form1';
+$route['admin/form2'] = 'admin/admin_eeform/form2';
+$route['admin/form4'] = 'admin/admin_eeform/form4';
+$route['admin/test'] = 'admin/admin_eeform/test';
+
 // eform1 view routes
 $route['eform/eform1'] = 'eform/eform1';
 $route['eform/eform1_list'] = 'eform/eform1_list';

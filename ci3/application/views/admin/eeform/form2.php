@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>電子表單1 - 管理後台</title>
+    <title>會員服務追蹤管理表(肌膚) - 管理後台</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -29,6 +29,9 @@
             border-radius: 8px;
             margin-bottom: 2rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .filters-section {
@@ -88,13 +91,29 @@
             flex: 1;
             color: #212529;
         }
+        
+        .product-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .product-list li {
+            padding: 0.5rem;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body>
     <div class="admin-container">
         <!-- Page Header -->
         <div class="page-header">
-            <h2><i class="fas fa-file-alt"></i> 電子表單1 管理後台</h2>
+            <h2><i class="fas fa-file-alt"></i> 會員服務追蹤管理表(肌膚)</h2>
+            <button class="btn btn-warning" id="edit-products">
+                <i class="fas fa-edit"></i> 編輯商品
+            </button>
         </div>
         
         <!-- Filters Section -->
@@ -143,7 +162,7 @@
                             <th>ID</th>
                             <th>會員編號</th>
                             <th>會員姓名</th>
-                            <th>出生年月</th>
+                            <th>入會日</th>
                             <th>提交時間</th>
                             <th>操作</th>
                         </tr>
@@ -177,6 +196,33 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-success export-excel" data-id="">
+                        <i class="fas fa-file-excel"></i> 匯出Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Products Modal -->
+    <div class="modal fade" id="productsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">編輯商品</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="products-list">
+                        <!-- Products will be loaded here -->
+                    </div>
+                    <button class="btn btn-primary mt-3" id="add-product">
+                        <i class="fas fa-plus"></i> 新增商品
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-success" id="save-products">儲存變更</button>
                 </div>
             </div>
         </div>
@@ -186,6 +232,7 @@
     $(document).ready(function() {
         let currentPage = 1;
         const itemsPerPage = 20;
+        let currentProducts = [];
         
         // Load data function
         function loadData(page = 1) {
@@ -198,7 +245,7 @@
             };
             
             $.ajax({
-                url: '<?php echo base_url("api/eeform/eeform1/list"); ?>',
+                url: '<?php echo base_url("api/eeform/eeform2/list"); ?>',
                 method: 'GET',
                 data: {
                     page: page,
@@ -233,11 +280,14 @@
                         <td>${item.id}</td>
                         <td>${item.member_id || '-'}</td>
                         <td>${item.member_name || '-'}</td>
-                        <td>${item.birth_date || '-'}</td>
+                        <td>${item.join_date || '-'}</td>
                         <td>${item.created_at || '-'}</td>
                         <td class="table-actions">
                             <button class="btn btn-sm btn-info view-detail" data-id="${item.id}" title="檢視">
                                 <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-success export-excel" data-id="${item.id}" title="匯出Excel">
+                                <i class="fas fa-file-excel"></i>
                             </button>
                             <button class="btn btn-sm btn-danger delete-item" data-id="${item.id}" title="刪除">
                                 <i class="fas fa-trash"></i>
@@ -281,9 +331,10 @@
         // View detail
         $(document).on('click', '.view-detail', function() {
             const id = $(this).data('id');
+            $('.export-excel').data('id', id);
             
             $.ajax({
-                url: '<?php echo base_url("api/eeform/eeform1/submission"); ?>/' + id,
+                url: '<?php echo base_url("api/eeform/eeform2/submission"); ?>/' + id,
                 method: 'GET',
                 success: function(response) {
                     if (response.success) {
@@ -305,18 +356,21 @@
             html += '<h6>基本資料</h6>';
             html += '<div class="detail-row"><span class="detail-label">會員編號：</span><span class="detail-value">' + (data.member_id || '-') + '</span></div>';
             html += '<div class="detail-row"><span class="detail-label">會員姓名：</span><span class="detail-value">' + (data.member_name || '-') + '</span></div>';
-            html += '<div class="detail-row"><span class="detail-label">出生年月：</span><span class="detail-value">' + (data.birth_date || '-') + '</span></div>';
-            html += '<div class="detail-row"><span class="detail-label">身高：</span><span class="detail-value">' + (data.height || '-') + '</span></div>';
+            html += '<div class="detail-row"><span class="detail-label">入會日：</span><span class="detail-value">' + (data.join_date || '-') + '</span></div>';
+            html += '<div class="detail-row"><span class="detail-label">性別：</span><span class="detail-value">' + (data.gender || '-') + '</span></div>';
             html += '<div class="detail-row"><span class="detail-label">年齡：</span><span class="detail-value">' + (data.age || '-') + '</span></div>';
             html += '</div>';
             
-            // Skin scores section
-            if (data.skin_scores) {
+            // Products section
+            if (data.products) {
                 html += '<div class="detail-section">';
-                html += '<h6>肌膚評分</h6>';
-                for (let key in data.skin_scores) {
-                    html += '<div class="detail-row"><span class="detail-label">' + key + '：</span><span class="detail-value">' + (data.skin_scores[key] || '-') + '</span></div>';
-                }
+                html += '<h6>產品資訊</h6>';
+                html += '<ul class="product-list">';
+                const products = JSON.parse(data.products);
+                products.forEach(function(product) {
+                    html += '<li>' + product + '</li>';
+                });
+                html += '</ul>';
                 html += '</div>';
             }
             
@@ -343,7 +397,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '<?php echo base_url("api/eeform/eeform1/delete"); ?>/' + id,
+                        url: '<?php echo base_url("api/eeform/eeform2/delete"); ?>/' + id,
                         method: 'DELETE',
                         success: function(response) {
                             if (response.success) {
@@ -357,6 +411,88 @@
                             Swal.fire('錯誤', '刪除失敗', 'error');
                         }
                     });
+                }
+            });
+        });
+        
+        // Export Excel
+        $(document).on('click', '.export-excel', function() {
+            const id = $(this).data('id');
+            window.location.href = '<?php echo base_url("api/eeform/eeform2/export"); ?>/' + id;
+        });
+        
+        // Edit products
+        $('#edit-products').click(function() {
+            loadProducts();
+            $('#productsModal').modal('show');
+        });
+        
+        // Load products
+        function loadProducts() {
+            $.ajax({
+                url: '<?php echo base_url("api/eeform/eeform2/products"); ?>',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        currentProducts = response.data;
+                        renderProducts();
+                    }
+                }
+            });
+        }
+        
+        // Render products
+        function renderProducts() {
+            let html = '';
+            currentProducts.forEach(function(product, index) {
+                html += `
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control product-input" data-index="${index}" value="${product}">
+                        <button class="btn btn-danger remove-product" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            $('#products-list').html(html);
+        }
+        
+        // Add product
+        $('#add-product').click(function() {
+            currentProducts.push('');
+            renderProducts();
+        });
+        
+        // Remove product
+        $(document).on('click', '.remove-product', function() {
+            const index = $(this).data('index');
+            currentProducts.splice(index, 1);
+            renderProducts();
+        });
+        
+        // Update product
+        $(document).on('input', '.product-input', function() {
+            const index = $(this).data('index');
+            currentProducts[index] = $(this).val();
+        });
+        
+        // Save products
+        $('#save-products').click(function() {
+            $.ajax({
+                url: '<?php echo base_url("api/eeform/eeform2/products"); ?>',
+                method: 'POST',
+                data: JSON.stringify({ products: currentProducts }),
+                contentType: 'application/json',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire('成功', '商品已更新', 'success');
+                        $('#productsModal').modal('hide');
+                    } else {
+                        Swal.fire('錯誤', '更新失敗', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('錯誤', '更新失敗', 'error');
                 }
             });
         });

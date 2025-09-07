@@ -122,3 +122,4 @@
 88. css沒有吃到，請幫我重新確認
 89. 從83點開始看到88點，views/eeform/eform2.php、views/eeform/eform4.php，也要轉移，包含資料庫，完成後建立測試，直到測試完成
 90. 檢查轉移後的views/eeform/eform2.php、views/eeform/eform4.php，css沒有套用到，請執行後檢查，直到通過為止
+91. 幫我針對後台的views/admin/eeform/form1.php、form2.php、form4.php，也複製一份到ci3，只要管理內容就好，維持可以測試功能即可，完成後，請幫我依序測試所有功能，eform1前台執行後，eform1_list有資料，後台也看的到資料，各項功能也可以運行
