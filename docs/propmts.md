@@ -137,4 +137,8 @@
 103. Duplicate entry '4-moisture-healthy' for key 'uk_submission_category_score'</p><p>INSERT INTO `eeform1_skin_scores` (`submission_id`, `category`, `score_type`, `score_value`, `measurement_date`) VALUES (4, 'moisture', 'healthy', 15, '2025-09-07')，請全部幫我確認過一遍
 104. 有針對測試修改的部分同步修改正式的部分嗎
 105. Swal is not defined，送出後有這個問題
-106. /admin/form1後台頁面的部分有錯誤，data.forEach is not a function
+106. 完成以下功能
+    - /admin/form1後台頁面的部分有錯誤，data.forEach is not a function
+    - 105的部分請同步確認表2與表4
+    - 測試資料沒有用000000會員編號來處理
+    - eform/eform1_list，資料取得錯誤，幫我確認API

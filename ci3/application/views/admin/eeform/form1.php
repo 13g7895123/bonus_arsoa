@@ -221,6 +221,11 @@
         
         // Render table
         function renderTable(data) {
+            if (!Array.isArray(data)) {
+                $('#data-table-body').html('<tr><td colspan="6" class="text-center text-danger">資料格式錯誤</td></tr>');
+                return;
+            }
+            
             if (data.length === 0) {
                 $('#data-table-body').html('<tr><td colspan="6" class="text-center">無資料</td></tr>');
                 return;

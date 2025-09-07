@@ -642,7 +642,7 @@
           $('input[name="member_name"]').val('測試會員');
         }
         if (!$('input[name="member_id"]').val()) {
-          $('input[name="member_id"]').val('TEST001');
+          $('input[name="member_id"]').val('000000');
         }
         $('input[name="join_date"]').val('2023-01-15');
         $('select[name="gender"]').val('女');

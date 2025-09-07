@@ -884,10 +884,20 @@ class Eeform1Model extends CI_Model
             
             $query = $this->db->get();
             
-            if (!$query) {
+            if (!$query || $query === FALSE) {
                 $db_error = $this->db->error();
                 log_message('error', 'Data query failed: ' . json_encode($db_error));
-                throw new Exception('Database query failed: ' . $db_error['message']);
+                return [
+                    'data' => [],
+                    'pagination' => [
+                        'current_page' => $page,
+                        'per_page' => $limit,
+                        'total' => 0,
+                        'total_pages' => 0,
+                        'has_next' => false,
+                        'has_prev' => false
+                    ]
+                ];
             }
             
             $submissions = $query->result_array();

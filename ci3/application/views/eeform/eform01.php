@@ -1297,6 +1297,9 @@
       function fillTestData() {
         // 確保必填欄位都有資料
         
+        // 會員編號 - 確保使用000000
+        $('input[name="member_id"]').val('000000');
+        
         // 必填欄位 - 一定要填寫
         // 會員姓名 - 若是下拉選單且有選項，保持選擇；若是輸入框則填入
         if (!$('select[name="member_name_select"]').is(':visible')) {
