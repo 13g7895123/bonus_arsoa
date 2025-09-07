@@ -1,4 +1,36 @@
-  
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
+    <meta name="description" content="Arsoa 安露莎化粧品 - 肌膚諮詢記錄表">
+    <meta name="author" content="Paul, Logan Cee">
+
+    <title>Arsoa 安露莎化粧品 - 肌膚諮詢記錄表</title>
+
+    <!-- CSS -->
+    <link href="<?= base_url(); ?>views/eeform/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>views/eeform/css/animsition.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>views/eeform/css/owl.carousel.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>views/eeform/css/owl.theme.default.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>views/eeform/css/socicon.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>views/eeform/css/ionicons.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>views/eeform/css/animate.min.css" rel="stylesheet">
+    <link href="<?= base_url(); ?>views/eeform/css/jquery.fancybox.min.css" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link href="<?= base_url(); ?>views/eeform/css/style.css" rel="stylesheet">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= base_url(); ?>favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url(); ?>favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url(); ?>favicon/favicon-16x16.png">
+    <link rel="manifest" href="<?= base_url(); ?>favicon/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+  </head>
+
   <body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
       <div class="wrapper">
@@ -1921,6 +1953,25 @@
         });
       }
     </script>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script>window.jQuery || document.write('<script src="<?= base_url(); ?>views/eeform/js/jquery.min.js"><\/script>')</script>
+    <script src="<?= base_url(); ?>views/eeform/js/smoothscroll.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/popper.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/bootstrap.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/animsition.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/owl.carousel.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/wow.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/jquery.pagepiling.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/isotope.pkgd.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/jquery.fancybox.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/TweenMax.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/ScrollMagic.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/animation.gsap.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/jquery.viewport.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/jquery.countdown.min.js"></script>
+    <script src="<?= base_url(); ?>views/eeform/js/script.js"></script>
 
     <script>
       /*Scroll to top when arrow up clicked BEGIN*/

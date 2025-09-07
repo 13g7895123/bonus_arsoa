@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI3 CSS/JS Functionality Test</title>
+    
+    <!-- Load all CSS files in the same order as layout -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/animate.min.css">
+    <link rel="stylesheet" href="assets/css/animsition.min.css">
+    <link rel="stylesheet" href="assets/css/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="assets/css/socicon.css">
+    <link rel="stylesheet" href="assets/css/monosocialiconsfont.css">
+    <link rel="stylesheet" href="assets/css/jquery.ui.all.css">
+    <link rel="stylesheet" href="assets/css/jquery.ui.datepicker.css">
+    <link rel="stylesheet" href="assets/css/jquery.ui.theme.css">
+    <link rel="stylesheet" href="assets/css/jquery.tagsinput.css">
+    <link rel="stylesheet" href="assets/css/alertify.core.css">
+    <link rel="stylesheet" href="assets/css/alertify.default.css">
+    <link rel="stylesheet" href="assets/css/arsoa.css">
+    <link rel="stylesheet" href="assets/css/bs-stepper.min.css">
+    <link rel="stylesheet" href="assets/css/colorbox.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- jQuery CDN for testing -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-passed {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .test-failed {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .test-result {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .test-passed .test-result {
+            color: #155724;
+        }
+        .test-failed .test-result {
+            color: #721c24;
+        }
+        .resource-status {
+            margin: 5px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .status-ok { color: #28a745; }
+        .status-error { color: #dc3545; }
+        .status-warning { color: #ffc107; }
+    </style>
+</head>
+<body class="theme-orange fixed-footer fixed-footer-lg">
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">CI3 CSS/JS Functionality Test</h1>
+    
+    <!-- Bootstrap Test -->
+    <div class="test-section" id="bootstrap-test">
+        <h3>Bootstrap CSS Test</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="alert alert-primary">Bootstrap Alert</div>
+                <button class="btn btn-success">Bootstrap Button</button>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Bootstrap Card</h5>
+                        <p class="card-text">This tests Bootstrap CSS loading.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Bootstrap Form</label>
+                    <input type="text" class="form-control" placeholder="Test input">
+                </div>
+            </div>
+        </div>
+        <div class="test-result" id="bootstrap-result"></div>
+    </div>
+    
+    <!-- Animate.css Test -->
+    <div class="test-section" id="animate-test">
+        <h3>Animate.css Test</h3>
+        <div class="animated bounce">
+            <div class="alert alert-info">This should be animated (bounce effect)</div>
+        </div>
+        <button class="btn btn-primary" onclick="testAnimation()">Test Animation</button>
+        <div class="test-result" id="animate-result"></div>
+    </div>
+    
+    <!-- jQuery UI Test -->
+    <div class="test-section" id="jquery-ui-test">
+        <h3>jQuery UI Test</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Date Picker Test:</label>
+                <input type="text" id="datepicker" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label>Tags Input Test:</label>
+                <input type="text" id="tags" class="form-control" value="tag1,tag2,tag3">
+            </div>
+        </div>
+        <div class="test-result" id="jquery-ui-result"></div>
+    </div>
+    
+    <!-- Icons Test -->
+    <div class="test-section" id="icons-test">
+        <h3>Icons Test</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Ionicons:</h5>
+                <i class="ion-android-home"></i>
+                <i class="ion-android-person"></i>
+                <i class="ion-android-settings"></i>
+            </div>
+            <div class="col-md-4">
+                <h5>Socicon:</h5>
+                <i class="socicon-facebook"></i>
+                <i class="socicon-twitter"></i>
+                <i class="socicon-google"></i>
+            </div>
+            <div class="col-md-4">
+                <h5>Font Awesome (if available):</h5>
+                <i class="fa fa-home"></i>
+                <i class="fa fa-user"></i>
+                <i class="fa fa-cog"></i>
+            </div>
+        </div>
+        <div class="test-result" id="icons-result"></div>
+    </div>
+    
+    <!-- Custom Styles Test -->
+    <div class="test-section" id="custom-test">
+        <h3>Custom Styles Test</h3>
+        <div class="mb30">
+            <label class="label-custom">Custom Label Style</label>
+            <input type="text" class="form-control-custom" placeholder="Custom form control">
+        </div>
+        <div class="h2-3d font-libre">Custom Typography Test</div>
+        <div class="test-result" id="custom-result"></div>
+    </div>
+    
+    <!-- Resource Loading Status -->
+    <div class="test-section" id="resources-test">
+        <h3>Resource Loading Status</h3>
+        <div id="resource-list"></div>
+        <div class="test-result" id="resources-result"></div>
+    </div>
+</div>
+
+<!-- Load all JS files -->
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/animsition.min.js"></script>
+<script src="assets/js/wow.min.js"></script>
+<script src="assets/js/jquery.fancybox.min.js"></script>
+<script src="assets/js/owl.carousel.min.js"></script>
+<script src="assets/js/jquery.ui.core.js"></script>
+<script src="assets/js/jquery.ui.datepicker.js"></script>
+<script src="assets/js/jquery.ui.datepicker-zh-TW.js"></script>
+<script src="assets/js/jquery.tagsinput.js"></script>
+<script src="assets/js/alertify.min.js"></script>
+<script src="assets/js/arsoa.js"></script>
+<script src="assets/js/pjsfunc.js"></script>
+<script src="assets/js/main.js"></script>
+
+<script>
+$(document).ready(function() {
+    console.log('CI3 CSS/JS Functionality Test Started');
+    
+    // Test Bootstrap
+    setTimeout(function() {
+        testBootstrap();
+    }, 100);
+    
+    // Test Animate.css
+    setTimeout(function() {
+        testAnimateCSS();
+    }, 200);
+    
+    // Test jQuery UI
+    setTimeout(function() {
+        testjQueryUI();
+    }, 300);
+    
+    // Test Icons
+    setTimeout(function() {
+        testIcons();
+    }, 400);
+    
+    // Test Custom Styles
+    setTimeout(function() {
+        testCustomStyles();
+    }, 500);
+    
+    // Test Resource Loading
+    setTimeout(function() {
+        testResourceLoading();
+    }, 600);
+    
+    console.log('All tests queued');
+});
+
+function testBootstrap() {
+    var passed = true;
+    var issues = [];
+    
+    // Test if Bootstrap CSS is loaded by checking computed styles
+    var alertElement = $('.alert-primary').first();
+    if (alertElement.length > 0) {
+        var padding = alertElement.css('padding');
+        var backgroundColor = alertElement.css('background-color');
+        
+        if (!padding || padding === 'auto' || padding === '0px') {
+            passed = false;
+            issues.push('Bootstrap padding not applied');
+        }
+        
+        if (!backgroundColor || backgroundColor === 'rgba(0, 0, 0, 0)' || backgroundColor === 'transparent') {
+            passed = false;
+            issues.push('Bootstrap colors not applied');
+        }
+    } else {
+        passed = false;
+        issues.push('Bootstrap elements not found');
+    }
+    
+    updateTestResult('bootstrap-test', 'bootstrap-result', passed, 
+        passed ? 'Bootstrap CSS loaded successfully' : 'Bootstrap issues: ' + issues.join(', '));
+}
+
+function testAnimateCSS() {
+    var passed = true;
+    var issues = [];
+    
+    var animatedElement = $('.animated').first();
+    if (animatedElement.length > 0) {
+        var animationName = animatedElement.css('animation-name');
+        if (!animationName || animationName === 'none') {
+            passed = false;
+            issues.push('Animation styles not applied');
+        }
+    } else {
+        passed = false;
+        issues.push('Animated elements not found');
+    }
+    
+    updateTestResult('animate-test', 'animate-result', passed, 
+        passed ? 'Animate.css loaded successfully' : 'Animate.css issues: ' + issues.join(', '));
+}
+
+function testjQueryUI() {
+    var passed = true;
+    var issues = [];
+    
+    try {
+        // Test jQuery UI Datepicker
+        if ($.fn.datepicker) {
+            $('#datepicker').datepicker({
+                dateFormat: 'yy-mm-dd',
+                showOtherMonths: true,
+                selectOtherMonths: true
+            });
+        } else {
+            passed = false;
+            issues.push('jQuery UI Datepicker not available');
+        }
+        
+        // Test Tags Input
+        if ($.fn.tagsInput) {
+            $('#tags').tagsInput({
+                'height': '40px',
+                'width': '100%',
+                'defaultText': 'Add a tag'
+            });
+        } else {
+            passed = false;
+            issues.push('Tags Input plugin not available');
+        }
+        
+    } catch (e) {
+        passed = false;
+        issues.push('jQuery UI error: ' + e.message);
+    }
+    
+    updateTestResult('jquery-ui-test', 'jquery-ui-result', passed, 
+        passed ? 'jQuery UI components loaded successfully' : 'jQuery UI issues: ' + issues.join(', '));
+}
+
+function testIcons() {
+    var passed = true;
+    var issues = [];
+    
+    // Test Ionicons
+    var ionIcon = $('.ion-android-home').first();
+    if (ionIcon.length > 0) {
+        var fontFamily = ionIcon.css('font-family');
+        if (!fontFamily || fontFamily.indexOf('Ionicons') === -1) {
+            passed = false;
+            issues.push('Ionicons font not loaded');
+        }
+    }
+    
+    updateTestResult('icons-test', 'icons-result', passed, 
+        passed ? 'Icon fonts loaded successfully' : 'Icon font issues: ' + issues.join(', '));
+}
+
+function testCustomStyles() {
+    var passed = true;
+    var issues = [];
+    
+    // Test custom label style
+    var customLabel = $('.label-custom').first();
+    if (customLabel.length > 0) {
+        var fontWeight = customLabel.css('font-weight');
+        if (!fontWeight || fontWeight < 600) {
+            passed = false;
+            issues.push('Custom label styles not applied');
+        }
+    }
+    
+    // Test custom form control
+    var customControl = $('.form-control-custom').first();
+    if (customControl.length > 0) {
+        var width = customControl.css('width');
+        if (!width || width === 'auto') {
+            passed = false;
+            issues.push('Custom form control styles not applied');
+        }
+    }
+    
+    updateTestResult('custom-test', 'custom-result', passed, 
+        passed ? 'Custom styles loaded successfully' : 'Custom style issues: ' + issues.join(', '));
+}
+
+function testResourceLoading() {
+    var resourceList = document.getElementById('resource-list');
+    var passed = true;
+    var errorCount = 0;
+    
+    // Check all loaded stylesheets
+    var stylesheets = document.styleSheets;
+    var resourceHtml = '<h5>CSS Resources (' + stylesheets.length + '):</h5>';
+    
+    for (var i = 0; i < stylesheets.length; i++) {
+        var sheet = stylesheets[i];
+        var href = sheet.href || 'inline styles';
+        var status = 'loaded';
+        var statusClass = 'status-ok';
+        
+        try {
+            // Try to access rules to verify stylesheet loaded properly
+            var rules = sheet.cssRules || sheet.rules;
+            if (!rules) {
+                status = 'error - no rules';
+                statusClass = 'status-error';
+                passed = false;
+                errorCount++;
+            }
+        } catch (e) {
+            if (e.name === 'SecurityError') {
+                status = 'loaded (CORS restricted)';
+                statusClass = 'status-warning';
+            } else {
+                status = 'error - ' + e.message;
+                statusClass = 'status-error';
+                passed = false;
+                errorCount++;
+            }
+        }
+        
+        resourceHtml += '<div class="resource-status"><span class="' + statusClass + '">● ' + status + '</span> ' + href.split('/').pop() + '</div>';
+    }
+    
+    // Check all loaded scripts
+    var scripts = document.getElementsByTagName('script');
+    resourceHtml += '<h5 style="margin-top: 20px;">JS Resources (' + scripts.length + '):</h5>';
+    
+    for (var i = 0; i < scripts.length; i++) {
+        var script = scripts[i];
+        var src = script.src;
+        if (src) {
+            var status = 'loaded';
+            var statusClass = 'status-ok';
+            
+            if (script.readyState && script.readyState !== 'loaded' && script.readyState !== 'complete') {
+                status = 'loading';
+                statusClass = 'status-warning';
+            }
+            
+            resourceHtml += '<div class="resource-status"><span class="' + statusClass + '">● ' + status + '</span> ' + src.split('/').pop() + '</div>';
+        }
+    }
+    
+    resourceList.innerHTML = resourceHtml;
+    
+    updateTestResult('resources-test', 'resources-result', passed, 
+        passed ? 'All resources loaded successfully' : errorCount + ' resource loading issues detected');
+}
+
+function testAnimation() {
+    var element = $('.animated').first();
+    element.removeClass('bounce').addClass('fadeIn');
+    setTimeout(function() {
+        element.removeClass('fadeIn').addClass('bounce');
+    }, 1000);
+}
+
+function updateTestResult(sectionId, resultId, passed, message) {
+    var section = document.getElementById(sectionId);
+    var result = document.getElementById(resultId);
+    
+    if (passed) {
+        section.classList.remove('test-failed');
+        section.classList.add('test-passed');
+        result.innerHTML = '✅ ' + message;
+    } else {
+        section.classList.remove('test-passed');
+        section.classList.add('test-failed');
+        result.innerHTML = '❌ ' + message;
+    }
+    
+    console.log(sectionId + ': ' + (passed ? 'PASSED' : 'FAILED') + ' - ' + message);
+}
+</script>
+
+</body>
+</html>

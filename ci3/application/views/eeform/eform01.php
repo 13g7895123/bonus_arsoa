@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EForm 1 - CI3 Demo</title>
-    <link href="<?= base_url(); ?>views/eeform/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?= base_url(); ?>views/eeform/css/style.css" rel="stylesheet">
-</head>
-<body class="theme-orange fixed-footer fixed-footer-lg">
     <div class="animsition">
       <div class="wrapper">
         <div class="section-mini">
@@ -1951,7 +1941,3 @@
       });
       /*Scroll to top when arrow up clicked END*/
     </script>
-
-  </body>
-
-  </html>

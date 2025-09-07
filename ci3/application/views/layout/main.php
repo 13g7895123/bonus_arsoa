@@ -15,6 +15,15 @@
     <link rel="stylesheet" href="<?php echo base_url('public/assets/css/owl.theme.default.min.css'); ?>">
     <link rel="stylesheet" href="<?php echo base_url('public/assets/css/socicon.css'); ?>">
     <link rel="stylesheet" href="<?php echo base_url('public/assets/css/monosocialiconsfont.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('public/assets/css/jquery.ui.all.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('public/assets/css/jquery.ui.datepicker.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('public/assets/css/jquery.ui.theme.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('public/assets/css/jquery.tagsinput.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('public/assets/css/alertify.core.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('public/assets/css/alertify.default.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('public/assets/css/arsoa.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('public/assets/css/bs-stepper.min.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('public/assets/css/colorbox.min.css'); ?>">
     <link rel="stylesheet" href="<?php echo base_url('public/assets/css/style.css'); ?>">
     
     <!-- jQuery -->
@@ -26,6 +35,16 @@
     <script src="<?php echo base_url('public/assets/js/wow.min.js'); ?>"></script>
     <script src="<?php echo base_url('public/assets/js/jquery.fancybox.min.js'); ?>"></script>
     <script src="<?php echo base_url('public/assets/js/owl.carousel.min.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/jquery.ui.core.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/jquery.ui.datepicker.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/jquery.ui.datepicker-zh-TW.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/jquery.lazyload.min.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/jquery.tagsinput.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/alertify.min.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/arsoa.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/pjsfunc.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/main.js'); ?>"></script>
+    <script src="<?php echo base_url('public/assets/js/member.js'); ?>"></script>
     
     <!-- Custom Styles -->
     <style>
@@ -186,5 +205,7 @@
         }
     </style>
 </head>
-<?php echo $content; ?>
+<body class="theme-orange fixed-footer fixed-footer-lg">
+    <?php echo $content; ?>
+</body>
 </html>

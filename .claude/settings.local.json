@@ -73,7 +73,8 @@
       "Bash(mkdir:*)",
       "Bash(chmod:*)",
       "Bash(php:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": []
