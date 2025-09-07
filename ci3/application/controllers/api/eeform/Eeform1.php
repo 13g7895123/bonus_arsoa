@@ -700,11 +700,17 @@ class Eeform1 extends CI_Controller
 
     /**
      * 測試資料庫寫入功能
-     * POST /api/eeform1/test_write
+     * GET /api/eeform1/test_write
      * 確認所有 eeform1 相關資料表可以正常寫入資料
      */
     public function test_write() {
         try {
+            // 確認是 GET 請求
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('請使用 GET 方法呼叫此 API', 405);
+                return;
+            }
+
             // 確保資料庫連線
             $this->load->database();
             
