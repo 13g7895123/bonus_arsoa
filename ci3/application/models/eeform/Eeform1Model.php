@@ -355,9 +355,24 @@ class Eeform1Model extends CI_Model
      */
     public function get_member_submissions($member_id, $page = 1, $limit = 10, $start_date = null, $end_date = null)
     {
-        $this->db->select('s.*, COUNT(*) OVER() as total_count');
+        // 先取得總數
         $this->db->from('eeform1_submissions s');
-        $this->db->where('s.member_id', $member_id); // 使用member_id作為會員識別
+        $this->db->where('s.member_id', $member_id);
+        
+        if ($start_date) {
+            $this->db->where('s.submission_date >=', $start_date);
+        }
+        
+        if ($end_date) {
+            $this->db->where('s.submission_date <=', $end_date);
+        }
+        
+        $total = $this->db->count_all_results('', FALSE);
+        
+        // 再取得實際資料
+        $this->db->select('s.*');
+        $this->db->from('eeform1_submissions s');
+        $this->db->where('s.member_id', $member_id);
         
         if ($start_date) {
             $this->db->where('s.submission_date >=', $start_date);
@@ -372,15 +387,6 @@ class Eeform1Model extends CI_Model
         
         $query = $this->db->get();
         $results = $query->result_array();
-        
-        $total = 0;
-        if (!empty($results)) {
-            $total = $results[0]['total_count'];
-            // 移除 total_count 欄位
-            foreach ($results as &$result) {
-                unset($result['total_count']);
-            }
-        }
         
         return [
             'data' => $results,

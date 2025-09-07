@@ -142,3 +142,10 @@
     - 105的部分請同步確認表2與表4
     - 測試資料沒有用000000會員編號來處理
     - eform/eform1_list，資料取得錯誤，幫我確認API
+107. eform/eform1_list的api出現以下錯誤，<p>You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '() as total_count
+FROM `eeform1_submissions` `s`
+WHERE `s`.`member_id` = 'DEMO00' at line 1</p><p>SELECT `s`.*, COUNT(*) OVER() as total_count
+FROM `eeform1_submissions` `s`
+WHERE `s`.`member_id` = 'DEMO001'
+ORDER BY `s`.`created_at` DESC
+ LIMIT 10</p><p>Filename: models/eeform/Eeform1Model.php</p><p>Line Number: 373</p>
