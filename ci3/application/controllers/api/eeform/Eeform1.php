@@ -775,7 +775,7 @@ class Eeform1 extends CI_Controller
             $this->db->insert_batch('eeform1_products', $products_data);
             $test_results['eeform1_products'] = '寫入成功 (2筆記錄)';
 
-            // 測試 eeform1_skin_issues
+            // 測試 eeform1_skin_issues  
             $skin_issues_data = [
                 ['submission_id' => $submission_id, 'issue_type' => 'dry', 'issue_description' => null, 'is_selected' => 1],
                 ['submission_id' => $submission_id, 'issue_type' => 'spots', 'issue_description' => null, 'is_selected' => 1]
@@ -785,7 +785,7 @@ class Eeform1 extends CI_Controller
 
             // 測試 eeform1_allergies
             $allergies_data = [
-                ['submission_id' => $submission_id, 'allergy_type' => 'seasonal', 'allergy_description' => null, 'is_selected' => 1]
+                ['submission_id' => $submission_id, 'allergy_type' => 'seasonal', 'is_selected' => 1]
             ];
             $this->db->insert_batch('eeform1_allergies', $allergies_data);
             $test_results['eeform1_allergies'] = '寫入成功 (1筆記錄)';
