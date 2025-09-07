@@ -78,10 +78,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn'          => '',
-    'hostname'     => 'localhost',
-    'username'     => 'mdesign',
-    'password'     => 'Mdesign@28742855',
-    'database'     => 'arsoa_db',
+    'hostname'     => 'db',
+    'username'     => 'root',
+    'password'     => 'rootpassword',
+    'database'     => 'ci3_database',
     'dbdriver'     => 'mysqli',
     'dbprefix'     => '',
     'pconnect'     => FALSE,
@@ -101,7 +101,7 @@ $db['default'] = array(
 $db['dev'] = $db['default'];
 $db['dev']['database'] = 'arsoa_db_test';
 
-if ( $_SERVER['HTTP_HOST'] == 'localhost'){   // ¥»¾÷´ú¸Õ          
+if ( $_SERVER['HTTP_HOST'] == 'localhost'){        
    $db['default']['hostname'] = 'localhost';
    $db['default']['username'] = 'root';
    $db['default']['password'] = '';
