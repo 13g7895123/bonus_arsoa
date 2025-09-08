@@ -279,6 +279,29 @@
         margin-bottom: 3rem !important;
     }
     
+    /* Record info badges */
+    #record-info .badge {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        font-weight: 500;
+    }
+    
+    #record-info .badge-info {
+        background-color: #17a2b8;
+    }
+    
+    #record-info .badge-primary {
+        background-color: #007bff;
+    }
+    
+    #record-info .badge-secondary {
+        background-color: #6c757d;
+    }
+    
+    .ml-2 {
+        margin-left: 0.5rem !important;
+    }
+    
     /* Make blocks wider and add more padding */
     #detailModal .border {
         margin: 0 -1rem 3rem -1rem !important;
@@ -509,12 +532,11 @@
                                 <th style="display: none;">ID</th>
                                 <th>填寫者</th>
                                 <th>會員姓名</th>
-                                <th>性別</th>
-                                <th>年齡</th>
-                                <th>加入日期</th>
-                                <th>預約見面日</th>
-                                <th>聯絡方式</th>
-                                <th>提交日期</th>
+                                <th>性別/年齡</th>
+                                <th>入會日</th>
+                                <th>肌膚/健康狀況</th>
+                                <th>聯絡狀況</th>
+                                <th>填寫日期</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -522,6 +544,13 @@
                             <!-- 動態載入資料 -->
                         </tbody>
                     </table>
+                </div>
+
+                <!-- 資料筆數資訊 -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div id="record-info" class="text-muted">
+                        <!-- 動態顯示資料筆數資訊 -->
+                    </div>
                 </div>
 
                 <!-- 分頁 -->
@@ -635,7 +664,7 @@
             const tbody = document.getElementById('data-table-body');
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8" class="text-center py-4">
+                    <td colspan="10" class="text-center py-4">
                         <div class="spinner-border" role="status">
                             <span class="sr-only">載入中...</span>
                         </div>
@@ -687,7 +716,7 @@
             if (!data || data.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">
+                        <td colspan="10" class="text-center py-4 text-muted">
                             <i class="lnr lnr-warning" style="font-size: 2rem;"></i>
                             <div class="mt-2">暫無資料</div>
                         </td>
@@ -797,10 +826,20 @@
         };
 
         admin.updateRecordInfo = function(pagination) {
-            // Record info element doesn't exist in reverted layout - commenting out
-            // const start = (pagination.current_page - 1) * pagination.per_page + 1;
-            // const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
-            // document.getElementById('recordInfo').textContent = `顯示第 ${start}-${end} 筆，共 ${pagination.total} 筆資料`;
+            const recordInfo = document.getElementById('record-info');
+            if (recordInfo && pagination) {
+                if (pagination.total === 0) {
+                    recordInfo.innerHTML = '<span class="badge badge-secondary">暫無資料</span>';
+                } else {
+                    const start = (pagination.current_page - 1) * pagination.per_page + 1;
+                    const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
+                    recordInfo.innerHTML = `
+                        <span class="badge badge-info">顯示第 ${start}-${end} 筆</span>
+                        <span class="badge badge-primary ml-2">共 ${pagination.total} 筆資料</span>
+                        <span class="badge badge-secondary ml-2">第 ${pagination.current_page} / ${pagination.total_pages} 頁</span>
+                    `;
+                }
+            }
         };
 
         admin.viewDetail = async function(id) {
@@ -987,7 +1026,7 @@
             const tbody = document.getElementById('data-table-body');
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="7" class="text-center py-4 text-danger">
+                    <td colspan="10" class="text-center py-4 text-danger">
                         <i class="lnr lnr-warning" style="font-size: 2rem;"></i>
                         <div class="mt-2">${message}</div>
                         <button class="btn btn-outline-primary btn-sm mt-2" onclick="admin.loadData()">重新載入</button>
