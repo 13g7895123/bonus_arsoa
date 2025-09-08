@@ -290,23 +290,19 @@
     
     /* Record info styling */
     #record-info {
-        font-weight: 600;
+        font-weight: 500;
         color: #343a40 !important;
         font-size: 0.95rem;
+        white-space: nowrap;
     }
     
     #record-info .text-dark {
         color: #343a40 !important;
     }
     
-    #record-info .badge {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.8rem;
+    #record-info strong {
+        color: #007bff !important;
         font-weight: 600;
-        border-radius: 4px;
-        background-color: #343a40 !important;
-        color: white !important;
-        border: 1px solid #495057;
     }
     
     .ml-2 {
@@ -607,18 +603,18 @@
 
                 <!-- 分頁控制區 -->
                 <div class="pagination-wrapper mt-4">
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <!-- 左側資訊 -->
-                        <div class="d-flex align-items-center flex-wrap">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <!-- 左側資訊（不換行） -->
+                        <div class="d-flex align-items-center" style="white-space: nowrap;">
                             <!-- 資料筆數資訊 -->
-                            <div id="record-info" class="mr-4 mb-2">
+                            <div id="record-info" class="mr-3 text-dark" style="font-size: 0.95rem;">
                                 <!-- 動態顯示資料筆數資訊 -->
                             </div>
                             
                             <!-- 每頁筆數選擇 -->
-                            <div class="d-flex align-items-center mb-2">
-                                <label class="mb-0 mr-2 text-dark">每頁顯示：</label>
-                                <select class="form-control form-control-sm" id="page-size-selector" style="width: 80px;">
+                            <div class="d-flex align-items-center">
+                                <span class="mr-2 text-dark" style="font-size: 0.9rem;">每頁顯示：</span>
+                                <select class="form-control form-control-sm" id="page-size-selector" style="width: 70px; font-size: 0.9rem;">
                                     <option value="5" selected>5</option>
                                     <option value="10">10</option>
                                     <option value="20">20</option>
@@ -629,7 +625,7 @@
                         </div>
                         
                         <!-- 右側分頁按鈕 -->
-                        <div class="mb-2">
+                        <div>
                             <nav aria-label="分頁導覽">
                                 <ul class="pagination mb-0" id="pagination">
                                     <!-- 動態生成分頁 -->
@@ -774,6 +770,7 @@
             fetch(`${admin.apiBaseUrl}/list?${params.toString()}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log('API 回應資料:', data); // 用於除錯
                     if (data.success) {
                         admin.renderTable(data.data.data);
                         admin.totalRecords = data.data.pagination.total;
@@ -913,13 +910,7 @@
                     const start = (pagination.current_page - 1) * pagination.per_page + 1;
                     const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
                     recordInfo.innerHTML = `
-                        <span class="text-dark">顯示第</span>
-                        <span class="badge mx-1">${start}-${end}</span>
-                        <span class="text-dark">筆，共</span>
-                        <span class="badge mx-1">${pagination.total}</span>
-                        <span class="text-dark">筆。第</span>
-                        <span class="badge mx-1">${pagination.current_page}/${pagination.total_pages}</span>
-                        <span class="text-dark">頁</span>
+                        <span class="text-dark">顯示第 <strong>${start}-${end}</strong> 筆，共 <strong>${pagination.total}</strong> 筆。第 <strong>${pagination.current_page}</strong>/<strong>${pagination.total_pages}</strong> 頁</span>
                     `;
                 }
             }
