@@ -472,8 +472,9 @@
                 <div class="col-md-2">
                     <label class="form-label">每頁筆數</label>
                     <select class="form-control" id="per-page">
+                        <option value="5" selected>5</option>
                         <option value="10">10</option>
-                        <option value="20" selected>20</option>
+                        <option value="20">20</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
                     </select>
@@ -579,7 +580,7 @@
         // 全域變數
         const admin = {
             currentPage: 1,
-            pageSize: 20,
+            pageSize: 5,
             totalRecords: 0,
             apiBaseUrl: '/api/eeform/eeform4',
             productsData: []
