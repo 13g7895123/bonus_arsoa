@@ -279,27 +279,52 @@
         margin-bottom: 3rem !important;
     }
     
+    /* Pagination wrapper */
+    .pagination-wrapper {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+    
     /* Record info badges */
     #record-info .badge {
         font-size: 0.9rem;
-        padding: 0.4rem 0.8rem;
-        font-weight: 500;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        border-radius: 20px;
     }
     
     #record-info .badge-info {
         background-color: #17a2b8;
+        color: white;
     }
     
     #record-info .badge-primary {
         background-color: #007bff;
+        color: white;
     }
     
     #record-info .badge-secondary {
         background-color: #6c757d;
+        color: white;
     }
     
     .ml-2 {
         margin-left: 0.5rem !important;
+    }
+    
+    .mr-2 {
+        margin-right: 0.5rem !important;
+    }
+    
+    .mx-1 {
+        margin-left: 0.25rem !important;
+        margin-right: 0.25rem !important;
+    }
+    
+    #page-size-selector {
+        width: 100px !important;
     }
     
     /* Make blocks wider and add more padding */
@@ -480,27 +505,17 @@
         <!-- 篩選器 -->
         <div class="filters-section">
             <div class="row d-flex align-items-end">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">搜尋</label>
                     <input type="text" class="form-control" id="search-input" placeholder="會員姓名、聯絡方式">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">開始日期</label>
                     <input type="date" class="form-control" id="start-date">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">結束日期</label>
                     <input type="date" class="form-control" id="end-date">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">每頁筆數</label>
-                    <select class="form-control" id="per-page">
-                        <option value="5" selected>5</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-primary w-100" id="apply-filters" style="margin-top: 25px">
@@ -546,19 +561,40 @@
                     </table>
                 </div>
 
-                <!-- 資料筆數資訊 -->
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div id="record-info" class="text-muted">
-                        <!-- 動態顯示資料筆數資訊 -->
+                <!-- 分頁控制區 -->
+                <div class="pagination-wrapper mt-4">
+                    <div class="row align-items-center">
+                        <!-- 資料筆數資訊 -->
+                        <div class="col-md-4">
+                            <div id="record-info" class="text-muted">
+                                <!-- 動態顯示資料筆數資訊 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 分頁按鈕 -->
+                        <div class="col-md-4">
+                            <nav aria-label="分頁導覽">
+                                <ul class="pagination justify-content-center mb-0" id="pagination">
+                                    <!-- 動態生成分頁 -->
+                                </ul>
+                            </nav>
+                        </div>
+                        
+                        <!-- 每頁筆數選擇 -->
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-end align-items-center">
+                                <label class="mb-0 mr-2">每頁顯示：</label>
+                                <select class="form-control form-control-sm" id="page-size-selector" style="width: auto;">
+                                    <option value="5" selected>5 筆</option>
+                                    <option value="10">10 筆</option>
+                                    <option value="20">20 筆</option>
+                                    <option value="50">50 筆</option>
+                                    <option value="100">100 筆</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <!-- 分頁 -->
-                <nav aria-label="分頁導覽">
-                    <ul class="pagination justify-content-center" id="pagination">
-                        <!-- 動態生成分頁 -->
-                    </ul>
-                </nav>
             </div>
         </div>
     </div>
@@ -646,8 +682,8 @@
                 admin.loadData();
             });
 
-            // 綁定每頁筆數變更
-            document.getElementById('per-page').addEventListener('change', function() {
+            // 綁定每頁筆數變更 (使用新的選擇器)
+            document.getElementById('page-size-selector').addEventListener('change', function() {
                 admin.pageSize = parseInt(this.value);
                 admin.currentPage = 1;
                 admin.loadData();
@@ -664,7 +700,7 @@
             const tbody = document.getElementById('data-table-body');
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="10" class="text-center py-4">
+                    <td colspan="9" class="text-center py-4">
                         <div class="spinner-border" role="status">
                             <span class="sr-only">載入中...</span>
                         </div>
@@ -716,7 +752,7 @@
             if (!data || data.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="10" class="text-center py-4 text-muted">
+                        <td colspan="9" class="text-center py-4 text-muted">
                             <i class="lnr lnr-warning" style="font-size: 2rem;"></i>
                             <div class="mt-2">暫無資料</div>
                         </td>
@@ -834,8 +870,11 @@
                     const start = (pagination.current_page - 1) * pagination.per_page + 1;
                     const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
                     recordInfo.innerHTML = `
-                        <span class="badge badge-info">顯示第 ${start}-${end} 筆</span>
-                        <span class="badge badge-primary ml-2">共 ${pagination.total} 筆資料</span>
+                        <span class="text-muted">顯示第</span>
+                        <span class="badge badge-info mx-1">${start}-${end}</span>
+                        <span class="text-muted">筆，共</span>
+                        <span class="badge badge-primary mx-1">${pagination.total}</span>
+                        <span class="text-muted">筆資料。</span>
                         <span class="badge badge-secondary ml-2">第 ${pagination.current_page} / ${pagination.total_pages} 頁</span>
                     `;
                 }
@@ -1026,7 +1065,7 @@
             const tbody = document.getElementById('data-table-body');
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="10" class="text-center py-4 text-danger">
+                    <td colspan="9" class="text-center py-4 text-danger">
                         <i class="lnr lnr-warning" style="font-size: 2rem;"></i>
                         <div class="mt-2">${message}</div>
                         <button class="btn btn-outline-primary btn-sm mt-2" onclick="admin.loadData()">重新載入</button>

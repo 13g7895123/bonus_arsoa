@@ -179,4 +179,4 @@ ORDER BY `s`.`created_at` DESC
     - add commit push
     - 幫我在views\admin\eeform\form2.php的1109行加入滑順的滾到彈窗底部的功能
     - add commit push
-118. 幫我為這個頁面views\admin\eeform\form4.php的datatable加入分頁的功能，預設單頁五筆，我要完整功能，包含可以設定的每頁，現在是第幾筆資料，總共有幾筆，上一頁與下一頁的功能
+118. 幫我為這個頁面views\admin\eeform\form4.php的datatable加入分頁的功能，預設單頁五筆，我要完整功能，包含可以設定的每頁，現在是第幾筆資料，總共有幾筆，上一頁與下一頁的功能，目前沒有總筆數資訊，也沒有可以選擇單頁筆數的功能，幫我排列好看一點，如果與原先的分頁有衝突或被覆蓋，幫我保留新的
