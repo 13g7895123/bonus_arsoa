@@ -93,8 +93,13 @@
 <body>
     <div class="admin-container">
         <!-- Page Header -->
-        <div class="page-header">
+        <div class="page-header d-flex justify-content-between align-items-center">
             <h2><i class="fas fa-file-alt"></i> 電子表單1 管理後台</h2>
+            <div class="header-buttons">
+                <button class="btn btn-danger" id="delete-test-data-btn">
+                    <i class="fas fa-trash"></i> 刪除測試資料
+                </button>
+            </div>
         </div>
         
         <!-- Filters Section -->
@@ -385,6 +390,45 @@
         // Refresh data
         $('#refresh-data').click(function() {
             loadData(currentPage);
+        });
+        
+        // Delete all test data
+        $('#delete-test-data-btn').click(function() {
+            Swal.fire({
+                title: '確認刪除',
+                text: '您確定要刪除所有測試資料嗎？此操作無法復原！',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const deleteBtn = $('#delete-test-data-btn');
+                    const originalText = deleteBtn.html();
+                    deleteBtn.html('<i class="fas fa-spinner fa-spin"></i> 刪除中...').prop('disabled', true);
+
+                    $.ajax({
+                        url: '<?php echo base_url("api/eeform/eeform1/delete_all_test_data"); ?>',
+                        method: 'DELETE',
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire('成功', '所有測試資料已成功刪除', 'success');
+                                loadData(1);
+                            } else {
+                                Swal.fire('錯誤', '刪除失敗: ' + (response.message || '未知錯誤'), 'error');
+                            }
+                        },
+                        error: function() {
+                            Swal.fire('錯誤', '刪除失敗，請稍後再試', 'error');
+                        },
+                        complete: function() {
+                            deleteBtn.html(originalText).prop('disabled', false);
+                        }
+                    });
+                }
+            });
         });
         
         // Pagination click

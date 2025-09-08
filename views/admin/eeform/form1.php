@@ -389,6 +389,11 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <h2>會員服務追蹤管理表(肌膚諮詢)</h2>
+            <div class="header-buttons">
+                <button class="btn btn-danger" id="delete-test-data-btn">
+                    <i class="lnr lnr-trash"></i> 刪除測試資料
+                </button>
+            </div>
         </div>
     </div>
 
@@ -520,6 +525,11 @@
         // 綁定重新整理按鈕
         document.getElementById('refresh-data').addEventListener('click', function() {
             admin.loadData();
+        });
+
+        // 綁定刪除測試資料按鈕
+        document.getElementById('delete-test-data-btn').addEventListener('click', function() {
+            admin.deleteAllTestData();
         });
 
         // 綁定每頁筆數變更
@@ -1207,5 +1217,63 @@
                 </td>
             </tr>
         `;
+    };
+
+    admin.deleteAllTestData = function() {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: '確認刪除',
+                text: '您確定要刪除所有測試資料嗎？此操作無法復原！',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    admin.performDeleteAllTestData();
+                }
+            });
+        } else {
+            if (confirm('您確定要刪除所有測試資料嗎？此操作無法復原！')) {
+                admin.performDeleteAllTestData();
+            }
+        }
+    };
+
+    admin.performDeleteAllTestData = async function() {
+        try {
+            // 顯示載入指示
+            const deleteBtn = document.getElementById('delete-test-data-btn');
+            const originalText = deleteBtn.innerHTML;
+            deleteBtn.innerHTML = '<i class="lnr lnr-sync lnr-spin"></i> 刪除中...';
+            deleteBtn.disabled = true;
+
+            const response = await fetch(`${admin.apiBaseUrl}/delete_all_test_data`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                admin.showAlert('所有測試資料已成功刪除', 'success');
+                // 重新載入資料
+                admin.loadData();
+            } else {
+                admin.showAlert('刪除失敗: ' + (result.message || '未知錯誤'), 'error');
+            }
+        } catch (error) {
+            console.error('刪除測試資料失敗:', error);
+            admin.showAlert('刪除失敗，請稍後再試', 'error');
+        } finally {
+            // 恢復按鈕狀態
+            const deleteBtn = document.getElementById('delete-test-data-btn');
+            deleteBtn.innerHTML = '<i class="lnr lnr-trash"></i> 刪除測試資料';
+            deleteBtn.disabled = false;
+        }
     };
 </script>
