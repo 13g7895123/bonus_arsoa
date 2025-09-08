@@ -285,29 +285,28 @@
         padding: 1rem;
         border-radius: 8px;
         margin-top: 1rem;
+        border: 1px solid #dee2e6;
     }
     
-    /* Record info badges */
-    #record-info .badge {
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
+    /* Record info styling */
+    #record-info {
         font-weight: 600;
-        border-radius: 20px;
+        color: #343a40 !important;
+        font-size: 0.95rem;
     }
     
-    #record-info .badge-info {
-        background-color: #17a2b8;
-        color: white;
+    #record-info .text-dark {
+        color: #343a40 !important;
     }
     
-    #record-info .badge-primary {
-        background-color: #007bff;
-        color: white;
-    }
-    
-    #record-info .badge-secondary {
-        background-color: #6c757d;
-        color: white;
+    #record-info .badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+        font-weight: 600;
+        border-radius: 4px;
+        background-color: #343a40 !important;
+        color: white !important;
+        border: 1px solid #495057;
     }
     
     .ml-2 {
@@ -318,13 +317,58 @@
         margin-right: 0.5rem !important;
     }
     
+    .mr-4 {
+        margin-right: 1.5rem !important;
+    }
+    
     .mx-1 {
         margin-left: 0.25rem !important;
         margin-right: 0.25rem !important;
     }
     
     #page-size-selector {
-        width: 100px !important;
+        width: 80px !important;
+        font-size: 0.9rem;
+        color: #343a40 !important;
+        border-color: #495057;
+    }
+    
+    /* Dark theme for pagination wrapper */
+    .pagination-wrapper .text-dark {
+        color: #343a40 !important;
+        font-weight: 600;
+    }
+    
+    /* Pagination buttons dark theme */
+    .pagination-wrapper .pagination .page-link {
+        color: #343a40 !important;
+        border-color: #495057 !important;
+        background-color: #fff !important;
+        font-weight: 500;
+    }
+    
+    .pagination-wrapper .pagination .page-item.active .page-link {
+        background-color: #343a40 !important;
+        border-color: #343a40 !important;
+        color: #fff !important;
+    }
+    
+    .pagination-wrapper .pagination .page-link:hover {
+        background-color: #495057 !important;
+        border-color: #495057 !important;
+        color: #fff !important;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .pagination-wrapper .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+        
+        .pagination-wrapper .pagination {
+            margin-top: 0.5rem;
+        }
     }
     
     /* Make blocks wider and add more padding */
@@ -563,35 +607,34 @@
 
                 <!-- 分頁控制區 -->
                 <div class="pagination-wrapper mt-4">
-                    <div class="row align-items-center">
-                        <!-- 資料筆數資訊 -->
-                        <div class="col-md-4">
-                            <div id="record-info" class="text-muted">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                        <!-- 左側資訊 -->
+                        <div class="d-flex align-items-center flex-wrap">
+                            <!-- 資料筆數資訊 -->
+                            <div id="record-info" class="mr-4 mb-2">
                                 <!-- 動態顯示資料筆數資訊 -->
+                            </div>
+                            
+                            <!-- 每頁筆數選擇 -->
+                            <div class="d-flex align-items-center mb-2">
+                                <label class="mb-0 mr-2 text-dark">每頁顯示：</label>
+                                <select class="form-control form-control-sm" id="page-size-selector" style="width: 80px;">
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
                             </div>
                         </div>
                         
-                        <!-- 分頁按鈕 -->
-                        <div class="col-md-4">
+                        <!-- 右側分頁按鈕 -->
+                        <div class="mb-2">
                             <nav aria-label="分頁導覽">
-                                <ul class="pagination justify-content-center mb-0" id="pagination">
+                                <ul class="pagination mb-0" id="pagination">
                                     <!-- 動態生成分頁 -->
                                 </ul>
                             </nav>
-                        </div>
-                        
-                        <!-- 每頁筆數選擇 -->
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-end align-items-center">
-                                <label class="mb-0 mr-2">每頁顯示：</label>
-                                <select class="form-control form-control-sm" id="page-size-selector" style="width: auto;">
-                                    <option value="5" selected>5 筆</option>
-                                    <option value="10">10 筆</option>
-                                    <option value="20">20 筆</option>
-                                    <option value="50">50 筆</option>
-                                    <option value="100">100 筆</option>
-                                </select>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -865,17 +908,18 @@
             const recordInfo = document.getElementById('record-info');
             if (recordInfo && pagination) {
                 if (pagination.total === 0) {
-                    recordInfo.innerHTML = '<span class="badge badge-secondary">暫無資料</span>';
+                    recordInfo.innerHTML = '<span class="text-dark font-weight-bold">暫無資料</span>';
                 } else {
                     const start = (pagination.current_page - 1) * pagination.per_page + 1;
                     const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
                     recordInfo.innerHTML = `
-                        <span class="text-muted">顯示第</span>
-                        <span class="badge badge-info mx-1">${start}-${end}</span>
-                        <span class="text-muted">筆，共</span>
-                        <span class="badge badge-primary mx-1">${pagination.total}</span>
-                        <span class="text-muted">筆資料。</span>
-                        <span class="badge badge-secondary ml-2">第 ${pagination.current_page} / ${pagination.total_pages} 頁</span>
+                        <span class="text-dark">顯示第</span>
+                        <span class="badge mx-1">${start}-${end}</span>
+                        <span class="text-dark">筆，共</span>
+                        <span class="badge mx-1">${pagination.total}</span>
+                        <span class="text-dark">筆。第</span>
+                        <span class="badge mx-1">${pagination.current_page}/${pagination.total_pages}</span>
+                        <span class="text-dark">頁</span>
                     `;
                 }
             }
