@@ -943,4 +943,59 @@ class Eeform1Model extends MY_Model
             $this->db->where('DATE(s.submission_date) <=', $end_date);
         }
     }
+
+    /**
+     * 刪除所有測試資料
+     * @return bool
+     */
+    public function delete_all_test_data() {
+        try {
+            $this->db->trans_start();
+            
+            // 取得所有 submission_id 來確保完整刪除關聯資料
+            $this->db->select('id');
+            $query = $this->db->get('eeform1_submissions');
+            $submissions = $query->result_array();
+            
+            if (!empty($submissions)) {
+                $submission_ids = array_column($submissions, 'id');
+                
+                // 刪除所有關聯表的資料
+                $related_tables = [
+                    'eeform1_occupations',
+                    'eeform1_lifestyle',
+                    'eeform1_products',
+                    'eeform1_skin_issues',
+                    'eeform1_allergies',
+                    'eeform1_skin_scores',
+                    'eeform1_suggestions'
+                ];
+                
+                foreach ($related_tables as $table) {
+                    if (!empty($submission_ids)) {
+                        $this->db->where_in('submission_id', $submission_ids);
+                        $this->db->delete($table);
+                    }
+                }
+            }
+            
+            // 最後刪除主要的 submissions 表
+            $this->db->empty_table('eeform1_submissions');
+            
+            $this->db->trans_complete();
+            
+            if ($this->db->trans_status() === FALSE) {
+                log_message('error', 'Failed to delete all test data - transaction failed');
+                return false;
+            }
+            
+            log_message('info', 'Successfully deleted all test data');
+            return true;
+            
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            log_message('error', 'Error deleting all test data: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

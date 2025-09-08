@@ -970,6 +970,36 @@ class Eeform1 extends CI_Controller
     }
 
     /**
+     * 刪除所有測試資料
+     */
+    public function delete_all_test_data() {
+        try {
+            // 只允許 POST 方法
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 執行刪除操作
+            $result = $this->eform1_model->delete_all_test_data();
+            
+            if ($result) {
+                $this->_send_success('所有測試資料已成功刪除');
+            } else {
+                $this->_send_error('刪除測試資料失敗', 500);
+            }
+
+        } catch (Exception $e) {
+            log_message('error', 'Delete all test data API error: ' . $e->getMessage());
+            $this->_send_error('刪除測試資料時發生錯誤: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
      * 發送成功回應
      * @param string $message 
      * @param mixed $data 

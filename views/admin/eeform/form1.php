@@ -1251,7 +1251,7 @@
             deleteBtn.disabled = true;
 
             const response = await fetch(`${admin.apiBaseUrl}/delete_all_test_data`, {
-                method: 'DELETE',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 }

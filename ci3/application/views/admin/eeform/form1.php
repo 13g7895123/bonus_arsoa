@@ -411,7 +411,7 @@
 
                     $.ajax({
                         url: '<?php echo base_url("api/eeform/eeform1/delete_all_test_data"); ?>',
-                        method: 'DELETE',
+                        method: 'POST',
                         success: function(response) {
                             if (response.success) {
                                 Swal.fire('成功', '所有測試資料已成功刪除', 'success');
