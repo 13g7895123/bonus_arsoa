@@ -137,6 +137,10 @@ $route['api/eeform4/submission/(:any)'] = 'api/eeform/eeform4/submission/$1';
 $route['api/eeform4/stats/(:any)'] = 'api/eeform/eeform4/stats/$1';
 $route['api/eeform/eeform4/list'] = 'api/eeform/eeform4/list';
 $route['api/eeform/eeform4/submission/(:any)'] = 'api/eeform/eeform4/submission/$1';
+$route['api/eeform/eeform4/products'] = 'api/eeform/eeform4/products';
+$route['api/eeform/eeform4/update_status/(:any)'] = 'api/eeform/eeform4/update_status/$1';
+$route['api/eeform/eeform4/delete/(:any)'] = 'api/eeform/eeform4/delete/$1';
+$route['api/eeform/eeform4/export'] = 'api/eeform/eeform4/export';
 $route['api/eeform/eeform4/export_single/(:any)'] = 'api/eeform/eeform4/export_single/$1';
 
 $route['api/eeform5/health'] = 'api/eeform/eeform5/health';

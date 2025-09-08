@@ -7,6 +7,7 @@
         <div class="section-mini">
 
 
+
           <div class="section-item text-left">
             <div class="container">
               <div class="row">
@@ -14,7 +15,7 @@
                   <h1 class="h2-3d font-libre"><strong>會員服務追蹤管理表(保健)</strong></h1>
                   <div class="mb30">
                     <div class="container">
-                      <form action="#" method="POST" class="text-left" id="eform02">
+                      <form action="#" method="POST" class="text-left" id="eform04">
                         <div class="row">
                           <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
@@ -55,8 +56,41 @@
                             <div class="card bg-light ">
                               <div class="card-body">
                                 <div class="container">
-                                  <div class="row" id="products-container">
-                                    <!-- 動態載入產品 -->
+                                  <div class="row">
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">活力發酵精萃</label>
+                                      <input type="number" name="product_energy_essence001" style="width: 100%;" placeholder="請填寫數量…" min="0">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">白鶴靈芝EX</label>
+                                      <input type="number" name="product_reishi_ex001" style="width: 100%;" placeholder="請填寫數量…" min="0">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">美力C錠</label>
+                                      <input type="number" name="product_vitamin_c001" style="width: 100%;" placeholder="請填寫數量…" min="0">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">鶴力晶</label>
+                                      <input type="number" name="product_energy_crystal001" style="width: 100%;" placeholder="請填寫數量…" min="0">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">白鶴靈芝茶</label>
+                                      <input type="number" name="product_reishi_tea001" style="width: 100%;" placeholder="請填寫數量…" min="0">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">淨白活膚蜜皂</label>
+                                      <input type="number" name="product_soap001" style="width: 100%;" placeholder="請填寫數量…" min="0">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">活顏泥膜</label>
+                                      <input type="number" name="product_mask001" style="width: 100%;" placeholder="請填寫數量…" min="0">
+                                    </div>
+                                    <div class="col-sm-3 mb20">
+                                      <label class="label-custom">化粧水</label>
+                                      <input type="number" name="product_toner001" style="width: 100%;" placeholder="請填寫數量…" min="0">
+                                    </div>
+
+
                                   </div>
                                 </div>
                               </div>
@@ -65,12 +99,12 @@
 
                           <div class="col-sm-12 mb30">
                             <label class="label-custom">LINE</label>
-                            <input type="text" name="line_contact" class="form-control form-control-custom" placeholder="請填寫LINE聯絡狀況，300字元內…" maxlength="300" />
+                            <input type="text" name="line_contact" class="form-control form-control-custom" placeholder="請填寫LINE聯絡狀況，300字元內…" />
                           </div>
 
                           <div class="col-sm-12 mb30">
                             <label class="label-custom">TEL</label>
-                            <input type="text" name="tel_contact" class="form-control form-control-custom" placeholder="請填寫電話聯絡狀況，300字元內…" maxlength="300" />
+                            <input type="text" name="tel_contact" class="form-control form-control-custom" placeholder="請填寫電話聯絡狀況，300字元內…" />
                           </div>
 
                           <div class="col-sm-12 mb30">
@@ -92,10 +126,14 @@
                       </form>
                     </div>
                   </div>
+
                 </div>
+
+                <!--<div class="col-lg-1 d-none d-xl-block"></div>-->
+
                 <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
                   <!-- 側邊欄清單 -->
-                  <?= $this->block_service->electronic_form_right_menu('eform2'); ?>
+                  <?= $this->block_service->electronic_form_right_menu('eform4'); ?>
                 </aside>
               </div>
             </div>
@@ -109,128 +147,6 @@
       <?= $this->block_service->load_html_footer(); ?>
 
     </div>
-
-  <!-- Confirm Modal -->
-  <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-      <div class="modal-content border">
-        <div class="modal-header bg-white border-bottom">
-          <h5 class="modal-title text-dark" id="confirmModalLabel">
-            確認表單內容
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
-          <div class="container-fluid">
-            
-            <!-- 基本資料 -->
-            <div class="border mb-4">
-              <div class="bg-light p-3 border-bottom">
-                <h6 class="m-0 font-weight-bold text-dark">
-                  基本資料
-                </h6>
-              </div>
-              <div class="p-3">
-                <div class="row">
-                  <div class="col-md-4 mb-3">
-                    <div class="d-flex align-items-center">
-                      <span class="text-muted mr-3" style="min-width: 60px;">姓名：</span>
-                      <span class="text-dark" id="confirm-member-name"></span>
-                    </div>
-                  </div>
-                  <div class="col-md-4 mb-3">
-                    <div class="d-flex align-items-center">
-                      <span class="text-muted mr-3" style="min-width: 70px;">會員編號：</span>
-                      <span class="text-dark" id="confirm-member-id"></span>
-                    </div>
-                  </div>
-                  <div class="col-md-2 mb-3">
-                    <div class="d-flex align-items-center">
-                      <span class="text-muted mr-3" style="min-width: 60px;">性別：</span>
-                      <span class="text-dark" id="confirm-gender"></span>
-                    </div>
-                  </div>
-                  <div class="col-md-3 mb-3">
-                    <div class="d-flex align-items-center">
-                      <span class="text-muted mr-3" style="min-width: 60px;">年齡：</span>
-                      <span class="text-dark" id="confirm-age"></span> 歲
-                    </div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <div class="d-flex align-items-center">
-                      <span class="text-muted mr-3" style="min-width: 60px;">入會日：</span>
-                      <span class="text-dark" id="confirm-join-date"></span>
-                    </div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <div class="d-flex align-items-center">
-                      <span class="text-muted mr-3" style="min-width: 60px;">見面日：</span>
-                      <span class="text-dark" id="confirm-meeting-date"></span>
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <div class="d-flex align-items-start">
-                      <span class="text-muted mr-3" style="min-width: 80px;">健康狀況：</span>
-                      <span class="text-dark" id="confirm-skin-health"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 產品訂購 -->
-            <div class="border mb-4">
-              <div class="bg-light p-3 border-bottom">
-                <h6 class="m-0 font-weight-bold text-dark">
-                  產品訂購
-                </h6>
-              </div>
-              <div class="p-3" id="confirm-products">
-                <!-- Products will be populated here -->
-              </div>
-            </div>
-
-            <!-- 聯絡資訊 -->
-            <div class="border mb-4">
-              <div class="bg-light p-3 border-bottom">
-                <h6 class="m-0 font-weight-bold text-dark">
-                  聯絡資訊
-                </h6>
-              </div>
-              <div class="p-3">
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <div class="d-flex align-items-start">
-                      <span class="text-muted mr-3" style="min-width: 60px;">LINE：</span>
-                      <span class="text-dark" id="confirm-line-contact"></span>
-                    </div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <div class="d-flex align-items-start">
-                      <span class="text-muted mr-3" style="min-width: 60px;">電話：</span>
-                      <span class="text-dark" id="confirm-tel-contact"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-        <div class="modal-footer border-top bg-white">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            取消
-          </button>
-          <button type="button" class="btn btn-danger" onclick="submitForm()">
-            確認送出
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
     <!-- Modal -->
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
@@ -406,27 +322,12 @@
     <script src="js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- Simple CSS for clean UI -->
     <style>
-      .modal-content {
-        border-radius: 0px;
-      }
-      
-      .modal-body::-webkit-scrollbar {
-        width: 8px;
-      }
-      
-      .modal-body::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-      
-      .modal-body::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-      }
-      
-      .modal-body::-webkit-scrollbar-thumb:hover {
-        background: #a8a8a8;
-      }
+      .modal-content { border-radius: 0px; }
+      .modal-body::-webkit-scrollbar { width: 8px; }
+      .modal-body::-webkit-scrollbar-track { background: #f1f1f1; }
+      .modal-body::-webkit-scrollbar-thumb { background: #c1c1c1; }
+      .modal-body::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
     </style>
 
     <script>
@@ -471,11 +372,8 @@
       /*Scroll to top when arrow up clicked END*/
     </script>
     <script>
-      // 控制測試按鈕顯示的變數
-      var showTestButton = true; // 設為 true 顯示測試按鈕
-      var productsData = []; // 存儲從API載入的產品資料
+      var showTestButton = true;
       
-      // 頁面載入時檢查是否顯示測試按鈕
       $(document).ready(function() {
         // 自動填入當天日期
         var today = new Date();
@@ -486,14 +384,12 @@
         $('#current-date').text(currentDate);
         $('input[name="join_date"]').val(currentDate);
         
-        if (showTestButton) {
-          $('#testDataButton').show();
-        }
-        
+        if (showTestButton) $('#testDataButton').show();
+
         // 載入產品資料
         loadProducts();
       });
-      
+
       // 載入產品資料
       function loadProducts() {
         $.ajax({
@@ -507,17 +403,17 @@
             } else {
               console.error('載入產品資料失敗:', response.message);
               // 顯示錯誤訊息或使用預設產品
-              renderDefaultProducts();
+              // renderDefaultProducts();
             }
           },
           error: function(xhr, status, error) {
             console.error('載入產品資料失敗:', error);
             // 使用預設產品作為備援
-            renderDefaultProducts();
+            // renderDefaultProducts();
           }
         });
       }
-      
+
       // 渲染產品列表
       function renderProducts(products) {
         var container = $('#products-container');
@@ -543,39 +439,48 @@
         });
       }
       
-      // 預設產品 (備援)
-      function renderDefaultProducts() {
-        var defaultProducts = [];
-        renderProducts(defaultProducts);
-      }
-      
-      // 填入測試資料的函數
       function fillTestData() {
         // 只在用戶資料為空時填入測試資料
         if (!$('input[name="member_name"]').val()) {
-          $('input[name="member_name"]').val('公司');
+          $('input[name="member_name"]').val('測試會員');
         }
         if (!$('input[name="member_id"]').val()) {
-          $('input[name="member_id"]').val('000000');
+          $('input[name="member_id"]').val('TEST001');
         }
         $('input[name="join_date"]').val('2023-01-15');
         $('select[name="gender"]').val('女');
         $('input[name="age"]').val('30');
-        $('input[name="skin_health_condition"]').val('輕微乾燥，偶有敏感');
+        $('input[name="skin_health_condition"]').val('測試健康狀況描述');
         
-        // 動態填入產品數量測試資料
-        $('#products-container input[type="number"]').each(function(index) {
-          var testQuantities = [2, 1, 3, 2, 1, 2, 1, 2, 1, 1, 2, 3, 1, 2, 1, 2, 1, 2];
-          var quantity = testQuantities[index % testQuantities.length] || 1;
-          $(this).val(quantity);
-        });
+        // 產品數量測試資料
+        $('input[name="product_energy_essence001"]').val('2');
+        $('input[name="product_reishi_ex001"]').val('3');
+        $('input[name="product_vitamin_c001"]').val('2');
+        $('input[name="product_energy_crystal001"]').val('1');
+        $('input[name="product_reishi_tea001"]').val('2');
+        $('input[name="product_soap001"]').val('1');
+        $('input[name="product_mask001"]').val('2');
+        $('input[name="product_toner001"]').val('3');
+        
+        // 健康困擾測試資料
+        $('input[value="疲勞"]').prop('checked', true);
+        $('input[value="失眠"]').prop('checked', true);
+        $('input[value="皮膚問題"]').prop('checked', true);
+        
+        // 每日建議產品&攝取量測試資料
+        $('input[name="recommend_energy_essence"]').val('每日1-2包，餐前30分鐘溫開水沖泡');
+        $('input[name="recommend_reishi_ex"]').val('每日2-3粒，餐後服用，建議搭配溫開水');
+        $('input[name="recommend_vitamin_c"]').val('每日1-2錠，飯後服用，增強免疫力');
+        $('input[name="recommend_energy_crystal"]').val('每日1包，溫開水沖泡，空腹服用效果佳');
+        $('input[name="recommend_reishi_tea"]').val('每日1-2包，熱水沖泡，可當茶飲用');
+        $('input[name="recommend_general"]').val('建議搭配均衡飲食，適量運動，充足睡眠');
         
         $('input[name="line_contact"]').val('與會員保持良好互動，定期關心產品使用狀況');
         $('input[name="tel_contact"]').val('每月電話追蹤，了解產品效果和需求');
       }
 
       function showConfirmModal() {
-        // 驗證必填欄位
+        // Basic validation
         var memberName = $('input[name="member_name"]').val();
         var memberId = $('input[name="member_id"]').val();
         var joinDate = $('input[name="join_date"]').val();
@@ -592,56 +497,7 @@
           return;
         }
 
-        // 填入確認視窗的內容
-        $('#confirm-member-name').text(memberName);
-        $('#confirm-member-id').text(memberId);
-        $('#confirm-join-date').text(joinDate);
-        $('#confirm-gender').text(gender);
-        $('#confirm-age').text(age);
-        $('#confirm-meeting-date').text($('input[name="meeting_date"]').val() || '(未填寫)');
-        $('#confirm-skin-health').text($('input[name="skin_health_condition"]').val() || '(未填寫)');
-        
-        // 聯絡資訊
-        $('#confirm-line-contact').text($('input[name="line_contact"]').val() || '(未填寫)');
-        $('#confirm-tel-contact').text($('input[name="tel_contact"]').val() || '(未填寫)');
-        
-        // 收集產品資料 (動態)
-        var productData = [];
-
-        // 收集所有產品輸入框的數據
-        $('#products-container input[type="number"]').each(function() {
-          var $input = $(this);
-          var name = $input.attr('name');
-          var value = $input.val();
-          var label = $input.closest('.col-sm-3').find('label').text();
-          var productCode = $input.data('product-code');
-          var productName = $input.data('product-name');
-          
-          if (value && parseInt(value) > 0) {
-            productData.push({
-              name: name,
-              label: productName || label,
-              quantity: value,
-              product_code: productCode
-            });
-          }
-        });
-
-        var productHtml = '';
-        if (productData.length > 0) {
-          productData.forEach(function(product) {
-            productHtml += '<div class="d-flex align-items-center mb-2">';
-            productHtml += '<span class="text-muted mr-3" style="min-width: 120px;">' + product.label + '：</span>';
-            productHtml += '<span class="text-dark">' + product.quantity + ' 個</span>';
-            productHtml += '</div>';
-          });
-        } else {
-          productHtml = '<span class="text-muted">未訂購任何產品</span>';
-        }
-        $('#confirm-products').html(productHtml);
-        
-        // 顯示模態視窗
-        $('#confirmModal').modal('show');
+        submitForm();
       }
 
       function submitForm() {
@@ -696,7 +552,7 @@
           var name = $input.attr('name');
           var value = $input.val();
           var label = $input.closest('.col-sm-3').find('label').text();
-          var productCode = $input.data('product-code');
+          var productCode = $inpuct.data('product-code');
           var productName = $input.data('product-name');
           
           if (name && (value || value === '0')) {
@@ -777,7 +633,7 @@
         });
       }
 
-      // Point 62: Member lookup functionality (同步 Point 57 功能到 eform2)
+      // Point 62: Member lookup functionality (同步 Point 57 功能到 eform4)
       // 取得目前登入使用者資訊
       var currentUserData = {
         member_id: '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>',
@@ -789,109 +645,154 @@
       var isMultipleMembers = false;
 
       // 初始化會員資料
-      function initializeMemberData() {        
+      function initializeMemberData() {
+        console.log('[Point 62 - eform4] ===== 初始化會員資料功能開始 =====');
+        console.log('[Point 62 - eform4] 當前使用者資料:', currentUserData);
+        console.log('[Point 62 - eform4] 會員編號是否存在:', !!currentUserData.member_id);
+        
         // 設定會員編號欄位
         $('input[name="member_id"]').val(currentUserData.member_id);
+        console.log('[Point 62 - eform4] 設定會員編號欄位為:', currentUserData.member_id);
         
         // Point 60: 無論是否有會員編號，都進行測試API呼叫來確認端點是否正常
+        console.log('[Point 62 - eform4] ===== 開始測試API端點 =====');
         if (currentUserData.member_id && currentUserData.member_id.trim() !== '') {
+          console.log('[Point 62 - eform4] 有會員編號，開始查詢相關會員資料...');
+          console.log('[Point 62 - eform4] 正常API呼叫，member_id:', currentUserData.member_id);
           lookupMemberData(currentUserData.member_id);
         } else {
+          console.log('[Point 62 - eform4] 沒有會員編號，但仍進行測試API呼叫來確認端點...');
           // 使用測試ID來確認API端點是否正常運作
+          console.log('[Point 62 - eform4] 使用測試ID "TEST123" 進行API測試');
           lookupMemberData('TEST123');
           
           // 設定預設姓名
+          console.log('[Point 62 - eform4] 使用預設姓名:', currentUserData.member_name);
           $('input[name="member_name"]').val(currentUserData.member_name);
         }
       }
 
       // 查詢會員資料
       function lookupMemberData(memberId) {
-        var apiUrl = '<?php echo base_url("api/eeform2/member_lookup/"); ?>' + memberId;
+        var apiUrl = '<?php echo base_url("api/eeform4/member_lookup/"); ?>' + memberId;
+        console.log('[Point 62 - eform4] ===== API 呼叫詳細資訊 =====');
+        console.log('[Point 62 - eform4] 開始查詢會員資料 API');
+        console.log('[Point 62 - eform4] API URL:', apiUrl);
+        console.log('[Point 62 - eform4] 查詢會員ID:', memberId);
+        console.log('[Point 62 - eform4] Base URL:', '<?php echo base_url(); ?>');
+        console.log('[Point 62 - eform4] 完整 API 路徑:', apiUrl);
+        console.log('[Point 62 - eform4] 開始發送 AJAX 請求...');
         
         $.ajax({
           url: apiUrl,
           method: 'GET',
           dataType: 'json',
+          beforeSend: function(xhr) {
+            console.log('[Point 62 - eform4] ===== AJAX 請求即將發送 =====');
+            console.log('[Point 62 - eform4] 請求方法: GET');
+            console.log('[Point 62 - eform4] 請求 URL:', apiUrl);
+            console.log('[Point 62 - eform4] 資料類型: json');
+            console.log('[Point 62 - eform4] AJAX 請求已發送，等待回應...');
+          },
           success: function(response) {
-            console.log('[Point 62 - eform2] API 回應成功:', response);
+            console.log('[Point 62 - eform4] API 回應成功:', response);
             
             if (response.success && response.data) {
               memberData = response.data.members;
+              console.log('[Point 62 - eform4] 找到會員資料數量:', memberData.length);
+              console.log('[Point 62 - eform4] 會員資料內容:', memberData);
               
               if (memberData.length > 1) {
                 // 多個會員：顯示下拉選單
+                console.log('[Point 62 - eform4] 多個會員匹配，顯示下拉選單');
                 isMultipleMembers = true;
                 setupMemberDropdown();
               } else if (memberData.length === 1) {
                 // 單個會員：使用文字輸入框
+                console.log('[Point 62 - eform4] 單個會員匹配，使用文字輸入框');
+                console.log('[Point 62 - eform4] 會員姓名:', memberData[0].c_name);
                 isMultipleMembers = false;
                 $('input[name="member_name"]').val(memberData[0].c_name);
                 currentUserData.member_name = memberData[0].c_name;
               } else {
                 // 沒有找到會員：使用預設值
+                console.log('[Point 62 - eform4] 沒有找到會員，使用預設值');
                 isMultipleMembers = false;
                 $('input[name="member_name"]').val(currentUserData.member_name);
               }
             } else {
-              console.log('[Point 62 - eform2] API 回應格式不正確:', response);
+              console.log('[Point 62 - eform4] API 回應格式不正確:', response);
             }
           },
           error: function(xhr, status, error) {
-            console.error('[Point 62 - eform2] ===== API 呼叫失敗詳細資訊 =====');
-            console.error('[Point 62 - eform2] API 查詢失敗:', {
+            console.error('[Point 62 - eform4] ===== API 呼叫失敗詳細資訊 =====');
+            console.error('[Point 62 - eform4] API 查詢失敗:', {
               status: status,
               error: error,
               xhr: xhr,
               responseText: xhr.responseText
             });
-            console.error('[Point 62 - eform2] HTTP 狀態碼:', xhr.status);
-            console.error('[Point 62 - eform2] HTTP 狀態文字:', xhr.statusText);
-            console.error('[Point 62 - eform2] 回應內容:', xhr.responseText);
-            console.error('[Point 62 - eform2] AJAX 狀態:', status);
-            console.error('[Point 62 - eform2] 錯誤類型:', error);
-            console.error('[Point 62 - eform2] 請求的 URL:', apiUrl);
+            console.error('[Point 62 - eform4] HTTP 狀態碼:', xhr.status);
+            console.error('[Point 62 - eform4] HTTP 狀態文字:', xhr.statusText);
+            console.error('[Point 62 - eform4] 回應內容:', xhr.responseText);
+            console.error('[Point 62 - eform4] AJAX 狀態:', status);
+            console.error('[Point 62 - eform4] 錯誤類型:', error);
+            console.error('[Point 62 - eform4] 請求的 URL:', apiUrl);
             
             // 出錯時使用預設值
-            console.log('[Point 62 - eform2] 因為API失敗，使用預設會員姓名:', currentUserData.member_name);
+            console.log('[Point 62 - eform4] 因為API失敗，使用預設會員姓名:', currentUserData.member_name);
             $('input[name="member_name"]').val(currentUserData.member_name);
           },
           complete: function(xhr, status) {
-            console.log('[Point 62 - eform2] ===== AJAX 請求完成 =====');
-            console.log('[Point 62 - eform2] 最終狀態:', status);
-            console.log('[Point 62 - eform2] HTTP 狀態碼:', xhr.status);
-            console.log('[Point 62 - eform2] 請求已完成 (成功或失敗)');
+            console.log('[Point 62 - eform4] ===== AJAX 請求完成 =====');
+            console.log('[Point 62 - eform4] 最終狀態:', status);
+            console.log('[Point 62 - eform4] HTTP 狀態碼:', xhr.status);
+            console.log('[Point 62 - eform4] 請求已完成 (成功或失敗)');
           }
         });
       }
 
       // 設定會員下拉選單
       function setupMemberDropdown() {
+        console.log('[Point 62 - eform4] ===== 設定會員下拉選單 =====');
+        console.log('[Point 62 - eform4] 會員資料:', memberData);
         
         var $nameInput = $('input[name="member_name"]');
         var $nameSelect = $('select[name="member_name_select"]');
         
-        // 隱藏輸入框，顯示下拉選單
-        $nameInput.hide().prop('required', false).prop('disabled', true);
-        $nameSelect.show().prop('required', true).prop('disabled', false);
+        console.log('[Point 62 - eform4] 找到姓名輸入框:', $nameInput.length > 0);
+        console.log('[Point 62 - eform4] 找到姓名下拉選單:', $nameSelect.length > 0);
         
-        // 清空並重新填充選項
-        $nameSelect.empty().append('<option value="">請選擇會員</option>');
+        // 清空下拉選單選項
+        $nameSelect.empty();
+        $nameSelect.append('<option value="">請選擇會員</option>');
         
+        // 加入會員選項並預設選擇當前使用者
         var currentUserSelected = false;
-        memberData.forEach(function(member, index) {
+        memberData.forEach(function(member) {
           var option = $('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' + 
-                         member.c_name + '</option>');
+                         member.c_name + ' (' + member.c_no + ')</option>');
           
           // 檢查是否為當前使用者，如果是則設為預設選擇
           if (member.c_no === currentUserData.member_id || 
               member.c_name === currentUserData.member_name) {
             option.prop('selected', true);
             currentUserSelected = true;
+            console.log('[Point 62 - eform4] 預設選擇當前使用者:', member.c_name, member.c_no);
           }
           
           $nameSelect.append(option);
         });
+        
+        // 如果沒有找到當前使用者的完全匹配，選擇第一個選項（除了"請選擇會員"）
+        if (!currentUserSelected && memberData.length > 0) {
+          $nameSelect.find('option:eq(1)').prop('selected', true);
+          console.log('[Point 62 - eform4] 未找到當前使用者完全匹配，預設選擇第一個會員:', memberData[0].c_name);
+        }
+        
+        // 隱藏輸入框，顯示下拉選單
+        $nameInput.hide();
+        $nameSelect.show();
         
         // 更新會員編號（根據目前選擇的會員）
         var selectedOption = $nameSelect.find('option:selected');
@@ -899,20 +800,32 @@
           $('input[name="member_id"]').val(selectedOption.val());
           currentUserData.member_id = selectedOption.val();
           currentUserData.member_name = selectedOption.data('name');
+          console.log('[Point 62 - eform4] 根據預設選擇更新會員資料:', {
+            memberId: currentUserData.member_id,
+            memberName: currentUserData.member_name
+          });
         }
         
+        console.log('[Point 62 - eform4] 下拉選單設定完成，已隱藏輸入框');
+        
         // 綁定選擇事件
-        $nameSelect.off('change').on('change', function() {
+        $nameSelect.off('change.memberLookup').on('change.memberLookup', function() {
           var selectedOption = $(this).find('option:selected');
+          var newMemberId = selectedOption.val();
+          var newMemberName = selectedOption.data('name');
           
-          if (selectedOption.val()) {
-            var newMemberId = selectedOption.val();
-            var newMemberName = selectedOption.data('name');
-            
+          console.log('[Point 62 - eform4] 會員選擇變更:', {
+            newMemberId: newMemberId,
+            newMemberName: newMemberName
+          });
+          
+          if (newMemberId) {
             // 更新會員編號和姓名
             $('input[name="member_id"]').val(newMemberId);
             currentUserData.member_id = newMemberId;
             currentUserData.member_name = newMemberName;
+            
+            console.log('[Point 62 - eform4] 更新後的會員資料:', currentUserData);
           }
         });
       }
@@ -920,36 +833,36 @@
       // 修改提交表單函數以處理會員選擇
       var originalSubmitForm = submitForm;
       submitForm = function() {
-        console.log('[Point 62 - eform2] ===== 表單提交開始 =====');
-        console.log('[Point 62 - eform2] 是否為多重會員:', isMultipleMembers);
-        console.log('[Point 62 - eform2] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
+        console.log('[Point 62 - eform4] ===== 表單提交開始 =====');
+        console.log('[Point 62 - eform4] 是否為多重會員:', isMultipleMembers);
+        console.log('[Point 62 - eform4] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
         
         // 收集表單資料
         var memberId, memberName;
         
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
-          console.log('[Point 62 - eform2] 使用下拉選單模式取得會員資料');
+          console.log('[Point 62 - eform4] 使用下拉選單模式取得會員資料');
           // 使用下拉選單的值
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
           memberId = selectedOption.val();
           memberName = selectedOption.data('name');
-          console.log('[Point 62 - eform2] 從下拉選單取得:', {
+          console.log('[Point 62 - eform4] 從下拉選單取得:', {
             memberId: memberId,
             memberName: memberName
           });
         } else {
-          console.log('[Point 62 - eform2] 使用輸入框模式取得會員資料');
+          console.log('[Point 62 - eform4] 使用輸入框模式取得會員資料');
           // 使用輸入框和當前會員資料
           memberId = currentUserData.member_id;
           memberName = $('input[name="member_name"]').val();
-          console.log('[Point 62 - eform2] 從輸入框取得:', {
+          console.log('[Point 62 - eform4] 從輸入框取得:', {
             memberId: memberId,
             memberName: memberName
           });
         }
         
-        console.log('[Point 62 - eform2] 最終會員資料:', {
+        console.log('[Point 62 - eform4] 最終會員資料:', {
           member_id: memberId,
           member_name: memberName
         });
@@ -964,7 +877,7 @@
 
       // 頁面載入時初始化會員資料
       $(document).ready(function() {
-        console.log('[Point 62 - eform2] ===== 頁面載入完成，開始初始化會員查詢功能 =====');
+        console.log('[Point 62 - eform4] ===== 頁面載入完成，開始初始化會員查詢功能 =====');
         
         // 延遲執行以確保其他初始化完成
         setTimeout(function() {

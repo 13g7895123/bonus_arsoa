@@ -570,7 +570,7 @@ if ((substr_count($_SERVER['REQUEST_URI'],'wadmin') > 0 || substr_count($_SERVER
                                           'order/auth/[CAW]','order/auth/[CAW]/Y','order/auth/[\s\S]*',
                                           'eform/(.*)', 'eform/api/(.*)', 'api/eform5/(.*)',
                                           'api/eeform1/(.*)', 'api/eeform2/(.*)', 'api/eeform3/(.*)', 'api/eeform4/(.*)', 'api/eeform5/(.*)',
-                                          'api/eeform/eeform2/(.*)'
+                                          'api/eeform/eeform2/(.*)', 'api/eeform/eeform4/(.*)'
                                         );
 }
 

@@ -117,7 +117,10 @@ class Eeform4 extends MY_Controller
 
             // 準備資料庫資料
             $submission_data = [
-                'member_name' => trim($input_data['member_name']),
+                'member_id' => isset($input_data['member_id']) ? $input_data['member_id'] : null,
+                'member_name' => $input_data['member_name'], // 被填表人姓名
+                'form_filler_id' => isset($input_data['form_filler_id']) ? $input_data['form_filler_id'] : null, // 代填問卷者ID
+                'form_filler_name' => isset($input_data['form_filler_name']) ? $input_data['form_filler_name'] : null, // 代填問卷者姓名
                 'join_date' => $input_data['join_date'],
                 'gender' => $input_data['gender'],
                 'age' => (int)$input_data['age'],
@@ -134,51 +137,28 @@ class Eeform4 extends MY_Controller
             $submission_id = $this->eform4_model->create_submission($submission_data);
             
             if ($submission_id) {
-                // 收集產品資料
-                $products = [];
-                $product_fields = [
-                    'product_energy_essence001',
-                    'product_reishi_ex001', 
-                    'product_vitamin_c001',
-                    'product_energy_crystal001',
-                    'product_reishi_tea001',
-                    'product_soap001',
-                    'product_mask001',
-                    'product_toner001'
-                ];
-                
-                foreach ($product_fields as $field) {
-                    if (isset($input_data[$field]) && !empty($input_data[$field]) && (int)$input_data[$field] > 0) {
-                        $products[$field] = [
-                            'quantity' => (int)$input_data[$field]
-                        ];
-                    }
-                }
-                
-                // 保存產品資料
-                log_message('debug', 'Controller: 收集到的產品資料: ' . json_encode($products));
-                log_message('debug', 'Controller: 產品數量: ' . count($products));
-                
-                if (!empty($products)) {
+                // 處理產品資料
+                if (isset($input_data['products']) && is_array($input_data['products'])) {
                     try {
-                        $result = $this->eform4_model->save_products($submission_id, $products);
-                        log_message('debug', 'Controller: 產品保存結果: ' . ($result ? 'success' : 'failed'));
+                        $this->eform4_model->save_products($submission_id, $input_data['products']);
                     } catch (Exception $e) {
-                        // 如果產品保存失敗，記錄錯誤但不回傳失敗
-                        log_message('error', 'eform4產品保存失敗: ' . $e->getMessage());
-                        log_message('error', 'eform4產品保存失敗 trace: ' . $e->getTraceAsString());
+                        $this->_send_error('保存產品資料失敗: ' . $e->getMessage(), 500, [
+                            'submission_id' => $submission_id,
+                            'products' => $input_data['products']
+                        ]);
+                        return;
                     }
-                } else {
-                    log_message('debug', 'Controller: 沒有產品資料需要保存');
                 }
-                
+
                 $this->_send_success('表單提交成功', [
                     'submission_id' => $submission_id,
-                    'submission_date' => date('Y-m-d H:i:s'),
-                    'products_saved' => count($products)
+                    'submission_date' => date('Y-m-d H:i:s')
                 ]);
             } else {
-                $this->_send_error('表單提交失敗', 500);
+                $this->_send_error('表單提交失敗', 500, [
+                    'debug' => 'create_submission returned false',
+                    'input_data' => $submission_data
+                ]);
             }
 
         } catch (Exception $e) {
