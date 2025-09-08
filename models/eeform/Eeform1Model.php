@@ -166,7 +166,7 @@ class Eeform1Model extends MY_Model
         $this->db->trans_start();
         
         try {
-            // 準備主表資料 - Point 80: 支援代填問卷者追蹤
+            // 準備主表資料
             $submission_data = [
                 'member_id' => isset($data['member_id']) ? $data['member_id'] : null,
                 'member_name' => $data['member_name'], // 被填表人姓名
@@ -844,6 +844,7 @@ class Eeform1Model extends MY_Model
             $this->db->flush_cache();
             $this->db->select('
                 s.id,
+                s.form_filler_name,
                 s.member_id,
                 s.member_name,
                 s.birth_year,
@@ -866,6 +867,7 @@ class Eeform1Model extends MY_Model
             $this->db->flush_cache();
             $this->db->select('
                 s.id,
+                s.form_filler_name,
                 s.member_id,
                 s.member_name,
                 s.birth_year,

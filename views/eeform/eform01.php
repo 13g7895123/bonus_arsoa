@@ -1190,7 +1190,7 @@
       });
       
       // 控制測試按鈕顯示的變數
-      var showTestButton = true; // 設為 true 顯示測試按鈕
+      var showTestButton = false; // 設為 true 顯示測試按鈕
       
       // 取得目前登入使用者資訊
       var currentUserData = {
@@ -1469,7 +1469,7 @@
           $('input[name="' + randomAllergy + '"]').prop('checked', true);
         }
 
-        console.log('測試資料已隨機填入完成');
+        // console.log('測試資料已隨機填入完成');
       }
 
       function showConfirmModal() {
@@ -1670,8 +1670,8 @@
         // 收集表單資料
         var memberName = '';
         var memberId = '';
-        var formFillerID = currentUserData.member_id; // 代填問卷者（當前登入使用者）
-        var formFillerName = currentUserData.member_name; // 代填問卷者姓名
+        var formFillerID = '<?php echo $userdata['c_no'];?>'; // 代填問卷者（當前登入使用者）
+        var formFillerName = '<?php echo $userdata['c_name'];?>'; // 代填問卷者姓名
         
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
@@ -1850,7 +1850,7 @@
             }
           },
           error: function(xhr, status, error) {
-            console.error('提交失敗:', error);
+            // console.error('提交失敗:', error);
             Swal.fire({
               title: '提交失敗',
               text: '網絡錯誤，請稍後再試',

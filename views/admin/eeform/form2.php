@@ -447,7 +447,7 @@
             <div class="col-12 d-flex justify-content-between align-items-center">
                 <h2>會員服務追蹤管理表(肌膚)</h2>
                 <div class="header-buttons">
-                    <button class="btn btn-outline-primary" id="edit-products-btn">
+                    <button class="btn btn-primary" id="edit-products-btn">
                         <i class="lnr lnr-cog"></i> 編輯商品
                     </button>
                 </div>
@@ -506,6 +506,7 @@
                         <thead>
                             <tr>
                                 <th style="display: none;">ID</th>
+                                <th>填寫者</th>
                                 <th>會員姓名</th>
                                 <th>性別</th>
                                 <th>年齡</th>
@@ -705,6 +706,9 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td style="display: none;">${item.id}</td>
+                    <td>
+                        <strong>${item.form_filler_name || ''}</strong>
+                    </td>
                     <td>
                         <strong>${item.member_name || ''}</strong>
                     </td>
@@ -1073,23 +1077,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-2">
-                            <div class="col-md-4">
-                                <label class="form-label">產品類別</label>
-                                <select class="form-control product-category">
-                                    <option value="soap" ${productData.product_category === 'soap' ? 'selected' : ''}>清潔</option>
-                                    <option value="toner" ${productData.product_category === 'toner' ? 'selected' : ''}>化妝水</option>
-                                    <option value="serum" ${productData.product_category === 'serum' ? 'selected' : ''}>精華液</option>
-                                    <option value="lotion" ${productData.product_category === 'lotion' ? 'selected' : ''}>乳液</option>
-                                    <option value="foundation" ${productData.product_category === 'foundation' ? 'selected' : ''}>底妝</option>
-                                    <option value="other" ${productData.product_category === 'other' ? 'selected' : ''}>其他</option>
-                                </select>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="form-label">產品描述</label>
-                                <input type="text" class="form-control product-description" value="${productData.description || ''}" placeholder="產品描述（選填）">
-                            </div>
-                        </div>
                     </div>
                 `;
                 container.append(productHtml);
@@ -1116,26 +1103,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-md-4">
-                            <label class="form-label">產品類別</label>
-                            <select class="form-control product-category">
-                                <option value="soap">清潔</option>
-                                <option value="toner">化妝水</option>
-                                <option value="serum">精華液</option>
-                                <option value="lotion">乳液</option>
-                                <option value="foundation">底妝</option>
-                                <option value="other" selected>其他</option>
-                            </select>
-                        </div>
-                        <div class="col-md-8">
-                            <label class="form-label">產品描述</label>
-                            <input type="text" class="form-control product-description" value="" placeholder="產品描述（選填）">
-                        </div>
-                    </div>
                 </div>
             `;
             container.append(productHtml);
+            
         };
 
         admin.removeProduct = function(button) {
@@ -1150,16 +1121,12 @@
                 const $item = $(this);
                 const code = $item.find('.product-code').val().trim();
                 const name = $item.find('.product-name').val().trim();
-                const category = $item.find('.product-category').val();
-                const description = $item.find('.product-description').val().trim();
                 const id = $item.data('product-id');
                 
                 if (code && name) {
                     const product = {
                         code: code,
                         name: name,
-                        category: category,
-                        description: description || null
                     };
                     
                     if (id) {

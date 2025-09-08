@@ -135,7 +135,10 @@ class Eeform2 extends MY_Controller
 
             // 準備資料庫資料
             $submission_data = [
-                'member_name' => trim($input_data['member_name']),
+                'member_id' => isset($input_data['member_id']) ? $input_data['member_id'] : null,
+                'member_name' => $input_data['member_name'], // 被填表人姓名
+                'form_filler_id' => isset($input_data['form_filler_id']) ? $input_data['form_filler_id'] : null, // 代填問卷者ID
+                'form_filler_name' => isset($input_data['form_filler_name']) ? $input_data['form_filler_name'] : null, // 代填問卷者姓名
                 'join_date' => $input_data['join_date'],
                 'gender' => $input_data['gender'],
                 'age' => (int)$input_data['age'],
@@ -1230,11 +1233,22 @@ class Eeform2 extends MY_Controller
             }
 
             $members = $query->result_array();
+
+            // 確保會員姓名是純淨的，但保留會員編號資料
+            $clean_members = [];
+            foreach ($members as $member) {
+                if (!empty($member['c_name'])) {
+                    $clean_members[] = [
+                        'c_no' => $member['c_no'],
+                        'c_name' => trim($member['c_name']) // 純姓名，無額外格式
+                    ];
+                }
+            }
             
             // 返回查詢結果
             $result = [
                 'count' => count($members),
-                'members' => $members,
+                'members' => $clean_members,
                 'search_id' => $member_id
             ];
 

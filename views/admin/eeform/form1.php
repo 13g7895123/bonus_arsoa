@@ -444,6 +444,7 @@
                     <thead>
                         <tr>
                             <th style="display: none;">ID</th>
+                            <th>填寫者</th>
                             <th>會員姓名</th>
                             <th>出生年月</th>
                             <th>電話</th>
@@ -627,6 +628,7 @@
             const row = `
                 <tr>
                     <td style="display: none;">${item.id}</td>
+                    <td>${escapeHtml(item.form_filler_name || '')}</td>
                     <td>${escapeHtml(item.member_name || '')}</td>
                     <td>${item.birth_year || ''}年${item.birth_month || ''}月</td>
                     <td>${escapeHtml(item.phone || '')}</td>
@@ -1158,7 +1160,7 @@
             </div>
         `;
 
-        container.innerHTML = systemDataHtml + basicDataHtml + lifestyleHtml + productsHtml + skinIssuesHtml + suggestionsHtml + skinTestHtml + submissionHtml;
+        container.innerHTML = basicDataHtml + lifestyleHtml + productsHtml + skinIssuesHtml + suggestionsHtml + skinTestHtml;
     };
 
     admin.closeDetailModal = function() {
