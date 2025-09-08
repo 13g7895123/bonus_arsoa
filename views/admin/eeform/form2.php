@@ -1107,6 +1107,13 @@
             `;
             container.append(productHtml);
             
+            // 滑順滾動到彈窗底部
+            setTimeout(() => {
+                const modalBody = $('#productsModal .modal-body');
+                modalBody.animate({
+                    scrollTop: modalBody.prop('scrollHeight')
+                }, 500);
+            }, 100);
         };
 
         admin.removeProduct = function(button) {
