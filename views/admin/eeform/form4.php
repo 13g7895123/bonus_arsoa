@@ -279,21 +279,30 @@
         margin-bottom: 3rem !important;
     }
     
-    /* Pagination wrapper */
+    /* Pagination wrapper - Force styles with !important */
     .pagination-wrapper {
-        background-color: #f8f9fa;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-top: 1rem;
-        border: 1px solid #dee2e6;
+        background-color: #f8f9fa !important;
+        padding: 1rem !important;
+        border-radius: 8px !important;
+        margin-top: 1rem !important;
+        border: 1px solid #dee2e6 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
     
-    /* Record info styling */
+    .pagination-wrapper * {
+        box-sizing: border-box !important;
+    }
+    
+    /* Record info styling - Force all styles */
     #record-info {
-        font-weight: 500;
+        font-weight: 500 !important;
         color: #343a40 !important;
-        font-size: 0.95rem;
-        white-space: nowrap;
+        font-size: 0.95rem !important;
+        white-space: nowrap !important;
+        display: inline-block !important;
+        margin-right: 1rem !important;
+        line-height: 1.5 !important;
     }
     
     #record-info .text-dark {
@@ -302,9 +311,10 @@
     
     #record-info strong {
         color: #007bff !important;
-        font-weight: 600;
+        font-weight: 600 !important;
     }
     
+    /* Force margin utilities */
     .ml-2 {
         margin-left: 0.5rem !important;
     }
@@ -322,48 +332,111 @@
         margin-right: 0.25rem !important;
     }
     
+    /* Force page size selector styles */
     #page-size-selector {
-        width: 80px !important;
-        font-size: 0.9rem;
+        width: 70px !important;
+        font-size: 0.9rem !important;
         color: #343a40 !important;
-        border-color: #495057;
-    }
-    
-    /* Dark theme for pagination wrapper */
-    .pagination-wrapper .text-dark {
-        color: #343a40 !important;
-        font-weight: 600;
-    }
-    
-    /* Pagination buttons dark theme */
-    .pagination-wrapper .pagination .page-link {
-        color: #343a40 !important;
-        border-color: #495057 !important;
+        border: 1px solid #495057 !important;
         background-color: #fff !important;
-        font-weight: 500;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 4px !important;
+        display: inline-block !important;
+        vertical-align: middle !important;
     }
     
-    .pagination-wrapper .pagination .page-item.active .page-link {
+    /* Force pagination button styles */
+    #pagination {
+        display: flex !important;
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    #pagination .page-item {
+        display: inline-block !important;
+        margin: 0 !important;
+    }
+    
+    #pagination .page-link {
+        color: #343a40 !important;
+        border: 1px solid #495057 !important;
+        background-color: #fff !important;
+        font-weight: 500 !important;
+        padding: 0.375rem 0.75rem !important;
+        text-decoration: none !important;
+        border-radius: 0 !important;
+        display: inline-block !important;
+        line-height: 1.25 !important;
+        font-size: 0.9rem !important;
+    }
+    
+    #pagination .page-item:first-child .page-link {
+        border-top-left-radius: 4px !important;
+        border-bottom-left-radius: 4px !important;
+    }
+    
+    #pagination .page-item:last-child .page-link {
+        border-top-right-radius: 4px !important;
+        border-bottom-right-radius: 4px !important;
+    }
+    
+    #pagination .page-item.active .page-link {
         background-color: #343a40 !important;
         border-color: #343a40 !important;
         color: #fff !important;
     }
     
-    .pagination-wrapper .pagination .page-link:hover {
+    #pagination .page-link:hover {
         background-color: #495057 !important;
         border-color: #495057 !important;
         color: #fff !important;
     }
     
-    /* Responsive adjustments */
+    #pagination .page-item.disabled .page-link {
+        color: #6c757d !important;
+        pointer-events: none !important;
+        cursor: auto !important;
+        background-color: #fff !important;
+        border-color: #dee2e6 !important;
+    }
+    
+    /* Responsive adjustments - Force styles */
     @media (max-width: 768px) {
-        .pagination-wrapper .d-flex {
-            flex-direction: column;
+        .pagination-wrapper > div {
+            flex-direction: column !important;
             align-items: flex-start !important;
         }
         
-        .pagination-wrapper .pagination {
-            margin-top: 0.5rem;
+        .pagination-wrapper > div > div:first-child {
+            margin-bottom: 0.5rem !important;
+        }
+        
+        #record-info {
+            margin-right: 0.5rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+        
+        #page-size-selector {
+            width: 60px !important;
+            font-size: 0.8rem !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .pagination-wrapper {
+            padding: 0.75rem !important;
+        }
+        
+        #record-info {
+            font-size: 0.85rem !important;
+        }
+        
+        #pagination .page-link {
+            padding: 0.25rem 0.5rem !important;
+            font-size: 0.8rem !important;
         }
     }
     
@@ -602,19 +675,19 @@
                 </div>
 
                 <!-- 分頁控制區 -->
-                <div class="pagination-wrapper mt-4">
-                    <div class="d-flex align-items-center justify-content-between">
+                <div class="pagination-wrapper mt-4" style="background-color: #f8f9fa !important; padding: 1rem !important; border-radius: 8px !important; margin-top: 1rem !important; border: 1px solid #dee2e6 !important;">
+                    <div style="display: flex !important; align-items: center !important; justify-content: space-between !important; flex-wrap: nowrap !important;">
                         <!-- 左側資訊（不換行） -->
-                        <div class="d-flex align-items-center" style="white-space: nowrap;">
+                        <div style="display: flex !important; align-items: center !important; white-space: nowrap !important; flex-shrink: 0 !important;">
                             <!-- 資料筆數資訊 -->
-                            <div id="record-info" class="mr-3 text-dark" style="font-size: 0.95rem;">
+                            <div id="record-info" style="margin-right: 1rem !important; font-size: 0.95rem !important; color: #343a40 !important; font-weight: 500 !important;">
                                 <!-- 動態顯示資料筆數資訊 -->
                             </div>
                             
                             <!-- 每頁筆數選擇 -->
-                            <div class="d-flex align-items-center">
-                                <span class="mr-2 text-dark" style="font-size: 0.9rem;">每頁顯示：</span>
-                                <select class="form-control form-control-sm" id="page-size-selector" style="width: 70px; font-size: 0.9rem;">
+                            <div style="display: flex !important; align-items: center !important; white-space: nowrap !important;">
+                                <span style="margin-right: 0.5rem !important; font-size: 0.9rem !important; color: #343a40 !important; font-weight: 600 !important;">每頁顯示：</span>
+                                <select id="page-size-selector" style="width: 70px !important; font-size: 0.9rem !important; padding: 0.25rem 0.5rem !important; border: 1px solid #495057 !important; border-radius: 4px !important; background-color: #fff !important; color: #343a40 !important;">
                                     <option value="5" selected>5</option>
                                     <option value="10">10</option>
                                     <option value="20">20</option>
@@ -625,9 +698,9 @@
                         </div>
                         
                         <!-- 右側分頁按鈕 -->
-                        <div>
-                            <nav aria-label="分頁導覽">
-                                <ul class="pagination mb-0" id="pagination">
+                        <div style="flex-shrink: 0 !important;">
+                            <nav>
+                                <ul id="pagination" style="display: flex !important; list-style: none !important; margin: 0 !important; padding: 0 !important; align-items: center !important;">
                                     <!-- 動態生成分頁 -->
                                 </ul>
                             </nav>
@@ -770,7 +843,6 @@
             fetch(`${admin.apiBaseUrl}/list?${params.toString()}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log('API 回應資料:', data); // 用於除錯
                     if (data.success) {
                         admin.renderTable(data.data.data);
                         admin.totalRecords = data.data.pagination.total;
@@ -856,8 +928,8 @@
             // 上一頁按鈕
             if (pagination.current_page > 1) {
                 paginationHtml += `
-                    <li class="page-item">
-                        <a class="page-link" href="#" onclick="admin.loadData(${pagination.current_page - 1})">&laquo;</a>
+                    <li class="page-item" style="display: inline-block !important; margin: 0 !important;">
+                        <a class="page-link" href="#" onclick="admin.loadData(${pagination.current_page - 1})" style="color: #343a40 !important; border: 1px solid #495057 !important; background-color: #fff !important; padding: 0.375rem 0.75rem !important; text-decoration: none !important; display: inline-block !important;">&laquo;</a>
                     </li>
                 `;
             }
@@ -867,33 +939,36 @@
             const endPage = Math.min(pagination.total_pages, pagination.current_page + 2);
 
             if (startPage > 1) {
-                paginationHtml += '<li class="page-item"><a class="page-link" href="#" onclick="admin.loadData(1)">1</a></li>';
+                paginationHtml += `<li class="page-item" style="display: inline-block !important;"><a class="page-link" href="#" onclick="admin.loadData(1)" style="color: #343a40 !important; border: 1px solid #495057 !important; background-color: #fff !important; padding: 0.375rem 0.75rem !important; text-decoration: none !important;">1</a></li>`;
                 if (startPage > 2) {
-                    paginationHtml += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                    paginationHtml += `<li class="page-item disabled" style="display: inline-block !important;"><span class="page-link" style="color: #6c757d !important; border: 1px solid #dee2e6 !important; background-color: #fff !important; padding: 0.375rem 0.75rem !important;">...</span></li>`;
                 }
             }
 
             for (let i = startPage; i <= endPage; i++) {
                 const activeClass = i === pagination.current_page ? 'active' : '';
+                const activeStyle = i === pagination.current_page 
+                    ? 'background-color: #343a40 !important; border-color: #343a40 !important; color: #fff !important;'
+                    : 'color: #343a40 !important; border: 1px solid #495057 !important; background-color: #fff !important;';
                 paginationHtml += `
-                    <li class="page-item ${activeClass}">
-                        <a class="page-link" href="#" onclick="admin.loadData(${i})">${i}</a>
+                    <li class="page-item ${activeClass}" style="display: inline-block !important; margin: 0 !important;">
+                        <a class="page-link" href="#" onclick="admin.loadData(${i})" style="${activeStyle} padding: 0.375rem 0.75rem !important; text-decoration: none !important; display: inline-block !important;">${i}</a>
                     </li>
                 `;
             }
 
             if (endPage < pagination.total_pages) {
                 if (endPage < pagination.total_pages - 1) {
-                    paginationHtml += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                    paginationHtml += `<li class="page-item disabled" style="display: inline-block !important;"><span class="page-link" style="color: #6c757d !important; border: 1px solid #dee2e6 !important; background-color: #fff !important; padding: 0.375rem 0.75rem !important;">...</span></li>`;
                 }
-                paginationHtml += `<li class="page-item"><a class="page-link" href="#" onclick="admin.loadData(${pagination.total_pages})">${pagination.total_pages}</a></li>`;
+                paginationHtml += `<li class="page-item" style="display: inline-block !important;"><a class="page-link" href="#" onclick="admin.loadData(${pagination.total_pages})" style="color: #343a40 !important; border: 1px solid #495057 !important; background-color: #fff !important; padding: 0.375rem 0.75rem !important; text-decoration: none !important;">${pagination.total_pages}</a></li>`;
             }
 
             // 下一頁按鈕
             if (pagination.current_page < pagination.total_pages) {
                 paginationHtml += `
-                    <li class="page-item">
-                        <a class="page-link" href="#" onclick="admin.loadData(${pagination.current_page + 1})">&raquo;</a>
+                    <li class="page-item" style="display: inline-block !important; margin: 0 !important;">
+                        <a class="page-link" href="#" onclick="admin.loadData(${pagination.current_page + 1})" style="color: #343a40 !important; border: 1px solid #495057 !important; background-color: #fff !important; padding: 0.375rem 0.75rem !important; text-decoration: none !important; display: inline-block !important;">&raquo;</a>
                     </li>
                 `;
             }
