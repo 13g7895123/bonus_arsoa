@@ -122,4 +122,24 @@ class Eform extends CI_Controller
     {
         echo "Eform controller is working! Time: " . date('Y-m-d H:i:s');
     }
+
+    public function eform5()
+    {
+        $data = array(
+            'userdata' => $this->userdata,
+            'apiUrl' => $this->apiBaseUrl . 'eeform5/submit',
+            'title' => '個人體測表+健康諮詢表'
+        );
+
+        // Load the view content
+        $content = $this->load->view('eeform/eform05', $data, TRUE);
+        
+        // Pass content to layout
+        $layout_data = array(
+            'title' => $data['title'],
+            'content' => $content
+        );
+        
+        $this->load->view('layout/main', $layout_data);
+    }
 }

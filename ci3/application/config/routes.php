@@ -108,3 +108,6 @@ $route['api/eeform4/stats/(:any)'] = 'api/eeform/eeform4/stats/$1';
 $route['api/eeform4/list'] = 'api/eeform/eeform4/list';
 $route['api/eeform4/member_lookup/(:any)'] = 'api/eeform/eeform4/member_lookup/$1';
 $route['api/eeform4/export_single/(:any)'] = 'api/eeform/eeform4/export_single/$1';
+
+// eform5 view routes
+$route['eform/eform5'] = 'eform/eform5';

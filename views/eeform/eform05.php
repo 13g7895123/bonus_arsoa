@@ -7,7 +7,7 @@
             <div class="container">
               <div class="row">
                 <div class="col-md-9 mb130 mt-lg-5 wow fadeInUp" role="main" data-wow-delay=".2s">
-                  <h1 class="h2-3d font-libre"><strong>健康諮詢表</strong></h1>
+                  <h1 class="h2-3d font-libre"><strong>個人體測表+健康諮詢表</strong></h1>
                   <div class="mb30">
                     <div class="container">
                       <form action="#" method="POST" class="text-left" id="eform05">
@@ -230,10 +230,7 @@
           </div>
 
         </div>
-
-
       </div>
-
       <?= $this->block_service->load_html_footer(); ?>
 
     </div>
