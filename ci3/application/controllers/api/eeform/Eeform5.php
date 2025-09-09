@@ -532,4 +532,265 @@ class Eeform5 extends CI_Controller {
 
         return $verification;
     }
+
+    /**
+     * 匯出單一表單到Excel
+     * GET /api/eeform/eeform5/export_single/{id}
+     */
+    public function export_single($id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->output->set_status_header(405);
+                $this->output->set_output(json_encode(array(
+                    'success' => false,
+                    'message' => 'Method not allowed'
+                ), JSON_UNESCAPED_UNICODE));
+                return;
+            }
+
+            if (!$id || !is_numeric($id)) {
+                $this->output->set_status_header(400);
+                $this->output->set_output(json_encode(array(
+                    'success' => false,
+                    'message' => '缺少有效的表單ID'
+                ), JSON_UNESCAPED_UNICODE));
+                return;
+            }
+
+            $submission = $this->Eeform5Model->get_submission_by_id($id);
+            
+            if (!$submission) {
+                $this->output->set_status_header(404);
+                $this->output->set_output(json_encode(array(
+                    'success' => false,
+                    'message' => '找不到指定的表單記錄'
+                ), JSON_UNESCAPED_UNICODE));
+                return;
+            }
+
+            // 載入 PHPExcel library
+            if (!class_exists('PHPExcel')) {
+                require_once APPPATH.'third_party/PHPExcel/PHPExcel.php';
+            }
+            
+            $objPHPExcel = new PHPExcel();
+            
+            // 設定工作表屬性
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objPHPExcel->getActiveSheet()->setTitle('個人體測表+健康諮詢表');
+            
+            // 設定欄位寬度 (A欄:欄位名稱, B欄:值)
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(60);
+            
+            $row = 1;
+            
+            // 表單標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '個人體測表+健康諮詢表');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('006f42c1');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true)->setColor(new PHPExcel_Style_Color('FFFFFFFF'));
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            // 空行
+            $row++;
+            
+            // 基本資料標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '基本資料');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('00D9EDF7');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            // 基本資料欄位
+            $basic_fields = array(
+                'ID' => $submission['id'],
+                '會員姓名' => $submission['member_name'] ?? '',
+                '會員編號' => $submission['member_id'] ?? '',
+                '手機號碼' => $submission['phone'] ?? '',
+                '性別' => $submission['gender'] ?? '',
+                '年齡' => isset($submission['age']) ? $submission['age'] . ' 歲' : '',
+                '身高' => isset($submission['height']) ? $submission['height'] . ' cm' : '',
+                '運動習慣' => $submission['exercise_habit'] ?? ''
+            );
+            
+            foreach ($basic_fields as $field => $value) {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                $row++;
+            }
+            
+            // 空行
+            $row++;
+            
+            // 體測標準建議值標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '體測標準建議值');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('00D9EDF7');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            // 體測數據欄位
+            $body_test_fields = array(
+                '體重' => isset($submission['weight']) ? $submission['weight'] . ' Kg' : '',
+                'BMI' => $submission['bmi'] ?? '',
+                '脂肪率' => isset($submission['fat_percentage']) ? $submission['fat_percentage'] . ' %' : '',
+                '脂肪量' => isset($submission['fat_mass']) ? $submission['fat_mass'] . ' Kg' : '',
+                '肌肉百分比' => isset($submission['muscle_percentage']) ? $submission['muscle_percentage'] . ' %' : '',
+                '肌肉量' => isset($submission['muscle_mass']) ? $submission['muscle_mass'] . ' Kg' : '',
+                '水份比例' => isset($submission['water_percentage']) ? $submission['water_percentage'] . ' %' : '',
+                '水含量' => isset($submission['water_content']) ? $submission['water_content'] . ' Kg' : '',
+                '內臟脂肪率' => isset($submission['visceral_fat_percentage']) ? $submission['visceral_fat_percentage'] . ' %' : '',
+                '骨量' => isset($submission['bone_mass']) ? $submission['bone_mass'] . ' Kg' : '',
+                '基礎代謝率' => isset($submission['bmr']) ? $submission['bmr'] . ' 卡' : '',
+                '蛋白質' => isset($submission['protein_percentage']) ? $submission['protein_percentage'] . ' %' : '',
+                '肥胖度' => isset($submission['obesity_percentage']) ? $submission['obesity_percentage'] . ' %' : '',
+                '身體年齡' => isset($submission['body_age']) ? $submission['body_age'] . ' 歲' : '',
+                '去脂體重' => isset($submission['lean_body_mass']) ? $submission['lean_body_mass'] . ' KG' : ''
+            );
+            
+            foreach ($body_test_fields as $field => $value) {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                $row++;
+            }
+            
+            // 空行
+            $row++;
+            
+            // 職業資訊標題
+            if (isset($submission['occupations']) && !empty($submission['occupations'])) {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '職業資訊');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('00D9EDF7');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+                $row++;
+                
+                $occupations = array();
+                foreach ($submission['occupations'] as $occupation) {
+                    $occupations[] = $occupation['occupation_type'];
+                }
+                
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '職業');
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, implode(', ', $occupations));
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                $row++;
+                
+                // 空行
+                $row++;
+            }
+            
+            // 健康困擾標題
+            if (isset($submission['health_concerns']) && !empty($submission['health_concerns'])) {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '健康困擾');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('00D9EDF7');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+                $row++;
+                
+                $concerns = array();
+                foreach ($submission['health_concerns'] as $concern) {
+                    $concerns[] = $concern['concern_type'];
+                }
+                
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '健康困擾');
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, implode(', ', $concerns));
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                $row++;
+                
+                // 其他健康困擾
+                if (!empty($submission['health_concerns_other'])) {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '其他健康困擾');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $submission['health_concerns_other']);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                    $row++;
+                }
+                
+                // 空行
+                $row++;
+            }
+            
+            // 建議產品標題
+            if (isset($submission['products']) && !empty($submission['products'])) {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '建議產品');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('00D9EDF7');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+                $row++;
+                
+                foreach ($submission['products'] as $product) {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $product['product_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $product['recommended_dosage'] ?? '');
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                    $row++;
+                }
+                
+                // 空行
+                $row++;
+            }
+            
+            // 其他資訊標題
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '其他資訊');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('00D9EDF7');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+            
+            $other_fields = array(
+                '長期用藥習慣' => ($submission['has_medication_habit'] == 1) ? '有' : '無',
+                '使用藥物名稱' => $submission['medication_name'] ?? '',
+                '家族慢性病史' => ($submission['has_family_disease_history'] == 1) ? '有' : '無',
+                '疾病名稱' => $submission['disease_name'] ?? '',
+                '微循環檢測結果' => $submission['microcirculation_test'] ?? '',
+                '日常飲食建議' => $submission['dietary_advice'] ?? '',
+                '填寫日期' => $submission['submission_date'] ?? ''
+            );
+            
+            foreach ($other_fields as $field => $value) {
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                if (in_array($field, array('微循環檢測結果', '日常飲食建議'))) {
+                    $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
+                }
+                $row++;
+            }
+            
+            // 設定檔案名稱
+            $filename = 'eeform5_' . $submission['member_name'] . '_' . date('YmdHis') . '.xlsx';
+            
+            // 設定回應標頭
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Cache-Control: max-age=0');
+            
+            // 輸出Excel檔案
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+            $objWriter->save('php://output');
+            
+        } catch (Exception $e) {
+            log_message('error', 'Excel export error: ' . $e->getMessage());
+            $this->output->set_status_header(500);
+            $this->output->set_output(json_encode(array(
+                'success' => false,
+                'message' => '匯出失敗：' . $e->getMessage()
+            ), JSON_UNESCAPED_UNICODE));
+        }
+    }
 }

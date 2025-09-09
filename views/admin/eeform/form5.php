@@ -432,7 +432,7 @@
 <div class="eform5-admin">
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h2>健康諮詢表</h2>
+            <h2>個人體測表+健康諮詢表管理</h2>
         </div>
     </div>
 
@@ -767,27 +767,179 @@
     admin.renderDetailModal = function(data) {
         const container = document.getElementById('detailContent');
         
+        // Helper function to escape HTML
+        const escapeHtml = (text) => {
+            if (!text) return '';
+            return text.toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        };
+        
         // 基本資料區塊
         let basicDataHtml = `
             <div class="border mb-6 rounded" style="padding: 1.5rem;">
                 <h6 class="mb-3">基本資料</h6>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">會員姓名</label>
-                            <input type="text" class="form-control" value="${data.member_name || ''}" readonly>
+                            <input type="text" class="form-control" value="${escapeHtml(data.member_name || '')}" readonly>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-label">出生年月</label>
-                            <input type="text" class="form-control" value="${data.birth_year || ''}年${data.birth_month || ''}月" readonly>
+                            <label class="form-label">會員編號</label>
+                            <input type="text" class="form-control" value="${escapeHtml(data.member_id || '')}" readonly>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">手機號碼</label>
+                            <input type="text" class="form-control" value="${escapeHtml(data.phone || '')}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">性別</label>
+                            <input type="text" class="form-control" value="${escapeHtml(data.gender || '')}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">年齡</label>
+                            <input type="text" class="form-control" value="${data.age ? data.age + ' 歲' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">身高</label>
                             <input type="text" class="form-control" value="${data.height ? data.height + ' cm' : ''}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">運動習慣</label>
+                            <input type="text" class="form-control" value="${escapeHtml(data.exercise_habit || '')}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">填寫日期</label>
+                            <input type="text" class="form-control" value="${escapeHtml(data.submission_date || '')}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // 體測標準建議值區塊
+        let bodyTestHtml = `
+            <div class="border mb-6 rounded" style="padding: 1.5rem;">
+                <h6 class="mb-3">體測標準建議值</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">體重</label>
+                            <input type="text" class="form-control" value="${data.weight ? data.weight + ' Kg' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">BMI</label>
+                            <input type="text" class="form-control" value="${data.bmi || ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">脂肪率</label>
+                            <input type="text" class="form-control" value="${data.fat_percentage ? data.fat_percentage + ' %' : ''}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">脂肪量</label>
+                            <input type="text" class="form-control" value="${data.fat_mass ? data.fat_mass + ' Kg' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">肌肉百分比</label>
+                            <input type="text" class="form-control" value="${data.muscle_percentage ? data.muscle_percentage + ' %' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">肌肉量</label>
+                            <input type="text" class="form-control" value="${data.muscle_mass ? data.muscle_mass + ' Kg' : ''}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">水份比例</label>
+                            <input type="text" class="form-control" value="${data.water_percentage ? data.water_percentage + ' %' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">水含量</label>
+                            <input type="text" class="form-control" value="${data.water_content ? data.water_content + ' Kg' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">內臟脂肪率</label>
+                            <input type="text" class="form-control" value="${data.visceral_fat_percentage ? data.visceral_fat_percentage + ' %' : ''}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">骨量</label>
+                            <input type="text" class="form-control" value="${data.bone_mass ? data.bone_mass + ' Kg' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">基礎代謝率</label>
+                            <input type="text" class="form-control" value="${data.bmr ? data.bmr + ' 卡' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">蛋白質</label>
+                            <input type="text" class="form-control" value="${data.protein_percentage ? data.protein_percentage + ' %' : ''}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">肥胖度</label>
+                            <input type="text" class="form-control" value="${data.obesity_percentage ? data.obesity_percentage + ' %' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">身體年齡</label>
+                            <input type="text" class="form-control" value="${data.body_age ? data.body_age + ' 歲' : ''}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">去脂體重</label>
+                            <input type="text" class="form-control" value="${data.lean_body_mass ? data.lean_body_mass + ' KG' : ''}" readonly>
                         </div>
                     </div>
                 </div>
@@ -807,7 +959,7 @@
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
                             <label class="form-label">職業 ${index + 1}</label>
-                            <input type="text" class="form-control" value="${occupation.occupation_name}" readonly>
+                            <input type="text" class="form-control" value="${escapeHtml(occupation.occupation_type || '')}" readonly>
                         </div>
                     </div>
                 `;
@@ -818,6 +970,70 @@
         }
         
         occupationHtml += '</div>';
+
+        // 健康困擾區塊
+        let healthHtml = `
+            <div class="border mb-6 rounded" style="padding: 1.5rem;">
+                <h6 class="mb-3">健康困擾</h6>
+        `;
+        
+        if (data.health_concerns && data.health_concerns.length > 0) {
+            healthHtml += '<div class="row">';
+            data.health_concerns.forEach((concern, index) => {
+                healthHtml += `
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label class="form-label">健康困擾 ${index + 1}</label>
+                            <input type="text" class="form-control" value="${escapeHtml(concern.concern_type || '')}" readonly>
+                        </div>
+                    </div>
+                `;
+            });
+            healthHtml += '</div>';
+            
+            // 其他健康困擾
+            if (data.health_concerns_other) {
+                healthHtml += `
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">其他健康困擾</label>
+                                <input type="text" class="form-control" value="${escapeHtml(data.health_concerns_other)}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        } else {
+            healthHtml += '<p class="text-muted">未填寫健康困擾</p>';
+        }
+        
+        healthHtml += '</div>';
+
+        // 產品推薦區塊
+        let productsHtml = `
+            <div class="border mb-6 rounded" style="padding: 1.5rem;">
+                <h6 class="mb-3">產品推薦</h6>
+        `;
+        
+        if (data.products && data.products.length > 0) {
+            productsHtml += '<div class="row">';
+            data.products.forEach(product => {
+                productsHtml += `
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label class="form-label">${escapeHtml(product.product_name)}</label>
+                            <input type="text" class="form-control" value="${escapeHtml(product.recommended_dosage || '未填寫用量')}" readonly>
+                        </div>
+                    </div>
+                `;
+            });
+            productsHtml += '</div>';
+        } else {
+            productsHtml += '<p class="text-muted">未推薦任何產品</p>';
+        }
+        
+        productsHtml += '</div>';
 
         // 醫療資訊區塊
         let medicalHtml = `
@@ -833,7 +1049,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">使用藥物</label>
-                            <input type="text" class="form-control" value="${data.medication_name || '無'}" readonly>
+                            <input type="text" class="form-control" value="${escapeHtml(data.medication_name || '無')}" readonly>
                         </div>
                     </div>
                 </div>
@@ -847,41 +1063,12 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">疾病名稱</label>
-                            <input type="text" class="form-control" value="${data.disease_name || '無'}" readonly>
+                            <input type="text" class="form-control" value="${escapeHtml(data.disease_name || '無')}" readonly>
                         </div>
                     </div>
                 </div>
             </div>
         `;
-
-        // 健康困擾區塊
-        let healthHtml = `
-            <div class="border mb-6 rounded" style="padding: 1.5rem;">
-                <h6 class="mb-3">健康困擾</h6>
-        `;
-        
-        if (data.health_issues && data.health_issues.length > 0) {
-            healthHtml += '<div class="row">';
-            data.health_issues.forEach((issue, index) => {
-                let issueName = issue.issue_name;
-                if (issue.other_description) {
-                    issueName += ` (${issue.other_description})`;
-                }
-                healthHtml += `
-                    <div class="col-md-6 mb-3">
-                        <div class="form-group">
-                            <label class="form-label">困擾 ${index + 1}</label>
-                            <input type="text" class="form-control" value="${issueName}" readonly>
-                        </div>
-                    </div>
-                `;
-            });
-            healthHtml += '</div>';
-        } else {
-            healthHtml += '<p class="text-muted">未填寫健康困擾</p>';
-        }
-        
-        healthHtml += '</div>';
 
         // 檢測與建議區塊
         let testHtml = `
@@ -891,45 +1078,20 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">微循環檢測</label>
-                            <textarea class="form-control" rows="3" readonly>${data.microcirculation_test || ''}</textarea>
+                            <textarea class="form-control" rows="3" readonly>${escapeHtml(data.microcirculation_test || '')}</textarea>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">日常飲食建議</label>
-                            <textarea class="form-control" rows="3" readonly>${data.dietary_advice || ''}</textarea>
+                            <textarea class="form-control" rows="3" readonly>${escapeHtml(data.dietary_advice || '')}</textarea>
                         </div>
                     </div>
                 </div>
             </div>
         `;
 
-        // 產品推薦區塊
-        let productsHtml = `
-            <div class="border mb-6 rounded" style="padding: 1.5rem;">
-                <h6 class="mb-3">產品推薦</h6>
-        `;
-        
-        if (data.product_recommendations && data.product_recommendations.length > 0) {
-            productsHtml += '<div class="row">';
-            data.product_recommendations.forEach(product => {
-                productsHtml += `
-                    <div class="col-md-6 mb-3">
-                        <div class="form-group">
-                            <label class="form-label">${product.product_name}</label>
-                            <input type="text" class="form-control" value="${product.dosage || '未填寫用量'}" readonly>
-                        </div>
-                    </div>
-                `;
-            });
-            productsHtml += '</div>';
-        } else {
-            productsHtml += '<p class="text-muted">未推薦任何產品</p>';
-        }
-        
-        productsHtml += '</div>';
-
-        container.innerHTML = basicDataHtml + occupationHtml + medicalHtml + healthHtml + testHtml + productsHtml;
+        container.innerHTML = basicDataHtml + bodyTestHtml + occupationHtml + healthHtml + productsHtml + medicalHtml + testHtml;
     };
 
     admin.closeDetailModal = function() {

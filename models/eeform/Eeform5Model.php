@@ -1,539 +1,365 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Eeform5Model extends MY_Model {
+class Eeform5Model extends CI_Model {
 
-    protected $table_submissions = 'eeform5_submissions';
-    protected $table_occupations = 'eeform5_occupations';
-    protected $table_health_issues = 'eeform5_health_issues';
-    protected $table_product_recommendations = 'eeform5_product_recommendations';
-    protected $table_consultation_records = 'eeform5_consultation_records';
-
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
-        
-        // Enable error reporting for debugging
-        error_reporting(-1);
-        ini_set('display_errors', 1);
-        
         $this->load->database();
+        $this->load->dbforge();
     }
 
     /**
-     * 建立表單提交記錄
-     * @param array $data 表單資料
-     * @return int|bool 提交記錄ID或false
+     * 提交表單資料
      */
-    public function create_submission($data) {
+    public function submit_form($data)
+    {
+        $this->db->trans_start();
+
         try {
-            $this->db->trans_start();
-            
-            // 插入主表數據
-            $this->db->insert($this->table_submissions, $data);
+            // 準備主要表單資料
+            $submission_data = array(
+                'member_name' => $data['member_name'],
+                'member_id' => $data['member_id'],
+                'phone' => $data['phone'],
+                'gender' => $data['gender'],
+                'age' => $data['age'],
+                'height' => $data['height'],
+                'exercise_habit' => $data['exercise_habit'],
+                
+                // 體測標準建議值
+                'weight' => $data['weight'],
+                'bmi' => $data['bmi'],
+                'fat_percentage' => $data['fat_percentage'],
+                'fat_mass' => $data['fat_mass'],
+                'muscle_percentage' => $data['muscle_percentage'],
+                'muscle_mass' => $data['muscle_mass'],
+                'water_percentage' => $data['water_percentage'],
+                'water_content' => $data['water_content'],
+                'visceral_fat_percentage' => $data['visceral_fat_percentage'],
+                'bone_mass' => $data['bone_mass'],
+                'bmr' => $data['bmr'],
+                'protein_percentage' => $data['protein_percentage'],
+                'obesity_percentage' => $data['obesity_percentage'],
+                'body_age' => $data['body_age'],
+                'lean_body_mass' => $data['lean_body_mass'],
+                
+                // 其他資料
+                'has_medication_habit' => $data['has_medication_habit'],
+                'medication_name' => $data['medication_name'],
+                'has_family_disease_history' => $data['has_family_disease_history'],
+                'disease_name' => $data['disease_name'],
+                'microcirculation_test' => $data['microcirculation_test'],
+                'dietary_advice' => $data['dietary_advice'],
+                'health_concerns_other' => $data['health_concerns_other'],
+                
+                'submission_date' => date('Y-m-d'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'status' => 'submitted'
+            );
+
+            // 插入主表單
+            $this->db->insert('eeform5_submissions', $submission_data);
             $submission_id = $this->db->insert_id();
-            
-            $this->db->trans_complete();
-            
-            if ($this->db->trans_status() === FALSE || !$submission_id) {
-                throw new Exception('插入提交記錄失敗');
+
+            if (!$submission_id) {
+                throw new Exception('無法插入主表單資料');
             }
-            
-            return $submission_id;
-            
+
+            // 插入職業資料
+            if (isset($data['occupation']) && is_array($data['occupation'])) {
+                foreach ($data['occupation'] as $occupation) {
+                    $occupation_data = array(
+                        'submission_id' => $submission_id,
+                        'occupation_type' => $occupation
+                    );
+                    $this->db->insert('eeform5_occupations', $occupation_data);
+                }
+            }
+
+            // 插入健康困擾資料
+            if (isset($data['health_concerns']) && is_array($data['health_concerns'])) {
+                foreach ($data['health_concerns'] as $concern) {
+                    $health_data = array(
+                        'submission_id' => $submission_id,
+                        'concern_type' => $concern
+                    );
+                    $this->db->insert('eeform5_health_concerns', $health_data);
+                }
+            }
+
+            // 插入建議產品資料
+            if (isset($data['recommended_products']) && is_array($data['recommended_products'])) {
+                // 建立產品名稱與dosage欄位的對應表
+                $product_dosage_map = array(
+                    '活力精萃' => 'energy_essence_dosage',
+                    '白鶴靈芝EX' => 'reishi_ex_dosage', 
+                    '美力C錠' => 'vitamin_c_dosage',
+                    '鶴力晶' => 'energy_crystal_dosage',
+                    '白鶴靈芝茶' => 'reishi_tea_dosage'
+                );
+                
+                foreach ($data['recommended_products'] as $product) {
+                    $dosage_field = isset($product_dosage_map[$product]) ? $product_dosage_map[$product] : '';
+                    $recommended_dosage = '';
+                    
+                    if ($dosage_field && isset($data['product_dosages'][$dosage_field])) {
+                        $recommended_dosage = $data['product_dosages'][$dosage_field];
+                    }
+                    
+                    $product_data = array(
+                        'submission_id' => $submission_id,
+                        'product_name' => $product,
+                        'recommended_dosage' => $recommended_dosage
+                    );
+                    $this->db->insert('eeform5_product_recommendations', $product_data);
+                }
+            }
+
+            $this->db->trans_complete();
+
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('資料庫交易失敗');
+            }
+
+            return array(
+                'success' => true,
+                'message' => '表單提交成功',
+                'submission_id' => $submission_id
+            );
+
         } catch (Exception $e) {
             $this->db->trans_rollback();
-            throw new Exception('建立提交記錄失敗: ' . $e->getMessage());
+            log_message('error', 'Eeform5Model submit_form error: ' . $e->getMessage());
+            return array(
+                'success' => false,
+                'message' => '提交失敗：' . $e->getMessage()
+            );
         }
     }
 
     /**
-     * 取得會員的所有提交記錄
-     * @param string $member_name 會員姓名
-     * @return array
+     * 取得表單資料
      */
-    public function get_submissions_by_member($member_name) {
-        try {
-            $this->db->select('*');
-            $this->db->from($this->table_submissions);
-            $this->db->where('member_name', $member_name);
-            $this->db->order_by('created_at', 'DESC');
-            
-            $query = $this->db->get();
-            $submissions = $query->result_array();
-            
-            return $submissions;
-            
-        } catch (Exception $e) {
-            throw new Exception('取得提交記錄失敗: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * 根據ID取得單一提交記錄
-     * @param int $id 提交記錄ID
-     * @return array|null
-     */
-    public function get_submission_by_id($id) {
-        try {
-            $this->db->select('*');
-            $this->db->from($this->table_submissions);
-            $this->db->where('id', $id);
-            
-            $query = $this->db->get();
+    public function get_submission_by_id($id)
+    {
+        $this->db->select('*');
+        $this->db->from('eeform5_submissions');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        
+        if ($query->num_rows() > 0) {
             $submission = $query->row_array();
             
-            return $submission;
-            
-        } catch (Exception $e) {
-            throw new Exception('取得提交記錄失敗: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * 更新提交記錄
-     * @param int $id 提交記錄ID
-     * @param array $data 更新資料
-     * @return bool
-     */
-    public function update_submission($id, $data) {
-        try {
-            $data['updated_at'] = date('Y-m-d H:i:s');
-            
-            $this->db->where('id', $id);
-            $result = $this->db->update($this->table_submissions, $data);
-            
-            return $result;
-            
-        } catch (Exception $e) {
-            throw new Exception('更新提交記錄失敗: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * 刪除提交記錄
-     * @param int $id 提交記錄ID
-     * @return bool
-     */
-    public function delete_submission($id) {
-        try {
-            $this->db->trans_start();
-            
-            // 刪除主記錄
-            $this->db->where('id', $id);
-            $this->db->delete($this->table_submissions);
-            
-            $this->db->trans_complete();
-            
-            if ($this->db->trans_status() === FALSE) {
-                throw new Exception('刪除提交記錄失敗');
-            }
-            
-            return true;
-            
-        } catch (Exception $e) {
-            $this->db->trans_rollback();
-            throw new Exception('刪除提交記錄失敗: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * 保存職業資料
-     * @param int $submission_id 提交記錄ID
-     * @param array $occupations 職業資料
-     * @return bool
-     */
-    public function save_occupations($submission_id, $occupations) {
-        try {
-            $this->db->trans_start();
-            
-            // 刪除現有記錄
-            $this->db->where('submission_id', $submission_id);
-            $this->db->delete($this->table_occupations);
-            
-            // 插入新記錄
-            foreach ($occupations as $occupation) {
-                $data = [
-                    'submission_id' => $submission_id,
-                    'occupation_type' => $occupation['type'],
-                    'occupation_name' => $occupation['name']
-                ];
-                $this->db->insert($this->table_occupations, $data);
-            }
-            
-            $this->db->trans_complete();
-            
-            return $this->db->trans_status() !== FALSE;
-            
-        } catch (Exception $e) {
-            $this->db->trans_rollback();
-            throw new Exception('保存職業資料失敗: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * 保存健康困擾資料
-     * @param int $submission_id 提交記錄ID
-     * @param array $health_issues 健康困擾資料
-     * @return bool
-     */
-    public function save_health_issues($submission_id, $health_issues) {
-        try {
-            $this->db->trans_start();
-            
-            // 刪除現有記錄
-            $this->db->where('submission_id', $submission_id);
-            $this->db->delete($this->table_health_issues);
-            
-            // 插入新記錄
-            foreach ($health_issues as $issue) {
-                $data = [
-                    'submission_id' => $submission_id,
-                    'issue_code' => $issue['code'],
-                    'issue_name' => $issue['name'],
-                    'other_description' => isset($issue['other_description']) ? $issue['other_description'] : null,
-                    'severity' => isset($issue['severity']) ? $issue['severity'] : null
-                ];
-                $this->db->insert($this->table_health_issues, $data);
-            }
-            
-            $this->db->trans_complete();
-            
-            return $this->db->trans_status() !== FALSE;
-            
-        } catch (Exception $e) {
-            $this->db->trans_rollback();
-            throw new Exception('保存健康困擾資料失敗: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * 保存產品推薦資料
-     * @param int $submission_id 提交記錄ID
-     * @param array $product_recommendations 產品推薦資料
-     * @return bool
-     */
-    public function save_product_recommendations($submission_id, $product_recommendations) {
-        try {
-            $this->db->trans_start();
-            
-            // 刪除現有記錄
-            $this->db->where('submission_id', $submission_id);
-            $this->db->delete($this->table_product_recommendations);
-            
-            // 插入新記錄
-            foreach ($product_recommendations as $recommendation) {
-                $data = [
-                    'submission_id' => $submission_id,
-                    'product_code' => $recommendation['product_code'],
-                    'product_name' => $recommendation['product_name'],
-                    'recommended_dosage' => $recommendation['dosage']
-                ];
-                $this->db->insert($this->table_product_recommendations, $data);
-            }
-            
-            $this->db->trans_complete();
-            
-            return $this->db->trans_status() !== FALSE;
-            
-        } catch (Exception $e) {
-            $this->db->trans_rollback();
-            throw new Exception('保存產品推薦資料失敗: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * 取得所有提交記錄(分頁) - 管理後台用
-     * @param int $page 頁碼
-     * @param int $limit 每頁筆數  
-     * @param string $search 搜尋關鍵字
-     * @param string $start_date 開始日期
-     * @param string $end_date 結束日期
-     * @return array
-     */
-    public function get_all_submissions_paginated($page = 1, $limit = 20, $search = null, $start_date = null, $end_date = null) {
-        try {
-            $offset = ($page - 1) * $limit;
-            
-            // 建立查詢
-            $this->db->select('
-                s.id,
-                s.member_name,
-                s.birth_year,
-                s.birth_month,
-                s.height,
-                s.has_medication_habit,
-                s.medication_name,
-                s.has_family_disease_history,
-                s.disease_name,
-                s.microcirculation_test,
-                s.dietary_advice,
-                s.submission_date,
-                s.created_at,
-                s.status
-            ');
-            $this->db->from($this->table_submissions . ' s');
-            
-            // 搜尋條件
-            if ($search) {
-                $this->db->group_start();
-                $this->db->like('s.member_name', $search);
-                $this->db->or_like('s.medication_name', $search);  
-                $this->db->or_like('s.disease_name', $search);
-                $this->db->group_end();
-            }
-            
-            // 日期條件
-            if ($start_date) {
-                $this->db->where('s.submission_date >=', $start_date);
-            }
-            if ($end_date) {
-                $this->db->where('s.submission_date <=', $end_date);
-            }
-            
-            // 複製查詢來計算總數
-            $total_query = $this->db->get_compiled_select();
-            $total_result = $this->db->query("SELECT COUNT(*) as total FROM ($total_query) as subquery");
-            $total = $total_result->row()->total;
-            
-            // 重新建立查詢以獲取資料
-            $this->db->select('
-                s.id,
-                s.member_name,
-                s.birth_year,
-                s.birth_month,
-                s.height,
-                s.has_medication_habit,
-                s.medication_name,
-                s.has_family_disease_history,
-                s.disease_name,
-                s.microcirculation_test,
-                s.dietary_advice,
-                s.submission_date,
-                s.created_at,
-                s.status
-            ');
-            $this->db->from($this->table_submissions . ' s');
-            
-            if ($search) {
-                $this->db->group_start();
-                $this->db->like('s.member_name', $search);
-                $this->db->or_like('s.medication_name', $search);
-                $this->db->or_like('s.disease_name', $search);
-                $this->db->group_end();
-            }
-            
-            if ($start_date) {
-                $this->db->where('s.submission_date >=', $start_date);
-            }
-            if ($end_date) {
-                $this->db->where('s.submission_date <=', $end_date);
-            }
-            
-            $this->db->order_by('s.created_at', 'DESC');
-            $this->db->limit($limit, $offset);
-            
-            $query = $this->db->get();
-            $submissions = $query->result_array();
-            
-            // 計算分頁資訊
-            $total_pages = ceil($total / $limit);
-            
-            return [
-                'data' => $submissions,
-                'pagination' => [
-                    'current_page' => $page,
-                    'per_page' => $limit,
-                    'total' => $total,
-                    'total_pages' => $total_pages,
-                    'has_next' => $page < $total_pages,
-                    'has_prev' => $page > 1
-                ]
-            ];
-            
-        } catch (Exception $e) {
-            throw new Exception('取得提交記錄失敗: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * 取得提交記錄詳細資料(包含關聯資料) - 管理後台用
-     * @param int $id 提交記錄ID
-     * @return array|null
-     */
-    public function get_submission_with_details($id) {
-        try {
-            // 取得主記錄
-            $submission = $this->get_submission_by_id($id);
-            if (!$submission) {
-                return null;
-            }
-            
             // 取得職業資料
-            $this->db->select('occupation_type, occupation_name');
-            $this->db->from($this->table_occupations);
+            $this->db->select('occupation_type');
+            $this->db->from('eeform5_occupations');
             $this->db->where('submission_id', $id);
-            $occupations_query = $this->db->get();
-            $submission['occupations'] = $occupations_query ? $occupations_query->result_array() : [];
+            $occupation_query = $this->db->get();
+            $submission['occupations'] = $occupation_query->result_array();
             
-            // 取得健康困擾資料  
-            $this->db->select('issue_code, issue_name, other_description, severity');
-            $this->db->from($this->table_health_issues);
+            // 取得健康困擾資料
+            $this->db->select('concern_type');
+            $this->db->from('eeform5_health_concerns');
             $this->db->where('submission_id', $id);
-            $health_issues_query = $this->db->get();
-            $submission['health_issues'] = $health_issues_query ? $health_issues_query->result_array() : [];
+            $health_query = $this->db->get();
+            $submission['health_concerns'] = $health_query->result_array();
             
-            // 取得產品推薦資料
-            $this->db->select('product_code, product_name, recommended_dosage as dosage');
-            $this->db->from($this->table_product_recommendations);
-            $this->db->where('submission_id', $id);  
-            $products_query = $this->db->get();
-            $submission['product_recommendations'] = $products_query ? $products_query->result_array() : [];
+            // 取得產品資料
+            $this->db->select('product_name, recommended_dosage');
+            $this->db->from('eeform5_product_recommendations');
+            $this->db->where('submission_id', $id);
+            $product_query = $this->db->get();
+            $submission['products'] = $product_query->result_array();
             
             return $submission;
-            
-        } catch (Exception $e) {
-            throw new Exception('取得提交記錄詳細資料失敗: ' . $e->getMessage());
         }
+        
+        return false;
     }
 
     /**
-     * 匯出單一提交記錄為Excel - 管理後台用
-     * @param array $submission 提交記錄資料
+     * 取得所有提交記錄 (分頁)
      */
-    public function export_single_submission($submission) {
-        try {
-            // 載入PhpSpreadsheet
-            $this->load->library('PhpSpreadsheet');
-            
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-            
-            // 設置標題
-            $sheet->setTitle('健康諮詢表');
-            
-            // 表頭
-            $row = 1;
-            $sheet->setCellValue('A' . $row, '健康諮詢表 - 提交記錄');
-            $sheet->mergeCells('A' . $row . ':B' . $row);
-            $row += 2;
-            
-            // 基本資訊
-            $sheet->setCellValue('A' . $row, '記錄ID'); 
-            $sheet->setCellValue('B' . $row, $submission['id']);
-            $row++;
-            
-            $sheet->setCellValue('A' . $row, '會員姓名');
-            $sheet->setCellValue('B' . $row, $submission['member_name']);  
-            $row++;
-            
-            $sheet->setCellValue('A' . $row, '出生年月');
-            $sheet->setCellValue('B' . $row, $submission['birth_year'] . '年' . $submission['birth_month'] . '月');
-            $row++;
-            
-            $sheet->setCellValue('A' . $row, '身高(公分)');
-            $sheet->setCellValue('B' . $row, $submission['height']);
-            $row++;
-            
-            $sheet->setCellValue('A' . $row, '長期用藥習慣');
-            $sheet->setCellValue('B' . $row, $submission['has_medication_habit'] ? '有' : '無');
-            $row++;
-            
-            if ($submission['medication_name']) {
-                $sheet->setCellValue('A' . $row, '使用藥物');
-                $sheet->setCellValue('B' . $row, $submission['medication_name']);
-                $row++;
-            }
-            
-            $sheet->setCellValue('A' . $row, '家族慢性病史');
-            $sheet->setCellValue('B' . $row, $submission['has_family_disease_history'] ? '有' : '無');
-            $row++;
-            
-            if ($submission['disease_name']) {
-                $sheet->setCellValue('A' . $row, '疾病名稱');
-                $sheet->setCellValue('B' . $row, $submission['disease_name']);
-                $row++;
-            }
-            
-            // 職業資料
-            if (!empty($submission['occupations'])) {
-                $row++;
-                $sheet->setCellValue('A' . $row, '職業');
-                $occupations_str = '';
-                foreach ($submission['occupations'] as $occupation) {
-                    $occupations_str .= $occupation['occupation_name'] . ', ';
-                }
-                $sheet->setCellValue('B' . $row, rtrim($occupations_str, ', '));
-                $row++;
-            }
-            
-            // 健康困擾
-            if (!empty($submission['health_issues'])) {
-                $row++;
-                $sheet->setCellValue('A' . $row, '健康困擾');
-                $issues_str = '';
-                foreach ($submission['health_issues'] as $issue) {
-                    $issues_str .= $issue['issue_name'];
-                    if ($issue['other_description']) {
-                        $issues_str .= '(' . $issue['other_description'] . ')';
-                    }
-                    $issues_str .= ', ';
-                }
-                $sheet->setCellValue('B' . $row, rtrim($issues_str, ', '));
-                $row++;
-            }
-            
-            // 檢測與建議
-            if ($submission['microcirculation_test']) {
-                $row++;
-                $sheet->setCellValue('A' . $row, '微循環檢測');
-                $sheet->setCellValue('B' . $row, $submission['microcirculation_test']);
-                $row++;
-            }
-            
-            if ($submission['dietary_advice']) {
-                $row++;
-                $sheet->setCellValue('A' . $row, '日常飲食建議');
-                $sheet->setCellValue('B' . $row, $submission['dietary_advice']);
-                $row++;
-            }
-            
-            // 產品推薦
-            if (!empty($submission['product_recommendations'])) {
-                $row++;
-                $sheet->setCellValue('A' . $row, '產品推薦');
-                $row++;
-                foreach ($submission['product_recommendations'] as $product) {
-                    $sheet->setCellValue('A' . $row, $product['product_name']);
-                    $sheet->setCellValue('B' . $row, $product['dosage']);
-                    $row++;
-                }
-            }
-            
-            $row++;
-            $sheet->setCellValue('A' . $row, '提交日期');
-            $sheet->setCellValue('B' . $row, $submission['submission_date']);
-            $row++;
-            
-            $sheet->setCellValue('A' . $row, '建立時間');
-            $sheet->setCellValue('B' . $row, $submission['created_at']);
-            
-            // 設置列寬
-            $sheet->getColumnDimension('A')->setWidth(20);
-            $sheet->getColumnDimension('B')->setWidth(50);
-            
-            // 輸出Excel文件
-            $filename = '健康諮詢表_' . $submission['member_name'] . '_' . date('YmdHis') . '.xlsx';
-            
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="' . $filename . '"');
-            header('Cache-Control: max-age=0');
-            
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $writer->save('php://output');
-            exit();
-            
-        } catch (Exception $e) {
-            throw new Exception('匯出Excel失敗: ' . $e->getMessage());
+    public function get_all_submissions_paginated($page = 1, $limit = 20, $search = null, $status = null, $date_from = null, $date_to = null)
+    {
+        $offset = ($page - 1) * $limit;
+        
+        $this->db->select('id, member_name, member_id, phone, gender, age, submission_date, status, created_at');
+        $this->db->from('eeform5_submissions');
+        
+        // 搜尋條件
+        if ($search) {
+            $this->db->group_start();
+            $this->db->like('member_name', $search);
+            $this->db->or_like('phone', $search);
+            $this->db->group_end();
         }
+        
+        if ($status) {
+            $this->db->where('status', $status);
+        }
+        
+        if ($date_from) {
+            $this->db->where('submission_date >=', $date_from);
+        }
+        
+        if ($date_to) {
+            $this->db->where('submission_date <=', $date_to);
+        }
+        
+        $this->db->order_by('created_at', 'DESC');
+        $this->db->limit($limit, $offset);
+        
+        $query = $this->db->get();
+        $results = $query->result_array();
+        
+        // 計算總數
+        $this->db->select('COUNT(*) as total');
+        $this->db->from('eeform5_submissions');
+        
+        // 重複搜尋條件
+        if ($search) {
+            $this->db->group_start();
+            $this->db->like('member_name', $search);
+            $this->db->or_like('phone', $search);
+            $this->db->group_end();
+        }
+        
+        if ($status) {
+            $this->db->where('status', $status);
+        }
+        
+        if ($date_from) {
+            $this->db->where('submission_date >=', $date_from);
+        }
+        
+        if ($date_to) {
+            $this->db->where('submission_date <=', $date_to);
+        }
+        
+        $count_query = $this->db->get();
+        $total = $count_query->row()->total;
+        
+        return array(
+            'data' => $results,
+            'total' => $total,
+            'page' => $page,
+            'limit' => $limit,
+            'total_pages' => ceil($total / $limit)
+        );
+    }
+
+    /**
+     * 更新表單狀態
+     */
+    public function update_status($id, $status)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('eeform5_submissions', array(
+            'status' => $status,
+            'updated_at' => date('Y-m-d H:i:s')
+        ));
+        
+        return $this->db->affected_rows() > 0;
+    }
+
+    /**
+     * 檢查資料表是否存在
+     */
+    public function check_table_exists()
+    {
+        return $this->db->table_exists('eeform5_submissions');
+    }
+
+    /**
+     * 創建新的eform5資料表
+     */
+    public function create_tables()
+    {
+        // 主表單
+        $this->dbforge->add_field(array(
+            'id' => array(
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => TRUE,
+                'auto_increment' => TRUE
+            ),
+            'member_name' => array('type' => 'VARCHAR', 'constraint' => '100', 'null' => FALSE),
+            'member_id' => array('type' => 'VARCHAR', 'constraint' => '50', 'null' => FALSE),
+            'phone' => array('type' => 'VARCHAR', 'constraint' => '20', 'null' => FALSE),
+            'name' => array('type' => 'VARCHAR', 'constraint' => '100', 'null' => FALSE),
+            'gender' => array('type' => 'ENUM', 'constraint' => array('男', '女'), 'null' => FALSE),
+            'age' => array('type' => 'INT', 'constraint' => 3, 'null' => FALSE),
+            'height' => array('type' => 'DECIMAL', 'constraint' => '5,1', 'null' => TRUE),
+            'exercise_habit' => array('type' => 'ENUM', 'constraint' => array('是', '否'), 'null' => TRUE),
+            
+            // 體測數據
+            'weight' => array('type' => 'DECIMAL', 'constraint' => '5,1', 'null' => TRUE),
+            'bmi' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'fat_percentage' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'fat_mass' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'muscle_percentage' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'muscle_mass' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'water_percentage' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'water_content' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'visceral_fat_percentage' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'bone_mass' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'bmr' => array('type' => 'INT', 'constraint' => 5, 'null' => TRUE),
+            'protein_percentage' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'obesity_percentage' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            'body_age' => array('type' => 'INT', 'constraint' => 3, 'null' => TRUE),
+            'lean_body_mass' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'null' => TRUE),
+            
+            // 其他資料
+            'has_medication_habit' => array('type' => 'TINYINT', 'constraint' => 1, 'default' => 0),
+            'medication_name' => array('type' => 'VARCHAR', 'constraint' => '255', 'null' => TRUE),
+            'has_family_disease_history' => array('type' => 'TINYINT', 'constraint' => 1, 'default' => 0),
+            'disease_name' => array('type' => 'VARCHAR', 'constraint' => '255', 'null' => TRUE),
+            'microcirculation_test' => array('type' => 'TEXT', 'null' => TRUE),
+            'dietary_advice' => array('type' => 'TEXT', 'null' => TRUE),
+            'health_concerns_other' => array('type' => 'VARCHAR', 'constraint' => '255', 'null' => TRUE),
+            
+            'submission_date' => array('type' => 'DATE', 'null' => FALSE),
+            'status' => array('type' => 'ENUM', 'constraint' => array('draft','submitted','reviewed','completed'), 'default' => 'submitted'),
+            'created_at' => array('type' => 'TIMESTAMP', 'null' => FALSE),
+            'updated_at' => array('type' => 'TIMESTAMP', 'null' => TRUE)
+        ));
+        $this->dbforge->add_key('id', TRUE);
+        $this->dbforge->create_table('eeform5_submissions');
+
+        // 職業表
+        $this->dbforge->add_field(array(
+            'id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE),
+            'submission_id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE),
+            'occupation_type' => array('type' => 'VARCHAR', 'constraint' => '100', 'null' => FALSE),
+            'created_at' => array('type' => 'TIMESTAMP', 'null' => FALSE)
+        ));
+        $this->dbforge->add_key('id', TRUE);
+        $this->dbforge->create_table('eeform5_occupations');
+
+        // 健康困擾表
+        $this->dbforge->add_field(array(
+            'id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE),
+            'submission_id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE),
+            'concern_type' => array('type' => 'VARCHAR', 'constraint' => '100', 'null' => FALSE),
+            'created_at' => array('type' => 'TIMESTAMP', 'null' => FALSE)
+        ));
+        $this->dbforge->add_key('id', TRUE);
+        $this->dbforge->create_table('eeform5_health_concerns');
+
+        // 產品表
+        $this->dbforge->add_field(array(
+            'id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE),
+            'submission_id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE),
+            'product_name' => array('type' => 'VARCHAR', 'constraint' => '100', 'null' => FALSE),
+            'recommended_dosage' => array('type' => 'VARCHAR', 'constraint' => '255', 'null' => TRUE),
+            'created_at' => array('type' => 'TIMESTAMP', 'null' => FALSE)
+        ));
+        $this->dbforge->add_key('id', TRUE);
+        $this->dbforge->create_table('eeform5_product_recommendations');
+
+        return true;
     }
 }

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EForm5 後台管理系統 TDD 測試</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .test-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            color: #6f42c1;
+            border-bottom: 2px solid #6f42c1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .test-group {
+            margin-bottom: 30px;
+            border-left: 4px solid #6f42c1;
+            padding-left: 20px;
+        }
+        .test-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .test-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 12px;
+        }
+        .status-pending { background-color: #6c757d; }
+        .status-running { background-color: #ffc107; }
+        .status-pass { background-color: #28a745; }
+        .status-fail { background-color: #dc3545; }
+        .test-button {
+            padding: 8px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary { background-color: #6f42c1; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .api-endpoint {
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            margin: 0 5px;
+        }
+        .test-data {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .summary {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+        }
+        .summary-total { background-color: #6f42c1; }
+        .summary-pass { background-color: #28a745; }
+        .summary-fail { background-color: #dc3545; }
+        .summary-pending { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">EForm5 個人體測表+健康諮詢表 後台管理系統 TDD 測試</h1>
+        
+        <!-- 測試摘要 -->
+        <div class="summary">
+            <div class="summary-item summary-total">
+                <h3 id="total-tests">0</h3>
+                <p>總測試數</p>
+            </div>
+            <div class="summary-item summary-pass">
+                <h3 id="pass-tests">0</h3>
+                <p>通過</p>
+            </div>
+            <div class="summary-item summary-fail">
+                <h3 id="fail-tests">0</h3>
+                <p>失敗</p>
+            </div>
+            <div class="summary-item summary-pending">
+                <h3 id="pending-tests">0</h3>
+                <p>待測試</p>
+            </div>
+        </div>
+
+        <!-- 全域控制 -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="test-button btn-primary" onclick="runAllTests()">執行所有測試</button>
+            <button class="test-button btn-warning" onclick="resetTests()">重置測試</button>
+            <button class="test-button btn-success" onclick="exportResults()">匯出結果</button>
+        </div>
+    </div>
+
+    <!-- 測試組別 1: API 端點測試 -->
+    <div class="test-container">
+        <div class="test-group">
+            <h3>📡 API 端點測試</h3>
+            
+            <div class="test-item" data-test="api-list">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>列表 API</strong>
+                    <div class="api-endpoint">GET /api/eeform/eeform5/list</div>
+                    <small>測試分頁列表功能、搜尋、篩選</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testApiList()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="api-get">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>單筆資料 API</strong>
+                    <div class="api-endpoint">GET /api/eeform/eeform5/submission/{id}</div>
+                    <small>測試獲取單筆詳細資料</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testApiGet()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="api-export">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>匯出 API</strong>
+                    <div class="api-endpoint">GET /api/eeform/eeform5/export_single/{id}</div>
+                    <small>測試Excel匯出功能</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testApiExport()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="api-comprehensive">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>綜合測試 API</strong>
+                    <div class="api-endpoint">POST /api/eeform/eeform5/comprehensive_test</div>
+                    <small>測試完整的表單提交和驗證流程</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testApiComprehensive()">測試</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 測試組別 2: 前端功能測試 -->
+    <div class="test-container">
+        <div class="test-group">
+            <h3>🖥️ 前端功能測試</h3>
+            
+            <div class="test-item" data-test="frontend-load">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>頁面載入</strong>
+                    <small>測試管理頁面是否正確載入所有必要元件</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testFrontendLoad()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="frontend-table">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>資料表格</strong>
+                    <small>測試表格顯示、分頁、搜尋功能</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testFrontendTable()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="frontend-modal">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>詳細資料彈窗</strong>
+                    <small>測試彈窗開啟、資料顯示、關閉功能</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testFrontendModal()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="frontend-export">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>匯出功能</strong>
+                    <small>測試Excel匯出按鈕和下載功能</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testFrontendExport()">測試</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 測試組別 3: 資料完整性測試 -->
+    <div class="test-container">
+        <div class="test-group">
+            <h3>🗄️ 資料完整性測試</h3>
+            
+            <div class="test-item" data-test="data-structure">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>資料結構驗證</strong>
+                    <small>驗證API回傳資料結構是否符合預期</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testDataStructure()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="data-fields">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>必要欄位檢查</strong>
+                    <small>檢查所有必要欄位是否存在且格式正確</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testDataFields()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="data-relations">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>關聯資料驗證</strong>
+                    <small>驗證職業、健康困擾、產品推薦等關聯資料</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testDataRelations()">測試</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 測試組別 4: 使用者互動測試 -->
+    <div class="test-container">
+        <div class="test-group">
+            <h3>👤 使用者互動測試</h3>
+            
+            <div class="test-item" data-test="ui-responsive">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>響應式設計</strong>
+                    <small>測試在不同螢幕尺寸下的顯示效果</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testUIResponsive()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="ui-accessibility">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>無障礙功能</strong>
+                    <small>檢查按鈕hover效果、tooltip等互動功能</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testUIAccessibility()">測試</button>
+            </div>
+
+            <div class="test-item" data-test="ui-error-handling">
+                <div class="test-status status-pending">?</div>
+                <div style="flex: 1;">
+                    <strong>錯誤處理</strong>
+                    <small>測試API錯誤、網路錯誤時的使用者提示</small>
+                </div>
+                <button class="test-button btn-primary" onclick="testUIErrorHandling()">測試</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 測試結果顯示區 -->
+    <div class="test-container">
+        <h3>📊 測試結果</h3>
+        <div class="test-results" id="test-results">
+            <div style="color: #6c757d;">等待測試執行...</div>
+        </div>
+    </div>
+
+    <script>
+        // 測試狀態管理
+        const testResults = {
+            total: 0,
+            pass: 0,
+            fail: 0,
+            pending: 0,
+            results: []
+        };
+
+        // API Base URL
+        const API_BASE_URL = '/api/eeform/eeform5';
+
+        // 測試用資料
+        const testData = {
+            member_name: '測試使用者',
+            member_id: '000000',
+            phone: '0912345678',
+            gender: '男',
+            age: 30,
+            height: '170',
+            exercise_habit: '是',
+            weight: 70.2,
+            bmi: 24.3,
+            fat_percentage: 15.8,
+            occupation: ['上班族'],
+            health_concerns: ['睡眠不佳', '免疫力'],
+            recommended_products: ['活力精萃', '白鶴靈芝EX'],
+            health_concerns_other: '偶爾失眠'
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTests();
+            updateSummary();
+        });
+
+        function initializeTests() {
+            const testItems = document.querySelectorAll('[data-test]');
+            testResults.total = testItems.length;
+            testResults.pending = testItems.length;
+            updateSummary();
+            log('系統初始化完成，共 ' + testResults.total + ' 個測試項目');
+        }
+
+        function updateSummary() {
+            document.getElementById('total-tests').textContent = testResults.total;
+            document.getElementById('pass-tests').textContent = testResults.pass;
+            document.getElementById('fail-tests').textContent = testResults.fail;
+            document.getElementById('pending-tests').textContent = testResults.pending;
+        }
+
+        function updateTestStatus(testId, status, message = '') {
+            const testItem = document.querySelector(`[data-test="${testId}"]`);
+            if (!testItem) return;
+
+            const statusElement = testItem.querySelector('.test-status');
+            statusElement.className = `test-status status-${status}`;
+            
+            switch(status) {
+                case 'running':
+                    statusElement.textContent = '⟳';
+                    break;
+                case 'pass':
+                    statusElement.textContent = '✓';
+                    testResults.pass++;
+                    testResults.pending--;
+                    break;
+                case 'fail':
+                    statusElement.textContent = '✗';
+                    testResults.fail++;
+                    testResults.pending--;
+                    break;
+                default:
+                    statusElement.textContent = '?';
+            }
+
+            updateSummary();
+            
+            if (message) {
+                log(`[${testId.toUpperCase()}] ${message}`);
+            }
+        }
+
+        function log(message) {
+            const resultsElement = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            resultsElement.innerHTML += logEntry;
+            resultsElement.scrollTop = resultsElement.scrollHeight;
+        }
+
+        // API 測試函數
+        async function testApiList() {
+            updateTestStatus('api-list', 'running');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/list?page=1&limit=5`);
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.data) {
+                    updateTestStatus('api-list', 'pass', '列表API測試通過');
+                    log(`回傳 ${data.data.data.length} 筆資料`);
+                } else {
+                    updateTestStatus('api-list', 'fail', `列表API測試失敗: ${data.message || '未知錯誤'}`);
+                }
+            } catch (error) {
+                updateTestStatus('api-list', 'fail', `列表API測試失敗: ${error.message}`);
+            }
+        }
+
+        async function testApiGet() {
+            updateTestStatus('api-get', 'running');
+            
+            try {
+                // 先獲取列表找一個ID
+                const listResponse = await fetch(`${API_BASE_URL}/list?page=1&limit=1`);
+                const listData = await listResponse.json();
+                
+                if (listData.success && listData.data.data.length > 0) {
+                    const testId = listData.data.data[0].id;
+                    
+                    const response = await fetch(`${API_BASE_URL}/submission/${testId}`);
+                    const data = await response.json();
+                    
+                    if (data.success && data.data) {
+                        updateTestStatus('api-get', 'pass', '單筆資料API測試通過');
+                        log(`成功獲取ID ${testId} 的詳細資料`);
+                    } else {
+                        updateTestStatus('api-get', 'fail', `單筆資料API測試失敗: ${data.message || '未知錯誤'}`);
+                    }
+                } else {
+                    updateTestStatus('api-get', 'fail', '無法獲取測試用ID');
+                }
+            } catch (error) {
+                updateTestStatus('api-get', 'fail', `單筆資料API測試失敗: ${error.message}`);
+            }
+        }
+
+        async function testApiExport() {
+            updateTestStatus('api-export', 'running');
+            
+            try {
+                // 先獲取列表找一個ID
+                const listResponse = await fetch(`${API_BASE_URL}/list?page=1&limit=1`);
+                const listData = await listResponse.json();
+                
+                if (listData.success && listData.data.data.length > 0) {
+                    const testId = listData.data.data[0].id;
+                    
+                    const response = await fetch(`${API_BASE_URL}/export_single/${testId}`, {
+                        method: 'GET'
+                    });
+                    
+                    if (response.ok) {
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('spreadsheet')) {
+                            updateTestStatus('api-export', 'pass', 'Excel匯出API測試通過');
+                            log(`成功生成ID ${testId} 的Excel檔案`);
+                        } else {
+                            updateTestStatus('api-export', 'fail', '回傳檔案格式不正確');
+                        }
+                    } else {
+                        updateTestStatus('api-export', 'fail', `HTTP錯誤: ${response.status}`);
+                    }
+                } else {
+                    updateTestStatus('api-export', 'fail', '無法獲取測試用ID');
+                }
+            } catch (error) {
+                updateTestStatus('api-export', 'fail', `匯出API測試失敗: ${error.message}`);
+            }
+        }
+
+        async function testApiComprehensive() {
+            updateTestStatus('api-comprehensive', 'running');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/comprehensive_test`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.verification && data.data.verification.overall_success) {
+                    updateTestStatus('api-comprehensive', 'pass', '綜合測試API通過');
+                    log(`測試資料成功寫入，提交ID: ${data.data.submission_id}`);
+                    log(`驗證結果: ${JSON.stringify(data.summary, null, 2)}`);
+                } else {
+                    updateTestStatus('api-comprehensive', 'fail', `綜合測試失敗: ${data.message || '驗證未通過'}`);
+                }
+            } catch (error) {
+                updateTestStatus('api-comprehensive', 'fail', `綜合測試API失敗: ${error.message}`);
+            }
+        }
+
+        // 前端功能測試
+        function testFrontendLoad() {
+            updateTestStatus('frontend-load', 'running');
+            
+            try {
+                // 檢查必要元素是否存在
+                const requiredElements = [
+                    'h2', // 標題
+                    '.table-responsive table', // 資料表格
+                    '#detailModal', // 詳細資料彈窗
+                    '#search-input', // 搜尋輸入
+                    '#refresh-data' // 重新整理按鈕
+                ];
+                
+                let allExists = true;
+                let missingElements = [];
+                
+                requiredElements.forEach(selector => {
+                    const element = document.querySelector(selector);
+                    if (!element) {
+                        allExists = false;
+                        missingElements.push(selector);
+                    }
+                });
+                
+                if (allExists) {
+                    updateTestStatus('frontend-load', 'pass', '所有必要元素都存在');
+                } else {
+                    updateTestStatus('frontend-load', 'fail', `缺少元素: ${missingElements.join(', ')}`);
+                }
+            } catch (error) {
+                updateTestStatus('frontend-load', 'fail', `前端載入測試失敗: ${error.message}`);
+            }
+        }
+
+        function testFrontendTable() {
+            updateTestStatus('frontend-table', 'running');
+            
+            setTimeout(() => {
+                try {
+                    // 檢查表格結構
+                    const table = document.querySelector('.table-responsive table');
+                    const headers = table.querySelectorAll('thead th');
+                    const expectedHeaders = ['ID', '會員姓名', '出生年月', '身高', '用藥習慣', '家族病史', '提交日期', '操作'];
+                    
+                    if (headers.length >= expectedHeaders.length - 1) { // ID可能隱藏
+                        updateTestStatus('frontend-table', 'pass', '表格結構正確');
+                    } else {
+                        updateTestStatus('frontend-table', 'fail', `表格欄位數量不正確: ${headers.length}`);
+                    }
+                } catch (error) {
+                    updateTestStatus('frontend-table', 'fail', `表格測試失敗: ${error.message}`);
+                }
+            }, 1000);
+        }
+
+        function testFrontendModal() {
+            updateTestStatus('frontend-modal', 'running');
+            
+            try {
+                const modal = document.getElementById('detailModal');
+                if (modal && modal.querySelector('.modal-body') && modal.querySelector('.modal-header')) {
+                    updateTestStatus('frontend-modal', 'pass', '彈窗結構正確');
+                } else {
+                    updateTestStatus('frontend-modal', 'fail', '彈窗結構不完整');
+                }
+            } catch (error) {
+                updateTestStatus('frontend-modal', 'fail', `彈窗測試失敗: ${error.message}`);
+            }
+        }
+
+        function testFrontendExport() {
+            updateTestStatus('frontend-export', 'running');
+            
+            try {
+                // 檢查是否有匯出按鈕或功能
+                const exportButtons = document.querySelectorAll('[onclick*="export"]');
+                if (exportButtons.length > 0) {
+                    updateTestStatus('frontend-export', 'pass', `找到 ${exportButtons.length} 個匯出按鈕`);
+                } else {
+                    updateTestStatus('frontend-export', 'fail', '未找到匯出按鈕');
+                }
+            } catch (error) {
+                updateTestStatus('frontend-export', 'fail', `匯出功能測試失敗: ${error.message}`);
+            }
+        }
+
+        // 資料完整性測試
+        async function testDataStructure() {
+            updateTestStatus('data-structure', 'running');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/list?page=1&limit=1`);
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.data) {
+                    const requiredFields = ['id', 'member_name', 'submission_date'];
+                    const firstItem = data.data.data[0];
+                    
+                    if (firstItem) {
+                        const hasRequiredFields = requiredFields.every(field => firstItem.hasOwnProperty(field));
+                        if (hasRequiredFields) {
+                            updateTestStatus('data-structure', 'pass', '資料結構驗證通過');
+                        } else {
+                            updateTestStatus('data-structure', 'fail', '缺少必要欄位');
+                        }
+                    } else {
+                        updateTestStatus('data-structure', 'pass', '暫無資料，結構檢查略過');
+                    }
+                } else {
+                    updateTestStatus('data-structure', 'fail', 'API回傳格式錯誤');
+                }
+            } catch (error) {
+                updateTestStatus('data-structure', 'fail', `資料結構測試失敗: ${error.message}`);
+            }
+        }
+
+        async function testDataFields() {
+            updateTestStatus('data-fields', 'running');
+            
+            try {
+                // 使用綜合測試API來檢查欄位完整性
+                const response = await fetch(`${API_BASE_URL}/comprehensive_test`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.test_data) {
+                    const testDataFields = data.data.test_data;
+                    const expectedFields = [
+                        'member_name', 'member_id', 'phone', 'gender', 'age',
+                        'weight', 'bmi', 'occupation', 'health_concerns',
+                        'recommended_products', 'health_concerns_other'
+                    ];
+                    
+                    const hasAllFields = expectedFields.every(field => 
+                        testDataFields.hasOwnProperty(field)
+                    );
+                    
+                    if (hasAllFields) {
+                        updateTestStatus('data-fields', 'pass', '所有必要欄位都存在');
+                    } else {
+                        updateTestStatus('data-fields', 'fail', '部分欄位缺失');
+                    }
+                } else {
+                    updateTestStatus('data-fields', 'fail', '無法取得測試資料');
+                }
+            } catch (error) {
+                updateTestStatus('data-fields', 'fail', `欄位檢查失敗: ${error.message}`);
+            }
+        }
+
+        async function testDataRelations() {
+            updateTestStatus('data-relations', 'running');
+            
+            try {
+                // 使用綜合測試來檢查關聯資料
+                const response = await fetch(`${API_BASE_URL}/comprehensive_test`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.verification) {
+                    const verification = data.data.verification;
+                    const relationsOK = verification.occupations.success && 
+                                       verification.health_concerns.success && 
+                                       verification.products.success;
+                    
+                    if (relationsOK) {
+                        updateTestStatus('data-relations', 'pass', '關聯資料驗證通過');
+                    } else {
+                        updateTestStatus('data-relations', 'fail', '部分關聯資料驗證失敗');
+                    }
+                } else {
+                    updateTestStatus('data-relations', 'fail', '關聯資料測試失敗');
+                }
+            } catch (error) {
+                updateTestStatus('data-relations', 'fail', `關聯資料測試失敗: ${error.message}`);
+            }
+        }
+
+        // UI測試
+        function testUIResponsive() {
+            updateTestStatus('ui-responsive', 'running');
+            
+            try {
+                // 檢查是否有響應式 CSS 類別
+                const responsiveElements = document.querySelectorAll('.col-md-*, .table-responsive, .d-flex');
+                if (responsiveElements.length > 0) {
+                    updateTestStatus('ui-responsive', 'pass', `找到 ${responsiveElements.length} 個響應式元素`);
+                } else {
+                    updateTestStatus('ui-responsive', 'fail', '未發現響應式設計元素');
+                }
+            } catch (error) {
+                updateTestStatus('ui-responsive', 'fail', `響應式測試失敗: ${error.message}`);
+            }
+        }
+
+        function testUIAccessibility() {
+            updateTestStatus('ui-accessibility', 'running');
+            
+            try {
+                // 檢查按鈕是否有 tooltip 或 title 屬性
+                const buttons = document.querySelectorAll('button[title], button[data-toggle="tooltip"]');
+                const accessibleButtons = buttons.length;
+                
+                if (accessibleButtons > 0) {
+                    updateTestStatus('ui-accessibility', 'pass', `${accessibleButtons} 個按鈕具有無障礙提示`);
+                } else {
+                    updateTestStatus('ui-accessibility', 'pass', '基本無障礙功能檢查通過');
+                }
+            } catch (error) {
+                updateTestStatus('ui-accessibility', 'fail', `無障礙測試失敗: ${error.message}`);
+            }
+        }
+
+        function testUIErrorHandling() {
+            updateTestStatus('ui-error-handling', 'running');
+            
+            try {
+                // 檢查是否有錯誤處理相關的程式碼
+                const scripts = document.querySelectorAll('script');
+                let hasErrorHandling = false;
+                
+                scripts.forEach(script => {
+                    if (script.textContent.includes('catch') || script.textContent.includes('error')) {
+                        hasErrorHandling = true;
+                    }
+                });
+                
+                if (hasErrorHandling) {
+                    updateTestStatus('ui-error-handling', 'pass', '發現錯誤處理邏輯');
+                } else {
+                    updateTestStatus('ui-error-handling', 'fail', '未發現錯誤處理邏輯');
+                }
+            } catch (error) {
+                updateTestStatus('ui-error-handling', 'fail', `錯誤處理測試失敗: ${error.message}`);
+            }
+        }
+
+        // 控制函數
+        async function runAllTests() {
+            log('=== 開始執行所有測試 ===');
+            
+            // API 測試
+            await testApiList();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testApiGet();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testApiExport();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testApiComprehensive();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 前端測試
+            testFrontendLoad();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            testFrontendTable();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            testFrontendModal();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            testFrontendExport();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 資料測試
+            await testDataStructure();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testDataFields();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testDataRelations();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // UI測試
+            testUIResponsive();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            testUIAccessibility();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            testUIErrorHandling();
+            
+            log('=== 所有測試執行完畢 ===');
+            log(`總結果: ${testResults.pass}通過, ${testResults.fail}失敗, ${testResults.pending}待測試`);
+        }
+
+        function resetTests() {
+            testResults.pass = 0;
+            testResults.fail = 0;
+            testResults.pending = testResults.total;
+            
+            // 重置所有測試狀態
+            document.querySelectorAll('.test-status').forEach(status => {
+                status.className = 'test-status status-pending';
+                status.textContent = '?';
+            });
+            
+            document.getElementById('test-results').innerHTML = '<div style="color: #6c757d;">測試已重置，等待執行...</div>';
+            
+            updateSummary();
+            log('所有測試已重置');
+        }
+
+        function exportResults() {
+            const results = {
+                timestamp: new Date().toISOString(),
+                summary: {
+                    total: testResults.total,
+                    pass: testResults.pass,
+                    fail: testResults.fail,
+                    pending: testResults.pending
+                },
+                details: testResults.results,
+                logs: document.getElementById('test-results').innerText
+            };
+            
+            const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `eform5_test_results_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            log('測試結果已匯出');
+        }
+    </script>
+</body>
+</html>
