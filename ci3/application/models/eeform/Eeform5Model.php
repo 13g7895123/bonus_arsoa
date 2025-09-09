@@ -91,13 +91,27 @@ class Eeform5Model extends CI_Model {
 
             // 插入建議產品資料
             if (isset($data['recommended_products']) && is_array($data['recommended_products'])) {
+                // 建立產品名稱與dosage欄位的對應表
+                $product_dosage_map = array(
+                    '活力精萃' => 'energy_essence_dosage',
+                    '白鶴靈芝EX' => 'reishi_ex_dosage', 
+                    '美力C錠' => 'vitamin_c_dosage',
+                    '鶴力晶' => 'energy_crystal_dosage',
+                    '白鶴靈芝茶' => 'reishi_tea_dosage'
+                );
+                
                 foreach ($data['recommended_products'] as $product) {
+                    $dosage_field = isset($product_dosage_map[$product]) ? $product_dosage_map[$product] : '';
+                    $recommended_dosage = '';
+                    
+                    if ($dosage_field && isset($data['product_dosages'][$dosage_field])) {
+                        $recommended_dosage = $data['product_dosages'][$dosage_field];
+                    }
+                    
                     $product_data = array(
                         'submission_id' => $submission_id,
                         'product_name' => $product,
-                        'recommended_dosage' => isset($data['product_dosages'][strtolower(str_replace(' ', '_', $product)) . '_dosage']) 
-                            ? $data['product_dosages'][strtolower(str_replace(' ', '_', $product)) . '_dosage'] 
-                            : ''
+                        'recommended_dosage' => $recommended_dosage
                     );
                     $this->db->insert('eeform5_product_recommendations', $product_data);
                 }

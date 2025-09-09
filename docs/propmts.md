@@ -217,3 +217,6 @@ ORDER BY `s`.`created_at` DESC
     - 送出後的提示請用sweet alert
     - 送出表單的api回傳錯誤Unknown column 'health_concerns_other' in 'field list'，不是說有建立TDD測試了嗎，為甚麼還會出現欄位錯誤，幫我前後端都測試過一次，確認沒有問題
     - 姓名與手機號碼幫我加上"(*必填)"，並且需要為紅色的文字
+132. 完成以下功能
+    - 欄位新增的部分，幫我更新docs\sql中的md檔案
+    - 建議用量的部分沒有存入資料表中，幫我重新確認，並寫測試確認是否正確

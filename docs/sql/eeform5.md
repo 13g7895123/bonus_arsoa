@@ -41,6 +41,7 @@ CREATE TABLE eeform5_submissions (
     disease_name VARCHAR(255) NULL COMMENT '疾病名稱',
     microcirculation_test TEXT NULL COMMENT '微循環檢測結果',
     dietary_advice TEXT NULL COMMENT '日常飲食建議',
+    health_concerns_other VARCHAR(255) NULL COMMENT '其他健康困擾',
     
     -- 系統欄位
     submission_date DATE NOT NULL COMMENT '填寫日期',
@@ -160,6 +161,7 @@ CREATE TABLE eeform5_submissions (
     disease_name VARCHAR(255) NULL COMMENT '疾病名稱',
     microcirculation_test TEXT NULL COMMENT '微循環檢測結果',
     dietary_advice TEXT NULL COMMENT '日常飲食建議',
+    health_concerns_other VARCHAR(255) NULL COMMENT '其他健康困擾',
     
     -- 系統欄位
     submission_date DATE NOT NULL COMMENT '填寫日期',

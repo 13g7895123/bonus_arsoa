@@ -370,13 +370,13 @@ class Eeform5 extends CI_Controller {
                 'health_concerns_other' => '偶爾失眠',
                 
                 // 陣列資料
-                'occupation' => array('上班族', '學生'),
-                'health_concerns' => array('失眠', '消化不良', '疲勞'),
-                'recommended_products' => array('維他命B群', '魚油', '益生菌'),
+                'occupation' => array('上班族', '自由業'),
+                'health_concerns' => array('睡眠不佳', '免疫力', '體重困擾'),
+                'recommended_products' => array('活力精萃', '白鶴靈芝EX', '美力C錠'),
                 'product_dosages' => array(
-                    'vitamin_b_complex_dosage' => '每日1粒',
-                    'fish_oil_dosage' => '每日2粒',
-                    'probiotics_dosage' => '每日1包'
+                    'energy_essence_dosage' => '每日1包',
+                    'reishi_ex_dosage' => '每日2粒',
+                    'vitamin_c_dosage' => '每日1錠'
                 )
             );
 
