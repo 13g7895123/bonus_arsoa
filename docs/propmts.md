@@ -212,3 +212,8 @@ ORDER BY `s`.`created_at` DESC
 128. 幫我整理一下頁面，script只要一個就好，document ready也是，不要讓我看到一堆
 129. 確認送出表單的部分，幫我用modal處理，我要看到表單完整資訊，請參考docs\source\image.png的樣式處理，不要用swal處理
 130. $(...).modal is not a function，請幫我建立TDD測試，確保功能完全正確
+131. 完成以下功能
+    - 隱藏測試MODAL的按鈕
+    - 送出後的提示請用sweet alert
+    - 送出表單的api回傳錯誤Unknown column 'health_concerns_other' in 'field list'，不是說有建立TDD測試了嗎，為甚麼還會出現欄位錯誤，幫我前後端都測試過一次，確認沒有問題
+    - 姓名與手機號碼幫我加上"(*必填)"，並且需要為紅色的文字

@@ -12,11 +12,11 @@
 
                   <!-- 第一排欄位 -->
                   <div class="col-sm-4 mb30">
-                    <label class="label-custom">手機號碼</label>
+                    <label class="label-custom">手機號碼 <span style="color: red;">(*必填)</span></label>
                     <input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填手機號碼" />
                   </div>
                   <div class="col-sm-4 mb30">
-                    <label class="label-custom">姓名</label>
+                    <label class="label-custom">姓名 <span style="color: red;">(*必填)</span></label>
                     <input type="text" name="name" class="form-control form-control-custom" placeholder="請填姓名" />
                   </div>
                   <div class="col-sm-4 mb30">
@@ -514,6 +514,9 @@
 <!-- Bootstrap JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- SweetAlert2 for notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- 頁面樣式 -->
 <style>
   .modal-content {
@@ -853,7 +856,12 @@
     var age = $('select[name="age"]').val();
 
     if (!name || !phone || !gender || !age) {
-      alert('請填寫姓名、手機號碼、性別、年齡等必填欄位');
+      Swal.fire({
+        title: '欄位未完整',
+        text: '請填寫姓名、手機號碼、性別、年齡等必填欄位',
+        icon: 'warning',
+        confirmButtonText: '確定'
+      });
       return;
     }
 
@@ -1133,10 +1141,22 @@
       success: function(response) {
         $('#confirmSubmitBtn').prop('disabled', false).text('確認送出');
         if (response.success) {
-          alert('提交成功！表單已成功提交');
-          location.reload();
+          Swal.fire({
+            title: '提交成功！',
+            text: '表單已成功提交',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            location.reload();
+          });
         } else {
-          alert('提交失敗：' + (response.message || '未知錯誤'));
+          Swal.fire({
+            title: '提交失敗',
+            text: '提交失敗：' + (response.message || '未知錯誤'),
+            icon: 'error',
+            confirmButtonText: '確定'
+          });
         }
       },
       error: function(xhr, status, error) {
@@ -1159,7 +1179,12 @@
           errorMessage += '\n錯誤代碼: ' + xhr.status + ' ' + xhr.statusText;
         }
 
-        alert('提交錯誤\n' + errorMessage);
+        Swal.fire({
+          title: '提交錯誤',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: '確定'
+        });
       }
     });
   }
@@ -1245,12 +1270,7 @@
     }, 1000);
   }
   
-  // 新增測試按鈕到頁面（如果 showTestButton 為 true）
-  if (showTestButton) {
-    $(document).ready(function() {
-      var testButtonHtml = '<button type="button" class="btn btn-info btn-sm ml-2" onclick="runModalTest()" title="執行 Modal TDD 測試">測試 Modal</button>';
-      $('button[onclick="showConfirmModal()"]').after(testButtonHtml);
-    });
-  }
+  // 測試按鈕已隱藏 (Point 131)
+  // 如需要測試功能，可在開發者工具執行 runModalTest()
 </script>
 </div>
