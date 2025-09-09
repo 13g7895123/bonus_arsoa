@@ -504,6 +504,63 @@
   .modal-body::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
+  
+  /* SweetAlert2 自定義樣式 */
+  .swal-wide-popup {
+    font-size: 14px;
+  }
+  
+  .swal-wide-popup .form-summary {
+    font-family: 'Microsoft JhengHei', Arial, sans-serif;
+  }
+  
+  .swal-wide-popup .form-summary h5 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .swal-wide-popup .form-summary h6 {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .swal-wide-popup .form-summary p {
+    margin: 5px 0;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  
+  .swal-wide-popup .form-summary .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+  }
+  
+  .swal-wide-popup .form-summary .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 0 15px;
+  }
+  
+  .swal-wide-popup .form-summary::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .swal-wide-popup .form-summary::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  .swal-wide-popup .form-summary::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+  
+  .swal-wide-popup .form-summary::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
 </style>
 
 <!-- 主要功能腳本 -->
@@ -794,7 +851,7 @@
   }
 
   function showConfirmModal() {
-    // 驗證必填欄位 - eform5 使用的是 name, phone 等欄位
+    // 驗證必填欄位
     var name = $('input[name="name"]').val();
     var phone = $('input[name="phone"]').val();
     var gender = $('select[name="gender"]').val();
@@ -810,26 +867,142 @@
       return;
     }
 
-    // 顯示確認資訊
+    // 收集完整表單資料進行顯示
+    var formSummary = collectFormDataForDisplay();
+    
+    // 顯示完整表單確認資訊
     Swal.fire({
       title: '確認送出表單',
-      html: `
-        <div class="text-left">
-          <p><strong>姓名：</strong>${name}</p>
-          <p><strong>手機：</strong>${phone}</p>
-          <p><strong>性別：</strong>${gender}</p>
-          <p><strong>年齡：</strong>${age}歲</p>
-        </div>
-      `,
+      html: formSummary,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: '確認送出',
-      cancelButtonText: '取消'
+      cancelButtonText: '取消',
+      customClass: {
+        popup: 'swal-wide-popup'
+      },
+      width: '800px'
     }).then((result) => {
       if (result.isConfirmed) {
         submitForm();
       }
     });
+  }
+
+  function collectFormDataForDisplay() {
+    var html = '<div class="form-summary" style="text-align: left; max-height: 500px; overflow-y: auto;">';
+    
+    // 1. 基本資料
+    html += '<h5 style="color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-bottom: 10px;">基本資料</h5>';
+    html += '<div class="row mb-3">';
+    html += '<div class="col-md-6">';
+    html += '<p><strong>姓名：</strong>' + ($('input[name="name"]').val() || '未填寫') + '</p>';
+    html += '<p><strong>手機：</strong>' + ($('input[name="phone"]').val() || '未填寫') + '</p>';
+    html += '<p><strong>性別：</strong>' + ($('select[name="gender"]').val() || '未選擇') + '</p>';
+    html += '</div>';
+    html += '<div class="col-md-6">';
+    html += '<p><strong>年齡：</strong>' + ($('select[name="age"]').val() ? $('select[name="age"]').val() + '歲' : '未選擇') + '</p>';
+    html += '<p><strong>身高：</strong>' + ($('input[name="height"]').val() ? $('input[name="height"]').val() + 'cm' : '未填寫') + '</p>';
+    html += '<p><strong>運動習慣：</strong>' + ($('select[name="exercise_habit"]').val() || '未選擇') + '</p>';
+    html += '</div>';
+    html += '</div>';
+
+    // 2. 體測數據
+    html += '<h5 style="color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 5px; margin-bottom: 10px;">體測數據</h5>';
+    html += '<div class="row mb-3">';
+    html += '<div class="col-md-6">';
+    html += '<p><strong>體重：</strong>' + ($('input[name="weight"]').val() ? $('input[name="weight"]').val() + 'kg' : '未填寫') + '</p>';
+    html += '<p><strong>BMI：</strong>' + ($('input[name="bmi"]').val() || '未填寫') + '</p>';
+    html += '<p><strong>體脂率：</strong>' + ($('input[name="fat_percentage"]').val() ? $('input[name="fat_percentage"]').val() + '%' : '未填寫') + '</p>';
+    html += '<p><strong>脂肪量：</strong>' + ($('input[name="fat_mass"]').val() ? $('input[name="fat_mass"]').val() + 'kg' : '未填寫') + '</p>';
+    html += '<p><strong>肌肉率：</strong>' + ($('input[name="muscle_percentage"]').val() ? $('input[name="muscle_percentage"]').val() + '%' : '未填寫') + '</p>';
+    html += '<p><strong>肌肉量：</strong>' + ($('input[name="muscle_mass"]').val() ? $('input[name="muscle_mass"]').val() + 'kg' : '未填寫') + '</p>';
+    html += '<p><strong>水分率：</strong>' + ($('input[name="water_percentage"]').val() ? $('input[name="water_percentage"]').val() + '%' : '未填寫') + '</p>';
+    html += '<p><strong>水分含量：</strong>' + ($('input[name="water_content"]').val() ? $('input[name="water_content"]').val() + 'kg' : '未填寫') + '</p>';
+    html += '</div>';
+    html += '<div class="col-md-6">';
+    html += '<p><strong>內臟脂肪：</strong>' + ($('input[name="visceral_fat_percentage"]').val() ? $('input[name="visceral_fat_percentage"]').val() + '%' : '未填寫') + '</p>';
+    html += '<p><strong>骨量：</strong>' + ($('input[name="bone_mass"]').val() ? $('input[name="bone_mass"]').val() + 'kg' : '未填寫') + '</p>';
+    html += '<p><strong>基礎代謝率：</strong>' + ($('input[name="bmr"]').val() ? $('input[name="bmr"]').val() + 'kcal' : '未填寫') + '</p>';
+    html += '<p><strong>蛋白質：</strong>' + ($('input[name="protein_percentage"]').val() ? $('input[name="protein_percentage"]').val() + '%' : '未填寫') + '</p>';
+    html += '<p><strong>肥胖度：</strong>' + ($('input[name="obesity_percentage"]').val() ? $('input[name="obesity_percentage"]').val() + '%' : '未填寫') + '</p>';
+    html += '<p><strong>體年齡：</strong>' + ($('input[name="body_age"]').val() ? $('input[name="body_age"]').val() + '歲' : '未填寫') + '</p>';
+    html += '<p><strong>去脂體重：</strong>' + ($('input[name="lean_body_mass"]').val() ? $('input[name="lean_body_mass"]').val() + 'kg' : '未填寫') + '</p>';
+    html += '</div>';
+    html += '</div>';
+
+    // 3. 職業
+    var occupations = [];
+    $('input[name="occupation[]"]:checked').each(function() {
+      occupations.push($(this).next('label').text() || $(this).val());
+    });
+    html += '<h5 style="color: #ffc107; border-bottom: 2px solid #ffc107; padding-bottom: 5px; margin-bottom: 10px;">職業</h5>';
+    html += '<p><strong>職業類型：</strong>' + (occupations.length > 0 ? occupations.join('、') : '未選擇') + '</p>';
+
+    // 4. 用藥資訊
+    html += '<h5 style="color: #dc3545; border-bottom: 2px solid #dc3545; padding-bottom: 5px; margin-bottom: 10px;">用藥資訊</h5>';
+    var hasMedication = $('input[name="has_medication_habit"]:checked').val();
+    html += '<p><strong>是否有用藥習慣：</strong>' + (hasMedication === '1' ? '是' : '否') + '</p>';
+    if (hasMedication === '1') {
+      html += '<p><strong>藥物名稱：</strong>' + ($('input[name="medication_name"]').val() || '未填寫') + '</p>';
+    }
+
+    // 5. 家族病史
+    html += '<h5 style="color: #6f42c1; border-bottom: 2px solid #6f42c1; padding-bottom: 5px; margin-bottom: 10px;">家族病史</h5>';
+    var hasFamilyDisease = $('input[name="has_family_disease_history"]:checked').val();
+    html += '<p><strong>是否有家族病史：</strong>' + (hasFamilyDisease === '1' ? '是' : '否') + '</p>';
+    if (hasFamilyDisease === '1') {
+      html += '<p><strong>疾病名稱：</strong>' + ($('input[name="disease_name"]').val() || '未填寫') + '</p>';
+    }
+
+    // 6. 健康困擾
+    var healthConcerns = [];
+    $('input[name="health_concerns[]"]:checked').each(function() {
+      healthConcerns.push($(this).next('label').text() || $(this).val());
+    });
+    html += '<h5 style="color: #fd7e14; border-bottom: 2px solid #fd7e14; padding-bottom: 5px; margin-bottom: 10px;">健康困擾</h5>';
+    html += '<p><strong>健康困擾：</strong>' + (healthConcerns.length > 0 ? healthConcerns.join('、') : '無') + '</p>';
+    var otherConcern = $('input[name="health_concerns_other"]').val();
+    if (otherConcern) {
+      html += '<p><strong>其他困擾：</strong>' + otherConcern + '</p>';
+    }
+
+    // 7. 檢測與建議
+    html += '<h5 style="color: #20c997; border-bottom: 2px solid #20c997; padding-bottom: 5px; margin-bottom: 10px;">檢測與建議</h5>';
+    html += '<p><strong>微循環檢測：</strong>' + ($('input[name="microcirculation_test"]').val() || '未填寫') + '</p>';
+    html += '<p><strong>飲食建議：</strong>' + ($('input[name="dietary_advice"]').val() || '未填寫') + '</p>';
+
+    // 8. 建議產品
+    var recommendedProducts = [];
+    $('input[name="recommended_products[]"]:checked').each(function() {
+      recommendedProducts.push($(this).next('label').text() || $(this).val());
+    });
+    html += '<h5 style="color: #6610f2; border-bottom: 2px solid #6610f2; padding-bottom: 5px; margin-bottom: 10px;">建議產品</h5>';
+    html += '<p><strong>推薦產品：</strong>' + (recommendedProducts.length > 0 ? recommendedProducts.join('、') : '無') + '</p>';
+    
+    // 產品攝取量
+    var dosageFields = [
+      {field: 'energy_essence_dosage', label: '精力素攝取量'},
+      {field: 'reishi_ex_dosage', label: '靈芝EX攝取量'}, 
+      {field: 'vitamin_c_dosage', label: '維他命C攝取量'},
+      {field: 'energy_crystal_dosage', label: '精力結晶攝取量'},
+      {field: 'reishi_tea_dosage', label: '靈芝茶攝取量'}
+    ];
+    
+    var hasDosage = false;
+    dosageFields.forEach(function(dosage) {
+      var value = $('input[name="' + dosage.field + '"]').val();
+      if (value) {
+        if (!hasDosage) {
+          html += '<h6 style="color: #495057; margin-top: 15px; margin-bottom: 10px;">產品攝取量</h6>';
+          hasDosage = true;
+        }
+        html += '<p><strong>' + dosage.label + '：</strong>' + value + '</p>';
+      }
+    });
+
+    html += '</div>';
+    return html;
   }
 
   function submitForm() {
