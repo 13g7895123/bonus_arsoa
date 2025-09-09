@@ -589,15 +589,35 @@
 
     $('#current-date').text(currentDate);
 
-    // 延遲生成年齡下拉選單選項，確保DOM完全渲染
-    setTimeout(function() {
+    // 多階段重試生成年齡下拉選單選項
+    var generateAgeRetryCount = 0;
+    var maxRetries = 5;
+    
+    function attemptGenerateAge() {
+      generateAgeRetryCount++;
+      console.log('第', generateAgeRetryCount, '次嘗試生成年齡選項');
+      
       try {
-        generateAgeOptions();
-        console.log('年齡選項生成完成');
+        var $ageSelect = $('select[name="age"]');
+        if ($ageSelect.length > 0) {
+          generateAgeOptions();
+          console.log('年齡選項生成完成');
+        } else if (generateAgeRetryCount < maxRetries) {
+          console.log('未找到年齡選單，將在', (generateAgeRetryCount * 200), 'ms後重試');
+          setTimeout(attemptGenerateAge, generateAgeRetryCount * 200);
+        } else {
+          console.error('達到最大重試次數，年齡選項生成失敗');
+        }
       } catch (error) {
         console.error('生成年齡選項時發生錯誤:', error);
+        if (generateAgeRetryCount < maxRetries) {
+          setTimeout(attemptGenerateAge, generateAgeRetryCount * 200);
+        }
       }
-    }, 100);
+    }
+    
+    // 立即嘗試一次，然後延遲重試
+    attemptGenerateAge();
 
     // 顯示測試按鈕
     console.log('showTestButton 狀態:', showTestButton);
@@ -626,28 +646,31 @@
     console.log('開始生成年齡選項');
     var currentYear = new Date().getFullYear();
     
-    // 嘗試多種選擇器來找到年齡下拉選單
+    // 使用最直接的選擇器
     var $ageSelect = $('select[name="age"]');
     
-    if ($ageSelect.length === 0) {
-      $ageSelect = $('#eform05 select[name="age"]');
-    }
-    
-    if ($ageSelect.length === 0) {
-      $ageSelect = $('select').filter(function() {
-        return $(this).attr('name') === 'age';
-      });
-    }
-    
-    console.log('找到年齡下拉選單元素:', $ageSelect.length);
-    console.log('年齡下拉選單元素:', $ageSelect);
+    console.log('找到年齡下拉選單元素數量:', $ageSelect.length);
     
     if ($ageSelect.length === 0) {
       console.error('未找到年齡下拉選單元素');
-      // 列出所有的 select 元素來除錯
       console.log('頁面上所有的 select 元素:', $('select'));
+      // 嘗試在下一次事件循環中重試
+      setTimeout(function() {
+        console.log('延遲重試生成年齡選項');
+        $ageSelect = $('select[name="age"]');
+        if ($ageSelect.length > 0) {
+          generateAgeOptionsForElement($ageSelect, currentYear);
+        }
+      }, 500);
       return;
     }
+    
+    generateAgeOptionsForElement($ageSelect, currentYear);
+  }
+  
+  // 為指定的select元素生成年齡選項
+  function generateAgeOptionsForElement($ageSelect, currentYear) {
+    console.log('為年齡選單生成選項，當前年份:', currentYear);
     
     // 清空現有選項（保留預設選項）
     $ageSelect.find('option:not(:first)').remove();
@@ -661,13 +684,26 @@
       if (mingGuoYear > 0) {
         var optionText = '民國' + mingGuoYear + '年出生 - ' + age + '歲';
         var optionValue = age;
-        $ageSelect.append('<option value="' + optionValue + '">' + optionText + '</option>');
+        
+        var $option = $('<option></option>')
+          .attr('value', optionValue)
+          .text(optionText);
+        
+        $ageSelect.append($option);
         optionsCount++;
       }
     }
     
     console.log('成功生成年齡選項數量:', optionsCount);
     console.log('最終年齡選項總數:', $ageSelect.find('option').length);
+    
+    // 驗證選項是否正確添加
+    if (optionsCount > 0) {
+      console.log('年齡選項生成完成！第一個選項:', $ageSelect.find('option:eq(1)').text());
+      console.log('最後一個選項:', $ageSelect.find('option:last').text());
+    } else {
+      console.error('年齡選項生成失敗，沒有生成任何選項');
+    }
   }
 
   // 填入測試資料的函數
