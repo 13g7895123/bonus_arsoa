@@ -10,21 +10,123 @@
                 <div class="row">
                   <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
-                  <div class="col-sm-3 mb30">
-                    <label class="label-custom">會員姓名</label>
-                    <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
+                  <!-- 第一排欄位 -->
+                  <div class="col-sm-4 mb30">
+                    <label class="label-custom">手機號碼</label>
+                    <input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填手機號碼" />
                   </div>
-                  <div class="col-sm-3 mb30">
-                    <label class="label-custom">會員編號</label>
-                    <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" required />
+                  <div class="col-sm-4 mb30">
+                    <label class="label-custom">姓名</label>
+                    <input type="text" name="name" class="form-control form-control-custom" placeholder="請填姓名" />
                   </div>
-                  <div class="col-sm-3 mb30">
-                    <label class="label-custom">出生年月</label>
-                    <input type="month" name="birth_date" class="form-control form-control-custom" required />
+                  <div class="col-sm-4 mb30">
+                    <label class="label-custom">性別</label>
+                    <select name="gender" class="form-control form-control-custom">
+                      <option value="">請選擇性別</option>
+                      <option value="男">男</option>
+                      <option value="女">女</option>
+                    </select>
                   </div>
-                  <div class="col-sm-3 mb30">
-                    <label class="label-custom">身高(公分)</label>
-                    <input type="number" name="height" class="form-control form-control-custom" placeholder="限填數字" required />
+
+                  <!-- 第二排欄位 -->
+                  <div class="col-sm-4 mb30">
+                    <label class="label-custom">年齡</label>
+                    <select name="age" class="form-control form-control-custom">
+                      <option value="">請選擇年齡</option>
+                      <!-- 年齡選項將由JavaScript動態生成 -->
+                    </select>
+                  </div>
+                  <div class="col-sm-4 mb30">
+                    <label class="label-custom">身高</label>
+                    <input type="text" name="height" class="form-control form-control-custom" placeholder="請填身高" />
+                  </div>
+                  <div class="col-sm-4 mb30">
+                    <label class="label-custom">運動習慣</label>
+                    <select name="exercise_habit" class="form-control form-control-custom">
+                      <option value="">請選擇運動習慣</option>
+                      <option value="是">是</option>
+                      <option value="否">否</option>
+                    </select>
+                  </div>
+
+                  <!-- 體測標準建議值 -->
+                  <div class="col-sm-12 mb30">
+                    <h5 class="mb20">體測標準建議值</h5>
+                    <div class="card bg-light">
+                      <div class="card-body">
+                        <div class="row">
+                          <!-- 第一列 -->
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">體重Kg</label>
+                            <input type="number" name="weight" class="form-control form-control-custom" placeholder="限填數字" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">BMI</label>
+                            <input type="number" name="bmi" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">脂肪率%</label>
+                            <input type="number" name="fat_percentage" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+
+                          <!-- 第二列 -->
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">脂肪量Kg</label>
+                            <input type="number" name="fat_mass" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">肌肉%</label>
+                            <input type="number" name="muscle_percentage" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">肌肉量Kg</label>
+                            <input type="number" name="muscle_mass" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+
+                          <!-- 第三列 -->
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">水份比例%</label>
+                            <input type="number" name="water_percentage" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">水含量Kg</label>
+                            <input type="number" name="water_content" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">內臟脂肪率%</label>
+                            <input type="number" name="visceral_fat_percentage" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+
+                          <!-- 第四列 -->
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">骨量Kg</label>
+                            <input type="number" name="bone_mass" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">基礎代謝率(卡)</label>
+                            <input type="number" name="bmr" class="form-control form-control-custom" placeholder="限填數字" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">蛋白質%</label>
+                            <input type="number" name="protein_percentage" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+
+                          <!-- 第五列 -->
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">肥胖度%</label>
+                            <input type="number" name="obesity_percentage" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">身體年齡</label>
+                            <input type="number" name="body_age" class="form-control form-control-custom" placeholder="限填數字" />
+                          </div>
+                          <div class="col-sm-4 mb20">
+                            <label class="label-custom">去脂體重KG</label>
+                            <input type="number" name="lean_body_mass" class="form-control form-control-custom" placeholder="限填數字" step="0.01" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="col-sm-12 mb30">
@@ -468,10 +570,13 @@
 </script>
 <script>
   // 控制測試按鈕顯示的變數
-  var showTestButton = false; // 設為 true 顯示測試按鈕
+  var showTestButton = true; // 設為 true 顯示測試按鈕
 
   // 頁面載入時檢查是否顯示測試按鈕
   $(document).ready(function() {
+    console.log('DOM 已載入完成');
+    console.log('jQuery 版本:', $.fn.jquery);
+    
     // 自動填入當天日期
     var today = new Date();
     var currentDate = today.getFullYear() + '-' +
@@ -481,10 +586,80 @@
     $('#current-date').text(currentDate);
     $('input[name="join_date"]').val(currentDate);
 
+    // 延遲生成年齡下拉選單選項，確保DOM完全渲染
+    setTimeout(function() {
+      try {
+        generateAgeOptions();
+      } catch (error) {
+        console.error('生成年齡選項時發生錯誤:', error);
+      }
+    }, 100);
+
     if (showTestButton) {
       $('#testDataButton').show();
     }
+    
+    // 添加手動測試函數到全域作用域
+    window.testGenerateAgeOptions = function() {
+      console.log('手動測試年齡選項生成...');
+      generateAgeOptions();
+    };
+    
+    // 測試年齡計算邏輯
+    var currentYear = new Date().getFullYear();
+    console.log('當前年份:', currentYear);
+    console.log('18歲計算測試:', (currentYear - 18), '→ 民國', (currentYear - 18 - 1911), '年');
+    console.log('100歲計算測試:', (currentYear - 100), '→ 民國', (currentYear - 100 - 1911), '年');
   });
+
+  // 生成年齡下拉選單選項 (民國XX年出生 - XX歲)
+  function generateAgeOptions() {
+    console.log('開始生成年齡選項');
+    var currentYear = new Date().getFullYear();
+    
+    // 嘗試多種選擇器來找到年齡下拉選單
+    var $ageSelect = $('select[name="age"]');
+    
+    if ($ageSelect.length === 0) {
+      $ageSelect = $('#eform05 select[name="age"]');
+    }
+    
+    if ($ageSelect.length === 0) {
+      $ageSelect = $('select').filter(function() {
+        return $(this).attr('name') === 'age';
+      });
+    }
+    
+    console.log('找到年齡下拉選單元素:', $ageSelect.length);
+    console.log('年齡下拉選單元素:', $ageSelect);
+    
+    if ($ageSelect.length === 0) {
+      console.error('未找到年齡下拉選單元素');
+      // 列出所有的 select 元素來除錯
+      console.log('頁面上所有的 select 元素:', $('select'));
+      return;
+    }
+    
+    // 清空現有選項（保留預設選項）
+    $ageSelect.find('option:not(:first)').remove();
+    
+    var optionsCount = 0;
+    // 生成18歲到100歲的選項
+    for (var age = 18; age <= 100; age++) {
+      var birthYear = currentYear - age;
+      var mingGuoYear = birthYear - 1911; // 轉換為民國年
+      
+      if (mingGuoYear > 0) {
+        var optionText = '民國' + mingGuoYear + '年出生 - ' + age + '歲';
+        var optionValue = age;
+        $ageSelect.append('<option value="' + optionValue + '">' + optionText + '</option>');
+        optionsCount++;
+      }
+    }
+    
+    console.log('成功生成年齡選項數量:', optionsCount);
+    console.log('最終年齡選項總數:', $ageSelect.find('option').length);
+  }
 
   // 填入測試資料的函數
   function fillTestData() {

@@ -1,7 +1,7 @@
-# 健康諮詢表 (EForm05) 資料庫結構設計
+# 個人體測表+健康諮詢表 (EForm05) 資料庫結構設計
 
 ## 概述
-此文檔設計了一個完整的資料庫結構，用於存儲健康諮詢表的所有資料。設計考慮了資料正規化、效能優化、以及未來功能擴展的需求。
+此文檔設計了一個完整的資料庫結構，用於存儲個人體測表+健康諮詢表的所有資料。包含了完整的體測標準建議值欄位，以及更詳細的個人基本資料收集。
 
 ## 主要資料表
 
@@ -10,26 +10,53 @@
 CREATE TABLE eeform5_submissions (
     id INT PRIMARY KEY AUTO_INCREMENT,
     member_name VARCHAR(100) NOT NULL COMMENT '會員姓名',
-    birth_year SMALLINT UNSIGNED NOT NULL COMMENT '出生西元年',
-    birth_month TINYINT UNSIGNED NOT NULL COMMENT '出生西元月',
-    height SMALLINT UNSIGNED NOT NULL COMMENT '身高(公分)',
+    member_id VARCHAR(50) NOT NULL COMMENT '會員編號',
+    phone VARCHAR(20) NULL COMMENT '手機號碼',
+    gender ENUM('男', '女') NULL COMMENT '性別',
+    age TINYINT UNSIGNED NULL COMMENT '年齡',
+    height VARCHAR(20) NULL COMMENT '身高',
+    exercise_habit ENUM('是', '否') NULL COMMENT '運動習慣',
+    
+    -- 體測標準建議值欄位
+    weight DECIMAL(5,2) NULL COMMENT '體重Kg',
+    bmi DECIMAL(5,2) NULL COMMENT 'BMI',
+    fat_percentage DECIMAL(5,2) NULL COMMENT '脂肪率%',
+    fat_mass DECIMAL(5,2) NULL COMMENT '脂肪量Kg',
+    muscle_percentage DECIMAL(5,2) NULL COMMENT '肌肉%',
+    muscle_mass DECIMAL(5,2) NULL COMMENT '肌肉量Kg',
+    water_percentage DECIMAL(5,2) NULL COMMENT '水份比例%',
+    water_content DECIMAL(5,2) NULL COMMENT '水含量Kg',
+    visceral_fat_percentage DECIMAL(5,2) NULL COMMENT '內臟脂肪率%',
+    bone_mass DECIMAL(5,2) NULL COMMENT '骨量Kg',
+    bmr INT NULL COMMENT '基礎代謝率(卡)',
+    protein_percentage DECIMAL(5,2) NULL COMMENT '蛋白質%',
+    obesity_percentage DECIMAL(5,2) NULL COMMENT '肥胖度%',
+    body_age TINYINT UNSIGNED NULL COMMENT '身體年齡',
+    lean_body_mass DECIMAL(5,2) NULL COMMENT '去脂體重KG',
+    
+    -- 原有健康資料欄位
     has_medication_habit BOOLEAN DEFAULT FALSE COMMENT '是否有長期用藥習慣',
     medication_name VARCHAR(255) NULL COMMENT '使用藥物名稱',
     has_family_disease_history BOOLEAN DEFAULT FALSE COMMENT '是否有家族慢性病史',
     disease_name VARCHAR(255) NULL COMMENT '疾病名稱',
     microcirculation_test TEXT NULL COMMENT '微循環檢測結果',
     dietary_advice TEXT NULL COMMENT '日常飲食建議',
+    
+    -- 系統欄位
     submission_date DATE NOT NULL COMMENT '填寫日期',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
     status ENUM('draft', 'submitted', 'reviewed', 'completed') DEFAULT 'submitted' COMMENT '狀態',
     
     INDEX idx_member_name (member_name),
-    INDEX idx_birth_year_month (birth_year, birth_month),
+    INDEX idx_member_id (member_id),
+    INDEX idx_phone (phone),
+    INDEX idx_gender (gender),
+    INDEX idx_age (age),
     INDEX idx_submission_date (submission_date),
     INDEX idx_status (status),
     INDEX idx_created_at (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='健康諮詢表主表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='個人體測表+健康諮詢表主表';
 ```
 
 ### 2. eeform5_occupations (職業選項表)
@@ -37,8 +64,7 @@ CREATE TABLE eeform5_submissions (
 CREATE TABLE eeform5_occupations (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '表單提交ID',
-    occupation_type ENUM('service', 'office', 'restaurant', 'freelance', 'other') NOT NULL COMMENT '職業類型',
-    occupation_name VARCHAR(100) NOT NULL COMMENT '職業名稱',
+    occupation_type ENUM('服務業', '上班族', '餐飲業', '自由業', '其他') NOT NULL COMMENT '職業類型',
     
     FOREIGN KEY (submission_id) REFERENCES eeform5_submissions(id) ON DELETE CASCADE,
     INDEX idx_submission_id (submission_id),
@@ -47,103 +73,37 @@ CREATE TABLE eeform5_occupations (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='職業選項記錄表';
 ```
 
-### 3. eeform5_health_issues (健康困擾記錄表)
+### 3. eeform5_health_concerns (健康困擾記錄表)
 ```sql
-CREATE TABLE eeform5_health_issues (
+CREATE TABLE eeform5_health_concerns (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '表單提交ID',
-    issue_code VARCHAR(50) NOT NULL COMMENT '困擾代碼',
-    issue_name VARCHAR(100) NOT NULL COMMENT '困擾名稱',
-    other_description VARCHAR(255) NULL COMMENT '其他描述',
-    severity ENUM('mild', 'moderate', 'severe') NULL COMMENT '嚴重程度',
+    concern_type ENUM('經常頭痛', '過敏問題', '睡眠不佳', '骨關節問題', '三高問題', '腸胃健康問題', '視力問題', '免疫力', '體重困擾', '其他') NOT NULL COMMENT '健康困擾類型',
+    other_description VARCHAR(255) NULL COMMENT '其他困擾描述',
     
     FOREIGN KEY (submission_id) REFERENCES eeform5_submissions(id) ON DELETE CASCADE,
     INDEX idx_submission_id (submission_id),
-    INDEX idx_issue_code (issue_code),
-    UNIQUE KEY uk_submission_issue (submission_id, issue_code)
+    INDEX idx_concern_type (concern_type),
+    UNIQUE KEY uk_submission_concern (submission_id, concern_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='健康困擾記錄表';
 ```
 
-### 4. eeform5_health_issues_master (健康困擾主檔)
-```sql
-CREATE TABLE eeform5_health_issues_master (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    issue_code VARCHAR(50) NOT NULL UNIQUE COMMENT '困擾代碼',
-    issue_name VARCHAR(100) NOT NULL COMMENT '困擾名稱',
-    issue_category VARCHAR(50) NULL COMMENT '困擾類別',
-    description TEXT NULL COMMENT '詳細描述',
-    is_active BOOLEAN DEFAULT TRUE COMMENT '是否啟用',
-    sort_order INT DEFAULT 0 COMMENT '排序順序',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    INDEX idx_issue_code (issue_code),
-    INDEX idx_issue_category (issue_category),
-    INDEX idx_is_active (is_active),
-    INDEX idx_sort_order (sort_order)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='健康困擾主檔';
-```
-
-### 5. eeform5_product_recommendations (產品建議表)
+### 4. eeform5_product_recommendations (產品建議表)
 ```sql
 CREATE TABLE eeform5_product_recommendations (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '表單提交ID',
-    product_code VARCHAR(50) NOT NULL COMMENT '產品代碼',
-    product_name VARCHAR(100) NOT NULL COMMENT '產品名稱',
-    recommended_dosage VARCHAR(100) NULL COMMENT '建議用量',
-    usage_timing VARCHAR(100) NULL COMMENT '使用時機',
-    notes TEXT NULL COMMENT '備註',
+    product_name ENUM('活力精萃', '白鶴靈芝EX', '美力C錠', '鶴力晶', '白鶴靈芝茶') NOT NULL COMMENT '產品名稱',
+    recommended_dosage VARCHAR(200) NULL COMMENT '建議用量',
     
     FOREIGN KEY (submission_id) REFERENCES eeform5_submissions(id) ON DELETE CASCADE,
     INDEX idx_submission_id (submission_id),
-    INDEX idx_product_code (product_code),
-    UNIQUE KEY uk_submission_product (submission_id, product_code)
+    INDEX idx_product_name (product_name),
+    UNIQUE KEY uk_submission_product (submission_id, product_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='產品建議記錄表';
 ```
 
-### 6. eeform5_product_master (產品主檔)
-```sql
-CREATE TABLE eeform5_product_master (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    product_code VARCHAR(50) NOT NULL UNIQUE COMMENT '產品代碼',
-    product_name VARCHAR(100) NOT NULL COMMENT '產品名稱',
-    product_type ENUM('supplement', 'tea', 'other') DEFAULT 'supplement' COMMENT '產品類型',
-    default_dosage VARCHAR(100) NULL COMMENT '預設建議用量',
-    description TEXT NULL COMMENT '產品描述',
-    is_active BOOLEAN DEFAULT TRUE COMMENT '是否啟用',
-    sort_order INT DEFAULT 0 COMMENT '排序順序',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    INDEX idx_product_code (product_code),
-    INDEX idx_product_type (product_type),
-    INDEX idx_is_active (is_active),
-    INDEX idx_sort_order (sort_order)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='產品主檔';
-```
-
-### 7. eeform5_consultation_records (諮詢記錄表)
-```sql
-CREATE TABLE eeform5_consultation_records (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    submission_id INT NOT NULL COMMENT '表單提交ID',
-    consultation_date DATE NOT NULL COMMENT '諮詢日期',
-    consultant_name VARCHAR(100) NULL COMMENT '諮詢師姓名',
-    consultation_type ENUM('initial', 'follow_up', 'review') DEFAULT 'initial' COMMENT '諮詢類型',
-    consultation_notes TEXT NULL COMMENT '諮詢記錄',
-    health_assessment TEXT NULL COMMENT '健康評估',
-    recommendations TEXT NULL COMMENT '建議事項',
-    next_consultation_date DATE NULL COMMENT '下次諮詢日期',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (submission_id) REFERENCES eeform5_submissions(id) ON DELETE CASCADE,
-    INDEX idx_submission_id (submission_id),
-    INDEX idx_consultation_date (consultation_date),
-    INDEX idx_consultation_type (consultation_type),
-    INDEX idx_next_consultation_date (next_consultation_date)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='諮詢記錄表';
-```
-
-### 8. eeform5_submissions_archive (歷史歸檔表)
+### 5. eeform5_submissions_archive (歷史歸檔表)
 ```sql
 CREATE TABLE eeform5_submissions_archive LIKE eeform5_submissions;
 
@@ -151,45 +111,6 @@ ALTER TABLE eeform5_submissions_archive
 ADD COLUMN archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '歸檔時間',
 ADD COLUMN archived_by VARCHAR(100) NULL COMMENT '歸檔者',
 ADD COLUMN archive_reason TEXT NULL COMMENT '歸檔原因';
-```
-
-## 預設資料
-
-### 預設健康困擾項目
-```sql
--- 插入預設健康困擾項目
-INSERT INTO eeform5_health_issues_master (issue_code, issue_name, issue_category, sort_order) VALUES
-('HEADACHE', '經常頭痛', 'neurological', 1),
-('ALLERGY', '過敏問題', 'immune', 2),
-('SLEEP', '睡眠不佳', 'mental', 3),
-('JOINT', '骨關節問題', 'musculoskeletal', 4),
-('METABOLIC', '三高問題(血糖/血脂肪/血壓)', 'metabolic', 5),
-('DIGESTIVE', '腸胃健康問題', 'digestive', 6),
-('VISION', '視力問題', 'sensory', 7),
-('IMMUNITY', '免疫力', 'immune', 8),
-('WEIGHT', '體重困擾', 'metabolic', 9),
-('OTHER', '其他', 'other', 10);
-```
-
-### 預設產品資料
-```sql
--- 插入預設產品資料
-INSERT INTO eeform5_product_master (product_code, product_name, product_type, default_dosage, sort_order) VALUES
-('VITAL001', '活力精萃', 'supplement', '每日2次，每次1包', 1),
-('LINGZHI001', '白鶴靈芝EX', 'supplement', '每日1-2次，每次2粒', 2),
-('VITC001', '美力C錠', 'supplement', '每日1次，每次2錠', 3),
-('CRYSTAL001', '鶴力晶', 'supplement', '每日1次，每次1包', 4),
-('TEA001', '白鶴靈芝茶', 'tea', '每日1-2包', 5);
-```
-
-### 預設職業選項
-```sql
--- 預設職業對應
--- service: 服務業
--- office: 上班族
--- restaurant: 餐飲業
--- freelance: 自由業
--- other: 其他
 ```
 
 ## 索引優化建議
@@ -203,49 +124,74 @@ INSERT INTO eeform5_product_master (product_code, product_name, product_type, de
 2. 實施資料備份策略
 3. 定期清理無效或測試資料
 4. 監控表格大小和查詢效能
-5. 定期更新健康困擾主檔和產品主檔
 
 ## 特別說明
-此表單為健康諮詢專用表單，設計上考慮了多選項目（職業、健康困擾）和產品推薦的靈活性。透過主檔表的設計，可以方便地新增或修改選項，而不需要更改程式碼。
+此表單為個人體測表+健康諮詢表，包含了完整的體測標準建議值欄位，包含15個體測相關數據。同時包含完整的基本資料收集，包含手機號碼、性別、年齡和運動習慣等資訊。
 
 ---
 
 ## 完整SQL語句 (可直接複製貼上至資料庫)
 
 ```sql
--- eeform5 健康諮詢表 完整SQL
+-- eeform5 個人體測表+健康諮詢表 完整SQL
 
 -- 1. 建立表單提交主表
 CREATE TABLE eeform5_submissions (
     id INT PRIMARY KEY AUTO_INCREMENT,
     member_name VARCHAR(100) NOT NULL COMMENT '會員姓名',
-    birth_year SMALLINT UNSIGNED NOT NULL COMMENT '出生西元年',
-    birth_month TINYINT UNSIGNED NOT NULL COMMENT '出生西元月',
-    height SMALLINT UNSIGNED NOT NULL COMMENT '身高(公分)',
+    member_id VARCHAR(50) NOT NULL COMMENT '會員編號',
+    phone VARCHAR(20) NULL COMMENT '手機號碼',
+    gender ENUM('男', '女') NULL COMMENT '性別',
+    age TINYINT UNSIGNED NULL COMMENT '年齡',
+    height VARCHAR(20) NULL COMMENT '身高',
+    exercise_habit ENUM('是', '否') NULL COMMENT '運動習慣',
+    
+    -- 體測標準建議值欄位
+    weight DECIMAL(5,2) NULL COMMENT '體重Kg',
+    bmi DECIMAL(5,2) NULL COMMENT 'BMI',
+    fat_percentage DECIMAL(5,2) NULL COMMENT '脂肪率%',
+    fat_mass DECIMAL(5,2) NULL COMMENT '脂肪量Kg',
+    muscle_percentage DECIMAL(5,2) NULL COMMENT '肌肉%',
+    muscle_mass DECIMAL(5,2) NULL COMMENT '肌肉量Kg',
+    water_percentage DECIMAL(5,2) NULL COMMENT '水份比例%',
+    water_content DECIMAL(5,2) NULL COMMENT '水含量Kg',
+    visceral_fat_percentage DECIMAL(5,2) NULL COMMENT '內臟脂肪率%',
+    bone_mass DECIMAL(5,2) NULL COMMENT '骨量Kg',
+    bmr INT NULL COMMENT '基礎代謝率(卡)',
+    protein_percentage DECIMAL(5,2) NULL COMMENT '蛋白質%',
+    obesity_percentage DECIMAL(5,2) NULL COMMENT '肥胖度%',
+    body_age TINYINT UNSIGNED NULL COMMENT '身體年齡',
+    lean_body_mass DECIMAL(5,2) NULL COMMENT '去脂體重KG',
+    
+    -- 原有健康資料欄位
     has_medication_habit BOOLEAN DEFAULT FALSE COMMENT '是否有長期用藥習慣',
     medication_name VARCHAR(255) NULL COMMENT '使用藥物名稱',
     has_family_disease_history BOOLEAN DEFAULT FALSE COMMENT '是否有家族慢性病史',
     disease_name VARCHAR(255) NULL COMMENT '疾病名稱',
     microcirculation_test TEXT NULL COMMENT '微循環檢測結果',
     dietary_advice TEXT NULL COMMENT '日常飲食建議',
+    
+    -- 系統欄位
     submission_date DATE NOT NULL COMMENT '填寫日期',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
     status ENUM('draft', 'submitted', 'reviewed', 'completed') DEFAULT 'submitted' COMMENT '狀態',
     
     INDEX idx_member_name (member_name),
-    INDEX idx_birth_year_month (birth_year, birth_month),
+    INDEX idx_member_id (member_id),
+    INDEX idx_phone (phone),
+    INDEX idx_gender (gender),
+    INDEX idx_age (age),
     INDEX idx_submission_date (submission_date),
     INDEX idx_status (status),
     INDEX idx_created_at (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='健康諮詢表主表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='個人體測表+健康諮詢表主表';
 
 -- 2. 建立職業選項表
 CREATE TABLE eeform5_occupations (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '表單提交ID',
-    occupation_type ENUM('service', 'office', 'restaurant', 'freelance', 'other') NOT NULL COMMENT '職業類型',
-    occupation_name VARCHAR(100) NOT NULL COMMENT '職業名稱',
+    occupation_type ENUM('服務業', '上班族', '餐飲業', '自由業', '其他') NOT NULL COMMENT '職業類型',
     
     FOREIGN KEY (submission_id) REFERENCES eeform5_submissions(id) ON DELETE CASCADE,
     INDEX idx_submission_id (submission_id),
@@ -254,119 +200,38 @@ CREATE TABLE eeform5_occupations (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='職業選項記錄表';
 
 -- 3. 建立健康困擾記錄表
-CREATE TABLE eeform5_health_issues (
+CREATE TABLE eeform5_health_concerns (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '表單提交ID',
-    issue_code VARCHAR(50) NOT NULL COMMENT '困擾代碼',
-    issue_name VARCHAR(100) NOT NULL COMMENT '困擾名稱',
-    other_description VARCHAR(255) NULL COMMENT '其他描述',
-    severity ENUM('mild', 'moderate', 'severe') NULL COMMENT '嚴重程度',
+    concern_type ENUM('經常頭痛', '過敏問題', '睡眠不佳', '骨關節問題', '三高問題', '腸胃健康問題', '視力問題', '免疫力', '體重困擾', '其他') NOT NULL COMMENT '健康困擾類型',
+    other_description VARCHAR(255) NULL COMMENT '其他困擾描述',
     
     FOREIGN KEY (submission_id) REFERENCES eeform5_submissions(id) ON DELETE CASCADE,
     INDEX idx_submission_id (submission_id),
-    INDEX idx_issue_code (issue_code),
-    UNIQUE KEY uk_submission_issue (submission_id, issue_code)
+    INDEX idx_concern_type (concern_type),
+    UNIQUE KEY uk_submission_concern (submission_id, concern_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='健康困擾記錄表';
 
--- 4. 建立健康困擾主檔
-CREATE TABLE eeform5_health_issues_master (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    issue_code VARCHAR(50) NOT NULL UNIQUE COMMENT '困擾代碼',
-    issue_name VARCHAR(100) NOT NULL COMMENT '困擾名稱',
-    issue_category VARCHAR(50) NULL COMMENT '困擾類別',
-    description TEXT NULL COMMENT '詳細描述',
-    is_active BOOLEAN DEFAULT TRUE COMMENT '是否啟用',
-    sort_order INT DEFAULT 0 COMMENT '排序順序',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    INDEX idx_issue_code (issue_code),
-    INDEX idx_issue_category (issue_category),
-    INDEX idx_is_active (is_active),
-    INDEX idx_sort_order (sort_order)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='健康困擾主檔';
-
--- 5. 建立產品建議表
+-- 4. 建立產品建議表
 CREATE TABLE eeform5_product_recommendations (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submission_id INT NOT NULL COMMENT '表單提交ID',
-    product_code VARCHAR(50) NOT NULL COMMENT '產品代碼',
-    product_name VARCHAR(100) NOT NULL COMMENT '產品名稱',
-    recommended_dosage VARCHAR(100) NULL COMMENT '建議用量',
-    usage_timing VARCHAR(100) NULL COMMENT '使用時機',
-    notes TEXT NULL COMMENT '備註',
+    product_name ENUM('活力精萃', '白鶴靈芝EX', '美力C錠', '鶴力晶', '白鶴靈芝茶') NOT NULL COMMENT '產品名稱',
+    recommended_dosage VARCHAR(200) NULL COMMENT '建議用量',
     
     FOREIGN KEY (submission_id) REFERENCES eeform5_submissions(id) ON DELETE CASCADE,
     INDEX idx_submission_id (submission_id),
-    INDEX idx_product_code (product_code),
-    UNIQUE KEY uk_submission_product (submission_id, product_code)
+    INDEX idx_product_name (product_name),
+    UNIQUE KEY uk_submission_product (submission_id, product_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='產品建議記錄表';
 
--- 6. 建立產品主檔
-CREATE TABLE eeform5_product_master (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    product_code VARCHAR(50) NOT NULL UNIQUE COMMENT '產品代碼',
-    product_name VARCHAR(100) NOT NULL COMMENT '產品名稱',
-    product_type ENUM('supplement', 'tea', 'other') DEFAULT 'supplement' COMMENT '產品類型',
-    default_dosage VARCHAR(100) NULL COMMENT '預設建議用量',
-    description TEXT NULL COMMENT '產品描述',
-    is_active BOOLEAN DEFAULT TRUE COMMENT '是否啟用',
-    sort_order INT DEFAULT 0 COMMENT '排序順序',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    INDEX idx_product_code (product_code),
-    INDEX idx_product_type (product_type),
-    INDEX idx_is_active (is_active),
-    INDEX idx_sort_order (sort_order)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='產品主檔';
-
--- 7. 建立諮詢記錄表
-CREATE TABLE eeform5_consultation_records (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    submission_id INT NOT NULL COMMENT '表單提交ID',
-    consultation_date DATE NOT NULL COMMENT '諮詢日期',
-    consultant_name VARCHAR(100) NULL COMMENT '諮詢師姓名',
-    consultation_type ENUM('initial', 'follow_up', 'review') DEFAULT 'initial' COMMENT '諮詢類型',
-    consultation_notes TEXT NULL COMMENT '諮詢記錄',
-    health_assessment TEXT NULL COMMENT '健康評估',
-    recommendations TEXT NULL COMMENT '建議事項',
-    next_consultation_date DATE NULL COMMENT '下次諮詢日期',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (submission_id) REFERENCES eeform5_submissions(id) ON DELETE CASCADE,
-    INDEX idx_submission_id (submission_id),
-    INDEX idx_consultation_date (consultation_date),
-    INDEX idx_consultation_type (consultation_type),
-    INDEX idx_next_consultation_date (next_consultation_date)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='諮詢記錄表';
-
--- 8. 建立歷史歸檔表
+-- 5. 建立歷史歸檔表
 CREATE TABLE eeform5_submissions_archive LIKE eeform5_submissions;
 
 ALTER TABLE eeform5_submissions_archive 
 ADD COLUMN archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '歸檔時間',
 ADD COLUMN archived_by VARCHAR(100) NULL COMMENT '歸檔者',
 ADD COLUMN archive_reason TEXT NULL COMMENT '歸檔原因';
-
--- 9. 插入預設健康困擾項目
-INSERT INTO eeform5_health_issues_master (issue_code, issue_name, issue_category, sort_order) VALUES
-('HEADACHE', '經常頭痛', 'neurological', 1),
-('ALLERGY', '過敏問題', 'immune', 2),
-('SLEEP', '睡眠不佳', 'mental', 3),
-('JOINT', '骨關節問題', 'musculoskeletal', 4),
-('METABOLIC', '三高問題(血糖/血脂肪/血壓)', 'metabolic', 5),
-('DIGESTIVE', '腸胃健康問題', 'digestive', 6),
-('VISION', '視力問題', 'sensory', 7),
-('IMMUNITY', '免疫力', 'immune', 8),
-('WEIGHT', '體重困擾', 'metabolic', 9),
-('OTHER', '其他', 'other', 10);
-
--- 10. 插入預設產品資料
-INSERT INTO eeform5_product_master (product_code, product_name, product_type, default_dosage, sort_order) VALUES
-('VITAL001', '活力精萃', 'supplement', '每日2次，每次1包', 1),
-('LINGZHI001', '白鶴靈芝EX', 'supplement', '每日1-2次，每次2粒', 2),
-('VITC001', '美力C錠', 'supplement', '每日1次，每次2錠', 3),
-('CRYSTAL001', '鶴力晶', 'supplement', '每日1次，每次1包', 4),
-('TEA001', '白鶴靈芝茶', 'tea', '每日1-2包', 5);
 ```
 
 ## 刪除所有資料的 SQL 語句
@@ -378,21 +243,14 @@ INSERT INTO eeform5_product_master (product_code, product_name, product_type, de
 -- 只需要刪除主表，相關資料會自動級聯刪除
 DELETE FROM eeform5_submissions;
 
--- 如需清空主檔表（注意：這會移除所有預設設定）
--- DELETE FROM eeform5_health_issues_master;
--- DELETE FROM eeform5_product_master;
-
 -- 清空歷史歸檔表
 DELETE FROM eeform5_submissions_archive;
 
 -- 重設自增ID（可選）
 ALTER TABLE eeform5_submissions AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_occupations AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_health_issues AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_health_issues_master AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_health_concerns AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_product_recommendations AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_product_master AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_consultation_records AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_submissions_archive AUTO_INCREMENT = 1;
 ```
 
@@ -401,9 +259,8 @@ ALTER TABLE eeform5_submissions_archive AUTO_INCREMENT = 1;
 ```sql
 -- 先刪除子表資料（按外鍵依賴順序）
 DELETE FROM eeform5_occupations;
-DELETE FROM eeform5_health_issues;
+DELETE FROM eeform5_health_concerns;
 DELETE FROM eeform5_product_recommendations;
-DELETE FROM eeform5_consultation_records;
 
 -- 刪除主表資料
 DELETE FROM eeform5_submissions;
@@ -411,18 +268,11 @@ DELETE FROM eeform5_submissions;
 -- 清空歷史歸檔表
 DELETE FROM eeform5_submissions_archive;
 
--- 可選：清空主檔表（會移除所有預設設定）
--- DELETE FROM eeform5_health_issues_master;
--- DELETE FROM eeform5_product_master;
-
 -- 重設自增ID
 ALTER TABLE eeform5_submissions AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_occupations AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_health_issues AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_health_issues_master AUTO_INCREMENT = 1;
+ALTER TABLE eeform5_health_concerns AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_product_recommendations AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_product_master AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_consultation_records AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_submissions_archive AUTO_INCREMENT = 1;
 ```
 
@@ -434,15 +284,10 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- 清空所有資料表
 TRUNCATE TABLE eeform5_occupations;
-TRUNCATE TABLE eeform5_health_issues;
+TRUNCATE TABLE eeform5_health_concerns;
 TRUNCATE TABLE eeform5_product_recommendations;
-TRUNCATE TABLE eeform5_consultation_records;
 TRUNCATE TABLE eeform5_submissions;
 TRUNCATE TABLE eeform5_submissions_archive;
-
--- 可選：清空主檔表
--- TRUNCATE TABLE eeform5_health_issues_master;
--- TRUNCATE TABLE eeform5_product_master;
 
 -- 重新啟用外鍵檢查
 SET FOREIGN_KEY_CHECKS = 1;
@@ -459,6 +304,10 @@ WHERE submission_date BETWEEN '2024-01-01' AND '2024-12-31';
 DELETE FROM eeform5_submissions 
 WHERE member_name = '王小明';
 
+-- 刪除特定會員編號的記錄
+DELETE FROM eeform5_submissions 
+WHERE member_id = '000000';
+
 -- 刪除草稿狀態的記錄
 DELETE FROM eeform5_submissions 
 WHERE status = 'draft';
@@ -469,42 +318,11 @@ WHERE created_at < DATE_SUB(NOW(), INTERVAL 365 DAY);
 
 -- 刪除特定年齡範圍的記錄
 DELETE FROM eeform5_submissions 
-WHERE YEAR(NOW()) - birth_year BETWEEN 18 AND 30;
+WHERE age BETWEEN 18 AND 30;
 
--- 刪除特定諮詢記錄
-DELETE FROM eeform5_consultation_records 
-WHERE consultation_date < DATE_SUB(NOW(), INTERVAL 180 DAY);
-```
-
-### 重設主檔為預設資料
-
-```sql
--- 重設健康困擾主檔為預設狀態
-TRUNCATE TABLE eeform5_health_issues_master;
-
--- 重新插入預設健康困擾項目
-INSERT INTO eeform5_health_issues_master (issue_code, issue_name, issue_category, sort_order) VALUES
-('HEADACHE', '經常頭痛', 'neurological', 1),
-('ALLERGY', '過敏問題', 'immune', 2),
-('SLEEP', '睡眠不佳', 'mental', 3),
-('JOINT', '骨關節問題', 'musculoskeletal', 4),
-('METABOLIC', '三高問題(血糖/血脂肪/血壓)', 'metabolic', 5),
-('DIGESTIVE', '腸胃健康問題', 'digestive', 6),
-('VISION', '視力問題', 'sensory', 7),
-('IMMUNITY', '免疫力', 'immune', 8),
-('WEIGHT', '體重困擾', 'metabolic', 9),
-('OTHER', '其他', 'other', 10);
-
--- 重設產品主檔為預設狀態
-TRUNCATE TABLE eeform5_product_master;
-
--- 重新插入預設產品資料
-INSERT INTO eeform5_product_master (product_code, product_name, product_type, default_dosage, sort_order) VALUES
-('VITAL001', '活力精萃', 'supplement', '每日2次，每次1包', 1),
-('LINGZHI001', '白鶴靈芝EX', 'supplement', '每日1-2次，每次2粒', 2),
-('VITC001', '美力C錠', 'supplement', '每日1次，每次2錠', 3),
-('CRYSTAL001', '鶴力晶', 'supplement', '每日1次，每次1包', 4),
-('TEA001', '白鶴靈芝茶', 'tea', '每日1-2包', 5);
+-- 刪除特定性別的記錄
+DELETE FROM eeform5_submissions 
+WHERE gender = '男';
 ```
 
 ### 安全刪除前的備份
@@ -520,10 +338,7 @@ FROM eeform5_submissions s;
 
 -- 同樣方式備份其他表
 CREATE TABLE eeform5_occupations_backup AS SELECT * FROM eeform5_occupations;
-CREATE TABLE eeform5_health_issues_backup AS SELECT * FROM eeform5_health_issues;
-CREATE TABLE eeform5_health_issues_master_backup AS SELECT * FROM eeform5_health_issues_master;
+CREATE TABLE eeform5_health_concerns_backup AS SELECT * FROM eeform5_health_concerns;
 CREATE TABLE eeform5_product_recommendations_backup AS SELECT * FROM eeform5_product_recommendations;
-CREATE TABLE eeform5_product_master_backup AS SELECT * FROM eeform5_product_master;
-CREATE TABLE eeform5_consultation_records_backup AS SELECT * FROM eeform5_consultation_records;
 CREATE TABLE eeform5_archive_backup AS SELECT * FROM eeform5_submissions_archive;
 ```
