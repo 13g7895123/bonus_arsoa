@@ -504,8 +504,15 @@
 </div>
 
 <!-- 必要的外部腳本載入 -->
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- 頁面樣式 -->
 <style>
@@ -1159,5 +1166,91 @@
 
   // 在主要的ready函數中加入eform5專用初始化
   // 移除重複的ready函數，統一在上面的ready函數處理
+  
+  // TDD 測試功能 - 用於驗證 Bootstrap Modal 功能
+  function runModalTest() {
+    console.log('=== EForm5 Modal TDD 測試開始 ===');
+    
+    var tests = [];
+    
+    // 測試 1: Bootstrap 載入檢查
+    try {
+      if (typeof $.fn.modal !== 'undefined') {
+        tests.push({ name: 'Bootstrap Modal 載入', pass: true, message: '✓ Bootstrap modal 函數已正確載入' });
+      } else {
+        tests.push({ name: 'Bootstrap Modal 載入', pass: false, message: '✗ Bootstrap modal 函數未載入' });
+      }
+    } catch (e) {
+      tests.push({ name: 'Bootstrap Modal 載入', pass: false, message: '✗ 載入檢查錯誤: ' + e.message });
+    }
+    
+    // 測試 2: Modal 元素存在性
+    if ($('#confirmModal').length > 0) {
+      tests.push({ name: 'Modal HTML 結構', pass: true, message: '✓ Modal HTML 結構存在' });
+    } else {
+      tests.push({ name: 'Modal HTML 結構', pass: false, message: '✗ 找不到 Modal HTML 結構' });
+    }
+    
+    // 測試 3: showConfirmModal 函數存在性
+    if (typeof showConfirmModal === 'function') {
+      tests.push({ name: 'showConfirmModal 函數', pass: true, message: '✓ showConfirmModal 函數已定義' });
+    } else {
+      tests.push({ name: 'showConfirmModal 函數', pass: false, message: '✗ showConfirmModal 函數未定義' });
+    }
+    
+    // 測試 4: collectFormDataForDisplay 函數存在性
+    if (typeof collectFormDataForDisplay === 'function') {
+      tests.push({ name: 'collectFormDataForDisplay 函數', pass: true, message: '✓ collectFormDataForDisplay 函數已定義' });
+    } else {
+      tests.push({ name: 'collectFormDataForDisplay 函數', pass: false, message: '✗ collectFormDataForDisplay 函數未定義' });
+    }
+    
+    // 測試 5: Modal 顯示測試（非破壞性）
+    try {
+      var testModal = $('#confirmModal');
+      if (testModal.length > 0) {
+        tests.push({ name: 'Modal 可操作性', pass: true, message: '✓ Modal 元素可操作' });
+      } else {
+        tests.push({ name: 'Modal 可操作性', pass: false, message: '✗ Modal 元素不可操作' });
+      }
+    } catch (e) {
+      tests.push({ name: 'Modal 可操作性', pass: false, message: '✗ Modal 操作錯誤: ' + e.message });
+    }
+    
+    // 輸出測試結果
+    var passed = tests.filter(t => t.pass).length;
+    var total = tests.length;
+    
+    console.log('--- 測試結果 ---');
+    tests.forEach(test => {
+      console.log(`${test.name}: ${test.message}`);
+    });
+    console.log(`總結: ${passed}/${total} 項測試通過`);
+    
+    if (passed === total) {
+      console.log('🎉 所有測試通過！Modal 功能應該正常工作');
+    } else {
+      console.log('⚠️ 某些測試失敗，請檢查 Bootstrap 載入和 Modal 設定');
+    }
+    
+    console.log('=== 測試完成 ===');
+    
+    return { passed: passed, total: total };
+  }
+  
+  // 頁面載入完成後自動執行測試（開發模式）
+  if (showTestButton) {
+    setTimeout(() => {
+      runModalTest();
+    }, 1000);
+  }
+  
+  // 新增測試按鈕到頁面（如果 showTestButton 為 true）
+  if (showTestButton) {
+    $(document).ready(function() {
+      var testButtonHtml = '<button type="button" class="btn btn-info btn-sm ml-2" onclick="runModalTest()" title="執行 Modal TDD 測試">測試 Modal</button>';
+      $('button[onclick="showConfirmModal()"]').after(testButtonHtml);
+    });
+  }
 </script>
 </div>

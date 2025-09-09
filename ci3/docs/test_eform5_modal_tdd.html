@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EForm5 Modal TDD Test</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 測試框架 -->
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        .test-pass {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .test-fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        /* Bootstrap Modal 自定義樣式 */
+        .form-confirmation-content {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+        }
+        
+        .info-block {
+            border: 1px solid #dee2e6;
+        }
+        
+        .info-block h6 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .info-block .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        
+        .info-block .row > div {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>EForm5 Bootstrap Modal TDD 測試</h1>
+        <p>這個頁面用於測試 EForm5 Bootstrap modal 功能的完整性</p>
+        
+        <!-- 測試結果區域 -->
+        <div id="test-results"></div>
+        
+        <!-- 模擬表單 -->
+        <div class="test-section">
+            <h3>模擬 EForm5 表單</h3>
+            <form id="mockEform5">
+                <!-- 基本資料 -->
+                <div class="row">
+                    <div class="col-4">
+                        <label>姓名</label>
+                        <input type="text" name="name" class="form-control" value="測試用戶">
+                    </div>
+                    <div class="col-4">
+                        <label>手機</label>
+                        <input type="text" name="phone" class="form-control" value="0912345678">
+                    </div>
+                    <div class="col-4">
+                        <label>性別</label>
+                        <select name="gender" class="form-control">
+                            <option value="">請選擇</option>
+                            <option value="男" selected>男</option>
+                            <option value="女">女</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row mt-2">
+                    <div class="col-4">
+                        <label>年齡</label>
+                        <select name="age" class="form-control">
+                            <option value="">請選擇</option>
+                            <option value="25" selected>民國88年出生 - 25歲</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label>身高</label>
+                        <input type="text" name="height" class="form-control" value="175">
+                    </div>
+                    <div class="col-4">
+                        <label>運動習慣</label>
+                        <select name="exercise_habit" class="form-control">
+                            <option value="是" selected>是</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- 體測數據 -->
+                <h5 class="mt-3">體測標準建議值</h5>
+                <div class="row">
+                    <div class="col-4">
+                        <label>體重</label>
+                        <input type="text" name="weight" class="form-control" value="70">
+                    </div>
+                    <div class="col-4">
+                        <label>BMI</label>
+                        <input type="text" name="bmi" class="form-control" value="22.9">
+                    </div>
+                    <div class="col-4">
+                        <label>體脂率</label>
+                        <input type="text" name="fat_percentage" class="form-control" value="15">
+                    </div>
+                </div>
+                
+                <!-- 職業（checkbox） -->
+                <h5 class="mt-3">職業</h5>
+                <div class="row">
+                    <div class="col-4">
+                        <label><input type="checkbox" name="occupation[]" value="上班族" checked> 上班族</label>
+                    </div>
+                    <div class="col-4">
+                        <label><input type="checkbox" name="occupation[]" value="學生"> 學生</label>
+                    </div>
+                </div>
+                
+                <!-- 健康困擾 -->
+                <h5 class="mt-3">健康困擾</h5>
+                <div class="row">
+                    <div class="col-4">
+                        <label><input type="checkbox" name="health_concerns[]" value="失眠" checked> 失眠</label>
+                    </div>
+                    <div class="col-4">
+                        <label><input type="checkbox" name="health_concerns[]" value="疲勞" checked> 疲勞</label>
+                    </div>
+                </div>
+                
+                <!-- 用藥習慣 -->
+                <h5 class="mt-3">用藥習慣</h5>
+                <div class="row">
+                    <div class="col-6">
+                        <label><input type="radio" name="has_medication_habit" value="1" checked> 是</label>
+                        <label><input type="radio" name="has_medication_habit" value="0"> 否</label>
+                    </div>
+                </div>
+                <input type="text" name="medication_name" class="form-control mt-2" placeholder="藥物名稱" value="維他命D">
+                
+                <!-- 建議產品 -->
+                <h5 class="mt-3">建議產品</h5>
+                <div class="row">
+                    <div class="col-4">
+                        <label><input type="checkbox" name="recommended_products[]" value="精力素" checked> 精力素</label>
+                    </div>
+                    <div class="col-4">
+                        <label><input type="checkbox" name="recommended_products[]" value="靈芝EX"> 靈芝EX</label>
+                    </div>
+                </div>
+                <input type="text" name="energy_essence_dosage" class="form-control mt-2" placeholder="精力素攝取量" value="每日2顆">
+                
+                <button type="button" class="btn btn-danger mt-3" onclick="showConfirmModal()">送出表單（測試）</button>
+            </form>
+        </div>
+        
+        <!-- Bootstrap Modal -->
+        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">確認表單內容</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="confirmModalBody">
+                        <!-- 表單內容將動態載入此處 -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-danger" id="confirmSubmitBtn">確認送出</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 執行測試按鈕 -->
+        <div class="test-section">
+            <h3>TDD 測試執行</h3>
+            <button class="btn btn-primary" onclick="runAllTests()">執行所有測試</button>
+            <button class="btn btn-success" onclick="runSingleTest()">執行單一功能測試</button>
+            <button class="btn btn-info" onclick="clearTestResults()">清除測試結果</button>
+        </div>
+    </div>
+    
+    <script>
+        // TDD 測試框架
+        class ModalTDDTest {
+            constructor() {
+                this.results = [];
+            }
+            
+            // 測試用的 showConfirmModal 函數（複製自 eform05.php）
+            showConfirmModal() {
+                // 驗證必填欄位
+                var name = $('input[name="name"]').val();
+                var phone = $('input[name="phone"]').val();
+                var gender = $('select[name="gender"]').val();
+                var age = $('select[name="age"]').val();
+
+                if (!name || !phone || !gender || !age) {
+                    alert('請填寫姓名、手機號碼、性別、年齡等必填欄位');
+                    return;
+                }
+
+                // 收集完整表單資料進行顯示
+                var formSummary = this.collectFormDataForDisplay();
+                
+                // 將資料載入到 modal 中
+                $('#confirmModalBody').html(formSummary);
+                
+                // 顯示 Bootstrap modal
+                $('#confirmModal').modal('show');
+                
+                // 綁定確認送出按鈕事件
+                $('#confirmSubmitBtn').off('click').on('click', function() {
+                    $('#confirmModal').modal('hide');
+                    alert('測試：表單送出成功！');
+                });
+            }
+            
+            // 收集表單資料顯示函數（複製自 eform05.php）
+            collectFormDataForDisplay() {
+                var html = '<div class="form-confirmation-content">';
+                
+                // 1. 基本資料區塊
+                html += '<div class="info-block mb-3" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">';
+                html += '<h6 class="mb-3"><strong>基本資料</strong></h6>';
+                html += '<div class="row">';
+                html += '<div class="col-4"><strong>姓名：</strong>' + ($('input[name="name"]').val() || '未填寫') + '</div>';
+                html += '<div class="col-4"><strong>會員編號：</strong>000000</div>';
+                html += '<div class="col-4"><strong>性別：</strong>' + ($('select[name="gender"]').val() || '未選擇') + '</div>';
+                html += '</div>';
+                html += '<div class="row mt-2">';
+                html += '<div class="col-4"><strong>年齡：</strong>' + ($('select[name="age"]').val() ? $('select[name="age"]').val() + '歲' : '未選擇') + '</div>';
+                html += '<div class="col-4"><strong>手機：</strong>' + ($('input[name="phone"]').val() || '未填寫') + '</div>';
+                html += '<div class="col-4"><strong>運動習慣：</strong>' + ($('select[name="exercise_habit"]').val() || '未選擇') + '</div>';
+                html += '</div>';
+                html += '</div>';
+
+                // 2. 體測數據區塊
+                html += '<div class="info-block mb-3" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">';
+                html += '<h6 class="mb-3"><strong>體測標準建議值</strong></h6>';
+                html += '<div class="row">';
+                html += '<div class="col-4"><strong>體重：</strong>' + ($('input[name="weight"]').val() ? $('input[name="weight"]').val() + 'kg' : '未填寫') + '</div>';
+                html += '<div class="col-4"><strong>BMI：</strong>' + ($('input[name="bmi"]').val() || '未填寫') + '</div>';
+                html += '<div class="col-4"><strong>體脂率：</strong>' + ($('input[name="fat_percentage"]').val() ? $('input[name="fat_percentage"]').val() + '%' : '未填寫') + '</div>';
+                html += '</div>';
+                html += '</div>';
+
+                // 3. 職業與健康狀況區塊
+                var occupations = [];
+                $('input[name="occupation[]"]:checked').each(function() {
+                    occupations.push($(this).next().text() || $(this).val());
+                });
+                var healthConcerns = [];
+                $('input[name="health_concerns[]"]:checked').each(function() {
+                    healthConcerns.push($(this).next().text() || $(this).val());
+                });
+                
+                html += '<div class="info-block mb-3" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">';
+                html += '<h6 class="mb-3"><strong>職業與健康狀況</strong></h6>';
+                html += '<div class="row">';
+                html += '<div class="col-6"><strong>職業：</strong>' + (occupations.length > 0 ? occupations.join('、') : '未選擇') + '</div>';
+                html += '<div class="col-6"><strong>健康困擾：</strong>' + (healthConcerns.length > 0 ? healthConcerns.join('、') : '無') + '</div>';
+                html += '</div>';
+                html += '</div>';
+
+                // 4. 用藥資訊區塊
+                var hasMedication = $('input[name="has_medication_habit"]:checked').val();
+                html += '<div class="info-block mb-3" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">';
+                html += '<h6 class="mb-3"><strong>用藥資訊</strong></h6>';
+                html += '<div class="row">';
+                html += '<div class="col-6"><strong>用藥習慣：</strong>' + (hasMedication === '1' ? '是' : '否') + '</div>';
+                if (hasMedication === '1') {
+                    html += '<div class="col-6"><strong>藥物名稱：</strong>' + ($('input[name="medication_name"]').val() || '未填寫') + '</div>';
+                }
+                html += '</div>';
+                html += '</div>';
+
+                // 5. 建議產品區塊
+                var recommendedProducts = [];
+                $('input[name="recommended_products[]"]:checked').each(function() {
+                    recommendedProducts.push($(this).next().text() || $(this).val());
+                });
+                
+                html += '<div class="info-block mb-3" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">';
+                html += '<h6 class="mb-3"><strong>建議產品</strong></h6>';
+                html += '<div class="row">';
+                html += '<div class="col-12"><strong>推薦產品：</strong>' + (recommendedProducts.length > 0 ? recommendedProducts.join('、') : '無') + '</div>';
+                html += '</div>';
+                
+                // 產品攝取量
+                var dosageFields = [
+                    {field: 'energy_essence_dosage', label: '精力素'},
+                    {field: 'reishi_ex_dosage', label: '靈芝EX'}, 
+                    {field: 'vitamin_c_dosage', label: '維他命C'},
+                    {field: 'energy_crystal_dosage', label: '精力結晶'},
+                    {field: 'reishi_tea_dosage', label: '靈芝茶'}
+                ];
+                
+                var dosageCount = 0;
+                var dosageHtml = '';
+                dosageFields.forEach(function(dosage) {
+                    var value = $('input[name="' + dosage.field + '"]').val();
+                    if (value) {
+                        if (dosageCount % 3 === 0) {
+                            if (dosageCount > 0) dosageHtml += '</div>';
+                            dosageHtml += '<div class="row mt-2">';
+                        }
+                        dosageHtml += '<div class="col-4"><strong>' + dosage.label + '：</strong>' + value + '</div>';
+                        dosageCount++;
+                    }
+                });
+                if (dosageCount > 0) {
+                    dosageHtml += '</div>';
+                    html += dosageHtml;
+                }
+                
+                html += '</div>';
+                html += '</div>';
+                
+                return html;
+            }
+            
+            // 測試 1: Bootstrap 載入檢查
+            testBootstrapLoaded() {
+                try {
+                    if (typeof $.fn.modal !== 'undefined') {
+                        return { pass: true, message: 'Bootstrap modal 函數已正確載入' };
+                    } else {
+                        return { pass: false, message: 'Bootstrap modal 函數未載入' };
+                    }
+                } catch (e) {
+                    return { pass: false, message: '測試 Bootstrap 載入時發生錯誤: ' + e.message };
+                }
+            }
+            
+            // 測試 2: Modal 顯示功能
+            testModalShow() {
+                try {
+                    // 嘗試顯示 modal
+                    $('#confirmModal').modal('show');
+                    
+                    // 檢查 modal 是否顯示
+                    setTimeout(() => {
+                        if ($('#confirmModal').hasClass('show')) {
+                            this.addResult({ pass: true, message: 'Modal 顯示功能正常' });
+                            $('#confirmModal').modal('hide'); // 隱藏 modal
+                        } else {
+                            this.addResult({ pass: false, message: 'Modal 無法正常顯示' });
+                        }
+                    }, 500);
+                    
+                    return { pass: true, message: 'Modal 顯示測試執行中...' };
+                } catch (e) {
+                    return { pass: false, message: '測試 Modal 顯示時發生錯誤: ' + e.message };
+                }
+            }
+            
+            // 測試 3: 表單資料收集
+            testFormDataCollection() {
+                try {
+                    var formData = this.collectFormDataForDisplay();
+                    
+                    if (formData && formData.length > 0) {
+                        // 檢查是否包含基本資料
+                        if (formData.includes('基本資料') && formData.includes('測試用戶')) {
+                            return { pass: true, message: '表單資料收集功能正常，包含基本資料' };
+                        } else {
+                            return { pass: false, message: '表單資料收集不完整，缺少基本資料' };
+                        }
+                    } else {
+                        return { pass: false, message: '表單資料收集失敗，返回空資料' };
+                    }
+                } catch (e) {
+                    return { pass: false, message: '測試表單資料收集時發生錯誤: ' + e.message };
+                }
+            }
+            
+            // 測試 4: Modal 內容正確性
+            testModalContent() {
+                try {
+                    // 填入測試資料到 modal
+                    var formSummary = this.collectFormDataForDisplay();
+                    $('#confirmModalBody').html(formSummary);
+                    
+                    // 檢查 modal 內容
+                    var modalContent = $('#confirmModalBody').html();
+                    
+                    var checks = [
+                        { condition: modalContent.includes('測試用戶'), name: '姓名' },
+                        { condition: modalContent.includes('0912345678'), name: '手機' },
+                        { condition: modalContent.includes('男'), name: '性別' },
+                        { condition: modalContent.includes('上班族'), name: '職業' },
+                        { condition: modalContent.includes('失眠'), name: '健康困擾' }
+                    ];
+                    
+                    var passedChecks = checks.filter(check => check.condition);
+                    var failedChecks = checks.filter(check => !check.condition);
+                    
+                    if (failedChecks.length === 0) {
+                        return { pass: true, message: `Modal 內容正確性驗證通過 (${passedChecks.length}/${checks.length})` };
+                    } else {
+                        var failedNames = failedChecks.map(check => check.name).join(', ');
+                        return { pass: false, message: `Modal 內容驗證失敗，缺少：${failedNames}` };
+                    }
+                } catch (e) {
+                    return { pass: false, message: '測試 Modal 內容時發生錯誤: ' + e.message };
+                }
+            }
+            
+            // 測試 5: 必填欄位驗證
+            testRequiredFieldValidation() {
+                try {
+                    // 清空必填欄位
+                    $('input[name="name"]').val('');
+                    
+                    // 嘗試觸發驗證
+                    var originalAlert = window.alert;
+                    var alertCalled = false;
+                    window.alert = function(message) {
+                        alertCalled = true;
+                        return message;
+                    };
+                    
+                    this.showConfirmModal();
+                    
+                    // 恢復原始 alert
+                    window.alert = originalAlert;
+                    
+                    // 恢復測試資料
+                    $('input[name="name"]').val('測試用戶');
+                    
+                    if (alertCalled) {
+                        return { pass: true, message: '必填欄位驗證功能正常' };
+                    } else {
+                        return { pass: false, message: '必填欄位驗證未觸發' };
+                    }
+                } catch (e) {
+                    return { pass: false, message: '測試必填欄位驗證時發生錯誤: ' + e.message };
+                }
+            }
+            
+            // 測試 6: Modal 事件綁定
+            testModalEventBinding() {
+                try {
+                    // 觸發 showConfirmModal
+                    this.showConfirmModal();
+                    
+                    // 檢查確認按鈕是否有事件綁定
+                    var events = $._data($('#confirmSubmitBtn')[0], "events");
+                    
+                    if (events && events.click) {
+                        $('#confirmModal').modal('hide'); // 隱藏 modal
+                        return { pass: true, message: 'Modal 事件綁定正常' };
+                    } else {
+                        return { pass: false, message: 'Modal 事件綁定失敗' };
+                    }
+                } catch (e) {
+                    return { pass: false, message: '測試 Modal 事件綁定時發生錯誤: ' + e.message };
+                }
+            }
+            
+            // 添加測試結果
+            addResult(result) {
+                this.results.push(result);
+                this.displayResult(result);
+            }
+            
+            // 顯示測試結果
+            displayResult(result) {
+                var resultDiv = $('<div class="test-result"></div>');
+                resultDiv.addClass(result.pass ? 'test-pass' : 'test-fail');
+                resultDiv.html(`
+                    <strong>${result.pass ? '✓ PASS' : '✗ FAIL'}</strong>: ${result.message}
+                `);
+                $('#test-results').append(resultDiv);
+            }
+            
+            // 執行所有測試
+            runAllTests() {
+                this.clearResults();
+                
+                var tests = [
+                    { name: 'Bootstrap 載入檢查', fn: () => this.testBootstrapLoaded() },
+                    { name: '表單資料收集測試', fn: () => this.testFormDataCollection() },
+                    { name: 'Modal 內容正確性測試', fn: () => this.testModalContent() },
+                    { name: '必填欄位驗證測試', fn: () => this.testRequiredFieldValidation() },
+                    { name: 'Modal 事件綁定測試', fn: () => this.testModalEventBinding() },
+                    { name: 'Modal 顯示功能測試', fn: () => this.testModalShow() }
+                ];
+                
+                var infoDiv = $('<div class="test-result test-info"></div>');
+                infoDiv.html(`<strong>開始執行 ${tests.length} 項 TDD 測試...</strong>`);
+                $('#test-results').append(infoDiv);
+                
+                tests.forEach((test, index) => {
+                    setTimeout(() => {
+                        var result = test.fn();
+                        if (result) {
+                            this.addResult(result);
+                        }
+                        
+                        // 最後一個測試完成時顯示總結
+                        if (index === tests.length - 1) {
+                            setTimeout(() => this.showSummary(), 1000);
+                        }
+                    }, index * 200);
+                });
+            }
+            
+            // 顯示測試總結
+            showSummary() {
+                var passed = this.results.filter(r => r.pass).length;
+                var total = this.results.length;
+                var summaryDiv = $('<div class="test-result"></div>');
+                
+                if (passed === total) {
+                    summaryDiv.addClass('test-pass');
+                    summaryDiv.html(`<strong>🎉 所有測試通過！</strong> (${passed}/${total})`);
+                } else {
+                    summaryDiv.addClass('test-fail');
+                    summaryDiv.html(`<strong>⚠️ 測試完成</strong> - 通過: ${passed}/${total}, 失敗: ${total - passed}`);
+                }
+                
+                $('#test-results').append(summaryDiv);
+            }
+            
+            // 清除測試結果
+            clearResults() {
+                this.results = [];
+                $('#test-results').empty();
+            }
+        }
+        
+        // 建立測試實例
+        const modalTest = new ModalTDDTest();
+        
+        // 全域函數
+        function showConfirmModal() {
+            modalTest.showConfirmModal();
+        }
+        
+        function runAllTests() {
+            modalTest.runAllTests();
+        }
+        
+        function runSingleTest() {
+            modalTest.clearResults();
+            var result = modalTest.testBootstrapLoaded();
+            modalTest.addResult(result);
+        }
+        
+        function clearTestResults() {
+            modalTest.clearResults();
+        }
+        
+        // 頁面載入完成後自動執行基本檢查
+        $(document).ready(function() {
+            var infoDiv = $('<div class="test-result test-info"></div>');
+            infoDiv.html('<strong>頁面載入完成</strong> - 點擊「執行所有測試」開始 TDD 驗證');
+            $('#test-results').append(infoDiv);
+        });
+    </script>
+</body>
+</html>

@@ -211,3 +211,4 @@ ORDER BY `s`.`created_at` DESC
 127. 目前年齡還是沒有出現下拉選項，請務必確認網頁的內容，已有docker可以讓你測試了，不要再讓我看到錯誤
 128. 幫我整理一下頁面，script只要一個就好，document ready也是，不要讓我看到一堆
 129. 確認送出表單的部分，幫我用modal處理，我要看到表單完整資訊，請參考docs\source\image.png的樣式處理，不要用swal處理
+130. $(...).modal is not a function，請幫我建立TDD測試，確保功能完全正確
