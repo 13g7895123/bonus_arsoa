@@ -482,103 +482,42 @@
 
 <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
 
-
+<!-- 必要的外部腳本載入 -->
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script>
-  window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
-</script>
-<script src="js/smoothscroll.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/animsition.min.js"></script>
-<script src="js/owl.carousel.min.js"></script>
-<script src="js/wow.min.js"></script>
-<script src="js/jquery.pagepiling.min.js"></script>
-<script src="js/isotope.pkgd.min.js"></script>
-<script src="js/jquery.fancybox.min.js"></script>
-<script src="js/TweenMax.min.js"></script>
-<script src="js/ScrollMagic.min.js"></script>
-<script src="js/animation.gsap.min.js"></script>
-<script src="js/jquery.viewport.js"></script>
-<script src="js/jquery.countdown.min.js"></script>
-<script src="js/script.js"></script>
+<script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Simple CSS for clean UI -->
+<!-- 頁面樣式 -->
 <style>
   .modal-content {
     border-radius: 0px;
   }
-
   .modal-body::-webkit-scrollbar {
     width: 8px;
   }
-
   .modal-body::-webkit-scrollbar-track {
     background: #f1f1f1;
   }
-
   .modal-body::-webkit-scrollbar-thumb {
     background: #c1c1c1;
   }
-
   .modal-body::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>
 
+<!-- 主要功能腳本 -->
 <script>
-  $(document).ready(function() {
-    // init controller
-    var controller = new ScrollMagic.Controller();
+  // 全域變數
+  var showTestButton = true; // 控制測試按鈕顯示
 
-    // build scenes
-    new ScrollMagic.Scene({
-        triggerElement: '.section-mini',
-        triggerHook: 1,
-        duration: '200%'
-      })
-      .setTween('.article-promo-item', {
-        backgroundPosition: '50% 100%',
-        ease: Linear.easeNone
-      })
-      .addTo(controller);
-
-  });
-</script>
-<script>
-  /*Scroll to top when arrow up clicked BEGIN*/
-  $(window).scroll(function() {
-    var height = $(window).scrollTop();
-    if (height > 100) {
-      $('#back2Top').fadeIn();
-    } else {
-      $('#back2Top').fadeOut();
-    }
-  });
-  $(document).ready(function() {
-    $("#back2Top").click(function(event) {
-      event.preventDefault();
-      $("html, body").animate({
-        scrollTop: 0
-      }, "slow");
-      return false;
-    });
-
-  });
-  /*Scroll to top when arrow up clicked END*/
-</script>
-<script>
-  // 控制測試按鈕顯示的變數
-  var showTestButton = true; // 設為 true 顯示測試按鈕
-
-  // 頁面載入時檢查是否顯示測試按鈕
+  // 唯一的 document ready 函數
   $(document).ready(function() {
     console.log('eform5 頁面載入完成');
     console.log('DOM 已載入完成');
     console.log('jQuery 版本:', $.fn.jquery);
     
-    // 設定固定的會員資料 (Point 122)
+    // 設定固定的會員資料
     console.log('設定會員資料為: 公司 (000000)');
     
     // 自動填入當天日期
@@ -586,8 +525,16 @@
     var currentDate = today.getFullYear() + '-' +
       String(today.getMonth() + 1).padStart(2, '0') + '-' +
       String(today.getDate()).padStart(2, '0');
-
     $('#current-date').text(currentDate);
+
+    // 滾動到頂部功能
+    $("#back2Top").click(function(event) {
+      event.preventDefault();
+      $("html, body").animate({
+        scrollTop: 0
+      }, "slow");
+      return false;
+    });
 
     // 多階段重試生成年齡下拉選單選項
     var generateAgeRetryCount = 0;
@@ -639,6 +586,16 @@
     console.log('當前年份:', currentYear);
     console.log('18歲計算測試:', (currentYear - 18), '→ 民國', (currentYear - 18 - 1911), '年');
     console.log('100歲計算測試:', (currentYear - 100), '→ 民國', (currentYear - 100 - 1911), '年');
+  });
+
+  // 滾動監聽（滾動到頂部按鈕顯示/隱藏）
+  $(window).scroll(function() {
+    var height = $(window).scrollTop();
+    if (height > 100) {
+      $('#back2Top').fadeIn();
+    } else {
+      $('#back2Top').fadeOut();
+    }
   });
 
   // 生成年齡下拉選單選項 (民國XX年出生 - XX歲)
