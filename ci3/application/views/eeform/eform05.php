@@ -302,7 +302,7 @@
 
                   <div class="col-sm-12 mb30">
                     <hr class="my-4">
-                    <div id="testDataButton" style="display: none;" class="mb-3">
+                    <div id="testDataButton" style="display: block;" class="mb-3">
                       <button type="button" class="btn btn-outline-info btn-sm" onclick="fillTestData()">
                         <i class="fas fa-flask mr-1"></i>填入測試資料
                       </button>
@@ -574,8 +574,12 @@
 
   // 頁面載入時檢查是否顯示測試按鈕
   $(document).ready(function() {
+    console.log('eform5 頁面載入完成');
     console.log('DOM 已載入完成');
     console.log('jQuery 版本:', $.fn.jquery);
+    
+    // 設定固定的會員資料 (Point 122)
+    console.log('設定會員資料為: 公司 (000000)');
     
     // 自動填入當天日期
     var today = new Date();
@@ -584,19 +588,24 @@
       String(today.getDate()).padStart(2, '0');
 
     $('#current-date').text(currentDate);
-    $('input[name="join_date"]').val(currentDate);
 
     // 延遲生成年齡下拉選單選項，確保DOM完全渲染
     setTimeout(function() {
       try {
         generateAgeOptions();
+        console.log('年齡選項生成完成');
       } catch (error) {
         console.error('生成年齡選項時發生錯誤:', error);
       }
     }, 100);
 
+    // 顯示測試按鈕
+    console.log('showTestButton 狀態:', showTestButton);
     if (showTestButton) {
+      console.log('顯示測試按鈕');
       $('#testDataButton').show();
+    } else {
+      console.log('隱藏測試按鈕');
     }
     
     // 添加手動測試函數到全域作用域
@@ -663,262 +672,297 @@
 
   // 填入測試資料的函數
   function fillTestData() {
-    // 只在用戶資料為空時填入測試資料
-    if (!$('input[name="member_name"]').val()) {
-      $('input[name="member_name"]').val('測試會員');
+    console.log('開始填入eform5測試資料');
+    
+    // 基本資料
+    $('input[name="phone"]').val(generateRandomPhone());
+    $('input[name="name"]').val('公司');
+    $('select[name="gender"]').val(Math.random() < 0.5 ? '男' : '女');
+    
+    // 隨機選擇年齡 (18-60歲)
+    var randomAge = Math.floor(Math.random() * 43) + 18; // 18-60歲
+    $('select[name="age"]').val(randomAge);
+    
+    $('input[name="height"]').val(Math.floor(Math.random() * 31) + 150); // 150-180cm
+    $('select[name="exercise_habit"]').val(Math.random() < 0.6 ? '是' : '否');
+
+    // 體測標準建議值 - 隨機填入數字
+    $('input[name="weight"]').val((Math.random() * 40 + 45).toFixed(1)); // 45-85kg
+    $('input[name="bmi"]').val((Math.random() * 10 + 18).toFixed(1)); // 18-28
+    $('input[name="fat_percentage"]').val((Math.random() * 25 + 10).toFixed(1)); // 10-35%
+    $('input[name="fat_mass"]').val((Math.random() * 20 + 5).toFixed(1)); // 5-25kg
+    $('input[name="muscle_percentage"]').val((Math.random() * 20 + 30).toFixed(1)); // 30-50%
+    $('input[name="muscle_mass"]').val((Math.random() * 25 + 20).toFixed(1)); // 20-45kg
+    $('input[name="water_percentage"]').val((Math.random() * 15 + 50).toFixed(1)); // 50-65%
+    $('input[name="water_content"]').val((Math.random() * 20 + 25).toFixed(1)); // 25-45kg
+    $('input[name="visceral_fat_percentage"]').val((Math.random() * 10 + 5).toFixed(1)); // 5-15%
+    $('input[name="bone_mass"]').val((Math.random() * 2 + 2).toFixed(1)); // 2-4kg
+    $('input[name="bmr"]').val(Math.floor(Math.random() * 800) + 1200); // 1200-2000卡
+    $('input[name="protein_percentage"]').val((Math.random() * 5 + 15).toFixed(1)); // 15-20%
+    $('input[name="obesity_percentage"]').val((Math.random() * 30 + 80).toFixed(1)); // 80-110%
+    $('input[name="body_age"]').val(Math.floor(Math.random() * 40) + 20); // 20-60歲
+    $('input[name="lean_body_mass"]').val((Math.random() * 30 + 40).toFixed(1)); // 40-70kg
+
+    // 職業 - 隨機選擇1-2個
+    var occupations = ['occupation_service', 'occupation_office', 'occupation_food', 'occupation_freelance'];
+    var selectedOccupations = [];
+    var numOccupations = Math.floor(Math.random() * 2) + 1;
+    
+    for (var i = 0; i < numOccupations; i++) {
+      var randomOccupation = occupations[Math.floor(Math.random() * occupations.length)];
+      if (selectedOccupations.indexOf(randomOccupation) === -1) {
+        selectedOccupations.push(randomOccupation);
+        $('#' + randomOccupation).prop('checked', true);
+      }
     }
-    if (!$('input[name="member_id"]').val()) {
-      $('input[name="member_id"]').val('000000');
+
+    // 長期使用藥物習慣
+    var hasMedication = Math.random() < 0.3;
+    $('input[name="has_medication_habit"][value="' + (hasMedication ? '1' : '0') + '"]').prop('checked', true);
+    if (hasMedication) {
+      var medications = ['高血壓藥物', '糖尿病藥物', '維他命', '保健食品', '止痛藥'];
+      $('input[name="medication_name"]').val(medications[Math.floor(Math.random() * medications.length)]);
     }
-    $('input[name="join_date"]').val('2023-01-15');
-    $('select[name="gender"]').val('女');
-    $('input[name="age"]').val('35');
-    $('input[name="skin_health_condition"]').val('整體健康狀況良好，偶有疲勞感');
 
-    // 健康關注測試資料
-    $('input[name="health_concerns[]"][value="疲勞"]').prop('checked', true);
-    $('input[name="health_concerns[]"][value="免疫力差"]').prop('checked', true);
-    $('input[name="health_concerns[]"][value="皮膚問題"]').prop('checked', true);
-    $('input[name="other_health_concerns"]').val('睡眠品質偶爾不佳');
+    // 家族慢性病史
+    var hasFamilyDisease = Math.random() < 0.4;
+    $('input[name="has_family_disease_history"][value="' + (hasFamilyDisease ? '1' : '0') + '"]').prop('checked', true);
+    if (hasFamilyDisease) {
+      var diseases = ['高血壓', '糖尿病', '心臟病', '癌症', '中風'];
+      $('input[name="disease_name"]').val(diseases[Math.floor(Math.random() * diseases.length)]);
+    }
 
-    // 產品數量測試資料
-    $('input[name="product_energy_essence001"]').val('2');
-    $('input[name="product_reishi_ex001"]').val('1');
-    $('input[name="product_vitamin_c001"]').val('3');
-    $('input[name="product_energy_crystal001"]').val('1');
-    $('input[name="product_reishi_tea001"]').val('2');
-    $('input[name="product_soap001"]').val('1');
-    $('input[name="product_mask001"]').val('2');
-    $('input[name="product_toner001"]').val('1');
+    // 健康困擾 - 隨機選擇2-4個
+    var healthConcerns = ['health_headache', 'health_allergy', 'health_sleep', 'health_joints', 
+                         'health_three_high', 'health_digestive', 'health_vision', 'health_immunity', 'health_weight'];
+    var numConcerns = Math.floor(Math.random() * 3) + 2; // 2-4個
+    var selectedConcerns = [];
+    
+    for (var i = 0; i < numConcerns; i++) {
+      var randomConcern = healthConcerns[Math.floor(Math.random() * healthConcerns.length)];
+      if (selectedConcerns.indexOf(randomConcern) === -1) {
+        selectedConcerns.push(randomConcern);
+        $('#' + randomConcern).prop('checked', true);
+      }
+    }
+    
+    // 有時候選擇其他
+    if (Math.random() < 0.3) {
+      $('#health_other_check').prop('checked', true);
+      var otherConcerns = ['壓力大', '失眠', '記憶力減退', '易疲勞'];
+      $('input[name="health_concerns_other"]').val(otherConcerns[Math.floor(Math.random() * otherConcerns.length)]);
+    }
 
-    // 每日建議攝取量測試資料
-    $('input[name="daily_energy_essence"]').val('每日早晚各1包，空腹服用');
-    $('input[name="daily_reishi_ex"]').val('每日2次，每次2粒，飯後服用');
-    $('input[name="daily_vitamin_c"]').val('每日1錠，餐後服用');
-    $('input[name="daily_energy_crystal"]').val('每日1次，每次5ml，溫水稀釋');
-    $('input[name="daily_reishi_tea"]').val('每日2-3次，可搭配餐飲');
-    $('textarea[name="other_daily_recommendations"]').val('建議搭配規律運動，每週3-4次，每次30分鐘。維持充足睡眠，每日7-8小時。');
+    // 微循環檢測
+    var circulationTests = ['血液循環良好', '輕微循環不良', '需要改善循環', '循環狀況正常'];
+    $('input[name="microcirculation_test"]').val(circulationTests[Math.floor(Math.random() * circulationTests.length)]);
 
-    $('input[name="line_contact"]').val('與會員保持良好互動，定期關心保健品使用狀況及身體變化');
-    $('input[name="tel_contact"]').val('每月電話追蹤，了解產品使用效果和健康狀況改善情形');
+    // 日常飲食建議
+    var dietaryAdvices = ['多吃蔬菜水果', '減少油炸食物', '增加蛋白質攝取', '控制糖分攝取', '多喝水'];
+    $('input[name="dietary_advice"]').val(dietaryAdvices[Math.floor(Math.random() * dietaryAdvices.length)]);
+
+    // 每日建議產品 - 隨機選擇2-3個產品
+    var products = [
+      {checkbox: 'product_energy_essence', dosage: 'energy_essence_dosage', suggestions: ['每日1包', '早晚各1包', '空腹服用1包']},
+      {checkbox: 'product_reishi_ex', dosage: 'reishi_ex_dosage', suggestions: ['每日2粒', '早晚各1粒', '飯後服用2粒']},
+      {checkbox: 'product_vitamin_c', dosage: 'vitamin_c_dosage', suggestions: ['每日1錠', '餐後1錠', '早餐後1錠']},
+      {checkbox: 'product_energy_crystal', dosage: 'energy_crystal_dosage', suggestions: ['每日5ml', '溫水稀釋5ml', '早上空腹5ml']},
+      {checkbox: 'product_reishi_tea', dosage: 'reishi_tea_dosage', suggestions: ['每日2-3次', '餐後飲用', '代替茶水飲用']}
+    ];
+    
+    var numProducts = Math.floor(Math.random() * 2) + 2; // 2-3個產品
+    var selectedProducts = [];
+    
+    for (var i = 0; i < numProducts; i++) {
+      var randomProduct = products[Math.floor(Math.random() * products.length)];
+      if (selectedProducts.indexOf(randomProduct.checkbox) === -1) {
+        selectedProducts.push(randomProduct.checkbox);
+        $('#' + randomProduct.checkbox).prop('checked', true);
+        var suggestion = randomProduct.suggestions[Math.floor(Math.random() * randomProduct.suggestions.length)];
+        $('input[name="' + randomProduct.dosage + '"]').val(suggestion);
+      }
+    }
+
+    console.log('eform5測試資料填入完成');
+    
+    // 提示用戶
+    alert('測試資料已隨機填入！');
+  }
+  
+  // 產生隨機手機號碼
+  function generateRandomPhone() {
+    var prefixes = ['09', '08'];
+    var prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    var number = '';
+    for (var i = 0; i < 8; i++) {
+      number += Math.floor(Math.random() * 10);
+    }
+    return prefix + number;
   }
 
   function showConfirmModal() {
-    // 驗證必填欄位
-    var memberName = $('input[name="member_name"]').val();
-    var memberId = $('input[name="member_id"]').val();
-    var joinDate = $('input[name="join_date"]').val();
+    // 驗證必填欄位 - eform5 使用的是 name, phone 等欄位
+    var name = $('input[name="name"]').val();
+    var phone = $('input[name="phone"]').val();
     var gender = $('select[name="gender"]').val();
-    var age = $('input[name="age"]').val();
+    var age = $('select[name="age"]').val();
 
-    if (!memberName || !memberId || !joinDate || !gender || !age) {
+    if (!name || !phone || !gender || !age) {
       Swal.fire({
         title: '欄位未完整',
-        text: '請填寫所有必填欄位',
+        text: '請填寫姓名、手機號碼、性別、年齡等必填欄位',
         icon: 'warning',
         confirmButtonText: '確定'
       });
       return;
     }
 
-    // 填入確認視窗的內容
-    $('#confirm-member-name').text(memberName);
-    $('#confirm-member-id').text(memberId);
-    $('#confirm-join-date').text(joinDate);
-    $('#confirm-gender').text(gender);
-    $('#confirm-age').text(age);
-    $('#confirm-meeting-date').text($('input[name="meeting_date"]').val() || '(未填寫)');
-    $('#confirm-skin-health').text($('input[name="skin_health_condition"]').val() || '(未填寫)');
-
-    // 聯絡資訊
-    $('#confirm-line-contact').text($('input[name="line_contact"]').val() || '(未填寫)');
-    $('#confirm-tel-contact').text($('input[name="tel_contact"]').val() || '(未填寫)');
-
-    // 收集健康關注
-    var healthConcerns = [];
-    $('input[name="health_concerns[]"]:checked').each(function() {
-      healthConcerns.push($(this).val());
-    });
-
-    var otherHealthConcerns = $('input[name="other_health_concerns"]').val();
-    if (otherHealthConcerns) {
-      healthConcerns.push('其他: ' + otherHealthConcerns);
-    }
-
-    var healthConcernsHtml = '';
-    if (healthConcerns.length > 0) {
-      healthConcerns.forEach(function(concern) {
-        healthConcernsHtml += '<span class="badge badge-secondary mr-1 mb-1">' + concern + '</span>';
-      });
-    } else {
-      healthConcernsHtml = '<span class="text-muted">未選擇任何健康關注項目</span>';
-    }
-    $('#confirm-health-concerns').html(healthConcernsHtml);
-
-    // 收集產品資料
-    var productData = [];
-    var productNames = {
-      'product_energy_essence001': '活力發酵精萃',
-      'product_reishi_ex001': '白鶴靈芝EX',
-      'product_vitamin_c001': '美力C錠',
-      'product_energy_crystal001': '鶴力晶',
-      'product_reishi_tea001': '白鶴靈芝茶',
-      'product_soap001': '淨白活膚蜜皂',
-      'product_mask001': '活顏泥膜',
-      'product_toner001': '化粧水'
-    };
-
-    Object.keys(productNames).forEach(function(key) {
-      var quantity = $('input[name="' + key + '"]').val();
-      if (quantity && parseInt(quantity) > 0) {
-        productData.push({
-          name: productNames[key],
-          quantity: quantity
-        });
+    // 顯示確認資訊
+    Swal.fire({
+      title: '確認送出表單',
+      html: `
+        <div class="text-left">
+          <p><strong>姓名：</strong>${name}</p>
+          <p><strong>手機：</strong>${phone}</p>
+          <p><strong>性別：</strong>${gender}</p>
+          <p><strong>年齡：</strong>${age}歲</p>
+        </div>
+      `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: '確認送出',
+      cancelButtonText: '取消'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        submitForm();
       }
     });
-
-    var productHtml = '';
-    if (productData.length > 0) {
-      productData.forEach(function(product) {
-        productHtml += '<div class="d-flex align-items-center mb-2">';
-        productHtml += '<span class="text-muted mr-3" style="min-width: 120px;">' + product.name + '：</span>';
-        productHtml += '<span class="text-dark">' + product.quantity + ' 個</span>';
-        productHtml += '</div>';
-      });
-    } else {
-      productHtml = '<span class="text-muted">未訂購任何產品</span>';
-    }
-    $('#confirm-products').html(productHtml);
-
-    // 收集每日建議攝取量
-    var dailyRecommendations = [];
-    var dailyFields = {
-      'daily_energy_essence': '活力發酵精萃建議攝取',
-      'daily_reishi_ex': '白鶴靈芝EX建議攝取',
-      'daily_vitamin_c': '美力C錠建議攝取',
-      'daily_energy_crystal': '鶴力晶建議攝取',
-      'daily_reishi_tea': '白鶴靈芝茶建議攝取'
-    };
-
-    Object.keys(dailyFields).forEach(function(key) {
-      var value = $('input[name="' + key + '"]').val();
-      if (value) {
-        dailyRecommendations.push({
-          name: dailyFields[key],
-          value: value
-        });
-      }
-    });
-
-    var otherRecommendations = $('textarea[name="other_daily_recommendations"]').val();
-    if (otherRecommendations) {
-      dailyRecommendations.push({
-        name: '其他建議',
-        value: otherRecommendations
-      });
-    }
-
-    var dailyHtml = '';
-    if (dailyRecommendations.length > 0) {
-      dailyRecommendations.forEach(function(rec) {
-        dailyHtml += '<div class="mb-3">';
-        dailyHtml += '<div class="font-weight-bold text-dark mb-1">' + rec.name + '</div>';
-        dailyHtml += '<div class="text-muted">' + rec.value + '</div>';
-        dailyHtml += '</div>';
-      });
-    } else {
-      dailyHtml = '<span class="text-muted">未填寫任何每日建議</span>';
-    }
-    $('#confirm-daily-recommendations').html(dailyHtml);
-
-    // 顯示模態視窗
-    $('#confirmModal').modal('show');
   }
 
   function submitForm() {
+    console.log('開始提交eform5表單');
+    
     // 收集表單資料
     var formData = {
-      member_name: $('input[name="member_name"]').val(),
-      member_id: $('input[name="member_id"]').val(),
-      join_date: $('input[name="join_date"]').val(),
+      // Point 122: 使用指定的會員資料
+      member_name: '公司',
+      member_id: '000000',
+      
+      // 基本資料
+      phone: $('input[name="phone"]').val(),
+      name: $('input[name="name"]').val(),
       gender: $('select[name="gender"]').val(),
-      age: $('input[name="age"]').val(),
-      skin_health_condition: $('input[name="skin_health_condition"]').val(),
-      line_contact: $('input[name="line_contact"]').val(),
-      tel_contact: $('input[name="tel_contact"]').val(),
-      meeting_date: $('input[name="meeting_date"]').val(),
+      age: $('select[name="age"]').val(),
+      height: $('input[name="height"]').val(),
+      exercise_habit: $('select[name="exercise_habit"]').val(),
+      
+      // 體測標準建議值
+      weight: $('input[name="weight"]').val(),
+      bmi: $('input[name="bmi"]').val(),
+      fat_percentage: $('input[name="fat_percentage"]').val(),
+      fat_mass: $('input[name="fat_mass"]').val(),
+      muscle_percentage: $('input[name="muscle_percentage"]').val(),
+      muscle_mass: $('input[name="muscle_mass"]').val(),
+      water_percentage: $('input[name="water_percentage"]').val(),
+      water_content: $('input[name="water_content"]').val(),
+      visceral_fat_percentage: $('input[name="visceral_fat_percentage"]').val(),
+      bone_mass: $('input[name="bone_mass"]').val(),
+      bmr: $('input[name="bmr"]').val(),
+      protein_percentage: $('input[name="protein_percentage"]').val(),
+      obesity_percentage: $('input[name="obesity_percentage"]').val(),
+      body_age: $('input[name="body_age"]').val(),
+      lean_body_mass: $('input[name="lean_body_mass"]').val(),
+      
+      // 職業
+      occupation: [],
+      
+      // 藥物使用
+      has_medication_habit: $('input[name="has_medication_habit"]:checked').val() || '0',
+      medication_name: $('input[name="medication_name"]').val(),
+      
+      // 家族病史
+      has_family_disease_history: $('input[name="has_family_disease_history"]:checked').val() || '0',
+      disease_name: $('input[name="disease_name"]').val(),
+      
+      // 健康困擾
       health_concerns: [],
-      other_health_concerns: $('input[name="other_health_concerns"]').val(),
-      daily_recommendations: {},
-      other_daily_recommendations: $('textarea[name="other_daily_recommendations"]').val()
+      health_concerns_other: $('input[name="health_concerns_other"]').val(),
+      
+      // 檢測與建議
+      microcirculation_test: $('input[name="microcirculation_test"]').val(),
+      dietary_advice: $('input[name="dietary_advice"]').val(),
+      
+      // 建議產品
+      recommended_products: [],
+      product_dosages: {}
     };
 
-    // 收集健康關注
+    // 收集職業
+    $('input[name="occupation[]"]:checked').each(function() {
+      formData.occupation.push($(this).val());
+    });
+
+    // 收集健康困擾
     $('input[name="health_concerns[]"]:checked').each(function() {
       formData.health_concerns.push($(this).val());
     });
 
-    // 收集產品資料
-    var productFields = [
-      'product_energy_essence001',
-      'product_reishi_ex001',
-      'product_vitamin_c001',
-      'product_energy_crystal001',
-      'product_reishi_tea001',
-      'product_soap001',
-      'product_mask001',
-      'product_toner001'
-    ];
-
-    productFields.forEach(function(field) {
-      var quantity = $('input[name="' + field + '"]').val();
-      if (quantity && parseInt(quantity) > 0) {
-        formData[field] = parseInt(quantity);
-      }
+    // 收集建議產品
+    $('input[name="recommended_products[]"]:checked').each(function() {
+      formData.recommended_products.push($(this).val());
     });
-
-    // 收集每日建議攝取量
-    var dailyFields = [
-      'daily_energy_essence',
-      'daily_reishi_ex',
-      'daily_vitamin_c',
-      'daily_energy_crystal',
-      'daily_reishi_tea'
+    
+    // 收集產品攝取量
+    var dosageFields = [
+      'energy_essence_dosage',
+      'reishi_ex_dosage', 
+      'vitamin_c_dosage',
+      'energy_crystal_dosage',
+      'reishi_tea_dosage'
     ];
-
-    dailyFields.forEach(function(field) {
+    
+    dosageFields.forEach(function(field) {
       var value = $('input[name="' + field + '"]').val();
       if (value) {
-        formData.daily_recommendations[field] = value;
+        formData.product_dosages[field] = value;
       }
     });
+
+    console.log('收集到的表單資料:', formData);
 
     // 發送API請求
     $.ajax({
-      url: '<?php echo base_url("api/eeform4/submit"); ?>',
+      url: '<?php echo base_url("api/eeform/eeform5/submit"); ?>',
       method: 'POST',
       data: JSON.stringify(formData),
       contentType: 'application/json',
       dataType: 'json',
       beforeSend: function() {
         // 顯示載入狀態
-        $('#confirmModal .modal-footer button').prop('disabled', true);
-        $('#confirmModal .modal-footer .btn-danger').text('提交中...');
+        Swal.fire({
+          title: '提交中...',
+          text: '正在處理您的資料，請稍候',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading()
+          }
+        });
       },
       success: function(response) {
         if (response.success) {
           Swal.fire({
             title: '提交成功！',
-            text: '表單已成功提交，1.5秒後自動返回列表頁面',
+            text: '表單已成功提交',
             icon: 'success',
-            timer: 1500,
+            timer: 2000,
             showConfirmButton: false,
             allowOutsideClick: false,
             allowEscapeKey: false
           }).then(() => {
-            $('#confirmModal').modal('hide');
-            history.go(0);
+            location.reload();
           });
         } else {
           Swal.fire({
@@ -954,259 +998,11 @@
           icon: 'error',
           confirmButtonText: '確定'
         });
-      },
-      complete: function() {
-        // 恢復按鈕狀態
-        $('#confirmModal .modal-footer button').prop('disabled', false);
-        $('#confirmModal .modal-footer .btn-danger').text('確認送出');
       }
     });
   }
 
-  // Point 62: Member lookup functionality (同步 Point 57 功能到 eform4)
-  // 取得目前登入使用者資訊
-  var currentUserData = {
-    member_id: '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>',
-    member_name: '<?php echo isset($userdata['c_name']) ? $userdata['c_name'] : ''; ?>'
-  };
-
-  // 會員資料相關變數
-  var memberData = [];
-  var isMultipleMembers = false;
-
-  // 初始化會員資料
-  function initializeMemberData() {
-    console.log('[Point 62 - eform4] ===== 初始化會員資料功能開始 =====');
-    console.log('[Point 62 - eform4] 當前使用者資料:', currentUserData);
-    console.log('[Point 62 - eform4] 會員編號是否存在:', !!currentUserData.member_id);
-
-    // 設定會員編號欄位
-    $('input[name="member_id"]').val(currentUserData.member_id);
-    console.log('[Point 62 - eform4] 設定會員編號欄位為:', currentUserData.member_id);
-
-    // Point 60: 無論是否有會員編號，都進行測試API呼叫來確認端點是否正常
-    console.log('[Point 62 - eform4] ===== 開始測試API端點 =====');
-    if (currentUserData.member_id && currentUserData.member_id.trim() !== '') {
-      console.log('[Point 62 - eform4] 有會員編號，開始查詢相關會員資料...');
-      console.log('[Point 62 - eform4] 正常API呼叫，member_id:', currentUserData.member_id);
-      lookupMemberData(currentUserData.member_id);
-    } else {
-      console.log('[Point 62 - eform4] 沒有會員編號，但仍進行測試API呼叫來確認端點...');
-      // 使用測試ID來確認API端點是否正常運作
-      console.log('[Point 62 - eform4] 使用測試ID "TEST123" 進行API測試');
-      lookupMemberData('TEST123');
-
-      // 設定預設姓名
-      console.log('[Point 62 - eform4] 使用預設姓名:', currentUserData.member_name);
-      $('input[name="member_name"]').val(currentUserData.member_name);
-    }
-  }
-
-  // 查詢會員資料
-  function lookupMemberData(memberId) {
-    var apiUrl = '<?php echo base_url("api/eeform4/member_lookup/"); ?>' + memberId;
-    console.log('[Point 62 - eform4] ===== API 呼叫詳細資訊 =====');
-    console.log('[Point 62 - eform4] 開始查詢會員資料 API');
-    console.log('[Point 62 - eform4] API URL:', apiUrl);
-    console.log('[Point 62 - eform4] 查詢會員ID:', memberId);
-    console.log('[Point 62 - eform4] Base URL:', '<?php echo base_url(); ?>');
-    console.log('[Point 62 - eform4] 完整 API 路徑:', apiUrl);
-    console.log('[Point 62 - eform4] 開始發送 AJAX 請求...');
-
-    $.ajax({
-      url: apiUrl,
-      method: 'GET',
-      dataType: 'json',
-      beforeSend: function(xhr) {
-        console.log('[Point 62 - eform4] ===== AJAX 請求即將發送 =====');
-        console.log('[Point 62 - eform4] 請求方法: GET');
-        console.log('[Point 62 - eform4] 請求 URL:', apiUrl);
-        console.log('[Point 62 - eform4] 資料類型: json');
-        console.log('[Point 62 - eform4] AJAX 請求已發送，等待回應...');
-      },
-      success: function(response) {
-        console.log('[Point 62 - eform4] API 回應成功:', response);
-
-        if (response.success && response.data) {
-          memberData = response.data.members;
-          console.log('[Point 62 - eform4] 找到會員資料數量:', memberData.length);
-          console.log('[Point 62 - eform4] 會員資料內容:', memberData);
-
-          if (memberData.length > 1) {
-            // 多個會員：顯示下拉選單
-            console.log('[Point 62 - eform4] 多個會員匹配，顯示下拉選單');
-            isMultipleMembers = true;
-            setupMemberDropdown();
-          } else if (memberData.length === 1) {
-            // 單個會員：使用文字輸入框
-            console.log('[Point 62 - eform4] 單個會員匹配，使用文字輸入框');
-            console.log('[Point 62 - eform4] 會員姓名:', memberData[0].c_name);
-            isMultipleMembers = false;
-            $('input[name="member_name"]').val(memberData[0].c_name);
-            currentUserData.member_name = memberData[0].c_name;
-          } else {
-            // 沒有找到會員：使用預設值
-            console.log('[Point 62 - eform4] 沒有找到會員，使用預設值');
-            isMultipleMembers = false;
-            $('input[name="member_name"]').val(currentUserData.member_name);
-          }
-        } else {
-          console.log('[Point 62 - eform4] API 回應格式不正確:', response);
-        }
-      },
-      error: function(xhr, status, error) {
-        console.error('[Point 62 - eform4] ===== API 呼叫失敗詳細資訊 =====');
-        console.error('[Point 62 - eform4] API 查詢失敗:', {
-          status: status,
-          error: error,
-          xhr: xhr,
-          responseText: xhr.responseText
-        });
-        console.error('[Point 62 - eform4] HTTP 狀態碼:', xhr.status);
-        console.error('[Point 62 - eform4] HTTP 狀態文字:', xhr.statusText);
-        console.error('[Point 62 - eform4] 回應內容:', xhr.responseText);
-        console.error('[Point 62 - eform4] AJAX 狀態:', status);
-        console.error('[Point 62 - eform4] 錯誤類型:', error);
-        console.error('[Point 62 - eform4] 請求的 URL:', apiUrl);
-
-        // 出錯時使用預設值
-        console.log('[Point 62 - eform4] 因為API失敗，使用預設會員姓名:', currentUserData.member_name);
-        $('input[name="member_name"]').val(currentUserData.member_name);
-      },
-      complete: function(xhr, status) {
-        console.log('[Point 62 - eform4] ===== AJAX 請求完成 =====');
-        console.log('[Point 62 - eform4] 最終狀態:', status);
-        console.log('[Point 62 - eform4] HTTP 狀態碼:', xhr.status);
-        console.log('[Point 62 - eform4] 請求已完成 (成功或失敗)');
-      }
-    });
-  }
-
-  // 設定會員下拉選單
-  function setupMemberDropdown() {
-    console.log('[Point 62 - eform4] ===== 設定會員下拉選單 =====');
-    console.log('[Point 62 - eform4] 會員資料:', memberData);
-
-    var $nameInput = $('input[name="member_name"]');
-    var $nameSelect = $('select[name="member_name_select"]');
-
-    console.log('[Point 62 - eform4] 找到姓名輸入框:', $nameInput.length > 0);
-    console.log('[Point 62 - eform4] 找到姓名下拉選單:', $nameSelect.length > 0);
-
-    // 清空下拉選單選項
-    $nameSelect.empty();
-    $nameSelect.append('<option value="">請選擇會員</option>');
-
-    // 加入會員選項
-    var currentUserSelected = false;
-    memberData.forEach(function(member) {
-      var option = $('<option value="' + member.c_no + '" data-name="' + member.c_name + '">' +
-        member.c_name + ' (' + member.c_no + ')</option>');
-
-      // Point 77: 檢查是否為當前使用者，如果是則設為預設選擇
-      if (member.c_no === currentUserData.member_id ||
-        member.c_name === currentUserData.member_name) {
-        option.prop('selected', true);
-        currentUserSelected = true;
-        console.log('[Point 77 - eform4] 預設選擇當前使用者:', member.c_name, member.c_no);
-      }
-
-      $nameSelect.append(option);
-    });
-
-    // Point 77: 更新會員編號（根據目前選擇的會員）
-    var selectedOption = $nameSelect.find('option:selected');
-    if (selectedOption.val()) {
-      $('input[name="member_id"]').val(selectedOption.val());
-      currentUserData.member_id = selectedOption.val();
-      currentUserData.member_name = selectedOption.data('name');
-      console.log('[Point 77 - eform4] 根據預設選擇更新會員資料:', {
-        memberId: currentUserData.member_id,
-        memberName: currentUserData.member_name
-      });
-    }
-
-    // 隱藏輸入框，顯示下拉選單
-    $nameInput.hide();
-    $nameSelect.show();
-
-    console.log('[Point 62 - eform4] 下拉選單設定完成，已隱藏輸入框');
-
-    // 綁定選擇事件
-    $nameSelect.off('change.memberLookup').on('change.memberLookup', function() {
-      var selectedOption = $(this).find('option:selected');
-      var newMemberId = selectedOption.val();
-      var newMemberName = selectedOption.data('name');
-
-      console.log('[Point 62 - eform4] 會員選擇變更:', {
-        newMemberId: newMemberId,
-        newMemberName: newMemberName
-      });
-
-      if (newMemberId) {
-        // 更新會員編號和姓名
-        $('input[name="member_id"]').val(newMemberId);
-        currentUserData.member_id = newMemberId;
-        currentUserData.member_name = newMemberName;
-
-        console.log('[Point 62 - eform4] 更新後的會員資料:', currentUserData);
-      }
-    });
-  }
-
-  // 修改提交表單函數以處理會員選擇
-  var originalSubmitForm = submitForm;
-  submitForm = function() {
-    console.log('[Point 62 - eform4] ===== 表單提交開始 =====');
-    console.log('[Point 62 - eform4] 是否為多重會員:', isMultipleMembers);
-    console.log('[Point 62 - eform4] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
-
-    // 收集表單資料
-    var memberId, memberName;
-
-    // 根據是否為多重會員選擇不同的取值方式
-    if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
-      console.log('[Point 62 - eform4] 使用下拉選單模式取得會員資料');
-      // 使用下拉選單的值
-      var selectedOption = $('select[name="member_name_select"]').find('option:selected');
-      memberId = selectedOption.val();
-      memberName = selectedOption.data('name');
-      console.log('[Point 62 - eform4] 從下拉選單取得:', {
-        memberId: memberId,
-        memberName: memberName
-      });
-    } else {
-      console.log('[Point 62 - eform4] 使用輸入框模式取得會員資料');
-      // 使用輸入框和當前會員資料
-      memberId = currentUserData.member_id;
-      memberName = $('input[name="member_name"]').val();
-      console.log('[Point 62 - eform4] 從輸入框取得:', {
-        memberId: memberId,
-        memberName: memberName
-      });
-    }
-
-    console.log('[Point 62 - eform4] 最終會員資料:', {
-      member_id: memberId,
-      member_name: memberName
-    });
-
-    // 確保表單欄位有正確的值
-    $('input[name="member_id"]').val(memberId);
-    $('input[name="member_name"]').val(memberName);
-
-    // 呼叫原始的提交函數
-    originalSubmitForm();
-  }
-
-  // 頁面載入時初始化會員資料
-  $(document).ready(function() {
-    console.log('[Point 62 - eform4] ===== 頁面載入完成，開始初始化會員查詢功能 =====');
-
-    // 延遲執行以確保其他初始化完成
-    setTimeout(function() {
-      initializeMemberData();
-    }, 500);
-  });
+  // 在主要的ready函數中加入eform5專用初始化
+  // 移除重複的ready函數，統一在上面的ready函數處理
 </script>
 </div>

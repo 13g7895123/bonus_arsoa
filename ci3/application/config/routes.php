@@ -111,3 +111,11 @@ $route['api/eeform4/export_single/(:any)'] = 'api/eeform/eeform4/export_single/$
 
 // eform5 view routes
 $route['eform/eform5'] = 'eform/eform5';
+
+// eform5 API routes
+$route['api/eeform/eeform5/test'] = 'api/eeform/eeform5/test';
+$route['api/eeform/eeform5/submit'] = 'api/eeform/eeform5/submit';
+$route['api/eeform/eeform5/get/(:any)'] = 'api/eeform/eeform5/get/$1';
+$route['api/eeform/eeform5/list'] = 'api/eeform/eeform5/list';
+$route['api/eeform/eeform5/update_status/(:any)'] = 'api/eeform/eeform5/update_status/$1';
+$route['api/eeform/eeform5/create_tables'] = 'api/eeform/eeform5/create_tables';

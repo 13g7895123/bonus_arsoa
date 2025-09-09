@@ -143,15 +143,6 @@ CREATE TABLE eeform5_consultation_records (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='諮詢記錄表';
 ```
 
-### 8. eeform5_submissions_archive (歷史歸檔表)
-```sql
-CREATE TABLE eeform5_submissions_archive LIKE eeform5_submissions;
-
-ALTER TABLE eeform5_submissions_archive 
-ADD COLUMN archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '歸檔時間',
-ADD COLUMN archived_by VARCHAR(100) NULL COMMENT '歸檔者',
-ADD COLUMN archive_reason TEXT NULL COMMENT '歸檔原因';
-```
 
 ## 預設資料
 
@@ -199,11 +190,10 @@ INSERT INTO eeform5_product_master (product_code, product_name, product_type, de
 4. 考慮為常用的查詢組合建立複合索引
 
 ## 資料維護建議
-1. 定期歸檔超過兩年的歷史資料到 archive 表
-2. 實施資料備份策略
-3. 定期清理無效或測試資料
-4. 監控表格大小和查詢效能
-5. 定期更新健康困擾主檔和產品主檔
+1. 實施資料備份策略
+2. 定期清理無效或測試資料
+3. 監控表格大小和查詢效能
+4. 定期更新健康困擾主檔和產品主檔
 
 ## 特別說明
 此表單為健康諮詢專用表單，設計上考慮了多選項目（職業、健康困擾）和產品推薦的靈活性。透過主檔表的設計，可以方便地新增或修改選項，而不需要更改程式碼。
@@ -339,13 +329,6 @@ CREATE TABLE eeform5_consultation_records (
     INDEX idx_next_consultation_date (next_consultation_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='諮詢記錄表';
 
--- 8. 建立歷史歸檔表
-CREATE TABLE eeform5_submissions_archive LIKE eeform5_submissions;
-
-ALTER TABLE eeform5_submissions_archive 
-ADD COLUMN archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '歸檔時間',
-ADD COLUMN archived_by VARCHAR(100) NULL COMMENT '歸檔者',
-ADD COLUMN archive_reason TEXT NULL COMMENT '歸檔原因';
 
 -- 9. 插入預設健康困擾項目
 INSERT INTO eeform5_health_issues_master (issue_code, issue_name, issue_category, sort_order) VALUES
@@ -382,9 +365,6 @@ DELETE FROM eeform5_submissions;
 -- DELETE FROM eeform5_health_issues_master;
 -- DELETE FROM eeform5_product_master;
 
--- 清空歷史歸檔表
-DELETE FROM eeform5_submissions_archive;
-
 -- 重設自增ID（可選）
 ALTER TABLE eeform5_submissions AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_occupations AUTO_INCREMENT = 1;
@@ -393,7 +373,6 @@ ALTER TABLE eeform5_health_issues_master AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_product_recommendations AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_product_master AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_consultation_records AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_submissions_archive AUTO_INCREMENT = 1;
 ```
 
 ### 方法二：逐步刪除（明確控制）
@@ -408,9 +387,6 @@ DELETE FROM eeform5_consultation_records;
 -- 刪除主表資料
 DELETE FROM eeform5_submissions;
 
--- 清空歷史歸檔表
-DELETE FROM eeform5_submissions_archive;
-
 -- 可選：清空主檔表（會移除所有預設設定）
 -- DELETE FROM eeform5_health_issues_master;
 -- DELETE FROM eeform5_product_master;
@@ -423,7 +399,6 @@ ALTER TABLE eeform5_health_issues_master AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_product_recommendations AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_product_master AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_consultation_records AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_submissions_archive AUTO_INCREMENT = 1;
 ```
 
 ### 方法三：使用 TRUNCATE（最快速，但會重設ID）
@@ -438,7 +413,6 @@ TRUNCATE TABLE eeform5_health_issues;
 TRUNCATE TABLE eeform5_product_recommendations;
 TRUNCATE TABLE eeform5_consultation_records;
 TRUNCATE TABLE eeform5_submissions;
-TRUNCATE TABLE eeform5_submissions_archive;
 
 -- 可選：清空主檔表
 -- TRUNCATE TABLE eeform5_health_issues_master;
@@ -525,5 +499,4 @@ CREATE TABLE eeform5_health_issues_master_backup AS SELECT * FROM eeform5_health
 CREATE TABLE eeform5_product_recommendations_backup AS SELECT * FROM eeform5_product_recommendations;
 CREATE TABLE eeform5_product_master_backup AS SELECT * FROM eeform5_product_master;
 CREATE TABLE eeform5_consultation_records_backup AS SELECT * FROM eeform5_consultation_records;
-CREATE TABLE eeform5_archive_backup AS SELECT * FROM eeform5_submissions_archive;
 ```

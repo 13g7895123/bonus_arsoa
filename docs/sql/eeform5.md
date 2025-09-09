@@ -103,15 +103,6 @@ CREATE TABLE eeform5_product_recommendations (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='產品建議記錄表';
 ```
 
-### 5. eeform5_submissions_archive (歷史歸檔表)
-```sql
-CREATE TABLE eeform5_submissions_archive LIKE eeform5_submissions;
-
-ALTER TABLE eeform5_submissions_archive 
-ADD COLUMN archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '歸檔時間',
-ADD COLUMN archived_by VARCHAR(100) NULL COMMENT '歸檔者',
-ADD COLUMN archive_reason TEXT NULL COMMENT '歸檔原因';
-```
 
 ## 索引優化建議
 1. 主要查詢索引已在表結構中定義
@@ -120,10 +111,9 @@ ADD COLUMN archive_reason TEXT NULL COMMENT '歸檔原因';
 4. 考慮為常用的查詢組合建立複合索引
 
 ## 資料維護建議
-1. 定期歸檔超過兩年的歷史資料到 archive 表
-2. 實施資料備份策略
-3. 定期清理無效或測試資料
-4. 監控表格大小和查詢效能
+1. 實施資料備份策略
+2. 定期清理無效或測試資料
+3. 監控表格大小和查詢效能
 
 ## 特別說明
 此表單為個人體測表+健康諮詢表，包含了完整的體測標準建議值欄位，包含15個體測相關數據。同時包含完整的基本資料收集，包含手機號碼、性別、年齡和運動習慣等資訊。
@@ -225,13 +215,6 @@ CREATE TABLE eeform5_product_recommendations (
     UNIQUE KEY uk_submission_product (submission_id, product_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='產品建議記錄表';
 
--- 5. 建立歷史歸檔表
-CREATE TABLE eeform5_submissions_archive LIKE eeform5_submissions;
-
-ALTER TABLE eeform5_submissions_archive 
-ADD COLUMN archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '歸檔時間',
-ADD COLUMN archived_by VARCHAR(100) NULL COMMENT '歸檔者',
-ADD COLUMN archive_reason TEXT NULL COMMENT '歸檔原因';
 ```
 
 ## 刪除所有資料的 SQL 語句
@@ -243,15 +226,11 @@ ADD COLUMN archive_reason TEXT NULL COMMENT '歸檔原因';
 -- 只需要刪除主表，相關資料會自動級聯刪除
 DELETE FROM eeform5_submissions;
 
--- 清空歷史歸檔表
-DELETE FROM eeform5_submissions_archive;
-
 -- 重設自增ID（可選）
 ALTER TABLE eeform5_submissions AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_occupations AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_health_concerns AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_product_recommendations AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_submissions_archive AUTO_INCREMENT = 1;
 ```
 
 ### 方法二：逐步刪除（明確控制）
@@ -265,15 +244,11 @@ DELETE FROM eeform5_product_recommendations;
 -- 刪除主表資料
 DELETE FROM eeform5_submissions;
 
--- 清空歷史歸檔表
-DELETE FROM eeform5_submissions_archive;
-
 -- 重設自增ID
 ALTER TABLE eeform5_submissions AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_occupations AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_health_concerns AUTO_INCREMENT = 1;
 ALTER TABLE eeform5_product_recommendations AUTO_INCREMENT = 1;
-ALTER TABLE eeform5_submissions_archive AUTO_INCREMENT = 1;
 ```
 
 ### 方法三：使用 TRUNCATE（最快速，但會重設ID）
@@ -287,7 +262,6 @@ TRUNCATE TABLE eeform5_occupations;
 TRUNCATE TABLE eeform5_health_concerns;
 TRUNCATE TABLE eeform5_product_recommendations;
 TRUNCATE TABLE eeform5_submissions;
-TRUNCATE TABLE eeform5_submissions_archive;
 
 -- 重新啟用外鍵檢查
 SET FOREIGN_KEY_CHECKS = 1;
@@ -340,5 +314,4 @@ FROM eeform5_submissions s;
 CREATE TABLE eeform5_occupations_backup AS SELECT * FROM eeform5_occupations;
 CREATE TABLE eeform5_health_concerns_backup AS SELECT * FROM eeform5_health_concerns;
 CREATE TABLE eeform5_product_recommendations_backup AS SELECT * FROM eeform5_product_recommendations;
-CREATE TABLE eeform5_archive_backup AS SELECT * FROM eeform5_submissions_archive;
 ```
