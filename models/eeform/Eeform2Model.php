@@ -113,7 +113,7 @@ class Eeform2Model extends MY_Model {
         try {
             $this->db->select('*');
             $this->db->from($this->table_submissions);
-            $this->db->where('member_name', $member_name);
+            $this->db->where('form_filler_id', $member_name);
             $this->db->order_by('created_at', 'DESC');
             
             $query = $this->db->get();

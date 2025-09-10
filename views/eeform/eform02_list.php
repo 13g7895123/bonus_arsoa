@@ -515,257 +515,74 @@
       });
     }
 
-    // 轉換嵌套資料結構為平面結構
+    // 轉換eform2資料結構為平面結構
     function transformApiDataToFormStructure(apiData) {
       if (!apiData) return null;
 
-      // 複製基本資料
+      // eform2的簡單資料結構
       var formData = {
         id: apiData.id || null,
         member_id: apiData.member_id || null,
         member_name: apiData.member_name || '',
-        birth_year: apiData.birth_year || '',
-        birth_month: apiData.birth_month || '',
-        phone: apiData.phone || '',
-        skin_type: apiData.skin_type || '',
-        skin_age: apiData.skin_age || '',
+        join_date: apiData.join_date || '',
+        gender: apiData.gender || '',
+        age: apiData.age || '',
+        skin_health_condition: apiData.skin_health_condition || '',
+        line_contact: apiData.line_contact || '',
+        tel_contact: apiData.tel_contact || '',
+        meeting_date: apiData.meeting_date || '',
         submission_date: apiData.submission_date || '',
         created_at: apiData.created_at || '',
-        updated_at: apiData.updated_at || ''
+        updated_at: apiData.updated_at || '',
+        form_filler_id: apiData.form_filler_id || null,
+        form_filler_name: apiData.form_filler_name || ''
       };
 
-      console.log('Raw basic fields from API:', {
-        skin_type: apiData.skin_type,
-        skin_age: apiData.skin_age,
+      console.log('Raw eform2 fields from API:', {
         member_name: apiData.member_name,
-        suggestions: apiData.suggestions
+        gender: apiData.gender,
+        age: apiData.age,
+        skin_health_condition: apiData.skin_health_condition
       });
 
-      // 轉換職業資料 (注意：資料庫儲存的是英文枚舉值)
-      var occupationMap = {
-        'service': 'occupation_service',
-        'office': 'occupation_office',
-        'restaurant': 'occupation_restaurant',
-        'housewife': 'occupation_housewife'
-      };
-
-      // 初始化職業欄位
-      Object.values(occupationMap).forEach(function(field) {
-        formData[field] = 0;
-      });
-
-      if (apiData.occupations && Array.isArray(apiData.occupations)) {
-        console.log('Processing occupations:', apiData.occupations);
-        apiData.occupations.forEach(function(occ) {
-          console.log('Occupation item:', occ, 'is_selected:', occ.is_selected, 'occupation_type:', occ.occupation_type);
-          if (occ.is_selected == 1 && occupationMap[occ.occupation_type]) {
-            formData[occupationMap[occ.occupation_type]] = 1;
-            console.log('Set', occupationMap[occ.occupation_type], 'to 1');
-          }
-        });
-      }
-
-      // 轉換生活方式資料 (注意：資料庫儲存的是item_key)
-      var lifestyleMap = {
-        'sunlight': {
-          '1_2h': 'sunlight_1_2h',
-          '3_4h': 'sunlight_3_4h',
-          '5_6h': 'sunlight_5_6h',
-          '8h_plus': 'sunlight_8h_plus'
-        },
-        'aircondition': {
-          '1h': 'aircondition_1h',
-          '2_4h': 'aircondition_2_4h',
-          '5_8h': 'aircondition_5_8h',
-          '8h_plus': 'aircondition_8h_plus'
-        },
-        'sleep': {
-          '9_10': 'sleep_9_10',
-          '11_12': 'sleep_11_12',
-          'after_1': 'sleep_after_1',
-          'other': 'sleep_other'
-        }
-      };
-
-      // 初始化生活方式欄位
-      Object.values(lifestyleMap).forEach(function(categoryMap) {
-        Object.values(categoryMap).forEach(function(field) {
-          formData[field] = 0;
-        });
-      });
-
-      if (apiData.lifestyle && Array.isArray(apiData.lifestyle)) {
-        console.log('Processing lifestyle:', apiData.lifestyle);
-        apiData.lifestyle.forEach(function(lifestyle) {
-          console.log('Lifestyle item:', lifestyle);
-          if (lifestyle.is_selected == 1) {
-            var categoryMap = lifestyleMap[lifestyle.category];
-            if (categoryMap && categoryMap[lifestyle.item_key]) {
-              formData[categoryMap[lifestyle.item_key]] = 1;
-              console.log('Set', categoryMap[lifestyle.item_key], 'to 1');
-            }
-            // 處理其他文字內容
-            if (lifestyle.category === 'sleep' && lifestyle.item_key === 'other' && lifestyle.item_value) {
-              formData.sleep_other_text = lifestyle.item_value;
-            }
-          }
-        });
-      }
-
-      // 轉換產品使用資料 (注意：資料庫儲存的是英文枚舉值)
-      var productMap = {
-        'honey_soap': 'product_honey_soap',
-        'mud_mask': 'product_mud_mask',
-        'toner': 'product_toner',
-        'serum': 'product_serum',
-        'premium': 'product_premium',
-        'sunscreen': 'product_sunscreen',
-        'other': 'product_other'
-      };
-
-      // 初始化產品欄位
-      Object.values(productMap).forEach(function(field) {
-        formData[field] = 0;
-      });
-
+      // 處理產品資料
       if (apiData.products && Array.isArray(apiData.products)) {
-        console.log('Processing products:', apiData.products);
-        apiData.products.forEach(function(product) {
-          console.log('Product item:', product);
-          if (product.is_selected == 1 && productMap[product.product_type]) {
-            formData[productMap[product.product_type]] = 1;
-            console.log('Set', productMap[product.product_type], 'to 1');
-            if (product.product_type === 'other' && product.product_name) {
-              formData.product_other_text = product.product_name;
-            }
-          }
-        });
-      }
-
-      // 轉換肌膚困擾資料 (注意：資料庫儲存的是英文枚舉值)
-      var skinIssueMap = {
-        'elasticity': 'skin_issue_elasticity',
-        'luster': 'skin_issue_luster',
-        'dull': 'skin_issue_dull',
-        'spots': 'skin_issue_spots',
-        'pores': 'skin_issue_pores',
-        'acne': 'skin_issue_acne',
-        'wrinkles': 'skin_issue_wrinkles',
-        'rough': 'skin_issue_rough',
-        'irritation': 'skin_issue_irritation',
-        'dry': 'skin_issue_dry',
-        'makeup': 'skin_issue_makeup',
-        'other': 'skin_issue_other'
-      };
-
-      // 初始化肌膚困擾欄位
-      Object.values(skinIssueMap).forEach(function(field) {
-        formData[field] = 0;
-      });
-
-      if (apiData.skin_issues && Array.isArray(apiData.skin_issues)) {
-        console.log('Processing skin issues:', apiData.skin_issues);
-        apiData.skin_issues.forEach(function(issue) {
-          console.log('Skin issue item:', issue);
-          if (issue.is_selected == 1 && skinIssueMap[issue.issue_type]) {
-            formData[skinIssueMap[issue.issue_type]] = 1;
-            console.log('Set', skinIssueMap[issue.issue_type], 'to 1');
-            if (issue.issue_type === 'other' && issue.issue_description) {
-              formData.skin_issue_other_text = issue.issue_description;
-            }
-          }
-        });
-      }
-
-      // 轉換過敏狀況資料 (注意：資料庫儲存的是英文枚舉值)
-      var allergyMap = {
-        'frequent': 'allergy_frequent',
-        'seasonal': 'allergy_seasonal',
-        'never': 'allergy_never'
-      };
-
-      // 初始化過敏欄位
-      Object.values(allergyMap).forEach(function(field) {
-        formData[field] = 0;
-      });
-
-      if (apiData.allergies && Array.isArray(apiData.allergies)) {
-        console.log('Processing allergies:', apiData.allergies);
-        apiData.allergies.forEach(function(allergy) {
-          console.log('Allergy item:', allergy);
-          if (allergy.is_selected == 1 && allergyMap[allergy.allergy_type]) {
-            formData[allergyMap[allergy.allergy_type]] = 1;
-            console.log('Set', allergyMap[allergy.allergy_type], 'to 1');
-          }
-        });
-      }
-
-      // 轉換建議內容
-      console.log('API suggestions data:', apiData.suggestions);
-      if (apiData.suggestions) {
-        formData.toner_suggestion = apiData.suggestions.toner_suggestion || '';
-        formData.serum_suggestion = apiData.suggestions.serum_suggestion || '';
-        formData.suggestion_content = apiData.suggestions.suggestion_content || '';
-        console.log('Transformed suggestions:', {
-          toner: formData.toner_suggestion,
-          serum: formData.serum_suggestion,
-          content: formData.suggestion_content
-        });
+        formData.products = apiData.products;
+        console.log('Processing eform2 products:', apiData.products);
       } else {
-        // 如果沒有suggestions物件，設定預設值
-        formData.toner_suggestion = '';
-        formData.serum_suggestion = '';
-        formData.suggestion_content = '';
-        console.log('No suggestions data found, setting empty values');
+        formData.products = [];
+        console.log('No products data found');
       }
 
-      // 處理肌膚評分資料（支援新舊資料結構）
-      var skinScoresData = [];
+      // eform2沒有複雜的生活方式資料結構
 
-      // 優先使用新的skin_scores結構
-      if (apiData.skin_scores && Array.isArray(apiData.skin_scores)) {
-        skinScoresData = apiData.skin_scores;
-        console.log('Using skin_scores data:', apiData.skin_scores);
-      }
-      // 如果沒有skin_scores，使用moisture_scores作為向後相容
-      else if (apiData.moisture_scores && Array.isArray(apiData.moisture_scores)) {
-        skinScoresData = apiData.moisture_scores;
-        console.log('Using moisture_scores data:', apiData.moisture_scores);
-      }
+      // eform2的產品資料結構已在上面處理
 
-      // 保留兩個欄位供檢測數據區塊使用
-      formData.skin_scores = skinScoresData;
-      formData.moisture_scores = skinScoresData;
+      // eform2沒有複雜的肌膚困擾資料結構
 
-      console.log('Final skin scores data structure:', skinScoresData);
-      console.log('Data categories found:', skinScoresData.map(function(score) {
-        return score.category + '_' + score.score_type;
-      }));
+      // eform2沒有過敏狀況資料結構
 
-      // 檢查基本欄位
-      console.log('Basic fields check:', {
-        skin_type: formData.skin_type,
-        skin_age: formData.skin_age,
-        member_name: formData.member_name
-      });
+      // eform2沒有建議內容資料結構
+
+      // eform2沒有肌膚評分資料結構
 
       console.log('Transformed form data:', formData);
       return formData;
     }
 
-    // 顯示原版表單內容
+    // 顯示eform2表單內容
     function displayOriginalFormContent(data, isEditable) {
       if (!data) {
         showFormError('無效的資料格式');
         return;
       }
 
-      console.log('Displaying form with transformed data:', data);
+      console.log('Displaying eform2 form with transformed data:', data);
 
       var disabled = isEditable ? '' : ' disabled readonly';
       var currentDate = new Date().toISOString().slice(0, 10);
 
-      // 建構完整表單內容 (參照原版設計) - 確保背景不透明
+      // 建構eform2表單內容
       var html = '<div class="mb30" style="background-color: #ffffff; padding: 20px;">';
       html += '<div class="container">';
       html += '<form action="#" class="text-left" style="background-color: #ffffff;">';
@@ -786,68 +603,195 @@
       html += '<div class="col-sm-12 text-right mb30">填寫日期：' + displayDate + '</div>';
 
       // 基本資料
-      html += '<div class="col-sm-4 mb30">';
-      html += '<label class="label-custom">會員姓名</label>';
-      html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="' + (data.member_name || '') + '"' + disabled + ' />';
+      html += '<div class="col-sm-3 mb30">';
+      html += '<label class="label-custom">會員編號</label>';
+      html += '<input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="' + (data.member_id || '') + '"' + disabled + ' />';
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">出生西元年</label>';
-      html += '<select name="birth_year" class="form-control form-control-custom"' + disabled + '>';
-      html += '<option value="">請選擇</option>';
-      for (var year = 2010; year >= 1930; year--) {
-        var selected = (data.birth_year == year) ? ' selected' : '';
-        html += '<option value="' + year + '"' + selected + '>' + year + '</option>';
-      }
-      html += '</select>';
+      html += '<label class="label-custom">姓名</label>';
+      html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="' + (data.member_name || '') + '"' + disabled + ' />';
       html += '</div>';
 
-      html += '<div class="col-sm-2 mb30">';
-      html += '<label class="label-custom">出生西元月</label>';
-      html += '<select name="birth_month" class="form-control form-control-custom"' + disabled + '>';
+      html += '<div class="col-sm-3 mb30">';
+      html += '<label class="label-custom">入會日</label>';
+      html += '<input type="date" name="join_date" class="form-control form-control-custom" value="' + (data.join_date || '') + '"' + disabled + ' />';
+      html += '</div>';
+
+      html += '<div class="col-sm-3 mb30">';
+      html += '<label class="label-custom">性別</label>';
+      html += '<select name="gender" class="form-control form-control-custom"' + disabled + '>';
       html += '<option value="">請選擇</option>';
-      for (var month = 1; month <= 12; month++) {
-        var selected = (data.birth_month == month) ? ' selected' : '';
-        html += '<option value="' + month + '"' + selected + '>' + month + '月</option>';
-      }
+      html += '<option value="女"' + ((data.gender === '女') ? ' selected' : '') + '>女</option>';
+      html += '<option value="男"' + ((data.gender === '男') ? ' selected' : '') + '>男</option>';
       html += '</select>';
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">電話</label>';
-      html += '<input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" value="' + (data.phone || '') + '"' + disabled + ' />';
+      html += '<label class="label-custom">年齡</label>';
+      html += '<input type="number" name="age" class="form-control form-control-custom" placeholder="限填數字" value="' + (data.age || '') + '"' + disabled + ' />';
       html += '</div>';
 
-      // 職業
       html += '<div class="col-sm-12 mb30">';
-      html += '<div class="form-check form-check-inline">職業：</div>';
-      var occupationFields = [{
-          name: 'occupation_service',
-          label: '服務業'
-        },
-        {
-          name: 'occupation_office',
-          label: '上班族'
-        },
-        {
-          name: 'occupation_restaurant',
-          label: '餐飲業'
-        },
-        {
-          name: 'occupation_housewife',
-          label: '家管'
-        }
-      ];
-      occupationFields.forEach(function(job, index) {
-        var checked = (data[job.name] == 1) ? ' checked' : '';
-        html += '<div class="form-check form-check-inline">';
-        html += '<input class="form-check-input" type="checkbox" name="' + job.name + '" id="modal_' + job.name + '" value="1"' + checked + disabled + '>';
-        html += '<label class="form-check-label" for="modal_' + job.name + '">' + job.label + ' </label>';
-        html += '</div>';
-      });
+      html += '<label class="label-custom">肌膚/健康狀況</label>';
+      html += '<input type="text" name="skin_health_condition" class="form-control form-control-custom" placeholder="請填寫肌膚/健康狀況…" value="' + (data.skin_health_condition || '') + '"' + disabled + ' />';
       html += '</div>';
 
-      // 戶外日曬時間
+      // 訂購產品
+      html += '<div class="col-sm-12 mb30">';
+      html += '<h5>訂購產品</h5>';
+      html += '<div class="card bg-light" style="background-color: #f8f9fa !important;">';
+      html += '<div class="card-body" style="background-color: #f8f9fa;">';
+      html += '<div class="container">';
+      html += '<div class="row">';
+      if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+        data.products.forEach(function(product, index) {
+          html += '<div class="col-md-4 mb-3">';
+          html += '<div class="form-check">';
+          html += '<input class="form-check-input" type="checkbox" checked' + disabled + '>';
+          html += '<label class="form-check-label">' + (product.product_name || '產品 ' + (index + 1)) + '</label>';
+          html += '</div>';
+          html += '<div class="ml-3">';
+          html += '<small class="text-muted">建議用量: ' + (product.dosage || '-') + '</small>';
+          html += '</div>';
+          html += '</div>';
+        });
+      } else {
+        html += '<div class="col-12 text-center text-muted">暫無產品資料</div>';
+      }
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+
+      // 聯絡資訊
+      html += '<div class="col-sm-12 mb30">';
+      html += '<label class="label-custom">LINE</label>';
+      html += '<input type="text" name="line_contact" class="form-control form-control-custom" placeholder="請填寫LINE聯絡狀況，300字元內…" value="' + (data.line_contact || '') + '"' + disabled + ' />';
+      html += '</div>';
+
+      html += '<div class="col-sm-12 mb30">';
+      html += '<label class="label-custom">TEL</label>';
+      html += '<input type="text" name="tel_contact" class="form-control form-control-custom" placeholder="請填寫電話聯絡狀況，300字元內…" value="' + (data.tel_contact || '') + '"' + disabled + ' />';
+      html += '</div>';
+
+      html += '<div class="col-sm-12 mb30">';
+      html += '<label class="label-custom">見面日</label>';
+      html += '<input type="date" name="meeting_date" class="form-control form-control-custom" value="' + (data.meeting_date || '') + '"' + disabled + ' />';
+      html += '</div>';
+
+      // 代填者資訊
+      if (data.form_filler_name || data.form_filler_id) {
+        html += '<div class="col-sm-12 mb30">';
+        html += '<hr class="my-4">';
+        html += '<h5>代填者資訊</h5>';
+        html += '<div class="row">';
+        html += '<div class="col-sm-6 mb30">';
+        html += '<label class="label-custom">代填者編號</label>';
+        html += '<input type="text" name="form_filler_id" class="form-control form-control-custom" value="' + (data.form_filler_id || '') + '"' + disabled + ' />';
+        html += '</div>';
+        html += '<div class="col-sm-6 mb30">';
+        html += '<label class="label-custom">代填者姓名</label>';
+        html += '<input type="text" name="form_filler_name" class="form-control form-control-custom" value="' + (data.form_filler_name || '') + '"' + disabled + ' />';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+      }
+      // 編輯模式的更新按鈕
+      if (isEditable) {
+        html += '<div class="col-sm-12 mb30">';
+        html += '<hr class="my-4">';
+        html += '<button type="button" class="btn btn-outline-danger btn-block" onclick="updateEform2Data()">更新表單</button>';
+        html += '</div>';
+      }
+
+      html += '</div>';
+      html += '</form>';
+      html += '</div>';
+      html += '</div>';
+
+      $('#exampleModal .modal-body').html(html);
+    }
+
+    // 新增檢測數據區塊 - eform2不需要此功能，保留空函數以避免錯誤
+    function addTestDataSection(categoryName, data, disabled) {
+      return ''; // eform2不需要檢測數據區塊
+    }
+
+    // 更新eform2表單資料
+    function updateEform2Data() {
+      // 收集eform2表單數據
+      var formData = {
+        // 基本資料
+        member_id: $('#exampleModal input[name="member_id"]').val(),
+        member_name: $('#exampleModal input[name="member_name"]').val(),
+        join_date: $('#exampleModal input[name="join_date"]').val(),
+        gender: $('#exampleModal select[name="gender"]').val(),
+        age: $('#exampleModal input[name="age"]').val(),
+        skin_health_condition: $('#exampleModal input[name="skin_health_condition"]').val(),
+        line_contact: $('#exampleModal input[name="line_contact"]').val(),
+        tel_contact: $('#exampleModal input[name="tel_contact"]').val(),
+        meeting_date: $('#exampleModal input[name="meeting_date"]').val(),
+        form_filler_id: $('#exampleModal input[name="form_filler_id"]').val(),
+        form_filler_name: $('#exampleModal input[name="form_filler_name"]').val()
+      };
+
+      console.log('Collected eform2 data:', formData);
+
+      // 獲取當前編輯的記錄ID
+      var submissionId = window.currentEditingSubmissionId || 1;
+
+      // 發送更新請求
+      $.ajax({
+        url: '<?php echo base_url("api/eeform/eeform2/submission/"); ?>' + submissionId,
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function(response) {
+          if (response && response.success) {
+            // 使用SweetAlert顯示成功訊息
+            if (typeof Swal !== 'undefined') {
+              Swal.fire({
+                title: '更新成功！',
+                text: '表單已成功更新',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1500
+              }).then(function() {
+                $('#exampleModal').modal('hide');
+                loadSubmissions();
+              });
+            } else {
+              alert('更新成功！');
+              $('#exampleModal').modal('hide');
+              loadSubmissions();
+            }
+          } else {
+            showUpdateError('更新失敗: ' + (response.message || '未知錯誤'));
+          }
+        },
+        error: function(xhr, status, error) {
+          var errorMessage = '更新失敗';
+          if (xhr.status === 404) {
+            errorMessage = '找不到指定的記錄';
+          } else if (xhr.status === 500) {
+            errorMessage = '服務器內部錯誤';
+          } else if (xhr.responseText) {
+            try {
+              var errorResponse = JSON.parse(xhr.responseText);
+              errorMessage = errorResponse.message || errorMessage;
+            } catch (e) {
+              errorMessage += ' (錯誤代碼: ' + xhr.status + ')';
+            }
+          }
+          showUpdateError(errorMessage);
+        }
+      });
+    }
+
+    // 顯示表單錯誤訊息
       html += '<div class="col-sm-12 mb30">';
       html += '<div class="form-check form-check-inline">戶外日曬時間：</div>';
       var sunlightFields = [{
