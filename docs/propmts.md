@@ -226,3 +226,6 @@ ORDER BY `s`.`created_at` DESC
 135. 欄位名稱與顯示資料不匹配，點檢視打的API，/api/eeform/eeform5/submission/1，會顯示404錯誤，你真的有認真檢查過所有功能嗎
 136. /wadmin/admin_eeform/eeform_manage_eeform05這個頁面，/api/eeform/eeform5/export_single/1，這支匯出EXCEL功能的API無法使用，幫我建立測試機制，確保運行正常
 137. 匯出功能我套了一個模板了，幫我把內容修正成eeform5的內容即可
+138. 完成以下功能
+    - add commit push
+    - 把/eform/eform1_list複製到/eform/eform2_list這個路徑，並且把欄位的出貨日期移除，會員(來賓)資訊改成會員，其餘保留，查看的時候可以看到內容即可，需要幫我確認是否有缺少api，有的話請幫我補齊

@@ -306,7 +306,7 @@
 
                           <div class="col-sm-12 mb30">
                             <hr class="my-4">
-                            <div id="testDataButton" style="display: block;" class="mb-3">
+                            <div id="testDataButton" style="display: none;" class="mb-3">
                               <button type="button" class="btn btn-outline-info btn-sm" onclick="fillTestData()">
                                 <i class="fas fa-flask mr-1"></i>填入測試資料
                               </button>
@@ -433,7 +433,7 @@
     <!-- 主要功能腳本 -->
     <script>
       // 全域變數
-      var showTestButton = true; // 控制測試按鈕顯示
+      var showTestButton = false; // 控制測試按鈕顯示
 
       // 唯一的 document ready 函數
       $(document).ready(function() {

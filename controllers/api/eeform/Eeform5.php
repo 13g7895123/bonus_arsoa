@@ -17,6 +17,13 @@ class Eeform5 extends CI_Controller {
         // 設定編碼和JSON回應
         header('Content-Type: application/json; charset=utf-8');
         $this->output->set_content_type('application/json; charset=utf-8');
+
+        try {
+            $this->load->model('eeform/Eeform5Model', 'eform5_model');
+        } catch (Exception $e) {
+            $this->_send_error('Failed to load eform4 model: ' . $e->getMessage(), 500);
+            exit();
+        }
     }
 
     /**
@@ -569,7 +576,7 @@ class Eeform5 extends CI_Controller {
                 return;
             }
 
-            $submission = $this->eform5_model->get_submission_by_id($id);
+            $submission = $this->eform5_model->get_submission_by_id($id);            
             
             if (!$submission) {
                 $this->_send_error('找不到指定的表單記錄', 404);
