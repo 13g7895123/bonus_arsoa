@@ -53,21 +53,21 @@
                           </div>
                           
                           <div class="col-sm-4 mb30">
-                            <label class="label-custom">會員姓名</label>
+                            <label class="label-custom">會員姓名<span style="color: red;">(*必填)</span></label>
                             <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" required />
                             <select name="member_name_select" class="form-control form-control-custom" style="display: none;" disabled required>
                               <option value="">請選擇會員</option>
                             </select>
                           </div>
                           <div class="col-sm-5 mb30">
-                            <label class="label-custom">出生年月</label>
+                            <label class="label-custom">出生年月<span style="color: red;">(*必填)</span></label>
                             <input type="month" name="birth_date" class="form-control form-control-custom" min="1980-01" max="2010-12" required />
                             <!-- Keep hidden fields for backward compatibility -->
                             <input type="hidden" name="birth_year" />
                             <input type="hidden" name="birth_month" />
                           </div>
                           <div class="col-sm-3 mb30">
-                            <label class="label-custom">電話</label>
+                            <label class="label-custom">電話<span style="color: red;">(*必填)</span></label>
                             <input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" required />
                           </div>
 

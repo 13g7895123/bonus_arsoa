@@ -25,21 +25,6 @@
                         <span id="search_msg" style="color:red;margin-top: 8px;margin-left: 10px;"></span>
                       </div>
 
-                      <div class="row" id="form_personal" style="margin-top: 30px;">
-                        <!-- 會員基本資料顯示區域 -->
-                        <div class="col-sm-4 mb30">
-                          <label class="label-custom">會員姓名</label>
-                          <p id="member-name"><?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : '未設定'; ?></p>
-                        </div>
-                        <div class="col-sm-4 mb30">
-                          <label class="label-custom">會員編號</label>
-                          <p id="member-id"><?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : '未設定'; ?></p>
-                        </div>
-                        <div class="col-sm-4 mb30">
-                          <label class="label-custom">電話</label>
-                          <p id="member-phone"><?php echo isset($userdata['phone']) ? htmlspecialchars($userdata['phone']) : '未設定'; ?></p>
-                        </div>
-                      </div>
                       <div class="card mb-3">
                         <div class="card-body">
                           <table class="table table-striped mb-2 text-center">

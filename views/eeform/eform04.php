@@ -23,7 +23,7 @@
                             <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" readonly required />
                           </div>
                           <div class="col-sm-3 mb30">
-                            <label class="label-custom">姓名</label>
+                            <label class="label-custom">姓名<span style="color: red;">(*必填)</span></label>
                             <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
                             <select name="member_name_select" class="form-control form-control-custom" style="display: none;" required>
                               <option value="">請選擇會員</option>
