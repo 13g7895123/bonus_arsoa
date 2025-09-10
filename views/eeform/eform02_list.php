@@ -792,14 +792,6 @@
     }
 
     // 顯示表單錯誤訊息
-      html += '<div class="col-sm-12 mb30">';
-      html += '<div class="form-check form-check-inline">戶外日曬時間：</div>';
-      var sunlightFields = [{
-          name: 'sunlight_1_2h',
-          label: '1~2小時'
-        },
-        {
-          name: 'sunlight_3_4h',
           label: '3~4小時'
         },
         {
