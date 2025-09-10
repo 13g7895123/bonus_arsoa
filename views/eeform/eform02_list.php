@@ -182,7 +182,7 @@
     function loadSubmissions() {
       // 顯示載入狀態
       $('#submissions-table-body').html(
-        '<tr><td colspan="6" class="text-center text-muted p-4">' +
+        '<tr><td colspan="4" class="text-center text-muted p-4">' +
         '<div><i class="icon ion-loading-c" style="font-size: 2rem; animation: spin 1s linear infinite;"></i></div>' +
         '<div class="mt-2">載入中，請稍候...</div>' +
         '</td></tr>'
@@ -208,7 +208,7 @@
           } else {
             var errorMsg = response && response.message ? response.message : '未知錯誤';
             $('#submissions-table-body').html(
-              '<tr><td colspan="6" class="text-center text-warning p-4">' +
+              '<tr><td colspan="4" class="text-center text-warning p-4">' +
               '<div><i class="icon ion-alert-circled" style="font-size: 2rem;"></i></div>' +
               '<div class="mt-2">載入失敗: ' + errorMsg + '</div>' +
               '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
@@ -405,21 +405,9 @@
         dataType: 'json',
         success: function(response) {
           if (response && response.success) {
-            console.log('=== API Response Debug ===');
-            console.log('Raw API response:', response.data);
-            console.log('Skin scores data structure:', {
-              has_skin_scores: !!(response.data.skin_scores),
-              skin_scores_length: response.data.skin_scores ? response.data.skin_scores.length : 0,
-              has_moisture_scores: !!(response.data.moisture_scores),
-              moisture_scores_length: response.data.moisture_scores ? response.data.moisture_scores.length : 0
-            });
-            if (response.data.skin_scores) {
-              console.log('Skin scores sample:', response.data.skin_scores.slice(0, 3));
-            }
-            if (response.data.moisture_scores) {
-              console.log('Moisture scores sample:', response.data.moisture_scores.slice(0, 3));
-            }
-            console.log('==========================');
+            console.log('=== EForm2 API Response Debug ===');
+            console.log('Raw eform2 API response:', response.data);
+            console.log('====================================');
 
             var transformedData = transformApiDataToFormStructure(response.data);
             displayOriginalFormContent(transformedData, false); // false = 檢視模式
@@ -474,21 +462,9 @@
         dataType: 'json',
         success: function(response) {
           if (response && response.success) {
-            console.log('=== Edit API Response Debug ===');
-            console.log('Raw API response for edit:', response.data);
-            console.log('Skin scores data structure:', {
-              has_skin_scores: !!(response.data.skin_scores),
-              skin_scores_length: response.data.skin_scores ? response.data.skin_scores.length : 0,
-              has_moisture_scores: !!(response.data.moisture_scores),
-              moisture_scores_length: response.data.moisture_scores ? response.data.moisture_scores.length : 0
-            });
-            if (response.data.skin_scores) {
-              console.log('Skin scores sample:', response.data.skin_scores.slice(0, 3));
-            }
-            if (response.data.moisture_scores) {
-              console.log('Moisture scores sample:', response.data.moisture_scores.slice(0, 3));
-            }
-            console.log('===============================');
+            console.log('=== EForm2 Edit API Response Debug ===');
+            console.log('Raw eform2 API response for edit:', response.data);
+            console.log('=======================================');
 
             var transformedData = transformApiDataToFormStructure(response.data);
             displayOriginalFormContent(transformedData, true); // true = 編輯模式
@@ -595,7 +571,9 @@
           var date = new Date(displayDate);
           displayDate = date.getFullYear() + '-' +
             String(date.getMonth() + 1).padStart(2, '0') + '-' +
-            String(date.getDate()).padStart(2, '0');
+            String(date.getDate()).padStart(2, '0') + ' ' +
+            String(date.getHours()).padStart(2, '0') + ':' +
+            String(date.getMinutes()).padStart(2, '0');
         } catch (e) {
           displayDate = currentDate;
         }
@@ -640,22 +618,20 @@
       // 訂購產品
       html += '<div class="col-sm-12 mb30">';
       html += '<h5>訂購產品</h5>';
-      html += '<div class="card bg-light" style="background-color: #f8f9fa !important;">';
-      html += '<div class="card-body" style="background-color: #f8f9fa;">';
+      html += '<div class="card bg-light">';
+      html += '<div class="card-body">';
       html += '<div class="container">';
       html += '<div class="row">';
       if (data.products && Array.isArray(data.products) && data.products.length > 0) {
         data.products.forEach(function(product, index) {
-          html += '<div class="col-md-4 mb-3">';
-          html += '<div class="form-check">';
-          html += '<input class="form-check-input" type="checkbox" checked' + disabled + '>';
-          html += '<label class="form-check-label">' + (product.product_name || '產品 ' + (index + 1)) + '</label>';
-          html += '</div>';
-          html += '<div class="ml-3">';
-          html += '<small class="text-muted">建議用量: ' + (product.dosage || '-') + '</small>';
-          html += '</div>';
+          // 顯示所有產品，包含數量為0的產品
+          var quantity = product.quantity || product.dosage || 0;
+          html += '<div class="col-sm-3 mb20">';
+          html += '<label class="label-custom">' + (product.product_name || '產品 ' + (index + 1)) + '</label>';
+          html += '<input type="number" name="product_' + (product.product_code || index) + '" style="width: 100%;" value="' + quantity + '"' + disabled + ' placeholder="請填寫數量…" min="0">';
           html += '</div>';
         });
+        // 產品已全部顯示，不需要檢查是否有數量
       } else {
         html += '<div class="col-12 text-center text-muted">暫無產品資料</div>';
       }
@@ -681,23 +657,7 @@
       html += '<input type="date" name="meeting_date" class="form-control form-control-custom" value="' + (data.meeting_date || '') + '"' + disabled + ' />';
       html += '</div>';
 
-      // 代填者資訊
-      if (data.form_filler_name || data.form_filler_id) {
-        html += '<div class="col-sm-12 mb30">';
-        html += '<hr class="my-4">';
-        html += '<h5>代填者資訊</h5>';
-        html += '<div class="row">';
-        html += '<div class="col-sm-6 mb30">';
-        html += '<label class="label-custom">代填者編號</label>';
-        html += '<input type="text" name="form_filler_id" class="form-control form-control-custom" value="' + (data.form_filler_id || '') + '"' + disabled + ' />';
-        html += '</div>';
-        html += '<div class="col-sm-6 mb30">';
-        html += '<label class="label-custom">代填者姓名</label>';
-        html += '<input type="text" name="form_filler_name" class="form-control form-control-custom" value="' + (data.form_filler_name || '') + '"' + disabled + ' />';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-      }
+      // 代填者資訊 - 已隱藏
       // 編輯模式的更新按鈕
       if (isEditable) {
         html += '<div class="col-sm-12 mb30">';
@@ -724,7 +684,6 @@
       // 收集eform2表單數據
       var formData = {
         // 基本資料
-        member_id: $('#exampleModal input[name="member_id"]').val(),
         member_name: $('#exampleModal input[name="member_name"]').val(),
         join_date: $('#exampleModal input[name="join_date"]').val(),
         gender: $('#exampleModal select[name="gender"]').val(),
@@ -733,9 +692,21 @@
         line_contact: $('#exampleModal input[name="line_contact"]').val(),
         tel_contact: $('#exampleModal input[name="tel_contact"]').val(),
         meeting_date: $('#exampleModal input[name="meeting_date"]').val(),
-        form_filler_id: $('#exampleModal input[name="form_filler_id"]').val(),
-        form_filler_name: $('#exampleModal input[name="form_filler_name"]').val()
+        submission_date: $('#exampleModal input[name="submission_date"]').val() || new Date().toISOString().split('T')[0]
       };
+
+      // 收集產品資料 - 包含所有產品，即使數量為0
+      var products = {};
+      $('#exampleModal input[name^="product_"]').each(function() {
+        var fieldName = $(this).attr('name');
+        var quantity = parseInt($(this).val()) || 0;
+        
+        // 發送所有產品資料，包含數量為0的產品
+        products[fieldName] = { quantity: quantity };
+      });
+
+      // 始終將產品資料加入表單資料（即使是空物件）
+      formData.products = products;
 
       console.log('Collected eform2 data:', formData);
 
@@ -792,443 +763,6 @@
     }
 
     // 顯示表單錯誤訊息
-          label: '3~4小時'
-        },
-        {
-          name: 'sunlight_5_6h',
-          label: '5~6小時'
-        },
-        {
-          name: 'sunlight_8h_plus',
-          label: '8小時以上'
-        }
-      ];
-      sunlightFields.forEach(function(option, index) {
-        var checked = (data[option.name] == 1) ? ' checked' : '';
-        html += '<div class="form-check form-check-inline">';
-        html += '<input class="form-check-input" type="checkbox" name="' + option.name + '" id="modal_' + option.name + '" value="1"' + checked + disabled + '>';
-        html += '<label class="form-check-label" for="modal_' + option.name + '">' + option.label + ' </label>';
-        html += '</div>';
-      });
-      html += '</div>';
-
-      // 待在空調環境
-      html += '<div class="col-sm-12 mb30">';
-      html += '<div class="form-check form-check-inline">待在空調環境：</div>';
-      var airconditionFields = [{
-          name: 'aircondition_1h',
-          label: '1小時內'
-        },
-        {
-          name: 'aircondition_2_4h',
-          label: '2~4小時'
-        },
-        {
-          name: 'aircondition_5_8h',
-          label: '5~8小時'
-        },
-        {
-          name: 'aircondition_8h_plus',
-          label: '8小時以上'
-        }
-      ];
-      airconditionFields.forEach(function(option, index) {
-        var checked = (data[option.name] == 1) ? ' checked' : '';
-        html += '<div class="form-check form-check-inline">';
-        html += '<input class="form-check-input" type="checkbox" name="' + option.name + '" id="modal_' + option.name + '" value="1"' + checked + disabled + '>';
-        html += '<label class="form-check-label" for="modal_' + option.name + '">' + option.label + ' </label>';
-        html += '</div>';
-      });
-      html += '</div>';
-
-      // 睡眠狀況
-      html += '<div class="col-sm-12 mb30">';
-      html += '<div class="form-check form-check-inline">睡眠狀況：</div>';
-      var sleepFields = [{
-          name: 'sleep_9_10',
-          label: '晚上9:00~10:59就寢'
-        },
-        {
-          name: 'sleep_11_12',
-          label: '晚上11:00~12:59就寢'
-        },
-        {
-          name: 'sleep_after_1',
-          label: '凌晨1點之後就寢'
-        }
-      ];
-      sleepFields.forEach(function(option, index) {
-        var checked = (data[option.name] == 1) ? ' checked' : '';
-        html += '<div class="form-check form-check-inline">';
-        html += '<input class="form-check-input" type="checkbox" name="' + option.name + '" id="modal_' + option.name + '" value="1"' + checked + disabled + '>';
-        html += '<label class="form-check-label" for="modal_' + option.name + '">' + option.label + ' </label>';
-        html += '</div>';
-      });
-      var sleepOtherChecked = (data.sleep_other == 1) ? ' checked' : '';
-      html += '<div class="form-check form-check-inline">';
-      html += '<input class="form-check-input" type="checkbox" name="sleep_other" id="modal_sleep_other" value="1"' + sleepOtherChecked + disabled + '>';
-      html += '<label class="form-check-label" for="modal_sleep_other">其他： </label>';
-      html += '<input type="text" name="sleep_other_text" value="' + (data.sleep_other_text || '') + '"' + disabled + '>';
-      html += '</div></div>';
-
-      // 現在使用產品
-      html += '<div class="col-sm-12 mb30">';
-      html += '<div class="form-check form-check-inline">現在使用產品：</div>';
-      var productFields = [{
-          name: 'product_honey_soap',
-          label: '蜜皂'
-        },
-        {
-          name: 'product_mud_mask',
-          label: '泥膜'
-        },
-        {
-          name: 'product_toner',
-          label: '化妝水'
-        },
-        {
-          name: 'product_serum',
-          label: '精華液'
-        },
-        {
-          name: 'product_premium',
-          label: '極緻系列'
-        },
-        {
-          name: 'product_sunscreen',
-          label: '防曬'
-        }
-      ];
-      productFields.forEach(function(product, index) {
-        var checked = (data[product.name] == 1) ? ' checked' : '';
-        html += '<div class="form-check form-check-inline">';
-        html += '<input class="form-check-input" type="checkbox" name="' + product.name + '" id="modal_' + product.name + '" value="1"' + checked + disabled + '>';
-        html += '<label class="form-check-label" for="modal_' + product.name + '">' + product.label + ' </label>';
-        html += '</div>';
-      });
-      var productOtherChecked = (data.product_other == 1) ? ' checked' : '';
-      html += '<div class="form-check form-check-inline">';
-      html += '<input class="form-check-input" type="checkbox" name="product_other" id="modal_product_other" value="1"' + productOtherChecked + disabled + '>';
-      html += '<label class="form-check-label" for="modal_product_other">其他： </label>';
-      html += '<input type="text" name="product_other_text" value="' + (data.product_other_text || '') + '"' + disabled + '>';
-      html += '</div></div>';
-
-      // 肌膚困擾
-      html += '<div class="col-sm-12 mb50">';
-      html += '<div class="card bg-light" style="background-color: #f8f9fa !important;">';
-      html += '<div class="card-body" style="background-color: #f8f9fa;">';
-      html += '<div class="container">';
-      html += '<div class="row"><p class="mb-0">肌膚困擾：</p></div>';
-      html += '<div class="row mb30">';
-      var skinIssueFields = [{
-          name: 'skin_issue_elasticity',
-          label: '沒有彈性'
-        },
-        {
-          name: 'skin_issue_luster',
-          label: '沒有光澤'
-        },
-        {
-          name: 'skin_issue_dull',
-          label: '暗沉'
-        },
-        {
-          name: 'skin_issue_spots',
-          label: '斑點'
-        },
-        {
-          name: 'skin_issue_pores',
-          label: '毛孔粗大'
-        },
-        {
-          name: 'skin_issue_acne',
-          label: '痘痘粉刺'
-        },
-        {
-          name: 'skin_issue_wrinkles',
-          label: '皺紋細紋'
-        },
-        {
-          name: 'skin_issue_rough',
-          label: '粗糙'
-        },
-        {
-          name: 'skin_issue_irritation',
-          label: '癢、紅腫'
-        },
-        {
-          name: 'skin_issue_dry',
-          label: '乾燥'
-        },
-        {
-          name: 'skin_issue_makeup',
-          label: '上妝不服貼'
-        }
-      ];
-      skinIssueFields.forEach(function(issue, index) {
-        var checked = (data[issue.name] == 1) ? ' checked' : '';
-        html += '<div class="form-check form-check-inline">';
-        html += '<input class="form-check-input" type="checkbox" name="' + issue.name + '" id="modal_' + issue.name + '" value="1"' + checked + disabled + '>';
-        html += '<label class="form-check-label" for="modal_' + issue.name + '">' + issue.label + ' </label>';
-        html += '</div>';
-      });
-      var skinIssueOtherChecked = (data.skin_issue_other == 1) ? ' checked' : '';
-      html += '<div class="form-check form-check-inline">';
-      html += '<input class="form-check-input" type="checkbox" name="skin_issue_other" id="modal_skin_issue_other" value="1"' + skinIssueOtherChecked + disabled + '>';
-      html += '<label class="form-check-label" for="modal_skin_issue_other">其他： </label>';
-      html += '<input type="text" name="skin_issue_other_text" value="' + (data.skin_issue_other_text || '') + '"' + disabled + '>';
-      html += '</div></div>';
-      html += '<div class="row"><p class="mb-0">肌膚是否容易過敏：</p></div>';
-      html += '<div class="row">';
-      var allergyFields = [{
-          name: 'allergy_frequent',
-          label: '經常'
-        },
-        {
-          name: 'allergy_seasonal',
-          label: '偶爾(換季時)'
-        },
-        {
-          name: 'allergy_never',
-          label: '不會'
-        }
-      ];
-      allergyFields.forEach(function(option, index) {
-        var checked = (data[option.name] == 1) ? ' checked' : '';
-        html += '<div class="form-check form-check-inline">';
-        html += '<input class="form-check-input" type="checkbox" name="' + option.name + '" id="modal_' + option.name + '" value="1"' + checked + disabled + '>';
-        html += '<label class="form-check-label" for="modal_' + option.name + '">' + option.label + ' </label>';
-        html += '</div>';
-      });
-      html += '</div>';
-      html += '</div>';
-      html += '</div>';
-      html += '</div>';
-      html += '</div>';
-
-      // 建議內容
-      html += '<div class="col-sm-12"><hr class="my-4"></div>';
-      html += '<div class="col-sm-12 mb30">';
-      html += '<h4>建議內容：</h4>';
-      html += '<div class="alert alert-warning" role="alert" style="background-color: #fff3cd !important; border-color: #ffeaa7; opacity: 1 !important;">';
-      html += '<div class="row">';
-      html += '<div class="col-sm-6 mb30">';
-      html += '<label class="label-custom">化妝水：</label>';
-      html += '<input type="text" name="toner_suggestion" class="form-control form-control-custom" value="' + (data.toner_suggestion || '') + '"' + disabled + ' />';
-      html += '</div>';
-      html += '<div class="col-sm-6 mb30">';
-      html += '<label class="label-custom">精華液：</label>';
-      html += '<input type="text" name="serum_suggestion" class="form-control form-control-custom" value="' + (data.serum_suggestion || '') + '"' + disabled + ' />';
-      html += '</div>';
-      html += '<div class="col-sm-12 mb30">';
-      html += '<label class="label-custom">建議內容</label>';
-      html += '<input type="text" name="suggestion_content" class="form-control form-control-custom" placeholder="請填寫建議內容…" value="' + (data.suggestion_content || '') + '"' + disabled + ' />';
-      html += '</div>';
-      html += '</div>';
-      html += '</div>';
-      html += '</div>';
-
-      // 肌膚檢測數據
-      html += '<div class="col-sm-12 mb30">';
-      html += '<div class="card bg-light" style="background-color: #f8f9fa !important;">';
-      html += '<div class="card-body" style="background-color: #f8f9fa;">';
-      html += '<div class="container">';
-      html += '<div class="row">';
-      html += '<div class="col-sm-8 mb30">';
-      html += '<div class="form-check form-check-inline">肌膚類型：</div>';
-      var skinTypes = [{
-          value: 'normal',
-          label: '中性'
-        },
-        {
-          value: 'combination',
-          label: '混合性'
-        },
-        {
-          value: 'oily',
-          label: '油性'
-        },
-        {
-          value: 'dry',
-          label: '乾性'
-        },
-        {
-          value: 'sensitive',
-          label: '敏感性'
-        }
-      ];
-      skinTypes.forEach(function(type) {
-        var checked = (data.skin_type === type.value) ? ' checked' : '';
-        html += '<div class="form-check form-check-inline">';
-        html += '<input class="form-check-input" type="radio" name="skin_type" id="modal_skin_' + type.value + '" value="' + type.value + '"' + checked + disabled + '>';
-        html += '<label class="form-check-label" for="modal_skin_' + type.value + '">' + type.label + ' </label>';
-        html += '</div>';
-      });
-      html += '</div>';
-      html += '<div class="col-sm-4 mb30">';
-      html += '<div class="form-check form-check-inline">';
-      html += '<label class="form-check-label" for="modal_skin_age">肌膚年齡： </label>';
-      html += '<input type="number" name="skin_age" id="modal_skin_age" value="' + (data.skin_age || '') + '" style="width: 80%;"' + disabled + '>';
-      html += '</div>';
-      html += '</div>';
-
-      // 檢測數據區塊 (水潤、膚色、紋理等)
-      var testCategories = ['水潤', '膚色', '紋理', '敏感', '油脂', '色素', '皺紋', '毛孔'];
-      testCategories.forEach(function(category) {
-        html += addTestDataSection(category, data, disabled);
-      });
-
-      html += '</div>';
-      html += '</div>';
-      html += '</div>';
-      html += '</div>';
-
-      if (isEditable) {
-        html += '<div class="col-sm-12 mb30">';
-        html += '<hr class="my-4">';
-        html += '<button type="button" class="btn btn-outline-danger btn-block" onclick="updateFormData()">更新表單</button>';
-        html += '</div>';
-      }
-
-      html += '</div>';
-      html += '</form>';
-      html += '</div>';
-      html += '</div>';
-
-      $('#exampleModal .modal-body').html(html);
-    }
-
-    // 新增檢測數據區塊
-    function addTestDataSection(categoryName, data, disabled) {
-      var html = '<div class="col-sm-12 mb20" style="background-color: #f8f9fa; padding: 10px; border-radius: 5px;">';
-      html += '<label class="label-custom">' + categoryName + '</label>';
-      html += '<div class="row">';
-
-      // 查找對應的評分資料
-      var categoryScores = [];
-      if (data.moisture_scores && Array.isArray(data.moisture_scores)) {
-        // 根據 categoryName 匹配對應的資料
-        var categoryMapping = {
-          '水潤': 'moisture',
-          '膚色': 'complexion',
-          '紋理': 'texture',
-          '敏感': 'sensitivity',
-          '油脂': 'oil',
-          '色素': 'pigment',
-          '皺紋': 'wrinkle',
-          '毛孔': 'pore'
-        };
-
-        var categoryKey = categoryMapping[categoryName] || 'moisture';
-        categoryScores = data.moisture_scores.filter(function(score) {
-          return score.category === categoryKey;
-        });
-
-        console.log('Processing category:', categoryName, '-> key:', categoryKey);
-        console.log('Available scores:', data.moisture_scores.length);
-        console.log('Filtered scores for', categoryName, ':', categoryScores);
-      } else {
-        console.log('No moisture_scores data available for', categoryName);
-      }
-
-      // Get the category key for field naming
-      var categoryKey = {
-        '水潤': 'moisture',
-        '膚色': 'complexion',
-        '紋理': 'texture',
-        '敏感': 'sensitivity',
-        '油脂': 'oil',
-        '色素': 'pigment',
-        '皺紋': 'wrinkle',
-        '毛孔': 'pore'
-      } [categoryName] || 'moisture';
-
-      // 三組日期和數字輸入
-      for (var i = 0; i < 3; i++) {
-        var scoreData = categoryScores[i] || {};
-        console.log('Score data for', categoryName, 'index', i, ':', scoreData);
-
-        // 日期和數字輸入只顯示資料庫資料，沒有資料時顯示空白
-        var dateValue = scoreData.measurement_date || '';
-        var scoreValue = scoreData.score_value || '';
-
-        console.log('Extracted values - date:', dateValue, 'score:', scoreValue);
-
-        html += '<div class="col-sm-4 mb20">';
-        html += '<div class="row">';
-        html += '<div class="col-lg-6"><input type="text" name="' + categoryKey + '_date_' + i + '" class="form-control form-control-custom" placeholder="請填日期…" value="' + dateValue + '"' + disabled + '></div>';
-        html += '<div class="col-lg-6"><input type="text" name="' + categoryKey + '_number_' + i + '" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue + '"' + disabled + '></div>';
-        html += '</div>';
-        html += '</div>';
-      }
-
-      html += '</div>';
-      html += '<div class="row">';
-
-      // 三組下拉選單和數字輸入 - 設定預設值
-      var defaultValues = [{
-          type: 'severe',
-          value: '0'
-        },
-        {
-          type: 'warning',
-          value: '6'
-        },
-        {
-          type: 'healthy',
-          value: '8'
-        }
-      ];
-
-      for (var i = 0; i < 3; i++) {
-        var scoreData2 = categoryScores[i] || {};
-        console.log('Dropdown score data for', categoryName, 'index', i, ':', scoreData2);
-
-        // 下拉選單保持預設值邏輯，數值欄位只顯示資料庫資料
-        var scoreType = scoreData2.score_type || defaultValues[i].type;
-        var scoreValue2 = scoreData2.score_value || '';
-
-        console.log('Dropdown values - type:', scoreType, 'value:', scoreValue2);
-
-        // Create field names based on category and score type
-        var scoreTypeField = categoryKey + '_' + scoreType;
-
-        html += '<div class="col-sm-4 mb20">';
-        html += '<div class="row">';
-        html += '<div class="col-lg-6">';
-        html += '<select name="' + scoreTypeField + '_type" class="form-control form-control-custom"' + disabled + '>';
-        html += '<option value="">請選擇</option>';
-        var options = [{
-            value: 'severe',
-            label: '嚴重、盡快改善'
-          },
-          {
-            value: 'warning',
-            label: '有問題、要注意'
-          },
-          {
-            value: 'healthy',
-            label: '健康'
-          }
-        ];
-        options.forEach(function(option) {
-          var selected = (scoreType === option.value) ? ' selected' : '';
-          html += '<option value="' + option.value + '"' + selected + '>' + option.label + '</option>';
-        });
-        html += '</select>';
-        html += '</div>';
-        html += '<div class="col-lg-6"><input type="text" name="' + scoreTypeField + '" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue2 + '"' + disabled + '></div>';
-        html += '</div>';
-        html += '</div>';
-      }
-
-      html += '</div>';
-      html += '</div>';
-
-      return html;
-    }
-
-    // 顯示表單錯誤訊息
     function showFormError(message) {
       $('#exampleModal .modal-body').html(
         '<div class="text-center p-4">' +
@@ -1239,164 +773,6 @@
       );
     }
 
-    // 更新表單資料
-    function updateFormData() {
-      // 收集表單數據 - 使用proper field names
-      var formData = {
-        // 基本資料
-        member_name: $('#exampleModal input[name="member_name"]').val(),
-        birth_year: $('#exampleModal select[name="birth_year"]').val(),
-        birth_month: $('#exampleModal select[name="birth_month"]').val(),
-        phone: $('#exampleModal input[name="phone"]').val(),
-
-        // 職業選擇
-        occupation_service: $('#exampleModal input[name="occupation_service"]').is(':checked') ? 1 : 0,
-        occupation_office: $('#exampleModal input[name="occupation_office"]').is(':checked') ? 1 : 0,
-        occupation_restaurant: $('#exampleModal input[name="occupation_restaurant"]').is(':checked') ? 1 : 0,
-        occupation_housewife: $('#exampleModal input[name="occupation_housewife"]').is(':checked') ? 1 : 0,
-
-        // 戶外日曬時間
-        sunlight_1_2h: $('#exampleModal input[name="sunlight_1_2h"]').is(':checked') ? 1 : 0,
-        sunlight_3_4h: $('#exampleModal input[name="sunlight_3_4h"]').is(':checked') ? 1 : 0,
-        sunlight_5_6h: $('#exampleModal input[name="sunlight_5_6h"]').is(':checked') ? 1 : 0,
-        sunlight_8h_plus: $('#exampleModal input[name="sunlight_8h_plus"]').is(':checked') ? 1 : 0,
-
-        // 空調環境時間
-        aircondition_1h: $('#exampleModal input[name="aircondition_1h"]').is(':checked') ? 1 : 0,
-        aircondition_2_4h: $('#exampleModal input[name="aircondition_2_4h"]').is(':checked') ? 1 : 0,
-        aircondition_5_8h: $('#exampleModal input[name="aircondition_5_8h"]').is(':checked') ? 1 : 0,
-        aircondition_8h_plus: $('#exampleModal input[name="aircondition_8h_plus"]').is(':checked') ? 1 : 0,
-
-        // 睡眠狀況
-        sleep_9_10: $('#exampleModal input[name="sleep_9_10"]').is(':checked') ? 1 : 0,
-        sleep_11_12: $('#exampleModal input[name="sleep_11_12"]').is(':checked') ? 1 : 0,
-        sleep_after_1: $('#exampleModal input[name="sleep_after_1"]').is(':checked') ? 1 : 0,
-        sleep_other: $('#exampleModal input[name="sleep_other"]').is(':checked') ? 1 : 0,
-        sleep_other_text: $('#exampleModal input[name="sleep_other_text"]').val(),
-
-        // 現在使用產品
-        product_honey_soap: $('#exampleModal input[name="product_honey_soap"]').is(':checked') ? 1 : 0,
-        product_mud_mask: $('#exampleModal input[name="product_mud_mask"]').is(':checked') ? 1 : 0,
-        product_toner: $('#exampleModal input[name="product_toner"]').is(':checked') ? 1 : 0,
-        product_serum: $('#exampleModal input[name="product_serum"]').is(':checked') ? 1 : 0,
-        product_premium: $('#exampleModal input[name="product_premium"]').is(':checked') ? 1 : 0,
-        product_sunscreen: $('#exampleModal input[name="product_sunscreen"]').is(':checked') ? 1 : 0,
-        product_other: $('#exampleModal input[name="product_other"]').is(':checked') ? 1 : 0,
-        product_other_text: $('#exampleModal input[name="product_other_text"]').val(),
-
-        // 肌膚困擾
-        skin_issue_elasticity: $('#exampleModal input[name="skin_issue_elasticity"]').is(':checked') ? 1 : 0,
-        skin_issue_luster: $('#exampleModal input[name="skin_issue_luster"]').is(':checked') ? 1 : 0,
-        skin_issue_dull: $('#exampleModal input[name="skin_issue_dull"]').is(':checked') ? 1 : 0,
-        skin_issue_spots: $('#exampleModal input[name="skin_issue_spots"]').is(':checked') ? 1 : 0,
-        skin_issue_pores: $('#exampleModal input[name="skin_issue_pores"]').is(':checked') ? 1 : 0,
-        skin_issue_acne: $('#exampleModal input[name="skin_issue_acne"]').is(':checked') ? 1 : 0,
-        skin_issue_wrinkles: $('#exampleModal input[name="skin_issue_wrinkles"]').is(':checked') ? 1 : 0,
-        skin_issue_rough: $('#exampleModal input[name="skin_issue_rough"]').is(':checked') ? 1 : 0,
-        skin_issue_irritation: $('#exampleModal input[name="skin_issue_irritation"]').is(':checked') ? 1 : 0,
-        skin_issue_dry: $('#exampleModal input[name="skin_issue_dry"]').is(':checked') ? 1 : 0,
-        skin_issue_makeup: $('#exampleModal input[name="skin_issue_makeup"]').is(':checked') ? 1 : 0,
-        skin_issue_other: $('#exampleModal input[name="skin_issue_other"]').is(':checked') ? 1 : 0,
-        skin_issue_other_text: $('#exampleModal input[name="skin_issue_other_text"]').val(),
-
-        // 過敏狀況
-        allergy_frequent: $('#exampleModal input[name="allergy_frequent"]').is(':checked') ? 1 : 0,
-        allergy_seasonal: $('#exampleModal input[name="allergy_seasonal"]').is(':checked') ? 1 : 0,
-        allergy_never: $('#exampleModal input[name="allergy_never"]').is(':checked') ? 1 : 0,
-
-        // 建議內容
-        toner_suggestion: $('#exampleModal input[name="toner_suggestion"]').val(),
-        serum_suggestion: $('#exampleModal input[name="serum_suggestion"]').val(),
-        suggestion_content: $('#exampleModal input[name="suggestion_content"]').val(),
-
-        // 肌膚類型
-        skin_type: $('#exampleModal input[name="skin_type"]:checked').val(),
-        skin_age: $('#exampleModal input[name="skin_age"]').val()
-      };
-
-      // 收集肌膚評分資料（8個類別，每個類別3種評分類型）
-      var skinCategories = ['moisture', 'complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
-      var scoreTypes = ['severe', 'warning', 'healthy'];
-
-      skinCategories.forEach(function(category) {
-        scoreTypes.forEach(function(scoreType) {
-          var fieldName = category + '_' + scoreType;
-          var scoreValue = $('#exampleModal input[name="' + fieldName + '"]').val();
-          if (scoreValue && scoreValue.trim() !== '') {
-            formData[fieldName] = scoreValue.trim();
-          }
-        });
-
-        // 收集日期和數字資料（每個類別3組）
-        for (var i = 0; i < 3; i++) {
-          var dateField = category + '_date_' + i;
-          var numberField = category + '_number_' + i;
-          var dateValue = $('#exampleModal input[name="' + dateField + '"]').val();
-          var numberValue = $('#exampleModal input[name="' + numberField + '"]').val();
-
-          if (dateValue && dateValue.trim() !== '') {
-            formData[dateField] = dateValue.trim();
-          }
-          if (numberValue && numberValue.trim() !== '') {
-            formData[numberField] = numberValue.trim();
-          }
-        }
-      });
-
-      console.log('Collected form data with skin scores:', formData);
-
-      // 獲取當前編輯的記錄ID (需要從全局變量或其他方式獲取)
-      var submissionId = window.currentEditingSubmissionId || 1;
-
-      // 發送更新請求
-      $.ajax({
-        url: '<?php echo base_url("api/eeform/eeform2/submission/"); ?>' + submissionId,
-        method: 'POST', // 使用POST而非PUT
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify(formData),
-        success: function(response) {
-          if (response && response.success) {
-            // 使用SweetAlert顯示成功訊息
-            if (typeof Swal !== 'undefined') {
-              Swal.fire({
-                title: '更新成功！',
-                text: '表單已成功更新',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1500
-              }).then(function() {
-                $('#exampleModal').modal('hide');
-                // 重新載入表格數據
-                loadSubmissions();
-              });
-            } else {
-              alert('更新成功！');
-              $('#exampleModal').modal('hide');
-              loadSubmissions();
-            }
-          } else {
-            showUpdateError('更新失敗: ' + (response.message || '未知錯誤'));
-          }
-        },
-        error: function(xhr, status, error) {
-          var errorMessage = '更新失敗';
-          if (xhr.status === 404) {
-            errorMessage = '找不到指定的記錄';
-          } else if (xhr.status === 500) {
-            errorMessage = '服務器內部錯誤';
-          } else if (xhr.responseText) {
-            try {
-              var errorResponse = JSON.parse(xhr.responseText);
-              errorMessage = errorResponse.message || errorMessage;
-            } catch (e) {
-              errorMessage += ' (錯誤代碼: ' + xhr.status + ')';
-            }
-          }
-          showUpdateError(errorMessage);
-        }
-      });
-    }
 
     // 顯示更新錯誤訊息
     function showUpdateError(message) {

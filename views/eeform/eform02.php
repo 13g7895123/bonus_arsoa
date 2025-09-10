@@ -472,7 +472,7 @@
     </script>
     <script>
       // 控制測試按鈕顯示的變數
-      var showTestButton = false; // 設為 true 顯示測試按鈕
+      var showTestButton = true; // 設為 true 顯示測試按鈕
       var productsData = []; // 存儲從API載入的產品資料
       
       // 頁面載入時檢查是否顯示測試按鈕

@@ -72,21 +72,24 @@ class Eeform2Model extends MY_Model {
                 ];
             }
             
-            // 插入產品記錄
-            foreach ($products as $key => $product) {
-                if (isset($product_mapping[$key])) {
-                    $quantity = isset($product['quantity']) ? (int)$product['quantity'] : 0;
+            // 插入產品記錄 - 處理所有產品主檔中的產品
+            foreach ($product_mapping as $field_name => $product_info) {
+                // 檢查前端是否有提供這個產品的數量資料
+                $quantity = 0;
+                if (isset($products[$field_name]) && isset($products[$field_name]['quantity'])) {
+                    $quantity = (int)$products[$field_name]['quantity'];
+                }
+                
+                // 只有數量大於0的產品才插入記錄
+                if ($quantity > 0) {
+                    $product_data = [
+                        'submission_id' => $submission_id,
+                        'product_code' => $product_info['code'],
+                        'product_name' => $product_info['name'],
+                        'quantity' => $quantity
+                    ];
                     
-                    if ($quantity > 0) {
-                        $product_data = [
-                            'submission_id' => $submission_id,
-                            'product_code' => $product_mapping[$key]['code'],
-                            'product_name' => $product_mapping[$key]['name'],
-                            'quantity' => $quantity
-                        ];
-                        
-                        $this->db->insert($this->table_products, $product_data);
-                    }
+                    $this->db->insert($this->table_products, $product_data);
                 }
             }
             
@@ -146,7 +149,41 @@ class Eeform2Model extends MY_Model {
             $submission = $query->row_array();
             
             if ($submission) {
-                $submission['products'] = $this->get_products_by_submission($id);
+                // 取得已訂購的產品
+                $ordered_products = $this->get_products_by_submission($id);
+                
+                // 取得所有產品主檔
+                $all_products = $this->get_all_products();
+                
+                // 建立產品映射表（用於快速查找）
+                $ordered_map = [];
+                foreach ($ordered_products as $product) {
+                    $ordered_map[$product['product_code']] = $product;
+                }
+                
+                // 合併所有產品，包含未訂購的（數量為0）
+                $complete_products = [];
+                foreach ($all_products as $master_product) {
+                    if (isset($ordered_map[$master_product['product_code']])) {
+                        // 使用已訂購的產品資料
+                        $complete_products[] = $ordered_map[$master_product['product_code']];
+                    } else {
+                        // 加入未訂購的產品（數量為0）
+                        $complete_products[] = [
+                            'product_code' => $master_product['product_code'],
+                            'product_name' => $master_product['product_name'],
+                            'quantity' => 0,
+                            'sort_order' => $master_product['sort_order']
+                        ];
+                    }
+                }
+                
+                // 按照sort_order排序
+                usort($complete_products, function($a, $b) {
+                    return ($a['sort_order'] ?? 0) - ($b['sort_order'] ?? 0);
+                });
+                
+                $submission['products'] = $complete_products;
             }
             
             return $submission;
@@ -188,12 +225,32 @@ class Eeform2Model extends MY_Model {
         try {
             $data['updated_at'] = date('Y-m-d H:i:s');
             
+            // 記錄更新操作的詳細資訊
+            log_message('debug', 'Updating submission ID: ' . $id . ', Data: ' . json_encode($data));
+            
             $this->db->where('id', $id);
             $result = $this->db->update($this->table_submissions, $data);
+            
+            // 記錄SQL執行結果
+            $affected_rows = $this->db->affected_rows();
+            $last_query = $this->db->last_query();
+            log_message('debug', 'Update query: ' . $last_query);
+            log_message('debug', 'Affected rows: ' . $affected_rows);
+            
+            if (!$result) {
+                $db_error = $this->db->error();
+                log_message('error', 'Database update failed: ' . json_encode($db_error));
+                throw new Exception('資料庫更新失敗: ' . $db_error['message']);
+            }
+            
+            if ($affected_rows === 0) {
+                log_message('warning', 'Update succeeded but no rows were affected. Record may not exist or data may be identical.');
+            }
             
             return $result;
             
         } catch (Exception $e) {
+            log_message('error', 'Update submission error: ' . $e->getMessage());
             throw new Exception('更新提交記錄失敗: ' . $e->getMessage());
         }
     }

@@ -236,7 +236,9 @@ class Eeform2 extends MY_Controller
      */
     public function submission($id = null) {
         try {
-            if ($this->input->method(TRUE) !== 'GET') {
+            $method = $this->input->method(TRUE);
+            
+            if (!in_array($method, ['GET', 'POST'])) {
                 $this->_send_error('Method not allowed', 405);
                 return;
             }
@@ -246,17 +248,72 @@ class Eeform2 extends MY_Controller
                 return;
             }
 
-            $submission = $this->eform2_model->get_submission_by_id($id);
-            
-            if ($submission) {
-                $this->_send_success('取得表單記錄成功', $submission);
-            } else {
-                $this->_send_error('找不到指定的表單記錄', 404);
+            if ($method === 'GET') {
+                // 查看表單記錄
+                $submission = $this->eform2_model->get_submission_by_id($id);
+                
+                if ($submission) {
+                    $this->_send_success('取得表單記錄成功', $submission);
+                } else {
+                    $this->_send_error('找不到指定的表單記錄', 404);
+                }
+            } else if ($method === 'POST') {
+                // 更新表單記錄
+                $raw_input = $this->input->raw_input_stream;
+                $input_data = json_decode($raw_input, true);
+                
+                if (!$input_data) {
+                    $input_data = $this->input->post();
+                }
+
+                if (!$input_data) {
+                    $this->_send_error('缺少更新資料', 400);
+                    return;
+                }
+
+                // 驗證記錄是否存在
+                $existing_submission = $this->eform2_model->get_submission_by_id($id);
+                if (!$existing_submission) {
+                    $this->_send_error('找不到指定的表單記錄', 404);
+                    return;
+                }
+
+                // 分離產品資料和主要表單資料
+                $products = isset($input_data['products']) ? $input_data['products'] : [];
+                unset($input_data['products']); // 從主要資料中移除產品資料
+                
+                // 記錄更新請求的詳細信息
+                log_message('debug', 'Processing update for submission ID: ' . $id);
+                log_message('debug', 'Input data: ' . json_encode($input_data));
+                log_message('debug', 'Products data: ' . json_encode($products));
+                
+                // 執行更新
+                $result = $this->eform2_model->update_submission($id, $input_data);
+                
+                if ($result) {
+                    // 始終更新產品資料（即使是空數組也要清除舊產品）
+                    try {
+                        $this->eform2_model->save_products($id, $products);
+                    } catch (Exception $e) {
+                        log_message('error', 'Product update failed: ' . $e->getMessage());
+                        $this->_send_error('更新產品資料失敗: ' . $e->getMessage(), 500);
+                        return;
+                    }
+                    
+                    $updated_submission = $this->eform2_model->get_submission_by_id($id);
+                    log_message('debug', 'Update successful for submission ID: ' . $id);
+                    $this->_send_success('更新表單記錄成功', $updated_submission);
+                } else {
+                    log_message('error', 'Submission update returned false for ID: ' . $id);
+                    $this->_send_error('更新表單記錄失敗：資料庫操作返回失敗結果', 500);
+                }
             }
 
         } catch (Exception $e) {
-            $this->_send_error('取得表單記錄失敗: ' . $e->getMessage(), 500, [
+            $error_action = $this->input->method(TRUE) === 'GET' ? '取得' : '更新';
+            $this->_send_error($error_action . '表單記錄失敗: ' . $e->getMessage(), 500, [
                 'id' => $id,
+                'method' => $this->input->method(TRUE),
                 'trace' => $e->getTraceAsString()
             ]);
         }
