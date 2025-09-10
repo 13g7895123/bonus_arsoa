@@ -186,7 +186,7 @@ class Eeform5Model extends CI_Model {
     {
         $offset = ($page - 1) * $limit;
         
-        $this->db->select('id, member_name, member_id, phone, gender, age, submission_date, status, created_at');
+        $this->db->select('id, member_name, member_id, phone, gender, age, height, has_medication_habit, has_family_disease_history, submission_date, status, created_at');
         $this->db->from('eeform5_submissions');
         
         // 搜尋條件

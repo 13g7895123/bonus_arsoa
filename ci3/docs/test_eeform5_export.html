@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EEForm5 Excel Export 測試頁面</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+        .log-container {
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f1f3f4;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .spinner-border {
+            width: 1rem;
+            height: 1rem;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">EEForm5 Excel Export 功能測試</h1>
+        
+        <!-- 測試設定 -->
+        <div class="test-section">
+            <h3>測試設定</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="baseUrl" class="form-label">API Base URL:</label>
+                    <input type="text" class="form-control" id="baseUrl" value="http://localhost:8082">
+                </div>
+                <div class="col-md-6">
+                    <label for="submissionId" class="form-label">測試表單 ID:</label>
+                    <input type="number" class="form-control" id="submissionId" value="1">
+                </div>
+            </div>
+        </div>
+
+        <!-- 測試按鈕 -->
+        <div class="test-section">
+            <h3>測試操作</h3>
+            <div class="btn-group" role="group">
+                <button class="btn btn-primary" onclick="createTestData()">
+                    建立測試資料
+                </button>
+                <button class="btn btn-success" onclick="testExportSingle()">
+                    測試匯出單一表單
+                </button>
+                <button class="btn btn-warning" onclick="testInvalidId()">
+                    測試無效 ID
+                </button>
+                <button class="btn btn-info" onclick="runAllTests()">
+                    執行所有測試
+                </button>
+                <button class="btn btn-secondary" onclick="clearLog()">
+                    清除記錄
+                </button>
+            </div>
+        </div>
+
+        <!-- 測試結果 -->
+        <div class="test-section">
+            <h3>測試結果</h3>
+            <div id="testResults"></div>
+        </div>
+
+        <!-- 測試記錄 -->
+        <div class="test-section">
+            <h3>測試記錄</h3>
+            <div class="log-container" id="logContainer"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let testSubmissionId = null;
+        
+        function getBaseUrl() {
+            return document.getElementById('baseUrl').value.replace(/\/$/, '');
+        }
+        
+        function getSubmissionId() {
+            return document.getElementById('submissionId').value || testSubmissionId || 1;
+        }
+        
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleTimeString();
+            const colorMap = {
+                'info': '#333',
+                'success': '#155724',
+                'error': '#721c24',
+                'warning': '#856404'
+            };
+            
+            const logEntry = document.createElement('div');
+            logEntry.style.color = colorMap[type] || '#333';
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        function addResult(title, success, message) {
+            const resultsContainer = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${success ? 'success' : 'error'}`;
+            resultDiv.innerHTML = `
+                <strong>${title}:</strong> ${message}
+            `;
+            resultsContainer.appendChild(resultDiv);
+        }
+        
+        function clearLog() {
+            document.getElementById('logContainer').innerHTML = '';
+            document.getElementById('testResults').innerHTML = '';
+            log('測試記錄已清除', 'info');
+        }
+        
+        async function createTestData() {
+            log('開始建立測試資料...', 'info');
+            
+            const testData = {
+                member_name: '測試公司',
+                member_id: 'TEST' + Date.now().toString().slice(-6),
+                phone: '0912' + Math.floor(Math.random() * 900000 + 100000),
+                name: '測試使用者',
+                gender: '男',
+                age: Math.floor(Math.random() * 40 + 20),
+                height: (Math.random() * 40 + 150).toFixed(1),
+                exercise_habit: '是',
+                
+                // 體測數據
+                weight: (Math.random() * 40 + 50).toFixed(1),
+                bmi: (Math.random() * 12 + 18).toFixed(1),
+                fat_percentage: (Math.random() * 20 + 10).toFixed(1),
+                fat_mass: (Math.random() * 15 + 5).toFixed(1),
+                muscle_percentage: (Math.random() * 20 + 30).toFixed(1),
+                muscle_mass: (Math.random() * 20 + 20).toFixed(1),
+                water_percentage: (Math.random() * 20 + 50).toFixed(1),
+                water_content: (Math.random() * 20 + 30).toFixed(1),
+                visceral_fat_percentage: (Math.random() * 10 + 5).toFixed(1),
+                bone_mass: (Math.random() * 2 + 2).toFixed(1),
+                bmr: Math.floor(Math.random() * 800 + 1200),
+                protein_percentage: (Math.random() * 10 + 15).toFixed(1),
+                obesity_percentage: (Math.random() * 20 + 5).toFixed(1),
+                body_age: Math.floor(Math.random() * 40 + 20),
+                lean_body_mass: (Math.random() * 30 + 40).toFixed(1),
+                
+                // 其他資料
+                occupation: ['上班族', '自由業'],
+                health_concerns: ['睡眠不佳', '免疫力', '體重困擾'],
+                health_concerns_other: '偶爾頭痛',
+                recommended_products: ['活力精萃', '白鶴靈芝EX', '美力C錠'],
+                product_dosages: {
+                    energy_essence_dosage: '每日1包',
+                    reishi_ex_dosage: '每日2粒',
+                    vitamin_c_dosage: '每日1錠'
+                },
+                has_medication_habit: Math.random() > 0.5 ? 1 : 0,
+                medication_name: '維他命C',
+                has_family_disease_history: Math.random() > 0.5 ? 1 : 0,
+                disease_name: '高血壓',
+                microcirculation_test: '血液循環良好，微血管通透性正常',
+                dietary_advice: '建議多攝取蔬果，減少油炸食物'
+            };
+            
+            try {
+                const response = await fetch(`${getBaseUrl()}/api/eeform/eeform5/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    testSubmissionId = result.submission_id;
+                    document.getElementById('submissionId').value = testSubmissionId;
+                    log(`✓ 成功建立測試資料, ID: ${testSubmissionId}`, 'success');
+                    addResult('建立測試資料', true, `成功建立 ID: ${testSubmissionId}`);
+                } else {
+                    log(`✗ 建立失敗: ${result.message}`, 'error');
+                    addResult('建立測試資料', false, result.message);
+                }
+            } catch (error) {
+                log(`✗ 請求錯誤: ${error.message}`, 'error');
+                addResult('建立測試資料', false, error.message);
+            }
+        }
+        
+        async function testExportSingle() {
+            const submissionId = getSubmissionId();
+            log(`開始測試匯出表單 ID: ${submissionId}...`, 'info');
+            
+            try {
+                const url = `${getBaseUrl()}/api/eeform/eeform5/export_single/${submissionId}`;
+                log(`測試 URL: ${url}`, 'info');
+                
+                // 使用 fetch 測試
+                const response = await fetch(url);
+                
+                if (response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    
+                    if (contentType && contentType.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+                        const blob = await response.blob();
+                        log(`✓ 成功接收 Excel 檔案，大小: ${blob.size} bytes`, 'success');
+                        addResult('匯出單一表單', true, `成功匯出 Excel，大小: ${blob.size} bytes`);
+                        
+                        // 下載檔案
+                        const downloadUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = downloadUrl;
+                        a.download = `eeform5_export_${submissionId}_${Date.now()}.xlsx`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(downloadUrl);
+                        document.body.removeChild(a);
+                        
+                        log('✓ Excel 檔案已下載', 'success');
+                    } else if (contentType && contentType.includes('text/csv')) {
+                        const blob = await response.blob();
+                        log(`✓ 成功接收 CSV 檔案 (備用格式)，大小: ${blob.size} bytes`, 'success');
+                        addResult('匯出單一表單', true, `成功匯出 CSV，大小: ${blob.size} bytes`);
+                        
+                        // 下載檔案
+                        const downloadUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = downloadUrl;
+                        a.download = `eeform5_export_${submissionId}_${Date.now()}.csv`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(downloadUrl);
+                        document.body.removeChild(a);
+                        
+                        log('✓ CSV 檔案已下載', 'success');
+                    } else {
+                        const text = await response.text();
+                        try {
+                            const json = JSON.parse(text);
+                            log(`✗ API 錯誤: ${json.message}`, 'error');
+                            addResult('匯出單一表單', false, json.message);
+                        } catch {
+                            log(`✗ 未預期的回應格式`, 'error');
+                            addResult('匯出單一表單', false, '未預期的回應格式');
+                        }
+                    }
+                } else {
+                    const text = await response.text();
+                    try {
+                        const json = JSON.parse(text);
+                        log(`✗ HTTP ${response.status}: ${json.message}`, 'error');
+                        addResult('匯出單一表單', false, `HTTP ${response.status}: ${json.message}`);
+                    } catch {
+                        log(`✗ HTTP ${response.status}`, 'error');
+                        addResult('匯出單一表單', false, `HTTP ${response.status}`);
+                    }
+                }
+            } catch (error) {
+                log(`✗ 請求錯誤: ${error.message}`, 'error');
+                addResult('匯出單一表單', false, error.message);
+            }
+        }
+        
+        async function testInvalidId() {
+            const invalidId = 999999;
+            log(`測試無效 ID: ${invalidId}...`, 'info');
+            
+            try {
+                const response = await fetch(`${getBaseUrl()}/api/eeform/eeform5/export_single/${invalidId}`);
+                
+                if (response.status === 404) {
+                    log('✓ 無效 ID 正確處理 (404)', 'success');
+                    addResult('測試無效 ID', true, '正確返回 404 錯誤');
+                } else {
+                    log(`⚠ 未預期的狀態碼: ${response.status}`, 'warning');
+                    addResult('測試無效 ID', false, `未預期的狀態碼: ${response.status}`);
+                }
+            } catch (error) {
+                log(`✗ 請求錯誤: ${error.message}`, 'error');
+                addResult('測試無效 ID', false, error.message);
+            }
+        }
+        
+        async function runAllTests() {
+            clearLog();
+            log('=== 開始執行所有測試 ===', 'info');
+            
+            // 建立測試資料
+            await createTestData();
+            
+            // 等待一秒
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 測試匯出
+            await testExportSingle();
+            
+            // 等待一秒
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 測試無效 ID
+            await testInvalidId();
+            
+            log('=== 所有測試完成 ===', 'info');
+        }
+        
+        // 頁面載入時的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            log('測試頁面已載入', 'info');
+            log(`預設 API URL: ${getBaseUrl()}`, 'info');
+        });
+    </script>
+</body>
+</html>

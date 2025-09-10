@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EForm5 Real TDD Tests - Point 134</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #6f42c1;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        .test-section h2 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        .test-case {
+            margin: 15px 0;
+            padding: 15px;
+            border-left: 4px solid #6c757d;
+            background-color: #f8f9fa;
+        }
+        .test-case.running {
+            border-left-color: #ffc107;
+            background-color: #fff3cd;
+        }
+        .test-case.success {
+            border-left-color: #28a745;
+            background-color: #d4edda;
+        }
+        .test-case.error {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .test-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .test-result {
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .test-details {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .btn {
+            background-color: #6f42c1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background-color: #5a32a3;
+        }
+        .btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #6f42c1;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 EForm5 Real TDD Tests - Point 134</h1>
+        
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn" onclick="runAllTests()">執行所有測試</button>
+            <button class="btn" onclick="runApiTests()">執行 API 測試</button>
+            <button class="btn" onclick="runFrontendTests()">執行前端測試</button>
+            <button class="btn" onclick="clearResults()">清除結果</button>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div id="progressText" style="text-align: center; margin: 10px 0;">準備就緒</div>
+
+        <div class="test-section">
+            <h2>🔌 API 連接測試</h2>
+            <div id="api-connection-test" class="test-case">
+                <div class="test-name">API 基本連接測試</div>
+                <div class="test-result">等待執行...</div>
+                <div class="test-details"></div>
+            </div>
+            <div id="api-list-test" class="test-case">
+                <div class="test-name">API 列表資料測試</div>
+                <div class="test-result">等待執行...</div>
+                <div class="test-details"></div>
+            </div>
+            <div id="api-structure-test" class="test-case">
+                <div class="test-name">API 資料結構測試</div>
+                <div class="test-result">等待執行...</div>
+                <div class="test-details"></div>
+            </div>
+            <div id="api-routes-test" class="test-case">
+                <div class="test-name">API 路由配置測試</div>
+                <div class="test-result">等待執行...</div>
+                <div class="test-details"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>💻 前端功能測試</h2>
+            <div id="frontend-load-test" class="test-case">
+                <div class="test-name">管理頁面載入測試</div>
+                <div class="test-result">等待執行...</div>
+                <div class="test-details"></div>
+            </div>
+            <div id="frontend-js-test" class="test-case">
+                <div class="test-name">JavaScript 功能測試</div>
+                <div class="test-result">等待執行...</div>
+                <div class="test-details"></div>
+            </div>
+            <div id="frontend-modal-test" class="test-case">
+                <div class="test-name">詳細資料 Modal 測試</div>
+                <div class="test-result">等待執行...</div>
+                <div class="test-details"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🗄️ 資料庫整合測試</h2>
+            <div id="db-connection-test" class="test-case">
+                <div class="test-name">資料庫連接測試</div>
+                <div class="test-result">等待執行...</div>
+                <div class="test-details"></div>
+            </div>
+            <div id="db-comprehensive-test" class="test-case">
+                <div class="test-name">綜合資料測試</div>
+                <div class="test-result">等待執行...</div>
+                <div class="test-details"></div>
+            </div>
+        </div>
+
+        <div class="summary" id="testSummary">
+            <div id="summaryContent">點擊上方按鈕開始測試</div>
+        </div>
+    </div>
+
+    <script>
+        // Test configuration
+        const API_BASE_URL = '/api/eeform/eeform5';
+        const ADMIN_PAGE_URL = '/wadmin/admin_eeform/eeform_manage_eeform05';
+        
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0,
+            running: 0
+        };
+
+        // Utility functions
+        function log(message) {
+            console.log(`[EForm5 TDD] ${new Date().toISOString()}: ${message}`);
+        }
+
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const completed = testResults.passed + testResults.failed;
+            const percentage = testResults.total > 0 ? (completed / testResults.total) * 100 : 0;
+            
+            progressBar.style.width = percentage + '%';
+            progressText.textContent = `${completed}/${testResults.total} 測試完成 (${testResults.passed} 通過, ${testResults.failed} 失敗)`;
+        }
+
+        function updateTestResult(testId, status, message, details = '') {
+            const testElement = document.getElementById(testId);
+            if (!testElement) return;
+
+            testElement.className = `test-case ${status}`;
+            
+            const resultDiv = testElement.querySelector('.test-result');
+            const detailsDiv = testElement.querySelector('.test-details');
+            
+            resultDiv.textContent = message;
+            detailsDiv.textContent = details;
+
+            if (status === 'success') {
+                testResults.passed++;
+            } else if (status === 'error') {
+                testResults.failed++;
+            }
+            
+            if (testResults.running > 0) {
+                testResults.running--;
+            }
+            
+            updateProgress();
+        }
+
+        function startTest(testId) {
+            testResults.running++;
+            const testElement = document.getElementById(testId);
+            if (testElement) {
+                testElement.className = 'test-case running';
+                testElement.querySelector('.test-result').textContent = '執行中...';
+            }
+        }
+
+        // API Tests
+        async function testApiConnection() {
+            const testId = 'api-connection-test';
+            startTest(testId);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/test`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    updateTestResult(testId, 'success', '✅ API 連接成功', 
+                        `Status: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    updateTestResult(testId, 'error', '❌ API 回應異常', 
+                        `Status: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (error) {
+                updateTestResult(testId, 'error', '❌ API 連接失敗', 
+                    `錯誤: ${error.message}\nURL: ${API_BASE_URL}/test`);
+            }
+        }
+
+        async function testApiList() {
+            const testId = 'api-list-test';
+            startTest(testId);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/list?page=1&limit=20`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    updateTestResult(testId, 'success', '✅ API 列表資料獲取成功', 
+                        `Status: ${response.status}\nTotal Records: ${data.data?.pagination?.total || 0}\nData Count: ${data.data?.data?.length || 0}`);
+                } else {
+                    updateTestResult(testId, 'error', '❌ API 列表資料獲取失敗', 
+                        `Status: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (error) {
+                updateTestResult(testId, 'error', '❌ API 列表請求失敗', 
+                    `錯誤: ${error.message}\nURL: ${API_BASE_URL}/list`);
+            }
+        }
+
+        async function testApiStructure() {
+            const testId = 'api-structure-test';
+            startTest(testId);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/list?page=1&limit=5`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok || !data.success) {
+                    updateTestResult(testId, 'error', '❌ API 回應失敗', 
+                        `Status: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`);
+                    return;
+                }
+
+                // Check expected data structure
+                const requiredFields = ['success', 'data'];
+                const requiredDataFields = ['data', 'pagination'];
+                const requiredPaginationFields = ['current_page', 'total_pages', 'total', 'per_page'];
+                
+                let structureErrors = [];
+                
+                // Check top level fields
+                requiredFields.forEach(field => {
+                    if (!(field in data)) {
+                        structureErrors.push(`Missing field: ${field}`);
+                    }
+                });
+                
+                // Check data structure
+                if (data.data) {
+                    requiredDataFields.forEach(field => {
+                        if (!(field in data.data)) {
+                            structureErrors.push(`Missing data.${field}`);
+                        }
+                    });
+                    
+                    // Check pagination structure
+                    if (data.data.pagination) {
+                        requiredPaginationFields.forEach(field => {
+                            if (!(field in data.data.pagination)) {
+                                structureErrors.push(`Missing data.pagination.${field}`);
+                            }
+                        });
+                    }
+                }
+                
+                if (structureErrors.length === 0) {
+                    updateTestResult(testId, 'success', '✅ API 資料結構正確', 
+                        `結構驗證通過\ndata.data.length: ${data.data?.data?.length || 0}\ndata.data.pagination.total: ${data.data?.pagination?.total || 0}`);
+                } else {
+                    updateTestResult(testId, 'error', '❌ API 資料結構錯誤', 
+                        `結構錯誤:\n${structureErrors.join('\n')}\n\n實際回應:\n${JSON.stringify(data, null, 2)}`);
+                }
+                
+            } catch (error) {
+                updateTestResult(testId, 'error', '❌ API 結構測試失敗', 
+                    `錯誤: ${error.message}`);
+            }
+        }
+
+        async function testApiRoutes() {
+            const testId = 'api-routes-test';
+            startTest(testId);
+            
+            const routes = [
+                { path: '/test', description: 'API 測試端點' },
+                { path: '/list', description: '列表端點' },
+                { path: '/comprehensive_test', description: '綜合測試端點' }
+            ];
+            
+            let routeResults = [];
+            
+            for (const route of routes) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}${route.path}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    routeResults.push({
+                        ...route,
+                        status: response.status,
+                        success: response.ok
+                    });
+                } catch (error) {
+                    routeResults.push({
+                        ...route,
+                        status: 'ERROR',
+                        success: false,
+                        error: error.message
+                    });
+                }
+            }
+            
+            const successfulRoutes = routeResults.filter(r => r.success).length;
+            const totalRoutes = routeResults.length;
+            
+            if (successfulRoutes === totalRoutes) {
+                updateTestResult(testId, 'success', '✅ 所有路由測試通過', 
+                    `成功路由: ${successfulRoutes}/${totalRoutes}\n${routeResults.map(r => `${r.path}: ${r.status}`).join('\n')}`);
+            } else {
+                updateTestResult(testId, 'error', '❌ 部分路由測試失敗', 
+                    `成功路由: ${successfulRoutes}/${totalRoutes}\n${routeResults.map(r => `${r.path}: ${r.status}${r.error ? ' - ' + r.error : ''}`).join('\n')}`);
+            }
+        }
+
+        // Frontend Tests
+        async function testFrontendLoad() {
+            const testId = 'frontend-load-test';
+            startTest(testId);
+            
+            // Simulate admin page load test
+            try {
+                // Check if admin page elements exist in current context
+                const hasAdminElements = document.querySelector('.eform5-admin') !== null;
+                const hasTableElements = document.querySelector('#data-table-body') !== null;
+                const hasModalElements = document.querySelector('#detailModal') !== null;
+                
+                if (hasAdminElements && hasTableElements && hasModalElements) {
+                    updateTestResult(testId, 'success', '✅ 前端頁面元素載入正常', 
+                        `✅ .eform5-admin: 存在\n✅ #data-table-body: 存在\n✅ #detailModal: 存在`);
+                } else {
+                    updateTestResult(testId, 'error', '❌ 前端頁面元素缺失', 
+                        `❌ .eform5-admin: ${hasAdminElements ? '存在' : '不存在'}\n❌ #data-table-body: ${hasTableElements ? '存在' : '不存在'}\n❌ #detailModal: ${hasModalElements ? '存在' : '不存在'}`);
+                }
+            } catch (error) {
+                updateTestResult(testId, 'error', '❌ 前端載入測試失敗', 
+                    `錯誤: ${error.message}`);
+            }
+        }
+
+        async function testFrontendJavaScript() {
+            const testId = 'frontend-js-test';
+            startTest(testId);
+            
+            try {
+                // Check if admin object exists and has required methods
+                const adminExists = typeof window.admin !== 'undefined';
+                const hasLoadData = adminExists && typeof window.admin.loadData === 'function';
+                const hasViewDetail = adminExists && typeof window.admin.viewDetail === 'function';
+                const hasRenderTable = adminExists && typeof window.admin.renderTable === 'function';
+                
+                if (adminExists && hasLoadData && hasViewDetail && hasRenderTable) {
+                    updateTestResult(testId, 'success', '✅ JavaScript 功能測試通過', 
+                        `✅ admin 物件: 存在\n✅ loadData 方法: 存在\n✅ viewDetail 方法: 存在\n✅ renderTable 方法: 存在`);
+                } else {
+                    updateTestResult(testId, 'error', '❌ JavaScript 功能不完整', 
+                        `❌ admin 物件: ${adminExists ? '存在' : '不存在'}\n❌ loadData: ${hasLoadData ? '存在' : '不存在'}\n❌ viewDetail: ${hasViewDetail ? '存在' : '不存在'}\n❌ renderTable: ${hasRenderTable ? '存在' : '不存在'}`);
+                }
+            } catch (error) {
+                updateTestResult(testId, 'error', '❌ JavaScript 測試失敗', 
+                    `錯誤: ${error.message}`);
+            }
+        }
+
+        async function testFrontendModal() {
+            const testId = 'frontend-modal-test';
+            startTest(testId);
+            
+            try {
+                // Test modal functionality
+                const modalElement = document.querySelector('#detailModal');
+                const modalContent = document.querySelector('#detailContent');
+                const hasRenderDetailModal = typeof window.admin !== 'undefined' && typeof window.admin.renderDetailModal === 'function';
+                
+                if (modalElement && modalContent && hasRenderDetailModal) {
+                    updateTestResult(testId, 'success', '✅ Modal 功能測試通過', 
+                        `✅ Modal 元素: 存在\n✅ Modal 內容容器: 存在\n✅ renderDetailModal 方法: 存在`);
+                } else {
+                    updateTestResult(testId, 'error', '❌ Modal 功能不完整', 
+                        `❌ Modal 元素: ${modalElement ? '存在' : '不存在'}\n❌ Modal 內容: ${modalContent ? '存在' : '不存在'}\n❌ renderDetailModal: ${hasRenderDetailModal ? '存在' : '不存在'}`);
+                }
+            } catch (error) {
+                updateTestResult(testId, 'error', '❌ Modal 測試失敗', 
+                    `錯誤: ${error.message}`);
+            }
+        }
+
+        // Database Tests
+        async function testDatabaseConnection() {
+            const testId = 'db-connection-test';
+            startTest(testId);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/test`, {
+                    method: 'GET'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success && data.table_exists !== undefined) {
+                    updateTestResult(testId, 'success', '✅ 資料庫連接正常', 
+                        `✅ API 回應正常\n✅ 資料表檢查: ${data.table_exists ? '存在' : '不存在'}\n時間戳: ${data.timestamp}`);
+                } else {
+                    updateTestResult(testId, 'error', '❌ 資料庫連接異常', 
+                        `Status: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (error) {
+                updateTestResult(testId, 'error', '❌ 資料庫測試失敗', 
+                    `錯誤: ${error.message}`);
+            }
+        }
+
+        async function testComprehensive() {
+            const testId = 'db-comprehensive-test';
+            startTest(testId);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/comprehensive_test`, {
+                    method: 'GET'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    const summary = data.summary || {};
+                    const allPassed = Object.values(summary).every(status => 
+                        typeof status === 'string' && status.includes('✓')
+                    );
+                    
+                    if (allPassed) {
+                        updateTestResult(testId, 'success', '✅ 綜合測試全部通過', 
+                            `提交 ID: ${data.data?.submission_id}\n${Object.entries(summary).map(([key, value]) => `${key}: ${value}`).join('\n')}`);
+                    } else {
+                        updateTestResult(testId, 'error', '❌ 綜合測試部分失敗', 
+                            `提交 ID: ${data.data?.submission_id}\n${Object.entries(summary).map(([key, value]) => `${key}: ${value}`).join('\n')}`);
+                    }
+                } else {
+                    updateTestResult(testId, 'error', '❌ 綜合測試執行失敗', 
+                        `Status: ${response.status}\nMessage: ${data.message || 'Unknown error'}\nResponse: ${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (error) {
+                updateTestResult(testId, 'error', '❌ 綜合測試請求失敗', 
+                    `錯誤: ${error.message}`);
+            }
+        }
+
+        // Main test runners
+        async function runApiTests() {
+            log('開始執行 API 測試');
+            testResults.total += 4;
+            updateProgress();
+            
+            await testApiConnection();
+            await testApiList();
+            await testApiStructure();
+            await testApiRoutes();
+            
+            updateSummary();
+        }
+
+        async function runFrontendTests() {
+            log('開始執行前端測試');
+            testResults.total += 3;
+            updateProgress();
+            
+            await testFrontendLoad();
+            await testFrontendJavaScript();
+            await testFrontendModal();
+            
+            updateSummary();
+        }
+
+        async function runDatabaseTests() {
+            log('開始執行資料庫測試');
+            testResults.total += 2;
+            updateProgress();
+            
+            await testDatabaseConnection();
+            await testComprehensive();
+            
+            updateSummary();
+        }
+
+        async function runAllTests() {
+            log('開始執行所有測試');
+            clearResults();
+            
+            testResults.total = 9;
+            updateProgress();
+            
+            await runApiTests();
+            await runDatabaseTests();
+            await runFrontendTests();
+            
+            log('所有測試執行完畢');
+        }
+
+        function clearResults() {
+            testResults = { total: 0, passed: 0, failed: 0, running: 0 };
+            updateProgress();
+            
+            document.querySelectorAll('.test-case').forEach(testCase => {
+                testCase.className = 'test-case';
+                testCase.querySelector('.test-result').textContent = '等待執行...';
+                testCase.querySelector('.test-details').textContent = '';
+            });
+            
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const summary = document.getElementById('summaryContent');
+            const completed = testResults.passed + testResults.failed;
+            
+            if (completed === 0) {
+                summary.innerHTML = '點擊上方按鈕開始測試';
+            } else {
+                const successRate = testResults.total > 0 ? ((testResults.passed / testResults.total) * 100).toFixed(1) : 0;
+                summary.innerHTML = `
+                    <strong>測試結果摘要:</strong><br>
+                    總測試數: ${testResults.total}<br>
+                    通過: ${testResults.passed}<br>
+                    失敗: ${testResults.failed}<br>
+                    成功率: ${successRate}%<br>
+                    狀態: ${completed === testResults.total ? (testResults.failed === 0 ? '🎉 全部通過!' : '⚠️ 有測試失敗') : '🔄 測試進行中...'}
+                `;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            log('EForm5 TDD 測試頁面已載入');
+            updateSummary();
+        });
+    </script>
+</body>
+</html>

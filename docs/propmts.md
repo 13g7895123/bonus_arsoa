@@ -222,3 +222,7 @@ ORDER BY `s`.`created_at` DESC
     - 建議用量的部分沒有存入資料表中，幫我重新確認，並寫測試確認是否正確
 133. 幫我完成/wadmin/admin_eeform/eeform_manage_eeform05這個頁面的功能
     - 請參考/wadmin/admin_eeform/eeform_manage_eeform04，建立/eform/eform5這個頁面的後台管理，須建立TDD測試機制，確保功能實作完成後都能正常運行
+134. 你確定檢查過了嗎，/wadmin/admin_eeform/eeform_manage_eeform05這個頁面，光載入這個API，/api/eeform/eeform5/list?page=1&limit=20，就直接報錯誤，明明API回傳是200阿，請用心建立TDD，並確實完成，Cannot read properties of undefined (reading 'total')
+135. 欄位名稱與顯示資料不匹配，點檢視打的API，/api/eeform/eeform5/submission/1，會顯示404錯誤，你真的有認真檢查過所有功能嗎
+136. /wadmin/admin_eeform/eeform_manage_eeform05這個頁面，/api/eeform/eeform5/export_single/1，這支匯出EXCEL功能的API無法使用，幫我建立測試機制，確保運行正常
+137. 匯出功能我套了一個模板了，幫我把內容修正成eeform5的內容即可

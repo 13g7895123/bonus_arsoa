@@ -75,7 +75,9 @@
       "Bash(php:*)",
       "Bash(grep:*)",
       "Bash(git log:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(cp:*)",
+      "Bash(composer:*)"
     ],
     "deny": [],
     "ask": []

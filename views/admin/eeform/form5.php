@@ -489,7 +489,7 @@
                         <tr>
                             <th style="display: none;">ID</th>
                             <th>會員姓名</th>
-                            <th>出生年月</th>
+                            <th>年齡</th>
                             <th>身高</th>
                             <th>用藥習慣</th>
                             <th>家族病史</th>
@@ -661,7 +661,7 @@
                 <tr>
                     <td style="display: none;">${item.id}</td>
                     <td>${escapeHtml(item.member_name || '')}</td>
-                    <td>${item.birth_year || ''}年${item.birth_month || ''}月</td>
+                    <td>${item.age}歲</td>
                     <td>${item.height || ''}cm</td>
                     <td>${item.has_medication_habit ? '有' : '無'}</td>
                     <td>${item.has_family_disease_history ? '有' : '無'}</td>
