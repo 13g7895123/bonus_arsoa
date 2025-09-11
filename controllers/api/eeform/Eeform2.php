@@ -168,7 +168,7 @@ class Eeform2 extends MY_Controller
                 // 處理產品資料
                 if (isset($input_data['products']) && is_array($input_data['products'])) {
                     try {
-                        $this->eform2_model->save_products($submission_id, $input_data['products']);
+                        $this->eform2_model->save_products($submission_id, $input_data['products'], 'create');
                     } catch (Exception $e) {
                         $this->_send_error('保存產品資料失敗: ' . $e->getMessage(), 500, [
                             'submission_id' => $submission_id,
@@ -313,7 +313,7 @@ class Eeform2 extends MY_Controller
                 if ($result) {
                     // 始終更新產品資料（即使是空數組也要清除舊產品）
                     try {
-                        $this->eform2_model->save_products($id, $products);
+                        $this->eform2_model->save_products($id, $products, 'update');
                     } catch (Exception $e) {
                         log_message('error', 'Product update failed: ' . $e->getMessage());
                         $this->_send_error('更新產品資料失敗: ' . $e->getMessage(), 500);

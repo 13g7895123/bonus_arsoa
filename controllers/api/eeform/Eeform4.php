@@ -140,7 +140,7 @@ class Eeform4 extends MY_Controller
                 // 處理產品資料
                 if (isset($input_data['products']) && is_array($input_data['products'])) {
                     try {
-                        $this->eform4_model->save_products($submission_id, $input_data['products']);
+                        $this->eform4_model->save_products($submission_id, $input_data['products'], 'create');
                     } catch (Exception $e) {
                         $this->_send_error('保存產品資料失敗: ' . $e->getMessage(), 500, [
                             'submission_id' => $submission_id,

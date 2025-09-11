@@ -49,11 +49,25 @@ class Eeform4Model extends MY_Model {
      * 保存產品資料
      * @param int $submission_id 提交記錄ID
      * @param array $products 產品資料
+     * @param string $operation_type 操作類型 ('create' | 'update')
      * @return bool
      */
-    public function save_products($submission_id, $products) {
+    public function save_products($submission_id, $products, $operation_type = 'create') {
         try {
+            // 記錄操作類型和基本信息
+            log_message('debug', '===== SAVE_PRODUCTS START =====');
+            log_message('debug', 'Operation type: ' . $operation_type);
+            log_message('debug', 'Submission ID: ' . $submission_id);
+            log_message('debug', 'Products count: ' . (is_array($products) ? count($products) : 'not_array'));
+            
             $this->db->trans_start();
+            
+            // 根據操作類型執行不同邏輯
+            if ($operation_type === 'update') {
+                log_message('debug', 'UPDATE operation: Deleting existing products for submission_id: ' . $submission_id);
+            } else {
+                log_message('debug', 'CREATE operation: Deleting any existing products (should be none) for submission_id: ' . $submission_id);
+            }
             
             // 刪除現有的產品記錄
             $this->db->where('submission_id', $submission_id);
@@ -95,6 +109,9 @@ class Eeform4Model extends MY_Model {
             if ($this->db->trans_status() === FALSE) {
                 throw new Exception('保存產品資料失敗');
             }
+            
+            log_message('debug', 'SAVE_PRODUCTS (' . strtoupper($operation_type) . ') completed successfully');
+            log_message('debug', '===== SAVE_PRODUCTS END =====');
             
             return true;
             

@@ -49,147 +49,105 @@ class Eeform2Model extends MY_Model {
      * 保存產品資料
      * @param int $submission_id 提交記錄ID
      * @param array $products 產品資料
+     * @param string $operation_type 操作類型 ('create' | 'update')
      * @return bool
      */
-    public function save_products($submission_id, $products) {
+    public function save_products($submission_id, $products, $operation_type = 'create') {
         try {
-            // 詳細參數分析
+            // 記錄操作類型和基本信息
             log_message('debug', '===== SAVE_PRODUCTS START =====');
-            log_message('debug', 'submission_id: ' . $submission_id);
-            log_message('debug', 'submission_id type: ' . gettype($submission_id));
-            log_message('debug', 'products parameter: ' . json_encode($products));
-            log_message('debug', 'products type: ' . gettype($products));
-            log_message('debug', 'products count: ' . (is_array($products) ? count($products) : 'not_array'));
-            
-            // 分析products陣列的詳細內容
-            if (is_array($products)) {
-                log_message('debug', 'Products array keys: ' . json_encode(array_keys($products)));
-                foreach ($products as $key => $value) {
-                    log_message('debug', "Product[$key] => " . json_encode($value) . " (type: " . gettype($value) . ")");
-                }
-            }
+            log_message('debug', 'Operation type: ' . $operation_type);
+            log_message('debug', 'Submission ID: ' . $submission_id);
+            log_message('debug', 'Products count: ' . (is_array($products) ? count($products) : 'not_array'));
             
             $this->db->trans_start();
             
+            // 根據操作類型執行不同邏輯
+            if ($operation_type === 'update') {
+                log_message('debug', 'UPDATE operation: Deleting existing products for submission_id: ' . $submission_id);
+            } else {
+                log_message('debug', 'CREATE operation: Deleting any existing products (should be none) for submission_id: ' . $submission_id);
+            }
+            
             // 刪除現有的產品記錄
-            log_message('debug', 'Deleting existing products for submission_id: ' . $submission_id);
             $this->db->where('submission_id', $submission_id);
             $this->db->delete($this->table_products);
-            log_message('debug', 'Delete affected rows: ' . $this->db->affected_rows());
             
             // 取得產品主檔資料來建立映射
             $product_master = $this->get_all_products();
-            log_message('debug', 'Product master count: ' . count($product_master));
-            log_message('debug', 'Product master data: ' . json_encode($product_master));
             
             $product_mapping = [];
             
-            foreach ($product_master as $index => $product) {
-                // 建立前端欄位名稱對應
+            foreach ($product_master as $product) {
+                // 建立前端欄位名稱對應 (product_code 轉為小寫並加上 product_ 前綴)
                 $field_name = 'product_' . strtolower($product['product_code']);
                 $product_mapping[$field_name] = [
                     'code' => $product['product_code'],
                     'name' => $product['product_name']
                 ];
-                log_message('debug', "Mapping[$index]: $field_name => " . json_encode($product_mapping[$field_name]));
             }
-            
-            log_message('debug', 'Total product mappings created: ' . count($product_mapping));
-            
+                        
             // 收集需要插入的產品資料
             $batch_insert_data = [];
-            $products_with_quantity = 0;
-            $products_without_quantity = 0;
+
+            // print_r($products); die();
+            // print_r($product_mapping); die();
             
             foreach ($product_mapping as $field_name => $product_info) {
-                log_message('debug', "===== Processing field: $field_name =====");
-                
                 // 檢查前端是否有提供這個產品的數量資料
                 $quantity = 0;
-                $found_data = false;
                 
+                // 支援兩種資料格式：
+                // 1. $products[$field_name]['quantity'] (物件格式)
+                // 2. $products[$field_name] (直接數值格式) 
                 if (isset($products[$field_name])) {
-                    $found_data = true;
-                    log_message('debug', "Found $field_name in products array");
-                    log_message('debug', "Raw value: " . json_encode($products[$field_name]));
-                    
-                    if (is_array($products[$field_name])) {
-                        log_message('debug', "$field_name is array, keys: " . json_encode(array_keys($products[$field_name])));
-                        
-                        if (isset($products[$field_name]['quantity'])) {
-                            $quantity = (int)$products[$field_name]['quantity'];
-                            log_message('debug', "Extracted quantity from object format: $quantity");
-                        } else {
-                            log_message('debug', "Array format but no 'quantity' key found");
-                        }
-                    } else {
+                    if (is_array($products[$field_name]) && isset($products[$field_name]['quantity'])) {
+                        $quantity = (int)$products[$field_name]['quantity'];
+                    } elseif (!is_array($products[$field_name])) {
                         $quantity = (int)$products[$field_name];
-                        log_message('debug', "Direct value format, converted to int: $quantity");
                     }
-                } else {
-                    log_message('debug', "$field_name NOT found in products array");
                 }
                 
-                // 記錄統計
+                // 只有數量大於0的產品才加入批次插入清單
                 if ($quantity > 0) {
-                    $products_with_quantity++;
                     $batch_insert_data[] = [
                         'submission_id' => $submission_id,
                         'product_code' => $product_info['code'],
                         'product_name' => $product_info['name'],
                         'quantity' => $quantity
                     ];
-                    log_message('debug', "✓ Added to batch: {$product_info['code']} with quantity: $quantity");
-                } else {
-                    $products_without_quantity++;
-                    log_message('debug', "✗ Skipped (quantity=0): {$product_info['code']}");
                 }
+
+                // print_r($batch_insert_data); die();
             }
-            
-            log_message('debug', "===== BATCH INSERT SUMMARY =====");
-            log_message('debug', "Products with quantity > 0: $products_with_quantity");
-            log_message('debug', "Products with quantity = 0: $products_without_quantity");
-            log_message('debug', "Total batch insert records: " . count($batch_insert_data));
-            log_message('debug', 'Batch insert data: ' . json_encode($batch_insert_data));
-            
+
+            // print_r($batch_insert_data); die();
+                        
             // 使用 insert_batch 批次插入產品記錄
             if (!empty($batch_insert_data)) {
-                log_message('debug', 'Executing insert_batch with ' . count($batch_insert_data) . ' records');
                 $result = $this->db->insert_batch($this->table_products, $batch_insert_data);
-                
                 if (!$result) {
                     $db_error = $this->db->error();
-                    log_message('error', 'Insert batch FAILED: ' . json_encode($db_error));
+                    log_message('error', 'Product batch insert failed: ' . json_encode($db_error));
                     throw new Exception('批次插入產品資料失敗: ' . $db_error['message']);
                 }
-                
-                log_message('debug', 'Insert batch SUCCESS - affected rows: ' . $this->db->affected_rows());
-                
-                // 驗證插入結果
-                $this->db->where('submission_id', $submission_id);
-                $inserted_products = $this->db->get($this->table_products)->result_array();
-                log_message('debug', 'Verification - products in DB after insert: ' . count($inserted_products));
-                log_message('debug', 'Verification - inserted products: ' . json_encode($inserted_products));
-            } else {
-                log_message('debug', 'No products to insert - batch_insert_data is empty');
+                log_message('debug', 'Successfully inserted ' . count($batch_insert_data) . ' product records');
             }
             
             $this->db->trans_complete();
             
             if ($this->db->trans_status() === FALSE) {
-                log_message('error', 'Transaction FAILED');
                 throw new Exception('保存產品資料失敗');
             }
             
-            log_message('debug', 'Transaction SUCCESS');
+            log_message('debug', 'SAVE_PRODUCTS (' . strtoupper($operation_type) . ') completed successfully');
             log_message('debug', '===== SAVE_PRODUCTS END =====');
             
             return true;
             
         } catch (Exception $e) {
             $this->db->trans_rollback();
-            log_message('error', 'Save products exception: ' . $e->getMessage());
-            log_message('error', 'Exception trace: ' . $e->getTraceAsString());
+            log_message('error', 'Save products error: ' . $e->getMessage());
             throw new Exception('保存產品資料失敗: ' . $e->getMessage());
         }
     }
