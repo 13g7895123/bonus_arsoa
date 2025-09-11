@@ -252,6 +252,28 @@ class Eeform5Model extends CI_Model {
     }
 
     /**
+     * 取得會員的所有提交記錄
+     * @param string $member_id 會員編號
+     * @return array
+     */
+    public function get_submissions_by_member($member_id) {
+        try {
+            $this->db->select('*');
+            $this->db->from('eeform5_submissions');
+            $this->db->where('member_id', $member_id);
+            $this->db->order_by('created_at', 'DESC');
+            
+            $query = $this->db->get();
+            $submissions = $query->result_array();
+            
+            return $submissions;
+            
+        } catch (Exception $e) {
+            throw new Exception('取得提交記錄失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * 更新表單狀態
      */
     public function update_status($id, $status)

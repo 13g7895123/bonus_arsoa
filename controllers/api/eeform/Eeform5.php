@@ -182,6 +182,35 @@ class Eeform5 extends CI_Controller {
     }
 
     /**
+     * 取得表單提交記錄
+     * GET /api/eeform/eeform5/submissions/{member_id}
+     */
+    public function submissions($member_id = null) {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            if (!$member_id) {
+                $this->_send_error('缺少會員編號', 400);
+                return;
+            }
+
+            $submissions = $this->eform5_model->get_submissions_by_member($member_id);
+            
+            $this->_send_success('取得提交記錄成功', [
+                'member_id' => $member_id,
+                'data' => $submissions,
+                'total' => count($submissions)
+            ]);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得提交記錄失敗: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
      * 取得表單列表
      */
     public function list()

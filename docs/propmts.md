@@ -236,3 +236,4 @@ ORDER BY `s`.`created_at` DESC
 143. 請確認Eeform2Model中的save_product更新邏輯是否有問題，必須要是更新資料，另外，幫我用insertbatch的方式完成，你刪除完之後，我去查了insertbatch的資料根本都是空的，請確認save_product這支function從開始到insertbatch這段，一定有錯誤，看是少資料還是怎樣，怎麼可能我傳了資料結果最後全部都是零
 144. 承143，save_product所有用到的參數請幫我打開分析，他現在送出的東西是錯的，有資料的會變成沒資料的
 145. 有辦法幫我判斷save_products這個function，被使用的時候是新增還是編輯嗎
+146. 我新增了/eform/eform5_list的功能，幫我參照/eform/eform4_list的功能，補上撈取eform5的資料，以及檢視與更新表單的功能，請確保內容皆為eform5的項目
