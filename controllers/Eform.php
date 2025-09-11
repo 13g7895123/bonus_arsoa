@@ -114,6 +114,12 @@ class Eform extends MY_Controller
         $this->layout->view('./eeform/eform04', $data);
     }
 
+    public function eform5_list()
+    {
+        $data = array('userdata' => $this->userdata);        
+        $this->layout->view('./eeform/eform05_list', $data);
+    }
+
     public function eform5()
     {
         $data = array(
@@ -122,6 +128,12 @@ class Eform extends MY_Controller
         );
 
         $this->layout->view('./eeform/eform05', $data);
+    }
+
+    public function eform4_list()
+    {
+        $data = array('userdata' => $this->userdata);        
+        $this->layout->view('./eeform/eform04_list', $data);
     }
 
     public function saveEform03()

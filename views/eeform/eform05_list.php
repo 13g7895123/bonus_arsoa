@@ -11,7 +11,7 @@
           <div class="container">
             <div class="row">
               <div class="col-md-9 mb130 mt-lg-5 wow fadeInUp" role="main" data-wow-delay=".2s">
-                <h1 class="h2-3d font-libre"><strong>會員服務追蹤管理表(肌膚)</strong></h1>
+                <h1 class="h2-3d font-libre"><strong>個人體測表+健康諮詢表</strong></h1>
                 <div class="mb30">
                   <div class="container wow fadeInUp" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
                     <form name="oForm" id="oForm">
@@ -50,7 +50,7 @@
                     </form>
                     <div class="col-sm-12 mb30">
                       <hr class="my-4">
-                <a href="<?php echo base_url('eform/eform2'); ?>" class="btn btn-outline-danger btn-block">填寫會員服務追蹤管理表(肌膚)</a>
+                      <a href="<?php echo base_url('eform/eform4'); ?>" class="btn btn-outline-danger btn-block">填寫會員服務追蹤管理表(肌膚)</a>
                     </div>
 
 
@@ -63,7 +63,7 @@
 
               <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
                 <!-- 側邊欄清單 -->
-                <?= $this->block_service->electronic_form_right_menu('eform2'); ?>
+                <?= $this->block_service->electronic_form_right_menu('eform4'); ?>
               </aside>
 
 
@@ -189,7 +189,7 @@
       );
 
       $.ajax({
-        url: '<?php echo base_url("api/eeform/eeform2/submissions/"); ?>' + currentMemberId,
+        url: '<?php echo base_url("api/eeform/eeform4/submissions/"); ?>' + currentMemberId,
         method: 'GET',
         dataType: 'json',
         success: function(response) {
@@ -401,7 +401,7 @@
 
       // 從API獲取詳細資料
       $.ajax({
-        url: '<?php echo base_url("api/eeform/eeform2/submission/"); ?>' + submissionId,
+        url: '<?php echo base_url("api/eeform/eeform4/submission/"); ?>' + submissionId,
         method: 'GET',
         dataType: 'json',
         success: function(response) {
@@ -458,14 +458,11 @@
 
       // 從API獲取詳細資料
       $.ajax({
-        url: '<?php echo base_url("api/eeform/eeform2/submission/"); ?>' + submissionId,
+        url: '<?php echo base_url("api/eeform/eeform4/submission/"); ?>' + submissionId,
         method: 'GET',
         dataType: 'json',
         success: function(response) {
           if (response && response.success) {
-            console.log('=== EForm2 Edit API Response Debug ===');
-            console.log('Raw eform2 API response for edit:', response.data);
-            console.log('=======================================');
 
             var transformedData = transformApiDataToFormStructure(response.data);
             displayOriginalFormContent(transformedData, true); // true = 編輯模式
@@ -663,7 +660,7 @@
       if (isEditable) {
         html += '<div class="col-sm-12 mb30">';
         html += '<hr class="my-4">';
-        html += '<button type="button" class="btn btn-outline-danger btn-block" onclick="updateEform2Data()">更新表單</button>';
+        html += '<button type="button" class="btn btn-outline-danger btn-block" onclick="updateEform4Data()">更新表單</button>';
         html += '</div>';
       }
 
@@ -681,7 +678,7 @@
     }
 
     // 更新eform2表單資料
-    function updateEform2Data() {
+    function updateEform4Data() {
       // 收集eform2表單數據
       var formData = {
         // 基本資料
@@ -701,9 +698,11 @@
       $('#exampleModal input[name^="product_"]').each(function() {
         var fieldName = $(this).attr('name');
         var quantity = parseInt($(this).val()) || 0;
-        
+
         // 發送所有產品資料，包含數量為0的產品
-        products[fieldName] = { quantity: quantity };
+        products[fieldName] = {
+          quantity: quantity
+        };
       });
 
       // 始終將產品資料加入表單資料（即使是空物件）
@@ -716,7 +715,7 @@
 
       // 發送更新請求
       $.ajax({
-        url: '<?php echo base_url("api/eeform/eeform2/submission/"); ?>' + submissionId,
+        url: '<?php echo base_url("api/eeform/eeform4/submission/"); ?>' + submissionId,
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json',

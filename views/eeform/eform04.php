@@ -95,7 +95,7 @@
                 </div>
                 <aside role="complementary" class="aside col-xl-3 col-md-3 mb130">
                   <!-- 側邊欄清單 -->
-                  <?= $this->block_service->electronic_form_right_menu('eform2'); ?>
+                  <?= $this->block_service->electronic_form_right_menu('eform4'); ?>
                 </aside>
               </div>
             </div>
@@ -732,7 +732,8 @@
                 allowEscapeKey: false
               }).then(() => {
                 $('#confirmModal').modal('hide');
-                history.go(0);
+                // 直接跳轉到 eform4_list 頁面
+                window.location.href = '<?php echo base_url("eform/eform4_list"); ?>';
               });
             } else {
               Swal.fire({

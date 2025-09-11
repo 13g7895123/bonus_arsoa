@@ -277,13 +277,6 @@ class Eeform2 extends MY_Controller
                     $this->_send_error('找不到指定的表單記錄', 404);
                     return;
                 }
-
-                // 詳細分析接收到的資料
-                log_message('debug', '===== CONTROLLER UPDATE START =====');
-                log_message('debug', 'Submission ID: ' . $id);
-                log_message('debug', 'Raw input stream: ' . $this->input->raw_input_stream);
-                log_message('debug', 'Decoded input_data: ' . json_encode($input_data));
-                log_message('debug', 'Input data type: ' . gettype($input_data));
                 
                 // 分離產品資料和主要表單資料
                 $products = isset($input_data['products']) ? $input_data['products'] : [];
@@ -301,12 +294,7 @@ class Eeform2 extends MY_Controller
                 }
                 
                 unset($input_data['products']); // 從主要資料中移除產品資料
-                
-                // 記錄更新請求的詳細信息
-                log_message('debug', 'Processing update for submission ID: ' . $id);
-                log_message('debug', 'Input data (after removing products): ' . json_encode($input_data));
-                log_message('debug', 'Products data to be passed to model: ' . json_encode($products));
-                
+                                
                 // 執行更新
                 $result = $this->eform2_model->update_submission($id, $input_data);
                 

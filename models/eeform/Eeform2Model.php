@@ -53,22 +53,9 @@ class Eeform2Model extends MY_Model {
      * @return bool
      */
     public function save_products($submission_id, $products, $operation_type = 'create') {
-        try {
-            // 記錄操作類型和基本信息
-            log_message('debug', '===== SAVE_PRODUCTS START =====');
-            log_message('debug', 'Operation type: ' . $operation_type);
-            log_message('debug', 'Submission ID: ' . $submission_id);
-            log_message('debug', 'Products count: ' . (is_array($products) ? count($products) : 'not_array'));
-            
+        try {            
             $this->db->trans_start();
-            
-            // 根據操作類型執行不同邏輯
-            if ($operation_type === 'update') {
-                log_message('debug', 'UPDATE operation: Deleting existing products for submission_id: ' . $submission_id);
-            } else {
-                log_message('debug', 'CREATE operation: Deleting any existing products (should be none) for submission_id: ' . $submission_id);
-            }
-            
+                        
             // 刪除現有的產品記錄
             $this->db->where('submission_id', $submission_id);
             $this->db->delete($this->table_products);
@@ -80,7 +67,8 @@ class Eeform2Model extends MY_Model {
             
             foreach ($product_master as $product) {
                 // 建立前端欄位名稱對應 (product_code 轉為小寫並加上 product_ 前綴)
-                $field_name = 'product_' . strtolower($product['product_code']);
+                $name_tail = ($operation_type === 'create') ? strtolower($product['product_code']) : $product['product_code'];
+                $field_name = 'product_' . $name_tail;
                 $product_mapping[$field_name] = [
                     'code' => $product['product_code'],
                     'name' => $product['product_name']
@@ -89,9 +77,6 @@ class Eeform2Model extends MY_Model {
                         
             // 收集需要插入的產品資料
             $batch_insert_data = [];
-
-            // print_r($products); die();
-            // print_r($product_mapping); die();
             
             foreach ($product_mapping as $field_name => $product_info) {
                 // 檢查前端是否有提供這個產品的數量資料
@@ -120,8 +105,6 @@ class Eeform2Model extends MY_Model {
 
                 // print_r($batch_insert_data); die();
             }
-
-            // print_r($batch_insert_data); die();
                         
             // 使用 insert_batch 批次插入產品記錄
             if (!empty($batch_insert_data)) {
@@ -139,10 +122,7 @@ class Eeform2Model extends MY_Model {
             if ($this->db->trans_status() === FALSE) {
                 throw new Exception('保存產品資料失敗');
             }
-            
-            log_message('debug', 'SAVE_PRODUCTS (' . strtoupper($operation_type) . ') completed successfully');
-            log_message('debug', '===== SAVE_PRODUCTS END =====');
-            
+                        
             return true;
             
         } catch (Exception $e) {

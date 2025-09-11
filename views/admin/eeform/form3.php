@@ -1010,7 +1010,7 @@
             </div>
         `;
 
-        container.html(systemDataHtml + basicDataHtml + actionPlanHtml + bodyDataHtml + activityHtml + plansHtml + submissionHtml);
+        container.html(basicDataHtml + actionPlanHtml + bodyDataHtml + activityHtml + plansHtml);
     };
 
     admin.closeDetailModal = function() {

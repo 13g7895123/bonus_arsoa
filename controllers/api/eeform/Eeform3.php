@@ -830,11 +830,11 @@ class Eeform3 extends MY_Controller
             // CSV標題
             $headers = [
                 '記錄ID', '會員姓名', '會員編號', '年齡', '身高', '目標',
+                '共同行動計畫1', '共同行動計畫2', '共同行動計畫3', '共同行動計畫4',
                 '自身行動計畫1', '自身行動計畫2',
                 '體重', '血壓(收縮)', '血壓(舒張)', '腰圍',
                 '用手測量', '運動(30分)', '保健食品', '微微卡', '飲水量',
                 '計畫1', '計畫2', '其他計畫',
-                '提交日期', '狀態', '建立時間'
             ];
             
             // 處理活動資料 - 從 activities 陣列中檢查是否完成各項活動
@@ -863,6 +863,10 @@ class Eeform3 extends MY_Controller
                 clean_text($submission['age'] ?? ''),
                 clean_text($submission['height'] ?? ''),
                 clean_text($submission['goal'] ?? ''),
+                '用手測量飲食',
+                '運動',
+                '保健食品',
+                '微微卡執行',
                 clean_text($submission['action_plan_1'] ?? ''),
                 clean_text($submission['action_plan_2'] ?? ''),
                 clean_text($submission['weight'] ?? ''),
@@ -890,9 +894,6 @@ class Eeform3 extends MY_Controller
             $row[] = $plan_a;
             $row[] = $plan_b;
             $row[] = $other;
-            $row[] = clean_text($submission['submission_date'] ?? '');
-            $row[] = clean_text($submission['status'] ?? '');
-            $row[] = clean_text($submission['created_at'] ?? '');
 
             // 準備輸出資料
             $exportData = [];

@@ -472,7 +472,7 @@
     </script>
     <script>
       // 控制測試按鈕顯示的變數
-      var showTestButton = true; // 設為 true 顯示測試按鈕
+      var showTestButton = false; // 設為 true 顯示測試按鈕
       var productsData = []; // 存儲從API載入的產品資料
       
       // 頁面載入時檢查是否顯示測試按鈕
@@ -751,7 +751,8 @@
                 allowEscapeKey: false
               }).then(() => {
                 $('#confirmModal').modal('hide');
-                history.go(0);
+                // 直接跳轉到 eform2_list 頁面
+                window.location.href = '<?php echo base_url("eform/eform2_list"); ?>';
               });
             } else {
               Swal.fire({
@@ -796,7 +797,6 @@
         });
       }
 
-      // Point 62: Member lookup functionality (同步 Point 57 功能到 eform2)
       // 取得目前登入使用者資訊
       var currentUserData = {
         member_id: '<?php echo isset($userdata['c_no']) ? $userdata['c_no'] : ''; ?>',
@@ -856,31 +856,11 @@
               console.log('[Point 62 - eform2] API 回應格式不正確:', response);
             }
           },
-          error: function(xhr, status, error) {
-            console.error('[Point 62 - eform2] ===== API 呼叫失敗詳細資訊 =====');
-            console.error('[Point 62 - eform2] API 查詢失敗:', {
-              status: status,
-              error: error,
-              xhr: xhr,
-              responseText: xhr.responseText
-            });
-            console.error('[Point 62 - eform2] HTTP 狀態碼:', xhr.status);
-            console.error('[Point 62 - eform2] HTTP 狀態文字:', xhr.statusText);
-            console.error('[Point 62 - eform2] 回應內容:', xhr.responseText);
-            console.error('[Point 62 - eform2] AJAX 狀態:', status);
-            console.error('[Point 62 - eform2] 錯誤類型:', error);
-            console.error('[Point 62 - eform2] 請求的 URL:', apiUrl);
-            
+          error: function(xhr, status, error) {            
             // 出錯時使用預設值
-            console.log('[Point 62 - eform2] 因為API失敗，使用預設會員姓名:', currentUserData.member_name);
             $('input[name="member_name"]').val(currentUserData.member_name);
           },
-          complete: function(xhr, status) {
-            console.log('[Point 62 - eform2] ===== AJAX 請求完成 =====');
-            console.log('[Point 62 - eform2] 最終狀態:', status);
-            console.log('[Point 62 - eform2] HTTP 狀態碼:', xhr.status);
-            console.log('[Point 62 - eform2] 請求已完成 (成功或失敗)');
-          }
+          complete: function(xhr, status) {}
         });
       }
 
@@ -938,41 +918,22 @@
 
       // 修改提交表單函數以處理會員選擇
       var originalSubmitForm = submitForm;
-      submitForm = function() {
-        console.log('[Point 62 - eform2] ===== 表單提交開始 =====');
-        console.log('[Point 62 - eform2] 是否為多重會員:', isMultipleMembers);
-        console.log('[Point 62 - eform2] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
-        
+      submitForm = function() {        
         // 收集表單資料
         var memberId, memberName;
         
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
-          console.log('[Point 62 - eform2] 使用下拉選單模式取得會員資料');
           // 使用下拉選單的值
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
           memberId = selectedOption.val();
           memberName = selectedOption.data('name');
-          console.log('[Point 62 - eform2] 從下拉選單取得:', {
-            memberId: memberId,
-            memberName: memberName
-          });
         } else {
-          console.log('[Point 62 - eform2] 使用輸入框模式取得會員資料');
           // 使用輸入框和當前會員資料
           memberId = currentUserData.member_id;
           memberName = $('input[name="member_name"]').val();
-          console.log('[Point 62 - eform2] 從輸入框取得:', {
-            memberId: memberId,
-            memberName: memberName
-          });
         }
-        
-        console.log('[Point 62 - eform2] 最終會員資料:', {
-          member_id: memberId,
-          member_name: memberName
-        });
-        
+                
         // 確保表單欄位有正確的值
         $('input[name="member_id"]').val(memberId);
         $('input[name="member_name"]').val(memberName);

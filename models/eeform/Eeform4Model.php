@@ -54,21 +54,9 @@ class Eeform4Model extends MY_Model {
      */
     public function save_products($submission_id, $products, $operation_type = 'create') {
         try {
-            // 記錄操作類型和基本信息
-            log_message('debug', '===== SAVE_PRODUCTS START =====');
-            log_message('debug', 'Operation type: ' . $operation_type);
-            log_message('debug', 'Submission ID: ' . $submission_id);
-            log_message('debug', 'Products count: ' . (is_array($products) ? count($products) : 'not_array'));
             
             $this->db->trans_start();
-            
-            // 根據操作類型執行不同邏輯
-            if ($operation_type === 'update') {
-                log_message('debug', 'UPDATE operation: Deleting existing products for submission_id: ' . $submission_id);
-            } else {
-                log_message('debug', 'CREATE operation: Deleting any existing products (should be none) for submission_id: ' . $submission_id);
-            }
-            
+                        
             // 刪除現有的產品記錄
             $this->db->where('submission_id', $submission_id);
             $this->db->delete($this->table_products);
@@ -79,29 +67,52 @@ class Eeform4Model extends MY_Model {
             
             foreach ($product_master as $product) {
                 // 建立前端欄位名稱對應 (product_code 轉為小寫並加上 product_ 前綴)
-                $field_name = 'product_' . strtolower($product['product_code']);
+                $name_tail = ($operation_type === 'create') ? strtolower($product['product_code']) : $product['product_code'];
+                $field_name = 'product_' . $name_tail;
                 $product_mapping[$field_name] = [
                     'code' => $product['product_code'],
                     'name' => $product['product_name']
                 ];
             }
             
-            // 插入產品記錄
-            foreach ($products as $key => $product) {
-                if (isset($product_mapping[$key])) {
-                    $quantity = isset($product['quantity']) ? (int)$product['quantity'] : 0;
-                    
-                    if ($quantity > 0) {
-                        $product_data = [
-                            'submission_id' => $submission_id,
-                            'product_code' => $product_mapping[$key]['code'],
-                            'product_name' => $product_mapping[$key]['name'],
-                            'quantity' => $quantity
-                        ];
-                        
-                        $this->db->insert($this->table_products, $product_data);
+            // 收集需要插入的產品資料
+            $batch_insert_data = [];
+            
+            foreach ($product_mapping as $field_name => $product_info) {
+                // 檢查前端是否有提供這個產品的數量資料
+                $quantity = 0;
+                
+                // 支援兩種資料格式：
+                // 1. $products[$field_name]['quantity'] (物件格式)
+                // 2. $products[$field_name] (直接數值格式) 
+                if (isset($products[$field_name])) {
+                    if (is_array($products[$field_name]) && isset($products[$field_name]['quantity'])) {
+                        $quantity = (int)$products[$field_name]['quantity'];
+                    } elseif (!is_array($products[$field_name])) {
+                        $quantity = (int)$products[$field_name];
                     }
                 }
+                
+                // 只有數量大於0的產品才加入批次插入清單
+                if ($quantity > 0) {
+                    $batch_insert_data[] = [
+                        'submission_id' => $submission_id,
+                        'product_code' => $product_info['code'],
+                        'product_name' => $product_info['name'],
+                        'quantity' => $quantity
+                    ];
+                }
+            }
+                        
+            // 使用 insert_batch 批次插入產品記錄
+            if (!empty($batch_insert_data)) {
+                $result = $this->db->insert_batch($this->table_products, $batch_insert_data);
+                if (!$result) {
+                    $db_error = $this->db->error();
+                    log_message('error', 'Product batch insert failed: ' . json_encode($db_error));
+                    throw new Exception('批次插入產品資料失敗: ' . $db_error['message']);
+                }
+                log_message('debug', 'Successfully inserted ' . count($batch_insert_data) . ' product records');
             }
             
             $this->db->trans_complete();
@@ -109,10 +120,7 @@ class Eeform4Model extends MY_Model {
             if ($this->db->trans_status() === FALSE) {
                 throw new Exception('保存產品資料失敗');
             }
-            
-            log_message('debug', 'SAVE_PRODUCTS (' . strtoupper($operation_type) . ') completed successfully');
-            log_message('debug', '===== SAVE_PRODUCTS END =====');
-            
+                        
             return true;
             
         } catch (Exception $e) {
@@ -130,7 +138,7 @@ class Eeform4Model extends MY_Model {
         try {
             $this->db->select('*');
             $this->db->from($this->table_submissions);
-            $this->db->where('member_name', $member_name);
+            $this->db->where('form_filler_id', $member_name);
             $this->db->order_by('created_at', 'DESC');
             
             $query = $this->db->get();
