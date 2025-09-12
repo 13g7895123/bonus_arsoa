@@ -788,37 +788,36 @@
       }
       html += '<div class="col-sm-12 text-right mb30">填寫日期：' + displayDate + '</div>';
 
-      // 基本資料
+      // 基本資料 - 會員編號與會員姓名
       html += '<div class="col-sm-4 mb30">';
-      html += '<label class="label-custom">會員姓名</label>';
-      html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="' + (data.member_name || '') + '"' + disabled + ' />';
+      html += '<label class="label-custom">會員編號</label>';
+      html += '<input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="' + (data.member_id || '') + '" readonly />';
       html += '</div>';
-
-      html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">出生西元年</label>';
-      html += '<select name="birth_year" class="form-control form-control-custom"' + disabled + '>';
-      html += '<option value="">請選擇</option>';
-      for (var year = 2010; year >= 1930; year--) {
-        var selected = (data.birth_year == year) ? ' selected' : '';
-        html += '<option value="' + year + '"' + selected + '>' + year + '</option>';
-      }
+      
+      html += '<div class="col-sm-4 mb30">';
+      html += '<label class="label-custom">會員姓名<span style="color: red;">(*必填)</span></label>';
+      html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="' + (data.member_name || '') + '"' + disabled + ' required />';
+      html += '<select name="member_name_select" class="form-control form-control-custom" style="display: none;" disabled required>';
+      html += '<option value="">請選擇會員</option>';
       html += '</select>';
       html += '</div>';
-
-      html += '<div class="col-sm-2 mb30">';
-      html += '<label class="label-custom">出生西元月</label>';
-      html += '<select name="birth_month" class="form-control form-control-custom"' + disabled + '>';
-      html += '<option value="">請選擇</option>';
-      for (var month = 1; month <= 12; month++) {
-        var selected = (data.birth_month == month) ? ' selected' : '';
-        html += '<option value="' + month + '"' + selected + '>' + month + '月</option>';
+      
+      // 出生年月 - 使用month input (與eform1.php一致)
+      var birthDate = '';
+      if (data.birth_year && data.birth_month) {
+        birthDate = data.birth_year + '-' + String(data.birth_month).padStart(2, '0');
       }
-      html += '</select>';
+      html += '<div class="col-sm-5 mb30">';
+      html += '<label class="label-custom">出生年月<span style="color: red;">(*必填)</span></label>';
+      html += '<input type="month" name="birth_date" class="form-control form-control-custom" min="1980-01" max="2010-12" value="' + birthDate + '"' + disabled + ' required />';
+      html += '<!-- Keep hidden fields for backward compatibility -->';
+      html += '<input type="hidden" name="birth_year" value="' + (data.birth_year || '') + '" />';
+      html += '<input type="hidden" name="birth_month" value="' + (data.birth_month || '') + '" />';
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
       html += '<label class="label-custom">電話</label>';
-      html += '<input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" value="' + (data.phone || '') + '"' + disabled + ' />';
+      html += '<input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" value="' + (data.phone || '') + '"' + disabled + ' required />';
       html += '</div>';
 
       // 職業
@@ -1163,6 +1162,22 @@
       html += '</div>';
 
       $('#exampleModal .modal-body').html(html);
+      
+      // 如果是編輯模式，添加出生年月同步功能
+      if (isEditable) {
+        $('#exampleModal input[name="birth_date"]').on('change', function() {
+          var birthDate = $(this).val();
+          if (birthDate) {
+            var parts = birthDate.split('-');
+            var birthYear = parts[0];
+            var birthMonth = parseInt(parts[1], 10);
+            
+            // 同步更新隱藏欄位
+            $('#exampleModal input[name="birth_year"]').val(birthYear);
+            $('#exampleModal input[name="birth_month"]').val(birthMonth);
+          }
+        });
+      }
     }
 
     // 新增檢測數據區塊
@@ -1308,12 +1323,28 @@
 
     // 更新表單資料
     function updateFormData() {
+      // 處理出生年月的轉換 (從month input轉回年月)
+      var birthDate = $('#exampleModal input[name="birth_date"]').val();
+      var birthYear = '';
+      var birthMonth = '';
+      
+      if (birthDate) {
+        var parts = birthDate.split('-');
+        birthYear = parts[0];
+        birthMonth = parseInt(parts[1], 10);
+        
+        // 同步更新隱藏欄位
+        $('#exampleModal input[name="birth_year"]').val(birthYear);
+        $('#exampleModal input[name="birth_month"]').val(birthMonth);
+      }
+      
       // 收集表單數據 - 使用proper field names
       var formData = {
         // 基本資料
+        member_id: $('#exampleModal input[name="member_id"]').val(),
         member_name: $('#exampleModal input[name="member_name"]').val(),
-        birth_year: $('#exampleModal select[name="birth_year"]').val(),
-        birth_month: $('#exampleModal select[name="birth_month"]').val(),
+        birth_year: birthYear,
+        birth_month: birthMonth,
         phone: $('#exampleModal input[name="phone"]').val(),
 
         // 職業選擇

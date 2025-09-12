@@ -67,7 +67,7 @@
                             <input type="hidden" name="birth_month" />
                           </div>
                           <div class="col-sm-3 mb30">
-                            <label class="label-custom">電話<span style="color: red;">(*必填)</span></label>
+                            <label class="label-custom">電話</label>
                             <input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" required />
                           </div>
 
@@ -1503,7 +1503,6 @@
         var missingFields = [];
         if (!memberName) missingFields.push('會員姓名');
         if (!birthDate) missingFields.push('出生年月');
-        if (!phone) missingFields.push('電話');
         
         // 為往後相容性，從年月中提取年月
         var birthYear = '', birthMonth = '';

@@ -21,7 +21,7 @@
                           </div>
                           <div class="col-sm-4 mb30">
                             <label class="label-custom">姓名 <span style="color: red;">(*必填)</span></label>
-                            <input type="text" name="name" class="form-control form-control-custom" placeholder="請填姓名" />
+                            <input type="text" name="name" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" class="form-control form-control-custom" placeholder="請填姓名" />
                           </div>
                           <div class="col-sm-4 mb30">
                             <label class="label-custom">性別</label>
@@ -437,13 +437,6 @@
 
       // 唯一的 document ready 函數
       $(document).ready(function() {
-        console.log('eform5 頁面載入完成');
-        console.log('DOM 已載入完成');
-        console.log('jQuery 版本:', $.fn.jquery);
-
-        // 設定固定的會員資料
-        console.log('設定會員資料為: 公司 (000000)');
-
         // 自動填入當天日期
         var today = new Date();
         var currentDate = today.getFullYear() + '-' +
@@ -472,15 +465,11 @@
             var $ageSelect = $('select[name="age"]');
             if ($ageSelect.length > 0) {
               generateAgeOptions();
-              console.log('年齡選項生成完成');
             } else if (generateAgeRetryCount < maxRetries) {
-              console.log('未找到年齡選單，將在', (generateAgeRetryCount * 200), 'ms後重試');
               setTimeout(attemptGenerateAge, generateAgeRetryCount * 200);
             } else {
-              console.error('達到最大重試次數，年齡選項生成失敗');
             }
           } catch (error) {
-            console.error('生成年齡選項時發生錯誤:', error);
             if (generateAgeRetryCount < maxRetries) {
               setTimeout(attemptGenerateAge, generateAgeRetryCount * 200);
             }
@@ -491,25 +480,17 @@
         attemptGenerateAge();
 
         // 顯示測試按鈕
-        console.log('showTestButton 狀態:', showTestButton);
         if (showTestButton) {
-          console.log('顯示測試按鈕');
           $('#testDataButton').show();
-        } else {
-          console.log('隱藏測試按鈕');
         }
 
         // 添加手動測試函數到全域作用域
         window.testGenerateAgeOptions = function() {
-          console.log('手動測試年齡選項生成...');
           generateAgeOptions();
         };
 
         // 測試年齡計算邏輯
         var currentYear = new Date().getFullYear();
-        console.log('當前年份:', currentYear);
-        console.log('18歲計算測試:', (currentYear - 18), '→ 民國', (currentYear - 18 - 1911), '年');
-        console.log('100歲計算測試:', (currentYear - 100), '→ 民國', (currentYear - 100 - 1911), '年');
       });
 
       // 滾動監聽（滾動到頂部按鈕顯示/隱藏）
@@ -524,20 +505,14 @@
 
       // 生成年齡下拉選單選項 (民國XX年出生 - XX歲)
       function generateAgeOptions() {
-        console.log('開始生成年齡選項');
         var currentYear = new Date().getFullYear();
 
         // 使用最直接的選擇器
         var $ageSelect = $('select[name="age"]');
 
-        console.log('找到年齡下拉選單元素數量:', $ageSelect.length);
-
         if ($ageSelect.length === 0) {
-          console.error('未找到年齡下拉選單元素');
-          console.log('頁面上所有的 select 元素:', $('select'));
           // 嘗試在下一次事件循環中重試
           setTimeout(function() {
-            console.log('延遲重試生成年齡選項');
             $ageSelect = $('select[name="age"]');
             if ($ageSelect.length > 0) {
               generateAgeOptionsForElement($ageSelect, currentYear);
@@ -551,8 +526,6 @@
 
       // 為指定的select元素生成年齡選項
       function generateAgeOptionsForElement($ageSelect, currentYear) {
-        console.log('為年齡選單生成選項，當前年份:', currentYear);
-
         // 清空現有選項（保留預設選項）
         $ageSelect.find('option:not(:first)').remove();
 
@@ -574,22 +547,10 @@
             optionsCount++;
           }
         }
-
-        console.log('成功生成年齡選項數量:', optionsCount);
-        console.log('最終年齡選項總數:', $ageSelect.find('option').length);
-
-        // 驗證選項是否正確添加
-        if (optionsCount > 0) {
-          console.log('年齡選項生成完成！第一個選項:', $ageSelect.find('option:eq(1)').text());
-          console.log('最後一個選項:', $ageSelect.find('option:last').text());
-        } else {
-          console.error('年齡選項生成失敗，沒有生成任何選項');
-        }
       }
 
       // 填入測試資料的函數
       function fillTestData() {
-        console.log('開始填入eform5測試資料');
 
         // 基本資料
         $('input[name="phone"]').val(generateRandomPhone());
@@ -938,8 +899,6 @@
       }
 
       function submitForm() {
-        console.log('開始提交eform5表單');
-
         // 收集表單資料
         var formData = {
           // Point 122: 使用指定的會員資料
@@ -1026,8 +985,6 @@
           }
         });
 
-        console.log('收集到的表單資料:', formData);
-
         // 發送API請求
         $.ajax({
           url: '<?php echo base_url("api/eeform/eeform5/submit"); ?>',
@@ -1051,7 +1008,8 @@
                 timer: 2000,
                 showConfirmButton: false
               }).then(() => {
-                location.reload();
+                // 直接跳轉到 eform5_list 頁面
+                window.location.href = '<?php echo base_url("eform/eform5_list"); ?>';
               });
             } else {
               Swal.fire({
