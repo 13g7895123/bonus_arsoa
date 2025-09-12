@@ -237,3 +237,4 @@ ORDER BY `s`.`created_at` DESC
 144. 承143，save_product所有用到的參數請幫我打開分析，他現在送出的東西是錯的，有資料的會變成沒資料的
 145. 有辦法幫我判斷save_products這個function，被使用的時候是新增還是編輯嗎
 146. 我新增了/eform/eform5_list的功能，幫我參照/eform/eform4_list的功能，補上撈取eform5的資料，以及檢視與更新表單的功能，請確保內容皆為eform5的項目
+147. /api/eeform/eeform5/submissions/000000這支API顯示500錯誤，幫我修復
