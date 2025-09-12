@@ -614,7 +614,18 @@
       // 第二排欄位
       html += '<div class="col-sm-4 mb30">';
       html += '<label class="label-custom">年齡</label>';
-      html += '<input type="text" name="age" class="form-control form-control-custom" placeholder="請選擇年齡" value="' + (data.age || '') + '"' + disabled + ' />';
+      html += '<select name="age" class="form-control form-control-custom"' + disabled + '>';
+      html += '<option value="">請選擇年齡</option>';
+      
+      // 生成年齡選項 (18-100歲)
+      var currentYear = new Date().getFullYear();
+      for (var age = 18; age <= 100; age++) {
+        var mingguoYear = currentYear - 1911 - age;
+        var selected = (data.age == age) ? ' selected' : '';
+        html += '<option value="' + age + '"' + selected + '>民國' + mingguoYear + '年出生 - ' + age + '歲</option>';
+      }
+      
+      html += '</select>';
       html += '</div>';
 
       html += '<div class="col-sm-4 mb30">';
@@ -624,7 +635,11 @@
 
       html += '<div class="col-sm-4 mb30">';
       html += '<label class="label-custom">運動習慣</label>';
-      html += '<input type="text" name="exercise_habit" class="form-control form-control-custom" placeholder="請選擇運動習慣" value="' + (data.exercise_habit || '') + '"' + disabled + ' />';
+      html += '<select name="exercise_habit" class="form-control form-control-custom"' + disabled + '>';
+      html += '<option value="">請選擇運動習慣</option>';
+      html += '<option value="是"' + ((data.exercise_habit === '是') ? ' selected' : '') + '>是</option>';
+      html += '<option value="否"' + ((data.exercise_habit === '否') ? ' selected' : '') + '>否</option>';
+      html += '</select>';
       html += '</div>';
 
       // 體測標準建議值
@@ -699,8 +714,16 @@
 
       html += '<div class="col-sm-6 mb30">';
       html += '<label class="label-custom">是否有服藥習慣</label>';
-      var medicationText = data.has_medication_habit == 1 ? '是' : (data.has_medication_habit == 0 ? '否' : '');
-      html += '<input type="text" name="has_medication_habit" class="form-control form-control-custom" value="' + medicationText + '"' + disabled + ' />';
+      if (isEditable) {
+        html += '<select name="has_medication_habit" class="form-control form-control-custom"' + disabled + '>';
+        html += '<option value="">請選擇</option>';
+        html += '<option value="1"' + ((data.has_medication_habit == 1) ? ' selected' : '') + '>是</option>';
+        html += '<option value="0"' + ((data.has_medication_habit == 0) ? ' selected' : '') + '>否</option>';
+        html += '</select>';
+      } else {
+        var medicationText = data.has_medication_habit == 1 ? '是' : (data.has_medication_habit == 0 ? '否' : '');
+        html += '<input type="text" name="has_medication_habit" class="form-control form-control-custom" value="' + medicationText + '"' + disabled + ' />';
+      }
       html += '</div>';
 
       if (data.has_medication_habit == 1 && data.medication_name) {
@@ -712,8 +735,16 @@
 
       html += '<div class="col-sm-6 mb30">';
       html += '<label class="label-custom">是否有家族病史</label>';
-      var familyHistoryText = data.has_family_disease_history == 1 ? '是' : (data.has_family_disease_history == 0 ? '否' : '');
-      html += '<input type="text" name="has_family_disease_history" class="form-control form-control-custom" value="' + familyHistoryText + '"' + disabled + ' />';
+      if (isEditable) {
+        html += '<select name="has_family_disease_history" class="form-control form-control-custom"' + disabled + '>';
+        html += '<option value="">請選擇</option>';
+        html += '<option value="1"' + ((data.has_family_disease_history == 1) ? ' selected' : '') + '>是</option>';
+        html += '<option value="0"' + ((data.has_family_disease_history == 0) ? ' selected' : '') + '>否</option>';
+        html += '</select>';
+      } else {
+        var familyHistoryText = data.has_family_disease_history == 1 ? '是' : (data.has_family_disease_history == 0 ? '否' : '');
+        html += '<input type="text" name="has_family_disease_history" class="form-control form-control-custom" value="' + familyHistoryText + '"' + disabled + ' />';
+      }
       html += '</div>';
 
       if (data.has_family_disease_history == 1 && data.disease_name) {
@@ -789,9 +820,9 @@
         member_name: $('#exampleModal input[name="member_name"]').val(),
         phone: $('#exampleModal input[name="phone"]').val(),
         gender: $('#exampleModal select[name="gender"]').val(),
-        age: $('#exampleModal input[name="age"]').val(),
+        age: $('#exampleModal select[name="age"]').val(),
         height: $('#exampleModal input[name="height"]').val(),
-        exercise_habit: $('#exampleModal input[name="exercise_habit"]').val(),
+        exercise_habit: $('#exampleModal select[name="exercise_habit"]').val(),
         
         // 體測数据
         weight: $('#exampleModal input[name="weight"]').val(),
@@ -812,7 +843,9 @@
         
         // 其他健康資訊
         health_concerns_other: $('#exampleModal input[name="health_concerns_other"]').val(),
+        has_medication_habit: $('#exampleModal select[name="has_medication_habit"]').val() || $('#exampleModal input[name="has_medication_habit"]').val(),
         medication_name: $('#exampleModal input[name="medication_name"]').val(),
+        has_family_disease_history: $('#exampleModal select[name="has_family_disease_history"]').val() || $('#exampleModal input[name="has_family_disease_history"]').val(),
         disease_name: $('#exampleModal input[name="disease_name"]').val(),
         microcirculation_test: $('#exampleModal textarea[name="microcirculation_test"]').val(),
         dietary_advice: $('#exampleModal textarea[name="dietary_advice"]').val(),

@@ -6,7 +6,6 @@ class Eeform5 extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('eeform/Eeform5Model');
         $this->load->helper('url');
         
         // 允許跨域請求
@@ -21,7 +20,7 @@ class Eeform5 extends CI_Controller {
         try {
             $this->load->model('eeform/Eeform5Model', 'eform5_model');
         } catch (Exception $e) {
-            $this->_send_error('Failed to load eform4 model: ' . $e->getMessage(), 500);
+            $this->_send_error('Failed to load eform5 model: ' . $e->getMessage(), 500);
             exit();
         }
     }
@@ -37,9 +36,9 @@ class Eeform5 extends CI_Controller {
             }
 
             // 檢查並創建資料表
-            if (!$this->Eeform5Model->check_table_exists()) {
+            if (!$this->eform5_model->check_table_exists()) {
                 log_message('info', 'Creating eeform5 tables...');
-                $this->Eeform5Model->create_tables();
+                $this->eform5_model->create_tables();
             }
 
             // 取得POST資料
@@ -117,7 +116,7 @@ class Eeform5 extends CI_Controller {
             log_message('info', 'Eeform5 processed data: ' . print_r($form_data, true));
 
             // 提交到資料庫
-            $result = $this->Eeform5Model->submit_form($form_data);
+            $result = $this->eform5_model->submit_form($form_data);
 
             if ($result['success']) {
                 $response = array(
@@ -156,11 +155,11 @@ class Eeform5 extends CI_Controller {
                 throw new Exception('缺少表單ID');
             }
 
-            if (!$this->Eeform5Model->check_table_exists()) {
+            if (!$this->eform5_model->check_table_exists()) {
                 throw new Exception('資料表不存在');
             }
 
-            $submission = $this->Eeform5Model->get_submission_by_id($id);
+            $submission = $this->eform5_model->get_submission_by_id($id);
             
             if (!$submission) {
                 throw new Exception('找不到指定的表單');
@@ -216,7 +215,7 @@ class Eeform5 extends CI_Controller {
     public function list()
     {
         try {
-            if (!$this->Eeform5Model->check_table_exists()) {
+            if (!$this->eform5_model->check_table_exists()) {
                 throw new Exception('資料表不存在');
             }
 
@@ -227,7 +226,7 @@ class Eeform5 extends CI_Controller {
             $date_from = $this->input->get('date_from');
             $date_to = $this->input->get('date_to');
 
-            $result = $this->Eeform5Model->get_all_submissions_paginated($page, $limit, $search, $status, $date_from, $date_to);
+            $result = $this->eform5_model->get_all_submissions_paginated($page, $limit, $search, $status, $date_from, $date_to);
             
             // 驗證 model 回傳的資料結構
             if (!$result || !is_array($result)) {
@@ -275,7 +274,7 @@ class Eeform5 extends CI_Controller {
                 throw new Exception('缺少表單ID');
             }
 
-            if (!$this->Eeform5Model->check_table_exists()) {
+            if (!$this->eform5_model->check_table_exists()) {
                 throw new Exception('資料表不存在');
             }
 
@@ -295,7 +294,7 @@ class Eeform5 extends CI_Controller {
                 throw new Exception('無效的狀態值');
             }
 
-            $result = $this->Eeform5Model->update_status($id, $input_data['status']);
+            $result = $this->eform5_model->update_status($id, $input_data['status']);
 
             if ($result) {
                 $response = array(
@@ -326,7 +325,7 @@ class Eeform5 extends CI_Controller {
             'message' => 'Eeform5 API連接正常',
             'timestamp' => date('Y-m-d H:i:s'),
             'method' => $this->input->method(),
-            'table_exists' => $this->Eeform5Model->check_table_exists()
+            'table_exists' => $this->eform5_model->check_table_exists()
         );
 
         $this->output->set_output(json_encode($response, JSON_UNESCAPED_UNICODE));
@@ -342,11 +341,11 @@ class Eeform5 extends CI_Controller {
                 throw new Exception('只接受POST請求');
             }
 
-            if ($this->Eeform5Model->check_table_exists()) {
+            if ($this->eform5_model->check_table_exists()) {
                 throw new Exception('資料表已存在');
             }
 
-            $result = $this->Eeform5Model->create_tables();
+            $result = $this->eform5_model->create_tables();
 
             if ($result) {
                 $response = array(
@@ -374,9 +373,9 @@ class Eeform5 extends CI_Controller {
     {
         try {
             // 檢查並創建資料表
-            if (!$this->Eeform5Model->check_table_exists()) {
+            if (!$this->eform5_model->check_table_exists()) {
                 log_message('info', 'Creating eeform5 tables for testing...');
-                $this->Eeform5Model->create_tables();
+                $this->eform5_model->create_tables();
             }
 
             // 準備完整測試資料
@@ -430,7 +429,7 @@ class Eeform5 extends CI_Controller {
             log_message('info', 'Eeform5 comprehensive test data: ' . print_r($test_data, true));
 
             // 提交測試資料
-            $result = $this->Eeform5Model->submit_form($test_data);
+            $result = $this->eform5_model->submit_form($test_data);
 
             if (!$result['success']) {
                 throw new Exception('資料提交失敗：' . $result['message']);
@@ -850,5 +849,53 @@ class Eeform5 extends CI_Controller {
                 'trace' => $e->getTraceAsString()
             ]);
         }
+    }
+
+    /**
+     * 發送成功回應
+     * @param string $message 
+     * @param mixed $data 
+     * @param int $code 
+     */
+    private function _send_success($message = 'Success', $data = null, $code = 200) {
+        $response = [
+            'success' => true,
+            'code' => $code,
+            'message' => $message
+        ];
+        
+        if ($data !== null) {
+            $response['data'] = $data;
+        }
+        
+        $response['timestamp'] = date('Y-m-d H:i:s');
+        
+        $this->output
+            ->set_status_header($code)
+            ->set_output(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
+    /**
+     * 發送錯誤回應
+     * @param string $message 
+     * @param int $code 
+     * @param mixed $errors 
+     */
+    private function _send_error($message = 'Error', $code = 500, $errors = null) {
+        $response = [
+            'success' => false,
+            'code' => $code,
+            'message' => $message
+        ];
+        
+        if ($errors !== null) {
+            $response['errors'] = $errors;
+        }
+        
+        $response['timestamp'] = date('Y-m-d H:i:s');
+        
+        $this->output
+            ->set_status_header($code)
+            ->set_output(json_encode($response, JSON_UNESCAPED_UNICODE));
     }
 }
