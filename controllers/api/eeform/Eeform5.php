@@ -61,6 +61,15 @@ class Eeform5 extends CI_Controller {
 
             log_message('info', 'Eeform5 submit received data: ' . print_r($input_data, true));
 
+            // 檢查是否為更新操作（從編輯功能來的請求會有此標識）
+            $is_update = isset($input_data['is_update']) && $input_data['is_update'] === true;
+            
+            if ($is_update) {
+                log_message('info', 'This is an update operation from edit function, redirecting...');
+                // 如果是更新操作，應該通過 submission/{id} endpoint 而不是 submit
+                throw new Exception('更新操作請使用 submission/{id} endpoint');
+            }
+
             // 驗證必要欄位
             $required_fields = ['name', 'phone', 'gender', 'age'];
             foreach ($required_fields as $field) {
@@ -584,8 +593,68 @@ class Eeform5 extends CI_Controller {
      * GET /api/eeform/eeform5/submission/{id}
      */
     public function submission($id = null) {
-        // 直接呼叫 get 方法，確保功能一致性
-        return $this->get($id);
+        // 根據HTTP方法決定執行動作
+        if ($this->input->method() === 'get') {
+            // GET請求：獲取資料
+            return $this->get($id);
+        } elseif ($this->input->method() === 'post') {
+            // POST請求：更新資料
+            return $this->update_submission($id);
+        } else {
+            $this->_send_error('不支援的HTTP方法', 405);
+        }
+    }
+
+    /**
+     * 更新表單資料（用於編輯功能）
+     * POST /api/eeform/eeform5/submission/{id}
+     */
+    private function update_submission($id = null) {
+        try {
+            if (!$id || !is_numeric($id)) {
+                throw new Exception('缺少有效的表單ID');
+            }
+
+            if (!$this->eform5_model->check_table_exists()) {
+                throw new Exception('資料表不存在');
+            }
+
+            // 取得POST資料
+            $raw_input = $this->input->raw_input_stream;
+            $input_data = json_decode($raw_input, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                // 如果JSON解析失敗，嘗試從POST取得
+                $input_data = $this->input->post();
+            }
+
+            if (empty($input_data)) {
+                throw new Exception('缺少更新資料');
+            }
+
+            // 添加更新標識，與提交功能區分
+            $input_data['is_update'] = true;
+            $input_data['updated_at'] = date('Y-m-d H:i:s');
+
+            // 先檢查記錄是否存在
+            $existing = $this->eform5_model->get_submission_by_id($id);
+            if (!$existing) {
+                throw new Exception('找不到指定的表單記錄');
+            }
+
+            // 更新記錄
+            $result = $this->eform5_model->update_submission($id, $input_data);
+
+            if ($result['success']) {
+                $this->_send_success('表單更新成功', array('submission_id' => $id));
+            } else {
+                throw new Exception($result['message']);
+            }
+
+        } catch (Exception $e) {
+            log_message('error', 'Eeform5 update submission error: ' . $e->getMessage());
+            $this->_send_error('更新失敗：' . $e->getMessage(), 500);
+        }
     }
 
     /**

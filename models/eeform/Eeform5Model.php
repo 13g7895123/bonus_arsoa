@@ -384,4 +384,92 @@ class Eeform5Model extends CI_Model {
 
         return true;
     }
+
+    /**
+     * 更新表單記錄（用於編輯功能）
+     */
+    public function update_submission($id, $data)
+    {
+        $this->db->trans_start();
+
+        try {
+            // 先檢查記錄是否存在
+            $this->db->where('id', $id);
+            $query = $this->db->get('eeform5_submissions');
+            
+            if ($query->num_rows() == 0) {
+                throw new Exception('找不到指定的表單記錄');
+            }
+
+            // 準備主要表單更新資料
+            $update_data = array(
+                'member_name' => $data['member_name'],
+                'phone' => $data['phone'],
+                'gender' => $data['gender'],
+                'age' => $data['age'],
+                'height' => $data['height'],
+                'exercise_habit' => $data['exercise_habit'],
+                
+                // 體測標準建議值
+                'weight' => $data['weight'],
+                'bmi' => $data['bmi'],
+                'fat_percentage' => $data['fat_percentage'],
+                'fat_mass' => $data['fat_mass'],
+                'muscle_percentage' => $data['muscle_percentage'],
+                'muscle_mass' => $data['muscle_mass'],
+                'water_percentage' => $data['water_percentage'],
+                'water_content' => $data['water_content'],
+                'visceral_fat_percentage' => $data['visceral_fat_percentage'],
+                'bone_mass' => $data['bone_mass'],
+                'bmr' => $data['bmr'],
+                'protein_percentage' => $data['protein_percentage'],
+                'obesity_percentage' => $data['obesity_percentage'],
+                'body_age' => $data['body_age'],
+                'lean_body_mass' => $data['lean_body_mass'],
+                
+                // 其他資料
+                'has_medication_habit' => $data['has_medication_habit'],
+                'medication_name' => $data['medication_name'],
+                'has_family_disease_history' => $data['has_family_disease_history'],
+                'disease_name' => $data['disease_name'],
+                'microcirculation_test' => $data['microcirculation_test'],
+                'dietary_advice' => $data['dietary_advice'],
+                'health_concerns_other' => $data['health_concerns_other'],
+                
+                'updated_at' => date('Y-m-d H:i:s')
+            );
+
+            // 更新主表單
+            $this->db->where('id', $id);
+            $this->db->update('eeform5_submissions', $update_data);
+
+            if ($this->db->affected_rows() == 0) {
+                log_message('info', 'No rows affected in main table update, but continuing...');
+            }
+
+            // 注意：職業、健康困擾、產品建議等關聯資料在編輯模式中通常以顯示文字形式呈現
+            // 如果需要更新這些關聯資料，可以在這裡添加相關邏輯
+            // 目前先專注於主要欄位的更新
+
+            $this->db->trans_complete();
+
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('資料庫更新失敗');
+            }
+
+            return array(
+                'success' => true,
+                'message' => '表單更新成功',
+                'submission_id' => $id
+            );
+
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            log_message('error', 'Eeform5Model update_submission error: ' . $e->getMessage());
+            return array(
+                'success' => false,
+                'message' => '更新失敗：' . $e->getMessage()
+            );
+        }
+    }
 }
