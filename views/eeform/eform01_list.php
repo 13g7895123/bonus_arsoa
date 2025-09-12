@@ -1163,8 +1163,9 @@
 
       $('#exampleModal .modal-body').html(html);
       
-      // 如果是編輯模式，添加出生年月同步功能
+      // 如果是編輯模式，添加出生年月同步功能和新增日期按鈕功能
       if (isEditable) {
+        // 出生年月同步功能
         $('#exampleModal input[name="birth_date"]').on('change', function() {
           var birthDate = $(this).val();
           if (birthDate) {
@@ -1177,134 +1178,131 @@
             $('#exampleModal input[name="birth_month"]').val(birthMonth);
           }
         });
+        
+        // 新增日期按鈕功能 (匹配原版eform1.php)
+        $('#exampleModal').on('click', '.modal-add-date-btn', function(e) {
+          e.preventDefault();
+          var categoryKey = $(this).data('category');
+          var container = $('#exampleModal #' + categoryKey + '-date-container .row');
+          var existingInputs = container.find('.date-input-group').length;
+          
+          // 添加新的日期輸入組
+          var newDateInput = '<div class="col-sm-4 mb20 date-input-group">';
+          newDateInput += '<div class="row">';
+          newDateInput += '<div class="col-lg-6">';
+          newDateInput += '<input type="text" name="' + categoryKey + '_date_' + existingInputs + '" class="form-control form-control-custom" placeholder="請填日期…">';
+          newDateInput += '</div>';
+          newDateInput += '<div class="col-lg-6">';
+          newDateInput += '<input type="text" name="' + categoryKey + '_score_' + existingInputs + '" class="form-control form-control-custom" placeholder="限填數字…">';
+          newDateInput += '</div>';
+          newDateInput += '</div>';
+          newDateInput += '</div>';
+          
+          container.append(newDateInput);
+        });
       }
     }
 
-    // 新增檢測數據區塊
+    // 新增檢測數據區塊 (匹配原版eform1.php格式)
     function addTestDataSection(categoryName, data, disabled) {
-      var html = '<div class="col-sm-12 mb20" style="background-color: #f8f9fa; padding: 10px; border-radius: 5px;">';
-      html += '<label class="label-custom">' + categoryName + '</label>';
-      html += '<div class="row">';
-
-      // 查找對應的評分資料
-      var categoryScores = [];
-      if (data.moisture_scores && Array.isArray(data.moisture_scores)) {
-        // 根據 categoryName 匹配對應的資料
-        var categoryMapping = {
-          '水潤': 'moisture',
-          '膚色': 'complexion',
-          '紋理': 'texture',
-          '敏感': 'sensitivity',
-          '油脂': 'oil',
-          '色素': 'pigment',
-          '皺紋': 'wrinkle',
-          '毛孔': 'pore'
-        };
-
-        var categoryKey = categoryMapping[categoryName] || 'moisture';
-        categoryScores = data.moisture_scores.filter(function(score) {
-          return score.category === categoryKey;
-        });
-
-        console.log('Processing category:', categoryName, '-> key:', categoryKey);
-        console.log('Available scores:', data.moisture_scores.length);
-        console.log('Filtered scores for', categoryName, ':', categoryScores);
-      } else {
-        console.log('No moisture_scores data available for', categoryName);
-      }
-
-      // Get the category key for field naming
+      // 取得類別對應的英文key
       var categoryKey = {
         '水潤': 'moisture',
-        '膚色': 'complexion',
+        '膚色': 'complexion', 
         '紋理': 'texture',
         '敏感': 'sensitivity',
         '油脂': 'oil',
         '色素': 'pigment',
         '皺紋': 'wrinkle',
         '毛孔': 'pore'
-      } [categoryName] || 'moisture';
+      }[categoryName] || 'moisture';
 
-      // 三組日期和數字輸入
-      for (var i = 0; i < 3; i++) {
-        var scoreData = categoryScores[i] || {};
-        console.log('Score data for', categoryName, 'index', i, ':', scoreData);
-
-        // 日期和數字輸入只顯示資料庫資料，沒有資料時顯示空白
-        var dateValue = scoreData.measurement_date || '';
-        var scoreValue = scoreData.score_value || '';
-
-        console.log('Extracted values - date:', dateValue, 'score:', scoreValue);
-
-        html += '<div class="col-sm-4 mb20">';
-        html += '<div class="row">';
-        html += '<div class="col-lg-6"><input type="text" name="' + categoryKey + '_date_' + i + '" class="form-control form-control-custom" placeholder="請填日期…" value="' + dateValue + '"' + disabled + '></div>';
-        html += '<div class="col-lg-6"><input type="text" name="' + categoryKey + '_number_' + i + '" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue + '"' + disabled + '></div>';
-        html += '</div>';
-        html += '</div>';
+      // 查找對應的評分資料
+      var categoryScores = [];
+      if (data.moisture_scores && Array.isArray(data.moisture_scores)) {
+        categoryScores = data.moisture_scores.filter(function(score) {
+          return score.category === categoryKey;
+        });
       }
 
-      html += '</div>';
+      var html = '<div class="col-sm-12 mb30">';
+      html += '<label class="label-custom">' + categoryName + '</label>';
       html += '<div class="row">';
 
-      // 三組下拉選單和數字輸入 - 設定預設值
-      var defaultValues = [{
-          type: 'severe',
-          value: '0'
-        },
-        {
-          type: 'warning',
-          value: '6'
-        },
-        {
-          type: 'healthy',
-          value: '8'
-        }
+      // 三個等級的直接輸入欄位 (匹配原版格式)
+      var levels = [
+        {type: 'severe', label: '嚴重、盡快改善', color: 'red', placeholder: '限填數字 ex. 0 - 1'},
+        {type: 'warning', label: '有問題、要注意', color: 'orange', placeholder: '限填數字 ex. 5 - 7'},
+        {type: 'healthy', label: '健康', color: 'green', placeholder: '限填數字 ex. 8 - 10'}
       ];
 
-      for (var i = 0; i < 3; i++) {
-        var scoreData2 = categoryScores[i] || {};
-        console.log('Dropdown score data for', categoryName, 'index', i, ':', scoreData2);
-
-        // 下拉選單保持預設值邏輯，數值欄位只顯示資料庫資料
-        var scoreType = scoreData2.score_type || defaultValues[i].type;
-        var scoreValue2 = scoreData2.score_value || '';
-
-        console.log('Dropdown values - type:', scoreType, 'value:', scoreValue2);
-
-        // Create field names based on category and score type
-        var scoreTypeField = categoryKey + '_' + scoreType;
-
+      levels.forEach(function(level) {
+        // 查找該等級的數值
+        var levelScore = categoryScores.find(function(score) {
+          return score.score_type === level.type;
+        });
+        var scoreValue = levelScore ? levelScore.score_value : '';
+        
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
-        html += '<div class="col-lg-6">';
-        html += '<select name="' + scoreTypeField + '_type" class="form-control form-control-custom"' + disabled + '>';
-        html += '<option value="">請選擇</option>';
-        var options = [{
-            value: 'severe',
-            label: '嚴重、盡快改善'
-          },
-          {
-            value: 'warning',
-            label: '有問題、要注意'
-          },
-          {
-            value: 'healthy',
-            label: '健康'
-          }
-        ];
-        options.forEach(function(option) {
-          var selected = (scoreType === option.value) ? ' selected' : '';
-          html += '<option value="' + option.value + '"' + selected + '>' + option.label + '</option>';
-        });
-        html += '</select>';
+        html += '<div class="col-lg-auto">';
+        html += '<p><i class="ico ion-record" style="color:' + level.color + ';"></i> ' + level.label + '：</p>';
         html += '</div>';
-        html += '<div class="col-lg-6"><input type="text" name="' + scoreTypeField + '" class="form-control form-control-custom" placeholder="限填數字…" value="' + scoreValue2 + '"' + disabled + '></div>';
+        html += '<div class="col-lg-auto">';
+        html += '<input type="text" name="' + categoryKey + '_' + level.type + '" class="form-control form-control-custom" placeholder="' + level.placeholder + '" value="' + scoreValue + '"' + disabled + '>';
         html += '</div>';
         html += '</div>';
-      }
+        html += '</div>';
+      });
 
       html += '</div>';
+
+      // 日期容器 (匹配原版格式)
+      html += '<div id="' + categoryKey + '-date-container">';
+      html += '<div class="row">';
+      
+      // 從資料庫載入現有的日期數據
+      var dateScores = categoryScores.filter(function(score) {
+        return score.measurement_date && score.measurement_date.trim() !== '';
+      });
+      
+      // 如果沒有日期數據，顯示一個空的輸入組
+      if (dateScores.length === 0) {
+        html += '<div class="col-sm-4 mb20 date-input-group">';
+        html += '<div class="row">';
+        html += '<div class="col-lg-6">';
+        html += '<input type="text" class="form-control form-control-custom" placeholder="請填日期…"' + disabled + '>';
+        html += '</div>';
+        html += '<div class="col-lg-6">';
+        html += '<input type="text" class="form-control form-control-custom" placeholder="限填數字…"' + disabled + '>';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+      } else {
+        // 顯示現有的日期數據
+        dateScores.forEach(function(dateScore, index) {
+          html += '<div class="col-sm-4 mb20 date-input-group">';
+          html += '<div class="row">';
+          html += '<div class="col-lg-6">';
+          html += '<input type="text" name="' + categoryKey + '_date_' + index + '" class="form-control form-control-custom" placeholder="請填日期…" value="' + (dateScore.measurement_date || '') + '"' + disabled + '>';
+          html += '</div>';
+          html += '<div class="col-lg-6">';
+          html += '<input type="text" name="' + categoryKey + '_score_' + index + '" class="form-control form-control-custom" placeholder="限填數字…" value="' + (dateScore.score_value || '') + '"' + disabled + '>';
+          html += '</div>';
+          html += '</div>';
+          html += '</div>';
+        });
+      }
+      
+      html += '</div>';
+      html += '</div>';
+
+      // 如果是編輯模式，添加新增日期按鈕 (匹配原版)
+      if (!disabled || disabled === '') {
+        html += '<a href="javascript:;" class="btn btn-primary btn-xs modal-add-date-btn" data-category="' + categoryKey + '" style="color:white;"><i class="ico ion-plus" style="color:white;"></i> 新增日期</a>';
+      }
+      
+      html += '<hr>';
       html += '</div>';
 
       return html;
@@ -1412,11 +1410,12 @@
         skin_age: $('#exampleModal input[name="skin_age"]').val()
       };
 
-      // 收集肌膚評分資料（8個類別，每個類別3種評分類型）
+      // 收集肌膚評分資料（匹配新的檢測數據區塊格式）
       var skinCategories = ['moisture', 'complexion', 'texture', 'sensitivity', 'oil', 'pigment', 'wrinkle', 'pore'];
       var scoreTypes = ['severe', 'warning', 'healthy'];
 
       skinCategories.forEach(function(category) {
+        // 收集三個等級的直接輸入值
         scoreTypes.forEach(function(scoreType) {
           var fieldName = category + '_' + scoreType;
           var scoreValue = $('#exampleModal input[name="' + fieldName + '"]').val();
@@ -1425,20 +1424,19 @@
           }
         });
 
-        // 收集日期和數字資料（每個類別3組）
-        for (var i = 0; i < 3; i++) {
-          var dateField = category + '_date_' + i;
-          var numberField = category + '_number_' + i;
-          var dateValue = $('#exampleModal input[name="' + dateField + '"]').val();
-          var numberValue = $('#exampleModal input[name="' + numberField + '"]').val();
-
+        // 收集動態日期和數字資料
+        var dateInputs = $('#exampleModal #' + category + '-date-container .date-input-group');
+        dateInputs.each(function(index) {
+          var dateValue = $(this).find('input[name^="' + category + '_date_"]').val();
+          var scoreValue = $(this).find('input[name^="' + category + '_score_"]').val();
+          
           if (dateValue && dateValue.trim() !== '') {
-            formData[dateField] = dateValue.trim();
+            formData[category + '_date_' + index] = dateValue.trim();
           }
-          if (numberValue && numberValue.trim() !== '') {
-            formData[numberField] = numberValue.trim();
+          if (scoreValue && scoreValue.trim() !== '') {
+            formData[category + '_score_' + index] = scoreValue.trim();
           }
-        }
+        });
       });
 
       console.log('Collected form data with skin scores:', formData);
