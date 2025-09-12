@@ -240,3 +240,4 @@ ORDER BY `s`.`created_at` DESC
 147. /api/eeform/eeform5/submissions/000000這支API顯示500錯誤，幫我修復，你改錯了不要改ci3專案裡面的，改根目錄底下的
 148. eform5_list頁面編輯的時候，與原本的原件不一樣，select變成input了，請全部排查過一次
 149. 先add commit push，eform5_list頁面編輯的api，與eform5送出的API是不是同一支，如果是同一支的話，幫我多一個參數分開兩個功能，有些表單欄位送出不同，不要混在一起，前端的部分有需要修改的嗎
+150. 我找到問題了update_submission送出的時候有一個name的field，資料庫根本就沒有，送出前請先確認資料庫欄位

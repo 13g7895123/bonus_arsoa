@@ -403,38 +403,37 @@ class Eeform5Model extends CI_Model {
 
             // 準備主要表單更新資料
             $update_data = array(
-                'member_name' => $data['member_name'],
                 'phone' => $data['phone'],
                 'gender' => $data['gender'],
                 'age' => $data['age'],
                 'height' => $data['height'],
                 'exercise_habit' => $data['exercise_habit'],
                 
-                // 體測標準建議值
-                'weight' => $data['weight'],
-                'bmi' => $data['bmi'],
-                'fat_percentage' => $data['fat_percentage'],
-                'fat_mass' => $data['fat_mass'],
-                'muscle_percentage' => $data['muscle_percentage'],
-                'muscle_mass' => $data['muscle_mass'],
-                'water_percentage' => $data['water_percentage'],
-                'water_content' => $data['water_content'],
-                'visceral_fat_percentage' => $data['visceral_fat_percentage'],
-                'bone_mass' => $data['bone_mass'],
-                'bmr' => $data['bmr'],
-                'protein_percentage' => $data['protein_percentage'],
-                'obesity_percentage' => $data['obesity_percentage'],
-                'body_age' => $data['body_age'],
-                'lean_body_mass' => $data['lean_body_mass'],
+                // 體測標準建議值 - 添加null值檢查
+                'weight' => $data['weight'] ?? null,
+                'bmi' => $data['bmi'] ?? null,
+                'fat_percentage' => $data['fat_percentage'] ?? null,
+                'fat_mass' => $data['fat_mass'] ?? null,
+                'muscle_percentage' => $data['muscle_percentage'] ?? null,
+                'muscle_mass' => $data['muscle_mass'] ?? null,
+                'water_percentage' => $data['water_percentage'] ?? null,
+                'water_content' => $data['water_content'] ?? null,
+                'visceral_fat_percentage' => $data['visceral_fat_percentage'] ?? null,
+                'bone_mass' => $data['bone_mass'] ?? null,
+                'bmr' => $data['bmr'] ?? null,
+                'protein_percentage' => $data['protein_percentage'] ?? null,
+                'obesity_percentage' => $data['obesity_percentage'] ?? null,
+                'body_age' => $data['body_age'] ?? null,
+                'lean_body_mass' => $data['lean_body_mass'] ?? null,
                 
-                // 其他資料
-                'has_medication_habit' => $data['has_medication_habit'],
-                'medication_name' => $data['medication_name'],
-                'has_family_disease_history' => $data['has_family_disease_history'],
-                'disease_name' => $data['disease_name'],
-                'microcirculation_test' => $data['microcirculation_test'],
-                'dietary_advice' => $data['dietary_advice'],
-                'health_concerns_other' => $data['health_concerns_other'],
+                // 其他資料 - 添加null值檢查
+                'has_medication_habit' => $data['has_medication_habit'] ?? null,
+                'medication_name' => $data['medication_name'] ?? null,
+                'has_family_disease_history' => $data['has_family_disease_history'] ?? null,
+                'disease_name' => $data['disease_name'] ?? null,
+                'microcirculation_test' => $data['microcirculation_test'] ?? null,
+                'dietary_advice' => $data['dietary_advice'] ?? null,
+                'health_concerns_other' => $data['health_concerns_other'] ?? null,
                 
                 'updated_at' => date('Y-m-d H:i:s')
             );

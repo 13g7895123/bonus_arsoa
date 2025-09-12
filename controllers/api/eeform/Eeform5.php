@@ -71,7 +71,7 @@ class Eeform5 extends CI_Controller {
             }
 
             // 驗證必要欄位
-            $required_fields = ['name', 'phone', 'gender', 'age'];
+            $required_fields = ['phone', 'gender', 'age'];
             foreach ($required_fields as $field) {
                 if (empty($input_data[$field])) {
                     throw new Exception("必填欄位 {$field} 不能為空");
@@ -83,7 +83,6 @@ class Eeform5 extends CI_Controller {
                 'member_name' => $input_data['member_name'] ?? '公司',
                 'member_id' => $input_data['member_id'] ?? '000000',
                 'phone' => $input_data['phone'],
-                'name' => $input_data['name'],
                 'gender' => $input_data['gender'],
                 'age' => intval($input_data['age']),
                 'height' => $input_data['height'] ?? null,
@@ -392,7 +391,6 @@ class Eeform5 extends CI_Controller {
                 'member_name' => '測試公司',
                 'member_id' => 'TEST001',
                 'phone' => '0912345678',
-                'name' => '測試使用者',
                 'gender' => '男',
                 'age' => 30,
                 'height' => 170.5,
@@ -728,7 +726,6 @@ class Eeform5 extends CI_Controller {
                 '會員姓名' => $submission['member_name'] ?? '',
                 '會員編號' => $submission['member_id'] ?? '',
                 '手機號碼' => $submission['phone'] ?? '',
-                '姓名' => $submission['name'] ?? '',
                 '性別' => $submission['gender'] ?? '',
                 '年齡' => isset($submission['age']) ? $submission['age'] . ' 歲' : '',
                 '身高' => isset($submission['height']) ? $submission['height'] . ' cm' : '',

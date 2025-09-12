@@ -599,7 +599,7 @@
 
       html += '<div class="col-sm-4 mb30">';
       html += '<label class="label-custom">姓名</label>';
-      html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="' + (data.member_name || '') + '"' + disabled + ' />';
+      html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="' + (data.name || data.member_name || '') + '"' + disabled + ' />';
       html += '</div>';
 
       html += '<div class="col-sm-4 mb30">';
