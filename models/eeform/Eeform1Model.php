@@ -91,7 +91,7 @@ class Eeform1Model extends MY_Model
     {
         $errors = [];
         // 檢查必填欄位 - 支援新的 birth_date 或舊的 birth_year/birth_month
-        $required_fields = ['member_name', 'phone'];
+        $required_fields = ['member_name'];
         foreach ($required_fields as $field) {
             if (empty($data[$field])) {
                 $errors[] = "必填欄位 {$field} 不能為空";

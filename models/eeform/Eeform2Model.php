@@ -26,19 +26,33 @@ class Eeform2Model extends MY_Model {
     public function create_submission($data) {
         try {
             $this->db->trans_start();
-            
+
+            // 確保必要欄位存在
+            $allowed_fields = [
+                'member_name', 'join_date', 'gender', 'age', 'birth_year_month',
+                'skin_health_condition', 'line_contact', 'tel_contact',
+                'meeting_date', 'submission_date', 'form_filler_id', 'form_filler_name'
+            ];
+
+            $submission_data = [];
+            foreach ($allowed_fields as $field) {
+                if (isset($data[$field])) {
+                    $submission_data[$field] = $data[$field];
+                }
+            }
+
             // 插入主表數據
-            $this->db->insert($this->table_submissions, $data);
+            $this->db->insert($this->table_submissions, $submission_data);
             $submission_id = $this->db->insert_id();
-            
+
             $this->db->trans_complete();
-            
+
             if ($this->db->trans_status() === FALSE || !$submission_id) {
                 throw new Exception('插入提交記錄失敗');
             }
-            
+
             return $submission_id;
-            
+
         } catch (Exception $e) {
             $this->db->trans_rollback();
             throw new Exception('建立提交記錄失敗: ' . $e->getMessage());

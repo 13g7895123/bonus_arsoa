@@ -242,3 +242,5 @@ ORDER BY `s`.`created_at` DESC
 149. 先add commit push，eform5_list頁面編輯的api，與eform5送出的API是不是同一支，如果是同一支的話，幫我多一個參數分開兩個功能，有些表單欄位送出不同，不要混在一起，前端的部分有需要修改的嗎
 150. 我找到問題了update_submission送出的時候有一個name的field，資料庫根本就沒有，送出前請先確認資料庫欄位
 151. 看到/eform/eform1_list與/eform/eform1，幫我把/eform/eform1_list的編輯功能改成與/eform/eform1一樣，目前有一些是直接顯示的，肌膚類型下方的表單部分，還是一樣是不同的
+152. 幫我找到/eform/eform2的表單，我要根目錄的那一份，表單加入出生年月，且為必填，請完整更新前台表單，顯示的list，相關用到的controller與model還有後台顯示的資料與匯出資料都要一併調整，資料庫的部分怎麼調整
+153. 先幫我add commit push，幫我看一下152，把這個部分完整加到/eform/eform4的功能

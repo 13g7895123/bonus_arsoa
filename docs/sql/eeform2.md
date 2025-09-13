@@ -13,6 +13,7 @@ CREATE TABLE eeform2_submissions (
     join_date DATE NOT NULL COMMENT '入會日',
     gender ENUM('男', '女') NOT NULL COMMENT '性別',
     age TINYINT UNSIGNED NOT NULL COMMENT '年齡',
+    birth_year_month VARCHAR(7) NOT NULL COMMENT '出生年月(YYYY-MM)',
     skin_health_condition TEXT NULL COMMENT '肌膚/健康狀況',
     line_contact VARCHAR(300) NULL COMMENT 'LINE聯絡狀況',
     tel_contact VARCHAR(300) NULL COMMENT '電話聯絡狀況',
@@ -26,6 +27,7 @@ CREATE TABLE eeform2_submissions (
     INDEX idx_join_date (join_date),
     INDEX idx_submission_date (submission_date),
     INDEX idx_meeting_date (meeting_date),
+    INDEX idx_birth_year_month (birth_year_month),
     INDEX idx_status (status),
     INDEX idx_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='會員服務追蹤管理表(肌膚)主表';
@@ -147,6 +149,7 @@ CREATE TABLE eeform2_submissions (
     join_date DATE NOT NULL COMMENT '入會日',
     gender ENUM('男', '女') NOT NULL COMMENT '性別',
     age TINYINT UNSIGNED NOT NULL COMMENT '年齡',
+    birth_year_month VARCHAR(7) NOT NULL COMMENT '出生年月(YYYY-MM)',
     skin_health_condition TEXT NULL COMMENT '肌膚/健康狀況',
     line_contact VARCHAR(300) NULL COMMENT 'LINE聯絡狀況',
     tel_contact VARCHAR(300) NULL COMMENT '電話聯絡狀況',
@@ -160,6 +163,7 @@ CREATE TABLE eeform2_submissions (
     INDEX idx_join_date (join_date),
     INDEX idx_submission_date (submission_date),
     INDEX idx_meeting_date (meeting_date),
+    INDEX idx_birth_year_month (birth_year_month),
     INDEX idx_status (status),
     INDEX idx_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='會員服務追蹤管理表(肌膚)主表';

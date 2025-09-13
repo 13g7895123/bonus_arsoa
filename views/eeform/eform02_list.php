@@ -504,6 +504,7 @@
         join_date: apiData.join_date || '',
         gender: apiData.gender || '',
         age: apiData.age || '',
+        birth_year_month: apiData.birth_year_month || '',
         skin_health_condition: apiData.skin_health_condition || '',
         line_contact: apiData.line_contact || '',
         tel_contact: apiData.tel_contact || '',
@@ -610,6 +611,11 @@
       html += '<label class="label-custom">年齡</label>';
       html += '<input type="number" name="age" class="form-control form-control-custom" placeholder="限填數字" value="' + (data.age || '') + '"' + disabled + ' />';
       html += '</div>';
+      
+      html += '<div class="col-sm-3 mb30">';
+      html += '<label class="label-custom">出生年月</label>';
+      html += '<input type="month" name="birth_year_month" class="form-control form-control-custom" value="' + (data.birth_year_month || '') + '"' + disabled + ' />';
+      html += '</div>';
 
       html += '<div class="col-sm-12 mb30">';
       html += '<label class="label-custom">肌膚/健康狀況</label>';
@@ -689,6 +695,7 @@
         join_date: $('#exampleModal input[name="join_date"]').val(),
         gender: $('#exampleModal select[name="gender"]').val(),
         age: $('#exampleModal input[name="age"]').val(),
+        birth_year_month: $('#exampleModal input[name="birth_year_month"]').val(),
         skin_health_condition: $('#exampleModal input[name="skin_health_condition"]').val(),
         line_contact: $('#exampleModal input[name="line_contact"]').val(),
         tel_contact: $('#exampleModal input[name="tel_contact"]').val(),

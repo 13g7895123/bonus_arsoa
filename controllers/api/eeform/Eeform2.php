@@ -119,7 +119,7 @@ class Eeform2 extends MY_Controller
             }
 
             // 驗證必填欄位
-            $required_fields = ['member_name', 'join_date', 'gender', 'age'];
+            $required_fields = ['member_name', 'join_date', 'birth_year_month'];
             $validation_errors = [];
             
             foreach ($required_fields as $field) {
@@ -142,6 +142,7 @@ class Eeform2 extends MY_Controller
                 'join_date' => $input_data['join_date'],
                 'gender' => $input_data['gender'],
                 'age' => (int)$input_data['age'],
+                'birth_year_month' => $input_data['birth_year_month'],
                 'skin_health_condition' => isset($input_data['skin_health_condition']) ? trim($input_data['skin_health_condition']) : null,
                 'line_contact' => isset($input_data['line_contact']) ? trim($input_data['line_contact']) : null,
                 'tel_contact' => isset($input_data['tel_contact']) ? trim($input_data['tel_contact']) : null,
@@ -597,6 +598,7 @@ class Eeform2 extends MY_Controller
                     '會員姓名' => $item['member_name'] ?? '',
                     '性別' => $item['gender'] ?? '',
                     '年齡' => isset($item['age']) ? $item['age'] . ' 歲' : '',
+                    '出生年月' => $item['birth_year_month'] ?? '',
                     '入會日' => $item['join_date'] ?? '',
                     '見面日' => $item['meeting_date'] ?? ''
                 ];
@@ -814,6 +816,7 @@ class Eeform2 extends MY_Controller
                 '會員姓名' => $submission['member_name'] ?? '',
                 '性別' => $submission['gender'] ?? '',
                 '年齡' => isset($submission['age']) ? $submission['age'] . ' 歲' : '',
+                '出生年月' => $submission['birth_year_month'] ?? '',
                 '入會日' => $submission['join_date'] ?? '',
                 '見面日' => $submission['meeting_date'] ?? ''
             ];
@@ -967,7 +970,7 @@ class Eeform2 extends MY_Controller
         
         // 設定標題列
         $excel_data[] = [
-            'ID', '會員姓名', '會員編號', '性別', '年齡', '入會日',
+            'ID', '會員姓名', '會員編號', '性別', '年齡', '出生年月', '入會日',
             '見面日', '健康狀況', 'LINE聯絡', '電話聯絡', '提交日期', 
             '建立時間', '狀態', '管理員備註', '訂購產品'
         ];
@@ -996,6 +999,7 @@ class Eeform2 extends MY_Controller
                 $item['member_id'] ?? '',
                 $item['gender'] ?? '',
                 $item['age'] ?? '',
+                $item['birth_year_month'] ?? '',
                 $item['join_date'] ?? '',
                 $item['meeting_date'] ?? '',
                 $item['skin_health_condition'] ?? '',
@@ -1028,6 +1032,7 @@ class Eeform2 extends MY_Controller
         $excel_data[] = ['會員編號', $submission['member_id'] ?? ''];
         $excel_data[] = ['性別', $submission['gender'] ?? ''];
         $excel_data[] = ['年齡', isset($submission['age']) ? $submission['age'] . ' 歲' : ''];
+        $excel_data[] = ['出生年月', $submission['birth_year_month'] ?? ''];
         $excel_data[] = ['入會日', $submission['join_date'] ?? ''];
         $excel_data[] = ['見面日', $submission['meeting_date'] ?? ''];
         $excel_data[] = ['', '']; // 空行
