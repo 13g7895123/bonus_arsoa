@@ -101,7 +101,7 @@ class Eeform4 extends MY_Controller
             }
 
             // 驗證必填欄位
-            $required_fields = ['member_name', 'join_date', 'gender', 'birth_year_month', 'age'];
+            $required_fields = ['member_name', 'join_date', 'birth_year_month'];
             $validation_errors = [];
             
             foreach ($required_fields as $field) {
@@ -243,7 +243,22 @@ class Eeform4 extends MY_Controller
                     $this->_send_error('找不到指定的表單記錄', 404);
                     return;
                 }
-                
+
+                // 驗證必填欄位（編輯時）
+                $required_fields = ['member_name', 'join_date', 'birth_year_month'];
+                $validation_errors = [];
+
+                foreach ($required_fields as $field) {
+                    if (!isset($input_data[$field]) || trim($input_data[$field]) === '') {
+                        $validation_errors[] = "欄位 '{$field}' 為必填";
+                    }
+                }
+
+                if (!empty($validation_errors)) {
+                    $this->_send_error('資料驗證失敗', 400, $validation_errors);
+                    return;
+                }
+
                 // 分離產品資料和主要表單資料
                 $products = isset($input_data['products']) ? $input_data['products'] : [];
                 log_message('debug', 'Original products data: ' . json_encode($products));

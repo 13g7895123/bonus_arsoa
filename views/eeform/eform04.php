@@ -594,7 +594,7 @@
         var birthYearMonth = $('input[name="birth_year_month"]').val();
         var age = $('input[name="age"]').val();
 
-        if (!memberName || !memberId || !joinDate || !gender || !birthYearMonth || !age) {
+        if (!memberName || !memberId || !birthYearMonth) {
           Swal.fire({
             title: '欄位未完整',
             text: '請填寫所有必填欄位',
@@ -935,26 +935,17 @@
       // 修改提交表單函數以處理會員選擇
       var originalSubmitForm = submitForm;
       submitForm = function() {
-        console.log('[Point 62 - eform2] ===== 表單提交開始 =====');
-        console.log('[Point 62 - eform2] 是否為多重會員:', isMultipleMembers);
-        console.log('[Point 62 - eform2] 下拉選單是否可見:', $('select[name="member_name_select"]').is(':visible'));
         
         // 收集表單資料
         var memberId, memberName;
         
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
-          console.log('[Point 62 - eform2] 使用下拉選單模式取得會員資料');
           // 使用下拉選單的值
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
           memberId = selectedOption.val();
           memberName = selectedOption.data('name');
-          console.log('[Point 62 - eform2] 從下拉選單取得:', {
-            memberId: memberId,
-            memberName: memberName
-          });
         } else {
-          console.log('[Point 62 - eform2] 使用輸入框模式取得會員資料');
           // 使用輸入框和當前會員資料
           memberId = currentUserData.member_id;
           memberName = $('input[name="member_name"]').val();
@@ -963,12 +954,7 @@
             memberName: memberName
           });
         }
-        
-        console.log('[Point 62 - eform2] 最終會員資料:', {
-          member_id: memberId,
-          member_name: memberName
-        });
-        
+                
         // 確保表單欄位有正確的值
         $('input[name="member_id"]').val(memberId);
         $('input[name="member_name"]').val(memberName);
@@ -979,7 +965,6 @@
 
       // 頁面載入時初始化會員資料
       $(document).ready(function() {
-        console.log('[Point 62 - eform2] ===== 頁面載入完成，開始初始化會員查詢功能 =====');
         
         // 延遲執行以確保其他初始化完成
         setTimeout(function() {
