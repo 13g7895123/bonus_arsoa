@@ -1051,6 +1051,12 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label class="form-label">出生年月</label>
+                                <input type="text" class="form-control" value="${data.birth_year_month || ''}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label class="form-label">年齡</label>
                                 <input type="text" class="form-control" value="${data.age ? data.age + ' 歲' : ''}" readonly>
                             </div>

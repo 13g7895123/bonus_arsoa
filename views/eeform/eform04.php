@@ -42,6 +42,10 @@
                             </select>
                           </div>
                           <div class="col-sm-3 mb30">
+                            <label class="label-custom">出生年月<span style="color: red;">(*必填)</span></label>
+                            <input type="month" name="birth_year_month" class="form-control form-control-custom" required />
+                          </div>
+                          <div class="col-sm-3 mb30">
                             <label class="label-custom">年齡</label>
                             <input type="number" name="age" class="form-control form-control-custom" placeholder="限填數字" required />
                           </div>
@@ -150,6 +154,12 @@
                     <div class="d-flex align-items-center">
                       <span class="text-muted mr-3" style="min-width: 60px;">性別：</span>
                       <span class="text-dark" id="confirm-gender"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 70px;">出生年月：</span>
+                      <span class="text-dark" id="confirm-birth-year-month"></span>
                     </div>
                   </div>
                   <div class="col-md-3 mb-3">
@@ -560,6 +570,7 @@
         }
         $('input[name="join_date"]').val('2023-01-15');
         $('select[name="gender"]').val('女');
+        $('input[name="birth_year_month"]').val('1993-05');
         $('input[name="age"]').val('30');
         $('input[name="skin_health_condition"]').val('輕微乾燥，偶有敏感');
         
@@ -580,9 +591,10 @@
         var memberId = $('input[name="member_id"]').val();
         var joinDate = $('input[name="join_date"]').val();
         var gender = $('select[name="gender"]').val();
+        var birthYearMonth = $('input[name="birth_year_month"]').val();
         var age = $('input[name="age"]').val();
 
-        if (!memberName || !memberId || !joinDate || !gender || !age) {
+        if (!memberName || !memberId || !joinDate || !gender || !birthYearMonth || !age) {
           Swal.fire({
             title: '欄位未完整',
             text: '請填寫所有必填欄位',
@@ -597,6 +609,7 @@
         $('#confirm-member-id').text(memberId);
         $('#confirm-join-date').text(joinDate);
         $('#confirm-gender').text(gender);
+        $('#confirm-birth-year-month').text(birthYearMonth);
         $('#confirm-age').text(age);
         $('#confirm-meeting-date').text($('input[name="meeting_date"]').val() || '(未填寫)');
         $('#confirm-skin-health').text($('input[name="skin_health_condition"]').val() || '(未填寫)');
@@ -682,6 +695,7 @@
           form_filler_name: formFillerName, // 代填問卷者姓名
           join_date: $('input[name="join_date"]').val(),
           gender: $('select[name="gender"]').val(),
+          birth_year_month: $('input[name="birth_year_month"]').val(),
           age: $('input[name="age"]').val(),
           skin_health_condition: $('input[name="skin_health_condition"]').val(),
           line_contact: $('input[name="line_contact"]').val(),

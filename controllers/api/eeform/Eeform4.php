@@ -101,7 +101,7 @@ class Eeform4 extends MY_Controller
             }
 
             // 驗證必填欄位
-            $required_fields = ['member_name', 'join_date', 'gender', 'age'];
+            $required_fields = ['member_name', 'join_date', 'gender', 'birth_year_month', 'age'];
             $validation_errors = [];
             
             foreach ($required_fields as $field) {
@@ -123,6 +123,7 @@ class Eeform4 extends MY_Controller
                 'form_filler_name' => isset($input_data['form_filler_name']) ? $input_data['form_filler_name'] : null, // 代填問卷者姓名
                 'join_date' => $input_data['join_date'],
                 'gender' => $input_data['gender'],
+                'birth_year_month' => $input_data['birth_year_month'],
                 'age' => (int)$input_data['age'],
                 'skin_health_condition' => isset($input_data['skin_health_condition']) ? trim($input_data['skin_health_condition']) : null,
                 'line_contact' => isset($input_data['line_contact']) ? trim($input_data['line_contact']) : null,
@@ -543,6 +544,7 @@ class Eeform4 extends MY_Controller
                 'ID' => $submission['id'],
                 '會員姓名' => $submission['member_name'] ?? '',
                 '性別' => $submission['gender'] ?? '',
+                '出生年月' => $submission['birth_year_month'] ?? '',
                 '年齡' => isset($submission['age']) ? $submission['age'] . ' 歲' : '',
                 '入會日' => $submission['join_date'] ?? '',
                 '見面日' => $submission['meeting_date'] ?? ''
