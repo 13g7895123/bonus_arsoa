@@ -591,7 +591,7 @@
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">入會日 <span style="color: red;">*</span></label>';
+      html += '<label class="label-custom">入會日</label>';
       html += '<input type="date" name="join_date" class="form-control form-control-custom" value="' + (data.join_date || '') + '"' + disabled + ' />';
       html += '</div>';
 
@@ -687,19 +687,18 @@
     function updateEform4Data() {
       // 驗證必填欄位
       var memberName = $('#exampleModal input[name="member_name"]').val();
-      var joinDate = $('#exampleModal input[name="join_date"]').val();
       var birthYearMonth = $('#exampleModal input[name="birth_year_month"]').val();
 
-      if (!memberName || !joinDate || !birthYearMonth) {
+      if (!memberName || !birthYearMonth) {
         if (typeof Swal !== 'undefined') {
           Swal.fire({
             title: '欄位未完整',
-            text: '請填寫所有必填欄位（姓名、入會日、出生年月）',
+            text: '請填寫所有必填欄位（姓名、出生年月）',
             icon: 'warning',
             confirmButtonText: '確定'
           });
         } else {
-          alert('請填寫所有必填欄位（姓名、入會日、出生年月）');
+          alert('請填寫所有必填欄位（姓名、出生年月）');
         }
         return;
       }
