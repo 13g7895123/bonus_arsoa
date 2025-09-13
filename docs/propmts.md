@@ -245,3 +245,4 @@ ORDER BY `s`.`created_at` DESC
 152. 幫我找到/eform/eform2的表單，我要根目錄的那一份，表單加入出生年月，且為必填，請完整更新前台表單，顯示的list，相關用到的controller與model還有後台顯示的資料與匯出資料都要一併調整，資料庫的部分怎麼調整
 153. 先幫我add commit push，幫我看一下152，把這個部分完整加到/eform/eform4的功能
 154. 看一下/eform/eform2、/eform/eform4的編輯功能，必填沒有同步更新到編輯功能中
+，_list的表單沒有看到必填的字樣欸

@@ -586,12 +586,12 @@
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">姓名</label>';
+      html += '<label class="label-custom">姓名 <span style="color: red;">*</span></label>';
       html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="' + (data.member_name || '') + '"' + disabled + ' />';
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">入會日</label>';
+      html += '<label class="label-custom">入會日 <span style="color: red;">*</span></label>';
       html += '<input type="date" name="join_date" class="form-control form-control-custom" value="' + (data.join_date || '') + '"' + disabled + ' />';
       html += '</div>';
 
@@ -605,7 +605,7 @@
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">出生年月</label>';
+      html += '<label class="label-custom">出生年月 <span style="color: red;">*</span></label>';
       html += '<input type="month" name="birth_year_month" class="form-control form-control-custom" value="' + (data.birth_year_month || '') + '"' + disabled + ' />';
       html += '</div>';
 
