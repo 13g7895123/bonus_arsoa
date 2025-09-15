@@ -856,7 +856,42 @@
             </div>
         `;
 
-        // 行動計畫區塊
+        // 共同行動計畫區塊
+        let commonActionPlanHtml = `
+            <div class="border mb-6 rounded" style="padding: 1.5rem;">
+                <h6 class="mb-3">共同行動計畫</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">共同行動計畫1</label>
+                            <textarea class="form-control" rows="1" readonly>用手測量飲食</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">共同行動計畫2</label>
+                            <textarea class="form-control" rows="1" readonly>運動</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">共同行動計畫3</label>
+                            <textarea class="form-control" rows="1" readonly>保健食品</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">共同行動計畫4</label>
+                            <textarea class="form-control" rows="1" readonly>微微卡執行</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // 自身行動計畫區塊
         let actionPlanHtml = `
             <div class="border mb-6 rounded" style="padding: 1.5rem;">
                 <h6 class="mb-3">自身行動計畫</h6>
@@ -1010,7 +1045,7 @@
             </div>
         `;
 
-        container.html(basicDataHtml + actionPlanHtml + bodyDataHtml + activityHtml + plansHtml);
+        container.html(basicDataHtml + commonActionPlanHtml + actionPlanHtml + bodyDataHtml + activityHtml + plansHtml);
     };
 
     admin.closeDetailModal = function() {
