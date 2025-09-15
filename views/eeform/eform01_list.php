@@ -1178,44 +1178,64 @@
             $('#exampleModal input[name="birth_month"]').val(birthMonth);
           }
         });
-        
+
         // 新增日期按鈕功能 (匹配原版eform1.php)
-        $('#exampleModal').on('click', '.modal-add-date-btn', function(e) {
-          e.preventDefault();
-          var categoryKey = $(this).data('category');
-          var container = $('#exampleModal #' + categoryKey + '-date-container .row');
-          var existingInputs = container.find('.date-input-group').length;
-          
-          // 添加新的日期輸入組
-          var newDateInput = '<div class="col-sm-4 mb20 date-input-group">';
-          newDateInput += '<div class="row">';
-          newDateInput += '<div class="col-lg-6">';
-          newDateInput += '<input type="text" name="' + categoryKey + '_date_' + existingInputs + '" class="form-control form-control-custom" placeholder="請填日期…">';
-          newDateInput += '</div>';
-          newDateInput += '<div class="col-lg-6">';
-          newDateInput += '<input type="text" name="' + categoryKey + '_score_' + existingInputs + '" class="form-control form-control-custom" placeholder="限填數字…">';
-          newDateInput += '</div>';
-          newDateInput += '</div>';
-          newDateInput += '</div>';
-          
-          container.append(newDateInput);
+        var modalAddButtonConfigs = [
+          { buttonId: '#add-button1', containerId: '#water-date-container' },
+          { buttonId: '#add-button2', containerId: '#complexion-date-container' },
+          { buttonId: '#add-button3', containerId: '#texture-date-container' },
+          { buttonId: '#add-button4', containerId: '#sensitivity-date-container' },
+          { buttonId: '#add-button5', containerId: '#oil-date-container' },
+          { buttonId: '#add-button6', containerId: '#pigment-date-container' },
+          { buttonId: '#add-button7', containerId: '#wrinkle-date-container' },
+          { buttonId: '#add-button8', containerId: '#pore-date-container' }
+        ];
+
+        // 為每個按鈕設置點擊事件 (在modal內)
+        $.each(modalAddButtonConfigs, function(index, config) {
+          $('#exampleModal').off('click', config.buttonId).on('click', config.buttonId, function(e) {
+            e.preventDefault();
+            var $container = $('#exampleModal ' + config.containerId);
+            var currentGroups = $container.find('.date-input-group').length;
+
+            // 檢查是否已達到最大數量（3組）
+            if (currentGroups < 3) {
+              // 複製第一個日期輸入組
+              var $newGroup = $container.find('.date-input-group:first').clone();
+
+              // 清空複製組的輸入值
+              $newGroup.find('input').val('');
+
+              // 將新組添加到現有的row中（橫向排列）
+              var $firstRow = $container.find('.row:first');
+              $firstRow.append($newGroup);
+
+              // 檢查是否達到3組，如果是則隱藏按鈕
+              if (currentGroups + 1 >= 3) {
+                $('#exampleModal ' + config.buttonId).hide();
+              }
+            }
+          });
         });
       }
     }
 
     // 新增檢測數據區塊 (匹配原版eform1.php格式)
     function addTestDataSection(categoryName, data, disabled) {
-      // 取得類別對應的英文key
-      var categoryKey = {
-        '水潤': 'moisture',
-        '膚色': 'complexion', 
-        '紋理': 'texture',
-        '敏感': 'sensitivity',
-        '油脂': 'oil',
-        '色素': 'pigment',
-        '皺紋': 'wrinkle',
-        '毛孔': 'pore'
-      }[categoryName] || 'moisture';
+      // 取得類別對應的英文key和container ID (匹配原版eform1.php)
+      var categoryMapping = {
+        '水潤': { key: 'moisture', containerId: 'water-date-container', buttonId: 'add-button1' },
+        '膚色': { key: 'complexion', containerId: 'complexion-date-container', buttonId: 'add-button2' },
+        '紋理': { key: 'texture', containerId: 'texture-date-container', buttonId: 'add-button3' },
+        '敏感': { key: 'sensitivity', containerId: 'sensitivity-date-container', buttonId: 'add-button4' },
+        '油脂': { key: 'oil', containerId: 'oil-date-container', buttonId: 'add-button5' },
+        '色素': { key: 'pigment', containerId: 'pigment-date-container', buttonId: 'add-button6' },
+        '皺紋': { key: 'wrinkle', containerId: 'wrinkle-date-container', buttonId: 'add-button7' },
+        '毛孔': { key: 'pore', containerId: 'pore-date-container', buttonId: 'add-button8' }
+      };
+
+      var categoryInfo = categoryMapping[categoryName] || { key: 'moisture', containerId: 'water-date-container', buttonId: 'add-button1' };
+      var categoryKey = categoryInfo.key;
 
       // 查找對應的評分資料
       var categoryScores = [];
@@ -1245,10 +1265,10 @@
         
         html += '<div class="col-sm-4 mb20">';
         html += '<div class="row">';
-        html += '<div class="col-lg-auto">';
+        html += '<div class="col-md-12">';
         html += '<p><i class="ico ion-record" style="color:' + level.color + ';"></i> ' + level.label + '：</p>';
         html += '</div>';
-        html += '<div class="col-lg-auto">';
+        html += '<div class="col-md-12">';
         html += '<input type="text" name="' + categoryKey + '_' + level.type + '" class="form-control form-control-custom" placeholder="' + level.placeholder + '" value="' + scoreValue + '"' + disabled + '>';
         html += '</div>';
         html += '</div>';
@@ -1258,7 +1278,7 @@
       html += '</div>';
 
       // 日期容器 (匹配原版格式)
-      html += '<div id="' + categoryKey + '-date-container">';
+      html += '<div id="' + categoryInfo.containerId + '">';
       html += '<div class="row">';
       
       // 從資料庫載入現有的日期數據
@@ -1299,7 +1319,7 @@
 
       // 如果是編輯模式，添加新增日期按鈕 (匹配原版)
       if (!disabled || disabled === '') {
-        html += '<a href="javascript:;" class="btn btn-primary btn-xs modal-add-date-btn" data-category="' + categoryKey + '" style="color:white;"><i class="ico ion-plus" style="color:white;"></i> 新增日期</a>';
+        html += '<a href="javascript:;" class="btn btn-primary btn-xs" id="' + categoryInfo.buttonId + '" style="color:white;"><i class="ico ion-plus" style="color:white;"></i> 新增日期</a>';
       }
       
       html += '<hr>';
@@ -1424,12 +1444,28 @@
           }
         });
 
-        // 收集動態日期和數字資料
-        var dateInputs = $('#exampleModal #' + category + '-date-container .date-input-group');
+        // 收集動態日期和數字資料 - 使用正確的container ID
+        var containerMapping = {
+          'moisture': 'water-date-container',
+          'complexion': 'complexion-date-container',
+          'texture': 'texture-date-container',
+          'sensitivity': 'sensitivity-date-container',
+          'oil': 'oil-date-container',
+          'pigment': 'pigment-date-container',
+          'wrinkle': 'wrinkle-date-container',
+          'pore': 'pore-date-container'
+        };
+
+        var containerId = containerMapping[category] || (category + '-date-container');
+        var dateInputs = $('#exampleModal #' + containerId + ' .date-input-group');
         dateInputs.each(function(index) {
-          var dateValue = $(this).find('input[name^="' + category + '_date_"]').val();
-          var scoreValue = $(this).find('input[name^="' + category + '_score_"]').val();
-          
+          var dateValue = $(this).find('input[name^="' + category + '_date_"], input:not([name])').filter(function() {
+            return $(this).attr('placeholder') === '請填日期…';
+          }).val();
+          var scoreValue = $(this).find('input[name^="' + category + '_score_"], input:not([name])').filter(function() {
+            return $(this).attr('placeholder') === '限填數字…';
+          }).val();
+
           if (dateValue && dateValue.trim() !== '') {
             formData[category + '_date_' + index] = dateValue.trim();
           }
