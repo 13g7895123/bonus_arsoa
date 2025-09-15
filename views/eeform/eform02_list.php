@@ -589,7 +589,7 @@
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">姓名 <span style="color: red;">*</span></label>';
+      html += '<label class="label-custom">姓名 <span style="color: red;">(*必填)</span></label>';
       html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="' + (data.member_name || '') + '"' + disabled + ' />';
       html += '</div>';
 
@@ -613,7 +613,7 @@
       html += '</div>';
       
       html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">出生年月 <span style="color: red;">*</span></label>';
+      html += '<label class="label-custom">出生年月 <span style="color: red;">(*必填)</span></label>';
       html += '<input type="month" name="birth_year_month" class="form-control form-control-custom" value="' + (data.birth_year_month || '') + '"' + disabled + ' />';
       html += '</div>';
 
