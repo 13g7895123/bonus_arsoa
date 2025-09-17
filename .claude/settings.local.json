@@ -77,7 +77,8 @@
       "Bash(git log:*)",
       "Bash(find:*)",
       "Bash(cp:*)",
-      "Bash(composer:*)"
+      "Bash(composer:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []

@@ -521,32 +521,36 @@ class Eeform1 extends MY_Controller
                 return;
             }
 
-            // 載入 PHPSpreadsheet
-            $this->load->library('excel');
-            
-            // 建立新的試算表
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('肌膚諮詢記錄表');
+            // 使用 PHPExcel 創建 Excel 檔案
+            $this->load->library("PHPExcel");
+            $objPHPExcel = new PHPExcel();
+
+            // 設定工作表屬性
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objPHPExcel->getActiveSheet()->setTitle('肌膚諮詢記錄表');
+
+            // 設定欄位寬度
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(50);
 
             // 設定表頭
-            $sheet->setCellValue('A1', '肌膚諮詢記錄表');
-            $sheet->mergeCells('A1:B1');
-            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
+            $objPHPExcel->getActiveSheet()->setCellValue('A1', '肌膚諮詢記錄表');
+            $objPHPExcel->getActiveSheet()->mergeCells('A1:B1');
+            $objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true)->setSize(16);
             
             $row = 3;
             
             // 基本資料
-            $sheet->setCellValue('A' . $row, '會員姓名');
-            $sheet->setCellValue('B' . $row, $submission['member_name'] ?? '');
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '會員姓名');
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $submission['member_name'] ?? '');
             $row++;
-            
-            $sheet->setCellValue('A' . $row, '出生年月日');
-            $sheet->setCellValue('B' . $row, ($submission['birth_year'] ?? '') . '年' . ($submission['birth_month'] ?? '') . '月' . ($submission['birth_day'] ?? '') . '日');
+
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '出生年月日');
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, ($submission['birth_year'] ?? '') . '年' . ($submission['birth_month'] ?? '') . '月' . ($submission['birth_day'] ?? '') . '日');
             $row++;
-            
-            $sheet->setCellValue('A' . $row, '電話');
-            $sheet->setCellValue('B' . $row, $submission['phone'] ?? '');
+
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '電話');
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $submission['phone'] ?? '');
             $row++;
             
             // 職業
@@ -563,8 +567,8 @@ class Eeform1 extends MY_Controller
                         $occupations[] = $occupationMap[$occ['occupation_type']] ?? $occ['occupation_type'];
                     }
                 }
-                $sheet->setCellValue('A' . $row, '職業');
-                $sheet->setCellValue('B' . $row, implode('、', $occupations));
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '職業');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, implode('、', $occupations));
                 $row++;
             }
             
@@ -576,8 +580,8 @@ class Eeform1 extends MY_Controller
                         $lifestyle[] = $item['category'] . ': ' . $item['item_key'];
                     }
                 }
-                $sheet->setCellValue('A' . $row, '生活習慣');
-                $sheet->setCellValue('B' . $row, implode('、', $lifestyle));
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '生活習慣');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, implode('、', $lifestyle));
                 $row++;
             }
             
@@ -602,8 +606,8 @@ class Eeform1 extends MY_Controller
                         $products[] = $productName;
                     }
                 }
-                $sheet->setCellValue('A' . $row, '使用產品');
-                $sheet->setCellValue('B' . $row, implode('、', $products));
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '使用產品');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, implode('、', $products));
                 $row++;
             }
             
@@ -633,8 +637,8 @@ class Eeform1 extends MY_Controller
                         $issues[] = $issueName;
                     }
                 }
-                $sheet->setCellValue('A' . $row, '肌膚困擾');
-                $sheet->setCellValue('B' . $row, implode('、', $issues));
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '肌膚困擾');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, implode('、', $issues));
                 $row++;
             }
             
@@ -651,28 +655,28 @@ class Eeform1 extends MY_Controller
                         $allergies[] = $allergyMap[$allergy['allergy_type']] ?? $allergy['allergy_type'];
                     }
                 }
-                $sheet->setCellValue('A' . $row, '過敏狀況');
-                $sheet->setCellValue('B' . $row, implode('、', $allergies));
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '過敏狀況');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, implode('、', $allergies));
                 $row++;
             }
             
             // 建議內容
             if (isset($submission['suggestions'])) {
-                $sheet->setCellValue('A' . $row, '化妝水建議');
-                $sheet->setCellValue('B' . $row, $submission['suggestions']['toner_suggestion'] ?? '');
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '化妝水建議');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $submission['suggestions']['toner_suggestion'] ?? '');
                 $row++;
                 
-                $sheet->setCellValue('A' . $row, '精華液建議');
-                $sheet->setCellValue('B' . $row, $submission['suggestions']['serum_suggestion'] ?? '');
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '精華液建議');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $submission['suggestions']['serum_suggestion'] ?? '');
                 $row++;
                 
-                $sheet->setCellValue('A' . $row, '建議內容');
-                $sheet->setCellValue('B' . $row, $submission['suggestions']['suggestion_content'] ?? '');
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '建議內容');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $submission['suggestions']['suggestion_content'] ?? '');
                 $row++;
             }
             
             // 肌膚檢測
-            $sheet->setCellValue('A' . $row, '肌膚類型');
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '肌膚類型');
             $skinTypeMap = [
                 'normal' => '中性',
                 'combination' => '混合性',
@@ -680,33 +684,41 @@ class Eeform1 extends MY_Controller
                 'dry' => '乾性',
                 'sensitive' => '敏感性'
             ];
-            $sheet->setCellValue('B' . $row, $skinTypeMap[$submission['skin_type']] ?? $submission['skin_type'] ?? '');
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $skinTypeMap[$submission['skin_type']] ?? $submission['skin_type'] ?? '');
             $row++;
             
-            $sheet->setCellValue('A' . $row, '肌膚年齡');
-            $sheet->setCellValue('B' . $row, ($submission['skin_age'] ?? '') . '歲');
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '肌膚年齡');
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, ($submission['skin_age'] ?? '') . '歲');
             $row++;
             
             // 提交資訊
-            $sheet->setCellValue('A' . $row, '提交日期');
-            $sheet->setCellValue('B' . $row, $submission['submission_date'] ?? '');
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, '提交日期');
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $submission['submission_date'] ?? '');
             $row++;
 
             // 調整欄位寬度
-            $sheet->getColumnDimension('A')->setWidth(20);
-            $sheet->getColumnDimension('B')->setWidth(50);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(50);
 
             // 設定檔案名稱
             $filename = '肌膚諮詢記錄表_' . ($submission['member_name'] ?? 'ID' . $id) . '_' . date('Y-m-d') . '.xlsx';
             
-            // 輸出檔案
+            // 創建Excel2007格式的Writer
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+
+            // 設定Headers
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="' . $filename . '"');
-            header('Cache-Control: max-age=0');
-            
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $writer->save('php://output');
-            exit;
+            header('Content-Disposition: attachment;filename="'.$filename.'"');
+
+            // 輸出檔案
+            $objWriter->save('php://output');
+
+            // 清理記憶體
+            $objPHPExcel->disconnectWorksheets();
+            unset($objWriter, $objPHPExcel);
+            exit();
 
         } catch (Exception $e) {
             $this->_send_error('匯出失敗: ' . $e->getMessage(), 500, [

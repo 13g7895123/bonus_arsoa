@@ -649,8 +649,7 @@
                                 <th style="display: none;">ID</th>
                                 <th>填寫者</th>
                                 <th>會員姓名</th>
-                                <th>性別</th>
-                                <th>年齡</th>
+                                <th>性別/年齡</th>                                <th>年齡</th>
                                 <th>加入日期</th>
                                 <th>預約見面日</th>
                                 <th>聯絡方式</th>

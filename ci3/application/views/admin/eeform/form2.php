@@ -359,6 +359,7 @@
             html += '<div class="detail-row"><span class="detail-label">入會日：</span><span class="detail-value">' + (data.join_date || '-') + '</span></div>';
             html += '<div class="detail-row"><span class="detail-label">性別：</span><span class="detail-value">' + (data.gender || '-') + '</span></div>';
             html += '<div class="detail-row"><span class="detail-label">年齡：</span><span class="detail-value">' + (data.age || '-') + '</span></div>';
+            html += '<div class="detail-row"><span class="detail-label">出生年月日：</span><span class="detail-value">' + (data.birth_year_month || '-') + '</span></div>';
             html += '</div>';
             
             // Products section
