@@ -613,8 +613,8 @@
       html += '</div>';
       
       html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">出生年月 <span style="color: red;">(*必填)</span></label>';
-      html += '<input type="month" name="birth_year_month" class="form-control form-control-custom" value="' + (data.birth_year_month || '') + '"' + disabled + ' />';
+      html += '<label class="label-custom">出生年月日 <span style="color: red;">(*必填)</span></label>';
+      html += '<input type="date" name="birth_year_month" class="form-control form-control-custom" value="' + (data.birth_year_month || '') + '"' + disabled + ' />';
       html += '</div>';
 
       html += '<div class="col-sm-12 mb30">';
@@ -696,12 +696,12 @@
         if (typeof Swal !== 'undefined') {
           Swal.fire({
             title: '欄位未完整',
-            text: '請填寫所有必填欄位（姓名、出生年月）',
+            text: '請填寫所有必填欄位（姓名、出生年月日）',
             icon: 'warning',
             confirmButtonText: '確定'
           });
         } else {
-          alert('請填寫所有必填欄位（姓名、出生年月）');
+          alert('請填寫所有必填欄位（姓名、出生年月日）');
         }
         return;
       }

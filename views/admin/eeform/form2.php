@@ -1055,7 +1055,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="form-label">出生年月</label>
+                                <label class="form-label">出生年月日</label>
                                 <input type="text" class="form-control" value="${data.birth_year_month || ''}" readonly>
                             </div>
                         </div>

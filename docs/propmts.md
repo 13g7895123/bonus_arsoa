@@ -1,0 +1,1 @@
+1. 幫我看一下/eform/eform2這個頁面，他有一個欄位是出生年月，已經改成出生年月日，但是/eform/eform2_list這個頁面與/wadmin/admin_eeform/eeform_manage_eeform02這個頁面未調整到，請一併幫我調整
