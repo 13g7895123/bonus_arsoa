@@ -148,7 +148,7 @@
                             <th>ID</th>
                             <th>會員編號</th>
                             <th>會員姓名</th>
-                            <th>出生年月</th>
+                            <th>出生年月日</th>
                             <th>代填者</th>
                             <th>提交時間</th>
                             <th>操作</th>
@@ -317,7 +317,7 @@
             html += '<h6>基本資料</h6>';
             html += '<div class="detail-row"><span class="detail-label">會員編號：</span><span class="detail-value">' + (data.member_id || '-') + '</span></div>';
             html += '<div class="detail-row"><span class="detail-label">會員姓名：</span><span class="detail-value">' + (data.member_name || '-') + '</span></div>';
-            html += '<div class="detail-row"><span class="detail-label">出生年月：</span><span class="detail-value">' + (data.birth_date || '-') + '</span></div>';
+            html += '<div class="detail-row"><span class="detail-label">出生年月日：</span><span class="detail-value">' + (data.birth_date || '-') + '</span></div>';
             html += '<div class="detail-row"><span class="detail-label">身高：</span><span class="detail-value">' + (data.height || '-') + '</span></div>';
             html += '<div class="detail-row"><span class="detail-label">年齡：</span><span class="detail-value">' + (data.age || '-') + '</span></div>';
             html += '</div>';

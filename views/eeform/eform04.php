@@ -42,8 +42,8 @@
                             </select>
                           </div>
                           <div class="col-sm-3 mb30">
-                            <label class="label-custom">出生年月<span style="color: red;">(*必填)</span></label>
-                            <input type="month" name="birth_year_month" class="form-control form-control-custom" required />
+                            <label class="label-custom">出生年月日<span style="color: red;">(*必填)</span></label>
+                            <input type="date" name="birth_year_month" class="form-control form-control-custom" required />
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">年齡</label>
@@ -158,7 +158,7 @@
                   </div>
                   <div class="col-md-4 mb-3">
                     <div class="d-flex align-items-center">
-                      <span class="text-muted mr-3" style="min-width: 70px;">出生年月：</span>
+                      <span class="text-muted mr-3" style="min-width: 70px;">出生年月日：</span>
                       <span class="text-dark" id="confirm-birth-year-month"></span>
                     </div>
                   </div>
@@ -570,7 +570,7 @@
         }
         $('input[name="join_date"]').val('2023-01-15');
         $('select[name="gender"]').val('女');
-        $('input[name="birth_year_month"]').val('1993-05');
+        $('input[name="birth_year_month"]').val('1993-05-20');
         $('input[name="age"]').val('30');
         $('input[name="skin_health_condition"]').val('輕微乾燥，偶有敏感');
         
@@ -609,7 +609,17 @@
         $('#confirm-member-id').text(memberId);
         $('#confirm-join-date').text(joinDate);
         $('#confirm-gender').text(gender);
-        $('#confirm-birth-year-month').text(birthYearMonth);
+        // 將 YYYY-MM-DD 格式轉換為 YYYY年MM月DD日 格式顯示
+        var birthDateDisplay = '';
+        if (birthYearMonth) {
+          var parts = birthYearMonth.split('-');
+          if (parts.length === 3) {
+            birthDateDisplay = parts[0] + '年' + parts[1] + '月' + parts[2] + '日';
+          } else {
+            birthDateDisplay = birthYearMonth; // 如果格式不正確，直接顯示原值
+          }
+        }
+        $('#confirm-birth-year-month').text(birthDateDisplay || '(未填寫)');
         $('#confirm-age').text(age);
         $('#confirm-meeting-date').text($('input[name="meeting_date"]').val() || '(未填寫)');
         $('#confirm-skin-health').text($('input[name="skin_health_condition"]').val() || '(未填寫)');

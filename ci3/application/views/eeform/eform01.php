@@ -25,11 +25,12 @@
                             </select>
                           </div>
                           <div class="col-sm-5 mb30">
-                            <label class="label-custom">出生年月</label>
-                            <input type="month" name="birth_date" class="form-control form-control-custom" min="1980-01" max="2010-12" required />
+                            <label class="label-custom">出生年月日</label>
+                            <input type="date" name="birth_date" class="form-control form-control-custom" min="1980-01-01" max="2010-12-31" required />
                             <!-- Keep hidden fields for backward compatibility -->
                             <input type="hidden" name="birth_year" />
                             <input type="hidden" name="birth_month" />
+                            <input type="hidden" name="birth_day" />
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">電話</label>
@@ -776,7 +777,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                       <div class="d-flex align-items-center">
-                        <span class="text-muted mr-3" style="min-width: 80px;">出生年月：</span>
+                        <span class="text-muted mr-3" style="min-width: 80px;">出生年月日：</span>
                         <span class="text-dark" id="confirm-birth-date"></span>
                       </div>
                     </div>
@@ -1309,11 +1310,12 @@
           }
         }
         
-        // 出生年月 - 必填
+        // 出生年月日 - 必填
         if (!$('input[name="birth_date"]').val()) {
           var randomYear = 1990 + Math.floor(Math.random() * 20);
           var randomMonth = 1 + Math.floor(Math.random() * 12);
-          $('input[name="birth_date"]').val(randomYear + '-' + (randomMonth < 10 ? '0' : '') + randomMonth);
+          var randomDay = 1 + Math.floor(Math.random() * 28);
+          $('input[name="birth_date"]').val(randomYear + '-' + (randomMonth < 10 ? '0' : '') + randomMonth + '-' + (randomDay < 10 ? '0' : '') + randomDay);
         }
         
         // 電話 - 必填
@@ -1448,20 +1450,22 @@
 
         var missingFields = [];
         if (!memberName || memberName === '請選擇會員') missingFields.push('會員姓名');
-        if (!birthDate) missingFields.push('出生年月');
+        if (!birthDate) missingFields.push('出生年月日');
         if (!phone) missingFields.push('電話');
         
-        // 為往後相容性，從年月中提取年月
-        var birthYear = '', birthMonth = '';
+        // 為往後相容性，從年月日中提取年月日
+        var birthYear = '', birthMonth = '', birthDay = '';
         if (birthDate) {
-          // 處理 YYYY-MM 格式
+          // 處理 YYYY-MM-DD 格式
           var parts = birthDate.split('-');
-          if (parts.length === 2) {
+          if (parts.length === 3) {
             birthYear = parseInt(parts[0]);
             birthMonth = parseInt(parts[1]);
+            birthDay = parseInt(parts[2]);
             // 更新隱藏欄位以保持API相容性
             $('input[name="birth_year"]').val(birthYear);
             $('input[name="birth_month"]').val(birthMonth);
+            $('input[name="birth_day"]').val(birthDay);
           }
         }
 
@@ -1472,12 +1476,12 @@
 
         // 填入確認視窗的內容 - jQuery版本
         $('#confirm-member-name').text(memberName);
-        // 顯示 YYYY-MM 格式為 "YYYY年MM月"
+        // 顯示 YYYY-MM-DD 格式為 "YYYY年MM月DD日"
         var birthDateDisplay = '';
         if (birthDate) {
           var parts = birthDate.split('-');
-          if (parts.length === 2) {
-            birthDateDisplay = parts[0] + '年' + parts[1] + '月';
+          if (parts.length === 3) {
+            birthDateDisplay = parts[0] + '年' + parts[1] + '月' + parts[2] + '日';
           }
         }
         $('#confirm-birth-date').text(birthDateDisplay || '(未填寫)');
@@ -1640,6 +1644,7 @@
           birth_date: $('input[name="birth_date"]').val(),
           birth_year: $('input[name="birth_year"]').val(), // 從日期提取的年份
           birth_month: $('input[name="birth_month"]').val(), // 從日期提取的月份
+          birth_day: $('input[name="birth_day"]').val(), // 從日期提取的日期
           phone: $('input[name="phone"]').val(),
           
           // 職業選擇

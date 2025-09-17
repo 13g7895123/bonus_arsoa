@@ -529,6 +529,7 @@
         member_name: apiData.member_name || '',
         birth_year: apiData.birth_year || '',
         birth_month: apiData.birth_month || '',
+        birth_day: apiData.birth_day || '',
         phone: apiData.phone || '',
         skin_type: apiData.skin_type || '',
         skin_age: apiData.skin_age || '',
@@ -802,17 +803,18 @@
       html += '</select>';
       html += '</div>';
       
-      // 出生年月 - 使用month input (與eform1.php一致)
+      // 出生年月日 - 使用date input (與eform1.php一致)
       var birthDate = '';
-      if (data.birth_year && data.birth_month) {
-        birthDate = data.birth_year + '-' + String(data.birth_month).padStart(2, '0');
+      if (data.birth_year && data.birth_month && data.birth_day) {
+        birthDate = data.birth_year + '-' + String(data.birth_month).padStart(2, '0') + '-' + String(data.birth_day).padStart(2, '0');
       }
       html += '<div class="col-sm-5 mb30">';
-      html += '<label class="label-custom">出生年月<span style="color: red;">(*必填)</span></label>';
-      html += '<input type="month" name="birth_date" class="form-control form-control-custom" min="1980-01" max="2010-12" value="' + birthDate + '"' + disabled + ' required />';
+      html += '<label class="label-custom">出生年月日<span style="color: red;">(*必填)</span></label>';
+      html += '<input type="date" name="birth_date" class="form-control form-control-custom" min="1980-01-01" max="2010-12-31" value="' + birthDate + '"' + disabled + ' required />';
       html += '<!-- Keep hidden fields for backward compatibility -->';
       html += '<input type="hidden" name="birth_year" value="' + (data.birth_year || '') + '" />';
       html += '<input type="hidden" name="birth_month" value="' + (data.birth_month || '') + '" />';
+      html += '<input type="hidden" name="birth_day" value="' + (data.birth_day || '') + '" />';
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
@@ -1165,17 +1167,19 @@
       
       // 如果是編輯模式，添加出生年月同步功能和新增日期按鈕功能
       if (isEditable) {
-        // 出生年月同步功能
+        // 出生年月日同步功能
         $('#exampleModal input[name="birth_date"]').on('change', function() {
           var birthDate = $(this).val();
           if (birthDate) {
             var parts = birthDate.split('-');
             var birthYear = parts[0];
             var birthMonth = parseInt(parts[1], 10);
-            
+            var birthDay = parseInt(parts[2], 10);
+
             // 同步更新隱藏欄位
             $('#exampleModal input[name="birth_year"]').val(birthYear);
             $('#exampleModal input[name="birth_month"]').val(birthMonth);
+            $('#exampleModal input[name="birth_day"]').val(birthDay);
           }
         });
         
@@ -1321,19 +1325,22 @@
 
     // 更新表單資料
     function updateFormData() {
-      // 處理出生年月的轉換 (從month input轉回年月)
+      // 處理出生年月日的轉換 (從date input轉回年月日)
       var birthDate = $('#exampleModal input[name="birth_date"]').val();
       var birthYear = '';
       var birthMonth = '';
-      
+      var birthDay = '';
+
       if (birthDate) {
         var parts = birthDate.split('-');
         birthYear = parts[0];
         birthMonth = parseInt(parts[1], 10);
-        
+        birthDay = parseInt(parts[2], 10);
+
         // 同步更新隱藏欄位
         $('#exampleModal input[name="birth_year"]').val(birthYear);
         $('#exampleModal input[name="birth_month"]').val(birthMonth);
+        $('#exampleModal input[name="birth_day"]').val(birthDay);
       }
       
       // 收集表單數據 - 使用proper field names
@@ -1343,6 +1350,7 @@
         member_name: $('#exampleModal input[name="member_name"]').val(),
         birth_year: birthYear,
         birth_month: birthMonth,
+        birth_day: birthDay,
         phone: $('#exampleModal input[name="phone"]').val(),
 
         // 職業選擇

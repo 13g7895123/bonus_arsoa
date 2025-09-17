@@ -8,7 +8,7 @@ SET @sql = (
          WHERE TABLE_SCHEMA = DATABASE()
          AND TABLE_NAME = 'eeform2_submissions'
          AND COLUMN_NAME = 'birth_year_month') = 0,
-        'ALTER TABLE eeform2_submissions ADD COLUMN birth_year_month VARCHAR(7) NOT NULL COMMENT ''出生年月(YYYY-MM)'' AFTER age',
+        'ALTER TABLE eeform2_submissions ADD COLUMN birth_year_month VARCHAR(10) NOT NULL COMMENT ''出生年月日(YYYY-MM-DD)'' AFTER age',
         'SELECT ''Column birth_year_month already exists'' AS message'
     )
 );

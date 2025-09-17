@@ -125,7 +125,14 @@ class Eeform4Model extends CI_Model {
     public function create_submission($data) {
         try {
             $this->db->trans_start();
-            
+
+            // 驗證出生年月日格式
+            if (isset($data['birth_year_month']) && !empty($data['birth_year_month'])) {
+                if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['birth_year_month']) || !strtotime($data['birth_year_month'])) {
+                    throw new Exception('出生年月日格式不正確，請使用 YYYY-MM-DD 格式');
+                }
+            }
+
             // 插入主表數據
             $this->db->insert($this->table_submissions, $data);
             $submission_id = $this->db->insert_id();

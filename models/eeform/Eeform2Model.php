@@ -34,6 +34,13 @@ class Eeform2Model extends MY_Model {
                 'meeting_date', 'submission_date', 'form_filler_id', 'form_filler_name'
             ];
 
+            // 驗證出生年月日格式
+            if (isset($data['birth_year_month']) && !empty($data['birth_year_month'])) {
+                if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['birth_year_month']) || !strtotime($data['birth_year_month'])) {
+                    throw new Exception('出生年月日格式不正確，請使用 YYYY-MM-DD 格式');
+                }
+            }
+
             $submission_data = [];
             foreach ($allowed_fields as $field) {
                 if (isset($data[$field])) {

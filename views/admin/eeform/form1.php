@@ -451,7 +451,7 @@
                             <th style="display: none;">ID</th>
                             <th>填寫者</th>
                             <th>會員姓名</th>
-                            <th>出生年月</th>
+                            <th>出生年月日</th>
                             <th>電話</th>
                             <th>肌膚類型</th>
                             <th>肌膚年齡</th>
@@ -640,7 +640,7 @@
                     <td style="display: none;">${item.id}</td>
                     <td>${escapeHtml(item.form_filler_name || '')}</td>
                     <td>${escapeHtml(item.member_name || '')}</td>
-                    <td>${item.birth_year || ''}年${item.birth_month || ''}月</td>
+                    <td>${item.birth_year || ''}年${item.birth_month || ''}月${item.birth_day || ''}日</td>
                     <td>${escapeHtml(item.phone || '')}</td>
                     <td>${displaySkinType}</td>
                     <td>${item.skin_age || ''}歲</td>
@@ -780,8 +780,8 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">出生年月</label>
-                                <div>${data.birth_year || ''}年${data.birth_month || ''}月</div>
+                                <label class="form-label">出生年月日</label>
+                                <div>${data.birth_year || ''}年${data.birth_month || ''}月${data.birth_day || ''}日</div>
                             </div>
                         </div>
                         <div class="col-md-4">

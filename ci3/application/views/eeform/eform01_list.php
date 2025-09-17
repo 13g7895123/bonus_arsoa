@@ -552,6 +552,7 @@
         member_name: apiData.member_name || '',
         birth_year: apiData.birth_year || '',
         birth_month: apiData.birth_month || '',
+        birth_day: apiData.birth_day || '',
         phone: apiData.phone || '',
         skin_type: apiData.skin_type || '',
         skin_age: apiData.skin_age || '',
@@ -817,26 +818,18 @@
       html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填會員姓名" value="' + (data.member_name || '') + '"' + disabled + ' />';
       html += '</div>';
 
-      html += '<div class="col-sm-3 mb30">';
-      html += '<label class="label-custom">出生西元年</label>';
-      html += '<select name="birth_year" class="form-control form-control-custom"' + disabled + '>';
-      html += '<option value="">請選擇</option>';
-      for (var year = 2010; year >= 1930; year--) {
-        var selected = (data.birth_year == year) ? ' selected' : '';
-        html += '<option value="' + year + '"' + selected + '>' + year + '</option>';
+      // 出生年月日 - 使用date input (與eform1.php一致)
+      var birthDate = '';
+      if (data.birth_year && data.birth_month && data.birth_day) {
+        birthDate = data.birth_year + '-' + String(data.birth_month).padStart(2, '0') + '-' + String(data.birth_day).padStart(2, '0');
       }
-      html += '</select>';
-      html += '</div>';
-
-      html += '<div class="col-sm-2 mb30">';
-      html += '<label class="label-custom">出生西元月</label>';
-      html += '<select name="birth_month" class="form-control form-control-custom"' + disabled + '>';
-      html += '<option value="">請選擇</option>';
-      for (var month = 1; month <= 12; month++) {
-        var selected = (data.birth_month == month) ? ' selected' : '';
-        html += '<option value="' + month + '"' + selected + '>' + month + '月</option>';
-      }
-      html += '</select>';
+      html += '<div class="col-sm-5 mb30">';
+      html += '<label class="label-custom">出生年月日<span style="color: red;">(*必填)</span></label>';
+      html += '<input type="date" name="birth_date" class="form-control form-control-custom" min="1980-01-01" max="2010-12-31" value="' + birthDate + '"' + disabled + ' required />';
+      html += '<!-- Keep hidden fields for backward compatibility -->';
+      html += '<input type="hidden" name="birth_year" value="' + (data.birth_year || '') + '" />';
+      html += '<input type="hidden" name="birth_month" value="' + (data.birth_month || '') + '" />';
+      html += '<input type="hidden" name="birth_day" value="' + (data.birth_day || '') + '" />';
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
@@ -1335,8 +1328,9 @@
       var formData = {
         // 基本資料
         member_name: $('#exampleModal input[name="member_name"]').val(),
-        birth_year: $('#exampleModal select[name="birth_year"]').val(),
-        birth_month: $('#exampleModal select[name="birth_month"]').val(),
+        birth_year: $('#exampleModal input[name="birth_year"]').val(),
+        birth_month: $('#exampleModal input[name="birth_month"]').val(),
+        birth_day: $('#exampleModal input[name="birth_day"]').val(),
         phone: $('#exampleModal input[name="phone"]').val(),
 
         // 職業選擇

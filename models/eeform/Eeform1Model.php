@@ -98,39 +98,48 @@ class Eeform1Model extends MY_Model
             }
         }
         
-        // 驗證出生年月 - 支援新的 birth_date (YYYY-MM) 或舊的 birth_year/birth_month
+        // 驗證出生年月日 - 支援新的 birth_date (YYYY-MM-DD) 或舊的 birth_year/birth_month/birth_day
         if (!empty($data['birth_date'])) {
-            // 使用新的年月欄位 (YYYY-MM 格式)
+            // 使用新的年月日欄位 (YYYY-MM-DD 格式)
             $birth_date = $data['birth_date'];
-            // 驗證 YYYY-MM 格式
-            if (!preg_match('/^\d{4}-\d{2}$/', $birth_date) || !strtotime($birth_date . '-01')) {
-                $errors[] = '出生年月格式不正確，請使用 YYYY-MM 格式';
+            // 驗證 YYYY-MM-DD 格式
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $birth_date) || !strtotime($birth_date)) {
+                $errors[] = '出生年月日格式不正確，請使用 YYYY-MM-DD 格式';
             } else {
                 $parts = explode('-', $birth_date);
                 $year = intval($parts[0]);
                 $month = intval($parts[1]);
+                $day = intval($parts[2]);
                 if ($year < 1950 || $year > date('Y')) {
                     $errors[] = '出生年份不在有效範圍內';
                 }
                 if ($month < 1 || $month > 12) {
                     $errors[] = '出生月份不在有效範圍內';
                 }
-                // 為往後相容性，將年月資料同步到別字欄位
+                if ($day < 1 || $day > 31) {
+                    $errors[] = '出生日期不在有效範圍內';
+                }
+                // 為往後相容性，將年月日資料同步到別字欄位
                 $data['birth_year'] = $year;
                 $data['birth_month'] = $month;
+                $data['birth_day'] = $day;
             }
         } else {
-            // 使用舊的年月欄位
-            if (empty($data['birth_year']) || empty($data['birth_month'])) {
-                $errors[] = '出生年月是必填欄位';
+            // 使用舊的年月日欄位
+            if (empty($data['birth_year']) || empty($data['birth_month']) || empty($data['birth_day'])) {
+                $errors[] = '出生年月日是必填欄位';
             } else {
                 $year = intval($data['birth_year']);
                 $month = intval($data['birth_month']);
+                $day = intval($data['birth_day']);
                 if ($year < 1950 || $year > date('Y')) {
                     $errors[] = '出生年份不在有效範圍內';
                 }
                 if ($month < 1 || $month > 12) {
                     $errors[] = '出生月份不在有效範圍內';
+                }
+                if ($day < 1 || $day > 31) {
+                    $errors[] = '出生日期不在有效範圍內';
                 }
             }
         }
@@ -174,6 +183,7 @@ class Eeform1Model extends MY_Model
                 'form_filler_name' => isset($data['form_filler_name']) ? $data['form_filler_name'] : null, // 代填問卷者姓名
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
+                'birth_day' => intval($data['birth_day']),
                 'phone' => $data['phone'],
                 'skin_type' => isset($data['skin_type']) ? $data['skin_type'] : null,
                 'skin_age' => isset($data['skin_age']) ? intval($data['skin_age']) : null,
@@ -595,6 +605,7 @@ class Eeform1Model extends MY_Model
                 'member_name' => $data['member_name'],
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
+                'birth_day' => intval($data['birth_day']),
                 'phone' => $data['phone'],
                 'skin_type' => isset($data['skin_type']) ? $data['skin_type'] : null,
                 'skin_age' => isset($data['skin_age']) ? intval($data['skin_age']) : null,

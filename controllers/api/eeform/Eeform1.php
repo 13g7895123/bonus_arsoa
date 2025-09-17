@@ -541,8 +541,8 @@ class Eeform1 extends MY_Controller
             $sheet->setCellValue('B' . $row, $submission['member_name'] ?? '');
             $row++;
             
-            $sheet->setCellValue('A' . $row, '出生年月');
-            $sheet->setCellValue('B' . $row, ($submission['birth_year'] ?? '') . '年' . ($submission['birth_month'] ?? '') . '月');
+            $sheet->setCellValue('A' . $row, '出生年月日');
+            $sheet->setCellValue('B' . $row, ($submission['birth_year'] ?? '') . '年' . ($submission['birth_month'] ?? '') . '月' . ($submission['birth_day'] ?? '') . '日');
             $row++;
             
             $sheet->setCellValue('A' . $row, '電話');
