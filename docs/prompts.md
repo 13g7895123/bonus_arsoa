@@ -1,0 +1,1 @@
+1. 幫我看到/eform/eform1_list與/eform/eform1，其實/eform/eform1_list的檢視與編輯內容都與/eform/eform1一樣，幫我view過兩邊檔案的code，評估一下是否可以優化成共用的邏輯，檢視的時候只要帶入資料並改成readonly的狀態，編輯的時候只要帶入資料即可，幫我用zh-tw回覆
