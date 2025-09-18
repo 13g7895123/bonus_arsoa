@@ -155,14 +155,14 @@ class Eeform2Model extends MY_Model {
 
     /**
      * 取得會員的所有提交記錄
-     * @param string $member_id 會員編號
+     * @param string $member_name 會員姓名
      * @return array
      */
-    public function get_submissions_by_member($member_id) {
+    public function get_submissions_by_member($member_name) {
         try {
             $this->db->select('*');
             $this->db->from($this->table_submissions);
-            $this->db->where('member_id', $member_id);
+            $this->db->where('form_filler_id', $member_name);
             $this->db->order_by('created_at', 'DESC');
             
             $query = $this->db->get();
@@ -334,32 +334,32 @@ class Eeform2Model extends MY_Model {
 
     /**
      * 取得統計資料
-     * @param string $member_id 會員編號
+     * @param string $member_name 會員姓名
      * @return array
      */
-    public function get_stats_by_member($member_id) {
+    public function get_stats_by_member($member_name) {
         try {
             // 基本統計
             $this->db->select('COUNT(*) as total_submissions');
             $this->db->from($this->table_submissions);
-            $this->db->where('member_id', $member_id);
+            $this->db->where('member_name', $member_name);
             $query = $this->db->get();
             $stats = $query->row_array();
-
+            
             // 最近提交日期
             $this->db->select('MAX(submission_date) as last_submission_date');
             $this->db->from($this->table_submissions);
-            $this->db->where('member_id', $member_id);
+            $this->db->where('member_name', $member_name);
             $query = $this->db->get();
             $last_submission = $query->row_array();
-
+            
             $stats['last_submission_date'] = $last_submission['last_submission_date'];
-
+            
             // 產品訂購統計
             $this->db->select('SUM(p.quantity) as total_products_ordered');
             $this->db->from($this->table_products . ' p');
             $this->db->join($this->table_submissions . ' s', 's.id = p.submission_id');
-            $this->db->where('s.member_id', $member_id);
+            $this->db->where('s.member_name', $member_name);
             $query = $this->db->get();
             $product_stats = $query->row_array();
             
