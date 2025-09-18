@@ -329,8 +329,17 @@
         var displaySkinType = skinTypeMap[submission.skin_type] || submission.skin_type || '-';
 
         tableRows += '<tr style="background-color: ' + bgColor + ';">';
-        // 會員資訊 - 包含姓名和電話
-        tableRows += '<td nowrap="nowrap" class="text-center">' + (submission.member_name || '-') + '</td>';
+        // 會員資訊 - 包含會員編號和姓名
+        var memberInfo = '';
+        if (submission.member_id) {
+          memberInfo += submission.member_id;
+        }
+        if (submission.member_name) {
+          if (memberInfo) memberInfo += '<br>';
+          memberInfo += submission.member_name;
+        }
+        if (!memberInfo) memberInfo = '-';
+        tableRows += '<td nowrap="nowrap" class="text-center">' + memberInfo + '</td>';
         // 最後填寫日期
         tableRows += '<td>' + displayDate + '</td>';
         // 已填寫數量 (暫時顯示為 1)
@@ -517,7 +526,9 @@
       };
 
       console.log('Raw eform2 fields from API:', {
+        member_id: apiData.member_id,
         member_name: apiData.member_name,
+        birth_year_month: apiData.birth_year_month,
         gender: apiData.gender,
         age: apiData.age,
         skin_health_condition: apiData.skin_health_condition
@@ -709,8 +720,9 @@
       // 收集eform2表單數據
       var formData = {
         // 基本資料
+        member_id: $('#exampleModal input[name="member_id"]').val(),
         member_name: memberName,
-        join_date: joinDate,
+        join_date: $('#exampleModal input[name="join_date"]').val(),
         gender: $('#exampleModal select[name="gender"]').val(),
         age: $('#exampleModal input[name="age"]').val(),
         birth_year_month: birthYearMonth,
