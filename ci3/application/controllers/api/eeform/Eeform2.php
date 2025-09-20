@@ -107,6 +107,7 @@ class Eeform2 extends CI_Controller
 
             // 準備資料庫資料
             $submission_data = [
+                'member_id' => isset($input_data['member_id']) ? $input_data['member_id'] : null,
                 'member_name' => trim($input_data['member_name']),
                 'join_date' => $input_data['join_date'],
                 'gender' => $input_data['gender'],

@@ -596,12 +596,12 @@
       // 基本資料
       html += '<div class="col-sm-3 mb30">';
       html += '<label class="label-custom">會員編號</label>';
-      html += '<input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="' + (data.member_id || '') + '"' + disabled + ' />';
+      html += '<input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="' + (data.member_id || '') + '" disabled readonly />';
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';
       html += '<label class="label-custom">姓名 <span style="color: red;">(*必填)</span></label>';
-      html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="' + (data.member_name || '') + '"' + disabled + ' />';
+      html += '<input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="' + (data.member_name || '') + '" disabled readonly />';
       html += '</div>';
 
       html += '<div class="col-sm-3 mb30">';

@@ -29,9 +29,10 @@ class Eeform2Model extends MY_Model {
 
             // 確保必要欄位存在
             $allowed_fields = [
-                'member_name', 'join_date', 'gender', 'age', 'birth_year_month',
+                'member_id', 'member_name', 'join_date', 'gender', 'age', 'birth_year_month',
                 'skin_health_condition', 'line_contact', 'tel_contact',
-                'meeting_date', 'submission_date', 'form_filler_id', 'form_filler_name'
+                'meeting_date', 'submission_date', 'created_at', 'status',
+                'form_filler_id', 'form_filler_name'
             ];
 
             // 驗證出生年月日格式

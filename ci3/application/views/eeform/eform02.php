@@ -18,7 +18,7 @@
                           </div>
                           <div class="col-sm-3 mb30">
                             <label class="label-custom">姓名</label>
-                            <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="<?php echo isset($userdata['c_name']) ? htmlspecialchars($userdata['c_name']) : ''; ?>" required />
+                            <input type="text" name="member_name" class="form-control form-control-custom" placeholder="請填姓名" value="" required />
                             <select name="member_name_select" class="form-control form-control-custom" style="display: none;" required>
                               <option value="">請選擇會員</option>
                             </select>
@@ -907,6 +907,7 @@
         var selectedOption = $nameSelect.find('option:selected');
         if (selectedOption.val()) {
           $('input[name="member_id"]').val(selectedOption.val());
+          $('input[name="member_name"]').val(selectedOption.data('name'));
           currentUserData.member_id = selectedOption.val();
           currentUserData.member_name = selectedOption.data('name');
           console.log('[Point 77 - eform2] 根據預設選擇更新會員資料:', {
@@ -935,6 +936,7 @@
           if (newMemberId) {
             // 更新會員編號和姓名
             $('input[name="member_id"]').val(newMemberId);
+            $('input[name="member_name"]').val(newMemberName);
             currentUserData.member_id = newMemberId;
             currentUserData.member_name = newMemberName;
             
