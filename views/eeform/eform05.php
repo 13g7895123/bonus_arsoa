@@ -705,10 +705,10 @@
         var gender = $('select[name="gender"]').val();
         var age = $('select[name="age"]').val();
 
-        if (!name || !phone || !gender || !age) {
+        if (!name || !phone) {
           Swal.fire({
             title: '欄位未完整',
-            text: '請填寫姓名、手機號碼、性別、年齡等必填欄位',
+            text: '請填寫姓名、手機號碼等必填欄位',
             icon: 'warning',
             confirmButtonText: '確定'
           });

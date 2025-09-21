@@ -831,7 +831,7 @@ class Eeform2 extends MY_Controller
                 '會員姓名' => $submission['member_name'] ?? '',
                 '性別' => $submission['gender'] ?? '',
                 '年齡' => isset($submission['age']) ? $submission['age'] . ' 歲' : '',
-                '出生年月' => $submission['birth_year_month'] ?? '',
+                '出生年月日' => $submission['birth_year_month'] ?? '',
                 '入會日' => $submission['join_date'] ?? '',
                 '見面日' => $submission['meeting_date'] ?? ''
             ];

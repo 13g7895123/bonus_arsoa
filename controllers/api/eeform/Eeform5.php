@@ -71,7 +71,7 @@ class Eeform5 extends CI_Controller {
             }
 
             // 驗證必要欄位
-            $required_fields = ['phone', 'gender', 'age'];
+            $required_fields = ['phone'];
             foreach ($required_fields as $field) {
                 if (empty($input_data[$field])) {
                     throw new Exception("必填欄位 {$field} 不能為空");

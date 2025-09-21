@@ -96,7 +96,7 @@ function oForm_onsubmit(oform){
     ?>
               <div class="form-group">
 		          	<label for="inputPassword" class="col-sm-2 control-label">角色：</label>
-		          	<div class="col-sm-8"><div class="col-md-6 grid_box1">
+		          	<div class="col-sm-8"><div class="col-md-12 grid_box1">
 		          		<?php
 		          		 $params = array(
 			  	           'Name'   => 'status', 
