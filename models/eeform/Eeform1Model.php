@@ -958,6 +958,82 @@ class Eeform1Model extends MY_Model
     }
 
     /**
+     * 根據會員姓名和電話取得所有匹配的表單記錄 (用於分組匯出)
+     * @param string|null $member_name 會員姓名
+     * @param string|null $phone 電話號碼
+     * @return array 匹配的表單記錄陣列
+     */
+    public function get_submissions_by_member_info($member_name = null, $phone = null) {
+        try {
+            // 驗證資料庫連接
+            if (!$this->db) {
+                throw new Exception('Database connection not available');
+            }
+
+            // 檢查表是否存在
+            if (!$this->db->table_exists('eeform1_submissions')) {
+                log_message('error', 'Table eeform1_submissions does not exist');
+                return [];
+            }
+
+            // 確保至少有一個查詢條件
+            if (empty($member_name) && empty($phone)) {
+                log_message('error', 'No search criteria provided for grouped export');
+                return [];
+            }
+
+            // 建立查詢條件
+            $this->db->select('s.id');
+            $this->db->from('eeform1_submissions s');
+
+            // 根據提供的參數添加 WHERE 條件
+            if (!empty($member_name) && !empty($phone)) {
+                // 如果兩個參數都有，則必須同時匹配
+                $this->db->where('s.member_name', $member_name);
+                $this->db->where('s.phone', $phone);
+            } elseif (!empty($member_name)) {
+                // 只有姓名
+                $this->db->where('s.member_name', $member_name);
+            } elseif (!empty($phone)) {
+                // 只有電話
+                $this->db->where('s.phone', $phone);
+            }
+
+            // 按提交日期排序
+            $this->db->order_by('s.submission_date', 'DESC');
+
+            $query = $this->db->get();
+            if (!$query) {
+                $db_error = $this->db->error();
+                throw new Exception('Query failed: ' . $db_error['message']);
+            }
+
+            $submission_ids = $query->result_array();
+            if (empty($submission_ids)) {
+                log_message('info', 'No submissions found for member: ' . $member_name . ', phone: ' . $phone);
+                return [];
+            }
+
+            // 取得每個表單的詳細資料
+            $detailed_submissions = [];
+            foreach ($submission_ids as $id_row) {
+                $submission_detail = $this->get_submission_detail($id_row['id']);
+                if ($submission_detail) {
+                    $detailed_submissions[] = $submission_detail;
+                }
+            }
+
+            log_message('info', 'Found ' . count($detailed_submissions) . ' submissions for member: ' . $member_name . ', phone: ' . $phone);
+            return $detailed_submissions;
+
+        } catch (Exception $e) {
+            log_message('error', 'Error in get_submissions_by_member_info: ' . $e->getMessage());
+            log_message('error', 'Trace: ' . $e->getTraceAsString());
+            return [];
+        }
+    }
+
+    /**
      * 刪除所有測試資料
      * @return bool
      */

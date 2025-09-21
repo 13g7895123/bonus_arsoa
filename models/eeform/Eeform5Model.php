@@ -262,14 +262,53 @@ class Eeform5Model extends CI_Model {
             $this->db->from('eeform5_submissions');
             $this->db->where('member_id', $member_id);
             $this->db->order_by('created_at', 'DESC');
-            
+
             $query = $this->db->get();
             $submissions = $query->result_array();
-            
+
             return $submissions;
-            
+
         } catch (Exception $e) {
             throw new Exception('取得提交記錄失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 根據會員姓名和編號取得提交記錄 (用於分組匯出)
+     * @param string $member_name 會員姓名 (可選)
+     * @param string $member_id 會員編號 (可選)
+     * @return array
+     */
+    public function get_submissions_by_member_info($member_name = null, $member_id = null) {
+        try {
+            if (!$member_name && !$member_id) {
+                throw new Exception('必須提供會員姓名或會員編號');
+            }
+
+            $this->db->select('*');
+            $this->db->from('eeform5_submissions');
+
+            // 建立 WHERE 條件
+            if ($member_name && $member_id) {
+                $this->db->group_start();
+                $this->db->where('member_name', $member_name);
+                $this->db->where('member_id', $member_id);
+                $this->db->group_end();
+            } else if ($member_name) {
+                $this->db->where('member_name', $member_name);
+            } else if ($member_id) {
+                $this->db->where('member_id', $member_id);
+            }
+
+            $this->db->order_by('created_at', 'DESC');
+
+            $query = $this->db->get();
+            $submissions = $query->result_array();
+
+            return $submissions;
+
+        } catch (Exception $e) {
+            throw new Exception('取得會員提交記錄失敗: ' . $e->getMessage());
         }
     }
 

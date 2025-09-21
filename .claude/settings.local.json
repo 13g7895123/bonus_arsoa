@@ -78,7 +78,8 @@
       "Bash(find:*)",
       "Bash(cp:*)",
       "Bash(composer:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Read(//d/Bonus/**)"
     ],
     "deny": [],
     "ask": []

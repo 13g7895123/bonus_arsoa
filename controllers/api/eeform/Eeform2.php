@@ -617,10 +617,10 @@ class Eeform2 extends MY_Controller
                     '入會日' => $item['join_date'] ?? '',
                     '見面日' => $item['meeting_date'] ?? ''
                 ];
-                
+
                 foreach ($basic_fields as $field => $value) {
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($field));
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($value));
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
                     $row++;
                 }
@@ -638,7 +638,7 @@ class Eeform2 extends MY_Controller
                 $row++;
                 
                 $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '肌膚健康狀況');
-                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $item['skin_health_condition'] ?? '');
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($item['skin_health_condition'] ?? ''));
                 $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
                 $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
                 $row++;
@@ -658,8 +658,8 @@ class Eeform2 extends MY_Controller
                 // 產品資料
                 if (isset($item['products']) && is_array($item['products']) && !empty($item['products'])) {
                     foreach ($item['products'] as $product) {
-                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $product['product_name']);
-                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $product['quantity'] . ' 個');
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($product['product_name']));
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($product['quantity'] . ' 個'));
                         $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
                         $row++;
                     }
@@ -686,10 +686,10 @@ class Eeform2 extends MY_Controller
                     'LINE聯絡' => $item['line_contact'] ?? '',
                     '電話聯絡' => $item['tel_contact'] ?? ''
                 ];
-                
+
                 foreach ($contact_fields as $field => $value) {
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($field));
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($value));
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
                     $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
                     $row++;
@@ -712,14 +712,14 @@ class Eeform2 extends MY_Controller
                     '建立時間' => $item['created_at'] ?? '',
                     '狀態' => $status_map[$item['status']] ?? $item['status']
                 ];
-                
+
                 if (!empty($item['admin_note'])) {
                     $form_fields['管理員備註'] = $item['admin_note'];
                 }
-                
+
                 foreach ($form_fields as $field => $value) {
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($field));
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($value));
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
                     $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
                     $row++;
@@ -835,10 +835,10 @@ class Eeform2 extends MY_Controller
                 '入會日' => $submission['join_date'] ?? '',
                 '見面日' => $submission['meeting_date'] ?? ''
             ];
-            
+
             foreach ($basic_fields as $field => $value) {
-                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
-                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($field));
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($value));
                 $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
                 $row++;
             }
@@ -856,7 +856,7 @@ class Eeform2 extends MY_Controller
             $row++;
             
             $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '肌膚健康狀況');
-            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $submission['skin_health_condition'] ?? '');
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($submission['skin_health_condition'] ?? ''));
             $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
             $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
             $row++;
@@ -876,8 +876,8 @@ class Eeform2 extends MY_Controller
             // 產品資料
             if (isset($submission['products']) && is_array($submission['products']) && !empty($submission['products'])) {
                 foreach ($submission['products'] as $product) {
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $product['product_name']);
-                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $product['quantity'] . ' 個');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($product['product_name']));
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($product['quantity'] . ' 個'));
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
                     $row++;
                 }
@@ -904,10 +904,10 @@ class Eeform2 extends MY_Controller
                 'LINE聯絡' => $submission['line_contact'] ?? '',
                 '電話聯絡' => $submission['tel_contact'] ?? ''
             ];
-            
+
             foreach ($contact_fields as $field => $value) {
-                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
-                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($field));
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($value));
                 $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
                 $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
                 $row++;
@@ -930,14 +930,14 @@ class Eeform2 extends MY_Controller
                 '建立時間' => $submission['created_at'] ?? '',
                 '狀態' => $status_map[$submission['status']] ?? $submission['status']
             ];
-            
+
             if (!empty($submission['admin_note'])) {
                 $form_fields['管理員備註'] = $submission['admin_note'];
             }
-            
+
             foreach ($form_fields as $field => $value) {
-                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $field);
-                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $value);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($field));
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($value));
                 $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
                 $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
                 $row++;
@@ -974,9 +974,318 @@ class Eeform2 extends MY_Controller
         }
     }
 
+    /**
+     * 依據會員資料匯出分組表單 (Excel格式)
+     * GET /api/eeform2/export_grouped?member_name=xxx&member_id=xxx
+     */
+    public function export_grouped() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            $member_name = $this->input->get('member_name');
+            $member_id = $this->input->get('member_id');
+
+            if (!$member_name && !$member_id) {
+                $this->_send_error('必須提供會員姓名或會員編號', 400);
+                return;
+            }
+
+            $submissions = $this->eform2_model->get_submissions_by_member_info($member_name, $member_id);
+
+            if (empty($submissions)) {
+                $this->_send_error('找不到符合條件的表單記錄', 404);
+                return;
+            }
+
+            // 使用 PHPExcel 創建真正的 Excel 檔案 (分組表單格式)
+            $this->load->library("PHPExcel");
+            $objPHPExcel = new PHPExcel();
+
+            // 設定工作表屬性
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objPHPExcel->getActiveSheet()->setTitle('會員表單匯出');
+
+            // 設定欄位寬度 (A欄:欄位名稱, B欄:值)
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(60);
+
+            $row = 1;
+            $status_map = [
+                'submitted' => '已提交',
+                'processing' => '處理中',
+                'completed' => '已完成',
+                'cancelled' => '已取消'
+            ];
+
+            // 總標題
+            $title = '會員表單匯出';
+            if ($member_name && $member_id) {
+                $title .= " - {$member_name} ({$member_id})";
+            } else if ($member_name) {
+                $title .= " - {$member_name}";
+            } else if ($member_id) {
+                $title .= " - {$member_id}";
+            }
+
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $title);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('004472C4');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true)->setColor(new PHPExcel_Style_Color('FFFFFFFF'));
+            $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+            $row++;
+
+            // 空行
+            $row++;
+
+            // 匯出統計
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '匯出資訊');
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, '共找到 ' . count($submissions) . ' 筆表單記錄');
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+            $row++;
+
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '匯出時間');
+            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, date('Y-m-d H:i:s'));
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+            $row++;
+
+            // 空行
+            $row++;
+
+            foreach ($submissions as $index => $item) {
+                // 每一筆資料分區顯示
+                if ($index > 0) {
+                    // 在每筆資料之間加上分隔線
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '==========================================');
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                        ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()->setARGB('00E0E0E0');
+                    $row++;
+                }
+
+                // 表單標題
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '會員服務追蹤管理表(肌膚) - 第'.($index+1).'筆');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('004472C4');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true)->setColor(new PHPExcel_Style_Color('FFFFFFFF'));
+                $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+                $row++;
+
+                // 空行
+                $row++;
+
+                // 基本資料標題
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '基本資料');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('00D9EDF7');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+                $row++;
+
+                // 基本資料欄位
+                $basic_fields = [
+                    'ID' => $item['id'],
+                    '會員姓名' => $item['member_name'] ?? '',
+                    '會員編號' => $item['member_id'] ?? '',
+                    '性別' => $item['gender'] ?? '',
+                    '年齡' => isset($item['age']) ? $item['age'] . ' 歲' : '',
+                    '出生年月' => $item['birth_year_month'] ?? '',
+                    '入會日' => $item['join_date'] ?? '',
+                    '見面日' => $item['meeting_date'] ?? ''
+                ];
+
+                foreach ($basic_fields as $field => $value) {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($field));
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($value));
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                    $row++;
+                }
+
+                // 空行
+                $row++;
+
+                // 健康狀況標題
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '健康狀況');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('00D9EDF7');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+                $row++;
+
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '肌膚健康狀況');
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($item['skin_health_condition'] ?? ''));
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
+                $row++;
+
+                // 空行
+                $row++;
+
+                // 產品資料標題
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '產品訂購');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('00D4EDDA');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+                $row++;
+
+                // 產品資料
+                if (isset($item['products']) && is_array($item['products']) && !empty($item['products'])) {
+                    foreach ($item['products'] as $product) {
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($product['product_name']));
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($product['quantity'] . ' 個'));
+                        $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                        $row++;
+                    }
+                } else {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '訂購產品');
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, '未訂購任何產品');
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                    $row++;
+                }
+
+                // 空行
+                $row++;
+
+                // 聯絡資訊標題
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '聯絡資訊');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('00FFF3CD');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+                $row++;
+
+                $contact_fields = [
+                    'LINE聯絡' => $item['line_contact'] ?? '',
+                    '電話聯絡' => $item['tel_contact'] ?? ''
+                ];
+
+                foreach ($contact_fields as $field => $value) {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($field));
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($value));
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
+                    $row++;
+                }
+
+                // 空行
+                $row++;
+
+                // 表單資訊標題
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, '表單資訊');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('00F8D7DA');
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$row.':B'.$row)->getFont()->setBold(true);
+                $objPHPExcel->getActiveSheet()->mergeCells('A'.$row.':B'.$row);
+                $row++;
+
+                $form_fields = [
+                    '提交日期' => $item['submission_date'] ?? '',
+                    '建立時間' => $item['created_at'] ?? '',
+                    '狀態' => $status_map[$item['status']] ?? $item['status']
+                ];
+
+                if (!empty($item['admin_note'])) {
+                    $form_fields['管理員備註'] = $item['admin_note'];
+                }
+
+                foreach ($form_fields as $field => $value) {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $row, $this->_sanitize_excel_cell($field));
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $this->_sanitize_excel_cell($value));
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$row)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('B'.$row)->getAlignment()->setWrapText(true);
+                    $row++;
+                }
+
+                // 空行
+                $row++;
+            }
+
+            // 設定對齊方式
+            $objPHPExcel->getActiveSheet()->getStyle('A1:B'.($row-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+            // 構建檔案名稱
+            $filename = 'eform02_分組匯出_';
+            if ($member_name && $member_id) {
+                $filename .= $member_name . '_' . $member_id;
+            } else if ($member_name) {
+                $filename .= $member_name;
+            } else if ($member_id) {
+                $filename .= $member_id;
+            }
+            $filename .= '_' . date('Y-m-d_H-i-s');
+
+            // 創建Excel2007格式的Writer
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+
+            // 設定Headers
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"');
+
+            // 輸出到瀏覽器
+            $objWriter->save("php://output");
+
+            // 清理記憶體
+            $objPHPExcel->disconnectWorksheets();
+            unset($objWriter, $objPHPExcel);
+            exit();
+
+        } catch (Exception $e) {
+            $this->_send_error('匯出分組表單失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
     // Helper methods
-    
-    
+
+    /**
+     * 清理Excel單元格資料，避免內容問題
+     * @param mixed $value 要清理的值
+     * @return string 清理後的安全字串
+     */
+    private function _sanitize_excel_cell($value) {
+        // 處理null或空值
+        if ($value === null || $value === '') {
+            return '';
+        }
+
+        // 轉換為字串
+        $value = (string)$value;
+
+        // 移除控制字符 (ASCII 0-31，除了 9=tab, 10=LF, 13=CR)
+        $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $value);
+
+        // 移除null bytes
+        $value = str_replace("\0", '', $value);
+
+        // 限制最大長度 (Excel單元格限制約32767字符)
+        if (strlen($value) > 32000) {
+            $value = substr($value, 0, 32000) . '...';
+        }
+
+        // 清理潛在的XML問題字符
+        $value = str_replace(['&', '<', '>', '"', "'"], ['&amp;', '&lt;', '&gt;', '&quot;', '&#039;'], $value);
+
+        // 移除多餘空白
+        $value = trim($value);
+
+        return $value;
+    }
+
     /**
      * 準備 Excel 匯出資料
      */

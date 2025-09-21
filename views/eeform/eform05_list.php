@@ -164,7 +164,7 @@
           '<tr><td colspan="4" class="text-center text-warning p-4">' +
           '<div><i class="icon ion-person" style="font-size: 2rem;"></i></div>' +
           '<div class="mt-2">請先登入會員帳號</div>' +
-          '<div class="small mt-1">登入後即可查看您的肌膚諮詢記錄</div>' +
+          '<div class="small mt-1">登入後即可查看您的個人體測+健康諮詢記錄</div>' +
           '</td></tr>'
         );
       }
@@ -290,7 +290,7 @@
           emptyMessage =
             '<tr><td colspan="4" class="text-center text-muted p-4">' +
             '<div><i class="icon ion-document-text" style="font-size: 2rem; opacity: 0.5;"></i></div>' +
-            '<div class="mt-2">目前尚無肌膚諮詢記錄</div>' +
+            '<div class="mt-2">目前尚無個人體測+健康諮詢記錄</div>' +
             '<div class="small mt-1">點擊下方按鈕開始填寫您的第一筆記錄</div>' +
             '</td></tr>';
         }
@@ -298,80 +298,142 @@
         return;
       }
 
-      var tableRows = '';
-      submissions.forEach(function(submission, index) {
-        var bgColor = index % 2 === 0 ? '#E4FBFC' : '#eeeeee';
+      // 按會員姓名和電話分組
+      var groupedSubmissions = {};
+      submissions.forEach(function(submission) {
+        var memberKey = (submission.member_name || '未知會員') + '_' + (submission.phone || '');
+        if (!groupedSubmissions[memberKey]) {
+          groupedSubmissions[memberKey] = {
+            member_name: submission.member_name || '未知會員',
+            phone: submission.phone || '',
+            member_id: submission.member_id || '',
+            submissions: []
+          };
+        }
+        groupedSubmissions[memberKey].submissions.push(submission);
+      });
 
-        // 格式化日期
-        // var displayDate = submission.submission_date || submission.created_at || '-';
-        var displayDate = submission.updated_at || submission.created_at || '-';
-        if (displayDate !== '-') {
-          try {
-            var date = new Date(displayDate);
-            displayDate = date.getFullYear() + '-' +
-              String(date.getMonth() + 1).padStart(2, '0') + '-' +
-              String(date.getDate()).padStart(2, '0') + ' ' +
-              String(date.getHours()).padStart(2, '0') + ':' +
-              String(date.getMinutes()).padStart(2, '0');
-          } catch (e) {
-            // 如果日期解析失敗，保留原始值
+      var tableRows = '';
+      var groupIndex = 0;
+
+      // 渲染每個會員群組
+      Object.keys(groupedSubmissions).forEach(function(memberKey) {
+        var memberGroup = groupedSubmissions[memberKey];
+        var bgColor = groupIndex % 2 === 0 ? '#E4FBFC' : '#eeeeee';
+
+        // 取得最後填寫日期（最新的submission日期）
+        var latestDate = '-';
+        if (memberGroup.submissions.length > 0) {
+          var latestSubmission = memberGroup.submissions.reduce(function(latest, current) {
+            var latestTime = new Date(latest.updated_at || latest.created_at || 0);
+            var currentTime = new Date(current.updated_at || current.created_at || 0);
+            return currentTime > latestTime ? current : latest;
+          });
+
+          var displayDate = latestSubmission.updated_at || latestSubmission.created_at || '-';
+          if (displayDate !== '-') {
+            try {
+              var date = new Date(displayDate);
+              latestDate = date.getFullYear() + '-' +
+                String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                String(date.getDate()).padStart(2, '0') + ' ' +
+                String(date.getHours()).padStart(2, '0') + ':' +
+                String(date.getMinutes()).padStart(2, '0');
+            } catch (e) {
+              latestDate = displayDate;
+            }
           }
         }
 
-        // 格式化肌膚類型
-        var skinTypeMap = {
-          'normal': '一般性',
-          'combination': '混合性',
-          'oily': '油性',
-          'dry': '乾性',
-          'sensitive': '敏感性'
-        };
-        var displaySkinType = skinTypeMap[submission.skin_type] || submission.skin_type || '-';
-
+        // 主要群組行
         tableRows += '<tr style="background-color: ' + bgColor + ';">';
         // 會員資訊 - 包含姓名和電話
-        tableRows += '<td nowrap="nowrap" class="text-center">' + (submission.member_name || '-') + '</td>';
+        var memberInfo = '';
+        if (memberGroup.member_name && memberGroup.member_name !== '未知會員') {
+          memberInfo += memberGroup.member_name;
+        }
+        if (memberGroup.phone) {
+          if (memberInfo) memberInfo += '<br>';
+          memberInfo += memberGroup.phone;
+        }
+        if (!memberInfo) memberInfo = '-';
+        tableRows += '<td nowrap="nowrap" class="text-center">' + memberInfo + '</td>';
         // 最後填寫日期
-        tableRows += '<td>' + displayDate + '</td>';
-        // 已填寫數量 (暫時顯示為 1)
-        tableRows += '<td class="text-center">1</td>';
+        tableRows += '<td>' + latestDate + '</td>';
+        // 已填寫數量
+        tableRows += '<td class="text-center">' + memberGroup.submissions.length + '</td>';
         // 查看
         tableRows += '<td class="text-center">';
-        tableRows += '<a href="javascript:void(0);" onclick="question_reply_div(' + index + ');" title="檢視">';
-        tableRows += '<i class="fa fa-angle-down fa-lg menu__icon--open"></i>';
+        tableRows += '<a href="javascript:void(0);" onclick="toggleMemberGroup(' + groupIndex + ');" title="檢視">';
+        tableRows += '<i class="fa fa-angle-down fa-lg menu__icon--open" id="toggle-icon-' + groupIndex + '"></i>';
         tableRows += '</a>';
         tableRows += '</td>';
         tableRows += '</tr>';
 
-        // 詳細資料行（隱藏）
-        tableRows += '<tr style="display:none" id="qdiv_' + index + '">';
+        // 詳細資料行（隱藏），包含所有submissions
+        tableRows += '<tr style="display:none" id="member-group-' + groupIndex + '">';
         tableRows += '<td colspan="4">';
         tableRows += '<div class="card-body">';
         tableRows += '<div class="row mb-3">';
-        tableRows += '<div class="col-md-auto border-right">已填寫</div>';
+        tableRows += '<div class="col-md-auto border-right">已填寫記錄</div>';
         tableRows += '<div class="col-md-10">';
-        tableRows += '<ul class="list-inline text-left">';
-        tableRows += '<li class="list-inline-item">';
-        tableRows += '<span title="填寫時間：' + displayDate + '">' + displayDate + '</span>　　';
-        tableRows += '<a href="javascript:void(0);" onclick="question_reply_show(\'' + (submission.id || index) + '\',\'' + (submission.member_name || '會員') + ' 的肌膚諮詢記錄表\');" data-toggle="modal" data-target="#exampleModal" title="檢視">';
-        tableRows += '<i class="icon ion-clipboard" style="font-size: 1.1rem;"></i>';
-        tableRows += '</a>　｜　';
-        tableRows += '<a href="javascript:void(0);" onclick="question_reply_edit(\'' + (submission.id || index) + '\',\'' + (submission.member_name || '會員') + ' 的肌膚諮詢記錄表\');" data-toggle="modal" data-target="#exampleModal" title="編輯">';
-        tableRows += '<i class="icon ion-edit" style="font-size: 1.1rem;"></i>';
-        tableRows += '</a>';
-        tableRows += '</li>';
+        tableRows += '<ul class="list-inline text-left" style="margin-top: -10px;">';
+
+        // 渲染每個submission為子項目
+        memberGroup.submissions.forEach(function(submission, subIndex) {
+          var displayDate = submission.updated_at || submission.created_at || '-';
+          if (displayDate !== '-') {
+            try {
+              var date = new Date(displayDate);
+              displayDate = date.getFullYear() + '-' +
+                String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                String(date.getDate()).padStart(2, '0') + ' ' +
+                String(date.getHours()).padStart(2, '0') + ':' +
+                String(date.getMinutes()).padStart(2, '0');
+            } catch (e) {
+              // 如果日期解析失敗，保留原始值
+            }
+          }
+
+          tableRows += '<li class="list-inline-item d-block mb-2" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">';
+          tableRows += '<span title="填寫時間：' + displayDate + '"><strong>記錄 ' + (subIndex + 1) + '：</strong>' + displayDate + '</span>　　';
+          tableRows += '<a href="javascript:void(0);" onclick="question_reply_show(\'' + (submission.id || submission.member_id + '_' + subIndex) + '\',\'' + memberGroup.member_name + ' 的個人體測+健康諮詢表 #' + (subIndex + 1) + '\');" data-toggle="modal" data-target="#exampleModal" title="檢視">';
+          tableRows += '<i class="icon ion-clipboard" style="font-size: 1.1rem;"></i>';
+          tableRows += '</a>　｜　';
+          tableRows += '<a href="javascript:void(0);" onclick="question_reply_edit(\'' + (submission.id || submission.member_id + '_' + subIndex) + '\',\'' + memberGroup.member_name + ' 的個人體測+健康諮詢表 #' + (subIndex + 1) + '\');" data-toggle="modal" data-target="#exampleModal" title="編輯">';
+          tableRows += '<i class="icon ion-edit" style="font-size: 1.1rem;"></i>';
+          tableRows += '</a>';
+          tableRows += '</li>';
+        });
+
         tableRows += '</ul>';
         tableRows += '</div>';
         tableRows += '</div>';
         tableRows += '</div>';
         tableRows += '</td>';
         tableRows += '</tr>';
+
+        groupIndex++;
       });
 
       $('#submissions-table-body').html(tableRows);
     }
 
-    // 切換詳細資料顯示
+    // 切換會員群組顯示
+    function toggleMemberGroup(groupIndex) {
+      var detailRow = $('#member-group-' + groupIndex);
+      var toggleIcon = $('#toggle-icon-' + groupIndex);
+
+      if (detailRow.is(':visible')) {
+        detailRow.hide();
+        toggleIcon.removeClass('fa-angle-up').addClass('fa-angle-down');
+      } else {
+        detailRow.show();
+        toggleIcon.removeClass('fa-angle-down').addClass('fa-angle-up');
+      }
+    }
+
+    // 切換詳細資料顯示 (保留向後相容性)
     function question_reply_div(index) {
       var detailRow = $('#qdiv_' + index);
       if (detailRow.is(':visible')) {
@@ -807,9 +869,9 @@
       $('#exampleModal .modal-body').html(html);
     }
 
-    // 新增檢測數據區塊 - eform2不需要此功能，保留空函數以避免錯誤
+    // 新增檢測數據區塊 - eform5不需要此功能，保留空函數以避免錯誤
     function addTestDataSection(categoryName, data, disabled) {
-      return ''; // eform2不需要檢測數據區塊
+      return ''; // eform5不需要檢測數據區塊
     }
 
     // 更新eform5表單資料
@@ -1081,7 +1143,7 @@
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="submissionModalTitle">會員服務追蹤管理表(肌膚)詳細資料</h5>
+          <h5 class="modal-title" id="submissionModalTitle">個人體測表+健康諮詢表詳細資料</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

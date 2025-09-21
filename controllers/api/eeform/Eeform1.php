@@ -730,6 +730,263 @@ class Eeform1 extends MY_Controller
     }
 
     /**
+     * 匯出分組表單 (依據會員姓名和電話)
+     * GET /api/eeform1/export_grouped?member_name={member_name}&phone={phone}
+     */
+    public function export_grouped() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得查詢參數
+            $member_name = $this->input->get('member_name');
+            $phone = $this->input->get('phone');
+
+            // 確保至少有一個參數
+            if (empty($member_name) && empty($phone)) {
+                $this->_send_error('缺少查詢參數：需要會員姓名或電話', 400);
+                return;
+            }
+
+            // 從模型取得符合條件的所有表單
+            $submissions = $this->eform1_model->get_submissions_by_member_info($member_name, $phone);
+
+            if (empty($submissions)) {
+                $this->_send_error('找不到符合條件的表單記錄', 404);
+                return;
+            }
+
+            // 使用 PHPExcel 創建 Excel 檔案
+            $this->load->library("PHPExcel");
+            $objPHPExcel = new PHPExcel();
+
+            // 設定工作表屬性
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objPHPExcel->getActiveSheet()->setTitle('肌膚諮詢記錄表');
+
+            // 設定欄位寬度
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(50);
+
+            $current_row = 1;
+
+            // 為每個表單創建一個區塊
+            foreach ($submissions as $index => $submission) {
+                // 表單標題
+                $form_title = '肌膚諮詢記錄表 #' . ($index + 1);
+                if (!empty($submission['member_name'])) {
+                    $form_title .= ' - ' . $submission['member_name'];
+                }
+
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, $form_title);
+                $objPHPExcel->getActiveSheet()->mergeCells('A' . $current_row . ':B' . $current_row);
+                $objPHPExcel->getActiveSheet()->getStyle('A' . $current_row)->getFont()->setBold(true)->setSize(16);
+                $current_row += 2;
+
+                // 基本資料
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '會員姓名');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, $submission['member_name'] ?? '');
+                $current_row++;
+
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '出生年月日');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, ($submission['birth_year'] ?? '') . '年' . ($submission['birth_month'] ?? '') . '月' . ($submission['birth_day'] ?? '') . '日');
+                $current_row++;
+
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '電話');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, $submission['phone'] ?? '');
+                $current_row++;
+
+                // 職業
+                if (isset($submission['occupations']) && is_array($submission['occupations'])) {
+                    $occupations = [];
+                    $occupationMap = [
+                        'service' => '服務業',
+                        'office' => '上班族',
+                        'restaurant' => '餐飲業',
+                        'housewife' => '家管'
+                    ];
+                    foreach ($submission['occupations'] as $occ) {
+                        if ($occ['is_selected'] == 1) {
+                            $occupations[] = $occupationMap[$occ['occupation_type']] ?? $occ['occupation_type'];
+                        }
+                    }
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '職業');
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, implode('、', $occupations));
+                    $current_row++;
+                }
+
+                // 生活習慣
+                if (isset($submission['lifestyle']) && is_array($submission['lifestyle'])) {
+                    $lifestyle = [];
+                    foreach ($submission['lifestyle'] as $item) {
+                        if ($item['is_selected'] == 1) {
+                            $lifestyle[] = $item['category'] . ': ' . $item['item_key'];
+                        }
+                    }
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '生活習慣');
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, implode('、', $lifestyle));
+                    $current_row++;
+                }
+
+                // 使用產品
+                if (isset($submission['products']) && is_array($submission['products'])) {
+                    $products = [];
+                    $productMap = [
+                        'honey_soap' => '蜜皂',
+                        'mud_mask' => '泥膜',
+                        'toner' => '化妝水',
+                        'serum' => '精華液',
+                        'premium' => '極緻系列',
+                        'sunscreen' => '防曬',
+                        'other' => '其他'
+                    ];
+                    foreach ($submission['products'] as $prod) {
+                        if ($prod['is_selected'] == 1) {
+                            $productName = $productMap[$prod['product_type']] ?? $prod['product_type'];
+                            if ($prod['product_type'] === 'other' && $prod['product_name']) {
+                                $productName .= ': ' . $prod['product_name'];
+                            }
+                            $products[] = $productName;
+                        }
+                    }
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '使用產品');
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, implode('、', $products));
+                    $current_row++;
+                }
+
+                // 肌膚困擾
+                if (isset($submission['skin_issues']) && is_array($submission['skin_issues'])) {
+                    $issues = [];
+                    $issueMap = [
+                        'elasticity' => '沒有彈性',
+                        'luster' => '沒有光澤',
+                        'dull' => '暗沉',
+                        'spots' => '斑點',
+                        'pores' => '毛孔粗大',
+                        'acne' => '痘痘粉刺',
+                        'wrinkles' => '皺紋細紋',
+                        'rough' => '粗糙',
+                        'irritation' => '癢、紅腫',
+                        'dry' => '乾燥',
+                        'makeup' => '上妝不服貼',
+                        'other' => '其他'
+                    ];
+                    foreach ($submission['skin_issues'] as $issue) {
+                        if ($issue['is_selected'] == 1) {
+                            $issueName = $issueMap[$issue['issue_type']] ?? $issue['issue_type'];
+                            if ($issue['issue_type'] === 'other' && $issue['issue_description']) {
+                                $issueName .= ': ' . $issue['issue_description'];
+                            }
+                            $issues[] = $issueName;
+                        }
+                    }
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '肌膚困擾');
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, implode('、', $issues));
+                    $current_row++;
+                }
+
+                // 過敏狀況
+                if (isset($submission['allergies']) && is_array($submission['allergies'])) {
+                    $allergies = [];
+                    $allergyMap = [
+                        'frequent' => '經常',
+                        'seasonal' => '偶爾(換季時)',
+                        'never' => '不會'
+                    ];
+                    foreach ($submission['allergies'] as $allergy) {
+                        if ($allergy['is_selected'] == 1) {
+                            $allergies[] = $allergyMap[$allergy['allergy_type']] ?? $allergy['allergy_type'];
+                        }
+                    }
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '過敏狀況');
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, implode('、', $allergies));
+                    $current_row++;
+                }
+
+                // 建議內容
+                if (isset($submission['suggestions'])) {
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '化妝水建議');
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, $submission['suggestions']['toner_suggestion'] ?? '');
+                    $current_row++;
+
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '精華液建議');
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, $submission['suggestions']['serum_suggestion'] ?? '');
+                    $current_row++;
+
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '建議內容');
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, $submission['suggestions']['suggestion_content'] ?? '');
+                    $current_row++;
+                }
+
+                // 肌膚檢測
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '肌膚類型');
+                $skinTypeMap = [
+                    'normal' => '中性',
+                    'combination' => '混合性',
+                    'oily' => '油性',
+                    'dry' => '乾性',
+                    'sensitive' => '敏感性'
+                ];
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, $skinTypeMap[$submission['skin_type']] ?? $submission['skin_type'] ?? '');
+                $current_row++;
+
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '肌膚年齡');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, ($submission['skin_age'] ?? '') . '歲');
+                $current_row++;
+
+                // 提交資訊
+                $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '提交日期');
+                $objPHPExcel->getActiveSheet()->setCellValue('B' . $current_row, $submission['submission_date'] ?? '');
+                $current_row++;
+
+                // 在表單之間加空行分隔
+                if ($index < count($submissions) - 1) {
+                    $current_row += 2;
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $current_row, '---分隔線---');
+                    $objPHPExcel->getActiveSheet()->mergeCells('A' . $current_row . ':B' . $current_row);
+                    $objPHPExcel->getActiveSheet()->getStyle('A' . $current_row)->getFont()->setItalic(true);
+                    $current_row += 2;
+                }
+            }
+
+            // 調整欄位寬度
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(50);
+
+            // 設定檔案名稱
+            $member_info = !empty($member_name) ? $member_name : '會員';
+            $phone_info = !empty($phone) ? '_' . $phone : '';
+            $filename = '肌膚諮詢記錄表_' . $member_info . $phone_info . '_共' . count($submissions) . '筆_' . date('Y-m-d') . '.xlsx';
+
+            // 創建Excel2007格式的Writer
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+
+            // 設定Headers
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="'.$filename.'"');
+
+            // 輸出檔案
+            $objWriter->save('php://output');
+
+            // 清理記憶體
+            $objPHPExcel->disconnectWorksheets();
+            unset($objWriter, $objPHPExcel);
+            exit();
+
+        } catch (Exception $e) {
+            $this->_send_error('匯出失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
      * 查詢會員資料
      * GET /api/eeform1/member_lookup/{member_id}
      */

@@ -670,7 +670,7 @@
                         <button class="btn btn-sm btn-info" onclick="admin.viewDetail(${item.id})" title="檢視詳細資料" data-toggle="tooltip">
                             <i class="lnr lnr-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-success" onclick="admin.exportSingleForm(${item.id})" title="匯出此表單" data-toggle="tooltip">
+                        <button class="btn btn-sm btn-success" onclick="admin.exportGroupedForms('${escapeHtml(item.member_name || '')}', '${escapeHtml(item.member_id || '')}')" title="匯出此會員所有表單" data-toggle="tooltip">
                             <i class="lnr lnr-download"></i>
                         </button>
                     </td>
@@ -1100,6 +1100,24 @@
 
     admin.exportSingleForm = function(id) {
         const url = `${admin.apiBaseUrl}/export_single/${id}`;
+        window.open(url, '_blank');
+    };
+
+    admin.exportGroupedForms = function(memberName, memberId) {
+        if (!memberName && !memberId) {
+            admin.showAlert('會員資料不完整，無法匯出', 'warning');
+            return;
+        }
+
+        const params = new URLSearchParams();
+        if (memberName) {
+            params.append('member_name', memberName);
+        }
+        if (memberId) {
+            params.append('member_id', memberId);
+        }
+
+        const url = `${admin.apiBaseUrl}/export_grouped?${params.toString()}`;
         window.open(url, '_blank');
     };
 

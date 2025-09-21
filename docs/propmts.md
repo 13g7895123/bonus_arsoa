@@ -1,1 +1,2 @@
-1. 幫我看一下/eform/eform2_list這個頁面，他的檢視與編輯，沒有正常帶入出生年月日的資訊，我指的是這張表"公司 的肌膚諮詢記錄表"，連會員編號、姓名都沒有帶出來，為甚麼你一直去改後台，先幫我改前台就好
+1. 幫我看一下/wadmin/admin_eeform/eeform_manage_eeform02，幫我依據會員姓名與編號分類，如果該表格中，這兩項資料相同的話，請一併匯出，可以參考/wadmin/admin_eeform/eeform_manage_eeform01，需要同步留意後端的部分，他是後端API匯出的，目前匯出的Excel會說部分內容有問題，這個可以幫我修正嗎
+2. 幫我看一下/wadmin/admin_eeform/eeform_manage_eeform02，這個頁面的匯出按鈕，匯出的Excel會提示部分內容有問題，這個可以幫我修正嗎

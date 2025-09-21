@@ -649,7 +649,7 @@
                         <button class="btn btn-sm btn-info" onclick="admin.viewDetail(${item.id})" title="檢視詳細資料" data-toggle="tooltip">
                             <i class="lnr lnr-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-success" onclick="admin.exportSingleForm(${item.id})" title="匯出此表單" data-toggle="tooltip">
+                        <button class="btn btn-sm btn-success" onclick="admin.exportGroupedForms('${escapeHtml(item.member_name || '')}', '${escapeHtml(item.phone || '')}')" title="匯出此會員所有表單" data-toggle="tooltip">
                             <i class="lnr lnr-download"></i>
                         </button>
                     </td>
@@ -1180,6 +1180,51 @@
     admin.exportSingleForm = function(id) {
         const url = `${admin.apiBaseUrl}/export_single/${id}`;
         window.open(url, '_blank');
+    };
+
+    admin.exportGroupedForms = function(memberName, phone) {
+        // 確保參數不為空
+        if (!memberName && !phone) {
+            admin.showAlert('無法匯出：會員姓名和電話都為空', 'warning');
+            return;
+        }
+
+        // 構建請求參數
+        const params = new URLSearchParams();
+        if (memberName) {
+            params.append('member_name', memberName);
+        }
+        if (phone) {
+            params.append('phone', phone);
+        }
+
+        // 建立匯出URL
+        const url = `${admin.apiBaseUrl}/export_grouped?${params.toString()}`;
+
+        // 顯示確認訊息
+        const memberInfo = memberName || '(無姓名)';
+        const phoneInfo = phone || '(無電話)';
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: '確認匯出',
+                html: `即將匯出會員「<strong>${memberInfo}</strong>」<br>電話「<strong>${phoneInfo}</strong>」<br>的所有表單記錄`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定匯出',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open(url, '_blank');
+                }
+            });
+        } else {
+            if (confirm(`即將匯出會員「${memberInfo}」電話「${phoneInfo}」的所有表單記錄，確定要繼續嗎？`)) {
+                window.open(url, '_blank');
+            }
+        }
     };
 
     admin.showAlert = function(message, type = 'info') {
