@@ -1234,7 +1234,7 @@
           }
         });
 
-        // 新增日期按鈕功能 (匹配原版eform1.php)
+        // 新增日期按鈕功能 - 支援無限次新增 (匹配原版eform1.php)
         var modalAddButtonConfigs = [
           { buttonId: '#add-button1', containerId: '#water-date-container' },
           { buttonId: '#add-button2', containerId: '#complexion-date-container' },
@@ -1253,23 +1253,15 @@
             var $container = $('#exampleModal ' + config.containerId);
             var currentGroups = $container.find('.date-input-group').length;
 
-            // 檢查是否已達到最大數量（3組）
-            if (currentGroups < 3) {
-              // 複製第一個日期輸入組
-              var $newGroup = $container.find('.date-input-group:first').clone();
+            // 複製第一個日期輸入組
+            var $newGroup = $container.find('.date-input-group:first').clone();
 
-              // 清空複製組的輸入值
-              $newGroup.find('input').val('');
+            // 清空複製組的輸入值
+            $newGroup.find('input').val('');
 
-              // 將新組添加到現有的row中（橫向排列）
-              var $firstRow = $container.find('.row:first');
-              $firstRow.append($newGroup);
-
-              // 檢查是否達到3組，如果是則隱藏按鈕
-              if (currentGroups + 1 >= 3) {
-                $('#exampleModal ' + config.buttonId).hide();
-              }
-            }
+            // 將新組添加到現有的row中（橫向排列）
+            var $firstRow = $container.find('.row:first');
+            $firstRow.append($newGroup);
           });
         });
       }

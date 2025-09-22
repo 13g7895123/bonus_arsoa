@@ -47,7 +47,7 @@
                         <div class="row">
                           <div class="col-sm-12 text-right mb30">填寫日期：2025-08-11</div>
 
-                          <div class="col-sm-4 mb30">
+                          <div class="col-sm-4 mb30" id="member-id-field">
                             <label class="label-custom">會員編號</label>
                             <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" readonly />
                           </div>
@@ -1121,7 +1121,7 @@
 
 
     <script>
-      // 新增日期功能 - jQuery版本，支援最多3組，達到上限時隱藏按鈕
+      // 新增日期功能 - jQuery版本，支援無限次新增
       $(document).ready(function() {
         // 定義所有容器和按鈕的對應關係
         var addButtonConfigs = [
@@ -1139,25 +1139,16 @@
         $.each(addButtonConfigs, function(index, config) {
           $(config.buttonId).on('click', function() {
             var $container = $(config.containerId);
-            var currentGroups = $container.find('.date-input-group').length;
-            
-            // 檢查是否已達到最大數量（3組）
-            if (currentGroups < 3) {
-              // 複製第一個日期輸入組
-              var $newGroup = $container.find('.date-input-group:first').clone();
-              
-              // 清空複製組的輸入值
-              $newGroup.find('input').val('');
-              
-              // 將新組添加到現有的row中（橫向排列）
-              var $firstRow = $container.find('.row:first');
-              $firstRow.append($newGroup);
-              
-              // 檢查是否達到3組，如果是則隱藏按鈕
-              if (currentGroups + 1 >= 3) {
-                $(config.buttonId).hide();
-              }
-            }
+
+            // 複製第一個日期輸入組
+            var $newGroup = $container.find('.date-input-group:first').clone();
+
+            // 清空複製組的輸入值
+            $newGroup.find('input').val('');
+
+            // 將新組添加到現有的row中（橫向排列）
+            var $firstRow = $container.find('.row:first');
+            $firstRow.append($newGroup);
           });
         });
       });
@@ -1203,8 +1194,27 @@
       var memberData = [];
       var isMultipleMembers = false;
 
+      // 取得 URL 參數的函數
+      function getUrlParameter(name) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+      }
+
+      // 取得 identity 參數，用來控制顯示模式
+      var identityParam = getUrlParameter('identity'); // 可能的值: 'member', 'guest', null
+
       // 初始化會員資料
       function initializeMemberData() {
+        // 根據 identity 參數控制會員編號欄位的顯示
+        if (identityParam === 'guest') {
+          // guest 模式：隱藏會員編號欄位，且移除驗證
+          $('#member-id-field').hide();
+          $('input[name="member_id"]').removeAttr('required');
+        } else {
+          // member 模式或預設模式：顯示會員編號欄位
+          $('#member-id-field').show();
+        }
+
         // 設定會員編號欄位，預設為 000000
         if (!currentUserData.member_id || currentUserData.member_id.trim() === '') {
           currentUserData.member_id = '000000';
@@ -1238,20 +1248,45 @@
             
             if (response.success && response.data) {
               memberData = response.data.members;
-              
-              if (memberData.length > 1) {
-                // 多個會員：顯示下拉選單
-                isMultipleMembers = true;
-                setupMemberDropdown();
-              } else if (memberData.length === 1) {
-                // 單個會員：使用文字輸入框
+
+              // 根據 identity 參數決定顯示模式
+              if (identityParam === 'member') {
+                // 強制使用下拉選單模式（如果有會員資料）
+                if (memberData.length > 0) {
+                  isMultipleMembers = true;
+                  setupMemberDropdown();
+                } else {
+                  // 沒有會員資料但要求 member 模式，仍顯示下拉選單但只有預設選項
+                  isMultipleMembers = true;
+                  setupMemberDropdown();
+                }
+              } else if (identityParam === 'guest') {
+                // 強制使用輸入框模式
                 isMultipleMembers = false;
-                $('input[name="member_name"]').val(memberData[0].c_name);
-                currentUserData.member_name = memberData[0].c_name;
+                if (memberData.length > 0) {
+                  // 有會員資料但強制使用輸入框，填入第一個會員姓名作為預設值
+                  $('input[name="member_name"]').val(memberData[0].c_name);
+                  currentUserData.member_name = memberData[0].c_name;
+                } else {
+                  // 沒有會員資料，使用預設值
+                  $('input[name="member_name"]').val(currentUserData.member_name);
+                }
               } else {
-                // 沒有找到會員：使用預設值
-                isMultipleMembers = false;
-                $('input[name="member_name"]').val(currentUserData.member_name);
+                // 沒有 identity 參數，走原本的邏輯
+                if (memberData.length > 1) {
+                  // 多個會員：顯示下拉選單
+                  isMultipleMembers = true;
+                  setupMemberDropdown();
+                } else if (memberData.length === 1) {
+                  // 單個會員：使用文字輸入框
+                  isMultipleMembers = false;
+                  $('input[name="member_name"]').val(memberData[0].c_name);
+                  currentUserData.member_name = memberData[0].c_name;
+                } else {
+                  // 沒有找到會員：使用預設值
+                  isMultipleMembers = false;
+                  $('input[name="member_name"]').val(currentUserData.member_name);
+                }
               }
             } else {
               // API 回應格式不正確
@@ -1259,8 +1294,17 @@
           },
           error: function(xhr, status, error) {
             // API 呼叫失敗
-            // 出錯時使用預設值
-            $('input[name="member_name"]').val(currentUserData.member_name);
+            // 根據 identity 參數決定錯誤時的處理方式
+            if (identityParam === 'member') {
+              // member 模式：顯示空的下拉選單
+              isMultipleMembers = true;
+              memberData = []; // 清空會員資料
+              setupMemberDropdown();
+            } else {
+              // guest 模式或預設模式：使用輸入框與預設值
+              isMultipleMembers = false;
+              $('input[name="member_name"]').val(currentUserData.member_name);
+            }
           },
           complete: function(xhr, status) {
             // AJAX 請求完成
@@ -1706,6 +1750,7 @@
           member_name: memberName, // 被填表人姓名
           form_filler_id: formFillerID, // 代填問卷者ID（當前登入使用者）
           form_filler_name: formFillerName, // 代填問卷者姓名
+          identity: identityParam, // 填表身份：member/guest
           birth_date: $('input[name="birth_date"]').val(),
           birth_year: $('input[name="birth_year"]').val(), // 從日期提取的年份
           birth_month: $('input[name="birth_month"]').val(), // 從日期提取的月份

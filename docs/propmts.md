@@ -1,2 +1,3 @@
-1. 幫我看一下/wadmin/admin_eeform/eeform_manage_eeform02，幫我依據會員姓名與編號分類，如果該表格中，這兩項資料相同的話，請一併匯出，可以參考/wadmin/admin_eeform/eeform_manage_eeform01，需要同步留意後端的部分，他是後端API匯出的，目前匯出的Excel會說部分內容有問題，這個可以幫我修正嗎
-2. 幫我看一下/wadmin/admin_eeform/eeform_manage_eeform02，這個頁面的匯出按鈕，匯出的Excel會提示部分內容有問題，這個可以幫我修正嗎
+1. ✅ 幫我看一下/eform/eform1，目前有一個設定是，進入頁面會打API，如果有資料，會員編號會變成下拉選單，沒有資料會變成自行輸入的INPUT，幫我把這兩個調整一下，預設是目前的，但如果get的identity為member，用下拉選單，如果是guest用自行輸入INPUT，都沒有的話就走預設
+2. ✅ 幫我看一下/eform/eform1，identity為guest的時候，幫我隱藏會員編號，且不要驗證這個欄位，我指的驗證包含後端
+3. ✅ 幫我看一下/eform/eform1，送出的時候，幫我多送一個identify給後端儲存

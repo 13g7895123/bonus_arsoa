@@ -179,6 +179,7 @@ class Eeform1Model extends CI_Model
             $submission_data = [
                 'member_id' => isset($data['member_id']) ? $data['member_id'] : null,
                 'member_name' => $data['member_name'], // 被填表人姓名
+                'identity' => isset($data['identity']) ? $data['identity'] : null, // 填表身份：member/guest
                 'form_filler_id' => isset($data['form_filler_id']) ? $data['form_filler_id'] : null, // 代填問卷者ID
                 'form_filler_name' => isset($data['form_filler_name']) ? $data['form_filler_name'] : null, // 代填問卷者姓名
                 'birth_year' => intval($data['birth_year']),
@@ -602,6 +603,7 @@ class Eeform1Model extends CI_Model
             $submission_data = [
                 'member_id' => isset($data['member_id']) ? $data['member_id'] : null,
                 'member_name' => $data['member_name'],
+                'identity' => isset($data['identity']) ? $data['identity'] : null,
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
                 'birth_day' => intval($data['birth_day']),
