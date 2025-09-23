@@ -94,3 +94,26 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+// MSSQL Database Configuration for stored procedure testing
+$db['mssql'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost', // 修改為實際的 MSSQL 伺服器位址
+	'username' => 'sa',        // 修改為實際的 MSSQL 使用者名稱
+	'password' => '',          // 修改為實際的 MSSQL 密碼
+	'database' => 'your_mssql_db', // 修改為實際的 MSSQL 資料庫名稱
+	'dbdriver' => 'sqlsrv',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);

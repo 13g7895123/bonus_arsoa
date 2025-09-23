@@ -1078,6 +1078,133 @@ class Eeform1 extends MY_Controller
     }
 
     /**
+     * 創建 MySQL 預儲程序
+     * GET /api/eeform1/create_procedure
+     */
+    public function create_procedure() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 檢查預儲程序是否已存在
+            $check_result = $this->eform1_model->check_mysql_procedure('ww_chkguest');
+
+            if ($check_result['exists']) {
+                $this->_send_error('預儲程序已存在，無需重複創建', 409, [
+                    'procedure_info' => $check_result['procedure_info']
+                ]);
+                return;
+            }
+
+            // 創建預儲程序
+            $create_result = $this->eform1_model->create_mysql_procedure();
+
+            if ($create_result['success']) {
+                // 創建成功後，再次檢查並測試
+                $verify_result = $this->eform1_model->check_mysql_procedure('ww_chkguest');
+
+                $response_data = [
+                    'creation_result' => $create_result,
+                    'verification' => $verify_result,
+                    'timestamp' => date('Y-m-d H:i:s')
+                ];
+
+                // 如果創建成功，執行一次測試
+                if ($verify_result['exists']) {
+                    $test_data = [
+                        'test' => 1,
+                        'd_spno' => '000000',
+                        'cname' => '章喆',
+                        'bdate' => '19780615',
+                        'cell' => '0966-123-456'
+                    ];
+
+                    $test_result = $this->eform1_model->test_mysql_procedure($test_data);
+                    $response_data['test_result'] = $test_result;
+                }
+
+                $this->_send_success('MySQL 預儲程序創建成功', $response_data);
+            } else {
+                $this->_send_error('預儲程序創建失敗', 500, $create_result);
+            }
+
+        } catch (Exception $e) {
+            log_message('error', 'Create procedure API error: ' . $e->getMessage());
+            $this->_send_error('創建預儲程序時發生錯誤: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
+     * 測試預儲程序
+     * GET /api/eeform1/test_procedure
+     */
+    public function test_procedure() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 測試資料
+            $test_data = [
+                'test' => 1,
+                'd_spno' => '000000',
+                'cname' => '章喆',
+                'bdate' => '19780615',
+                'cell' => '0966-123-456'
+            ];
+
+            $results = [
+                'mysql' => null,
+                'mssql' => null,
+                'test_data' => $test_data,
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
+
+            // 檢查 MySQL 預儲程序
+            try {
+                $mysql_result = $this->eform1_model->check_mysql_procedure('ww_chkguest');
+                $results['mysql'] = $mysql_result;
+
+                // 如果 MySQL 預儲程序存在，執行測試
+                if ($mysql_result['exists']) {
+                    $test_result = $this->eform1_model->test_mysql_procedure($test_data);
+                    $results['mysql']['test_result'] = $test_result;
+                }
+            } catch (Exception $e) {
+                $results['mysql'] = [
+                    'exists' => false,
+                    'error' => 'MySQL 連線或查詢錯誤: ' . $e->getMessage()
+                ];
+            }
+
+            // 暫時隱藏 MSSQL 檢查功能
+            $results['mssql'] = [
+                'exists' => false,
+                'database_type' => 'MSSQL',
+                'message' => '暫時停用 MSSQL 檢查功能，只處理 MySQL',
+                'status' => 'disabled'
+            ];
+
+            $this->_send_success('預儲程序檢查完成', $results);
+
+        } catch (Exception $e) {
+            log_message('error', 'Test procedure API error: ' . $e->getMessage());
+            $this->_send_error('測試預儲程序時發生錯誤: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
      * 發送成功回應
      * @param string $message 
      * @param mixed $data 

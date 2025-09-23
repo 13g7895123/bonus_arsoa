@@ -101,6 +101,9 @@ $db['default'] = array(
 $db['dev'] = $db['default'];
 $db['dev']['database'] = 'arsoa_db_test';
 
+// MSSQL configuration temporarily removed
+// Will be added back when needed
+
 if ( $_SERVER['HTTP_HOST'] == 'localhost'){        
    $db['default']['hostname'] = 'localhost';
    $db['default']['username'] = 'root';

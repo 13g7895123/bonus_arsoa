@@ -1012,6 +1012,79 @@ class Eeform1 extends CI_Controller
     }
 
     /**
+     * 測試預儲程序
+     * GET /api/eeform1/test_procedure
+     */
+    public function test_procedure() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 測試資料
+            $test_data = [
+                'test' => 1,
+                'd_spno' => '000000',
+                'cname' => '章喆',
+                'bdate' => '19780615',
+                'cell' => '0966-123-456'
+            ];
+
+            $results = [
+                'mysql' => null,
+                'mssql' => null,
+                'test_data' => $test_data,
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
+
+            // 檢查 MySQL 預儲程序
+            try {
+                $mysql_result = $this->eform1_model->check_mysql_procedure('ww_chkguest');
+                $results['mysql'] = $mysql_result;
+
+                // 如果 MySQL 預儲程序存在，執行測試
+                if ($mysql_result['exists']) {
+                    $test_result = $this->eform1_model->test_mysql_procedure($test_data);
+                    $results['mysql']['test_result'] = $test_result;
+                }
+            } catch (Exception $e) {
+                $results['mysql'] = [
+                    'exists' => false,
+                    'error' => 'MySQL 連線或查詢錯誤: ' . $e->getMessage()
+                ];
+            }
+
+            // 檢查 MSSQL 預儲程序
+            try {
+                $mssql_result = $this->eform1_model->check_mssql_procedure('ww_chkguest');
+                $results['mssql'] = $mssql_result;
+
+                // 如果 MSSQL 預儲程序存在，執行測試
+                if ($mssql_result['exists']) {
+                    $test_result = $this->eform1_model->test_mssql_procedure($test_data);
+                    $results['mssql']['test_result'] = $test_result;
+                }
+            } catch (Exception $e) {
+                $results['mssql'] = [
+                    'exists' => false,
+                    'error' => 'MSSQL 連線或查詢錯誤: ' . $e->getMessage()
+                ];
+            }
+
+            $this->_send_success('預儲程序檢查完成', $results);
+
+        } catch (Exception $e) {
+            log_message('error', 'Test procedure API error: ' . $e->getMessage());
+            $this->_send_error('測試預儲程序時發生錯誤: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
      * 發送成功回應
      * @param string $message 
      * @param mixed $data 

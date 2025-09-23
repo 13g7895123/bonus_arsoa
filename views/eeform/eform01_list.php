@@ -50,7 +50,7 @@
                     </form>
                     <div class="col-sm-12 mb30">
                       <hr class="my-4">
-                      <a href="<?php echo base_url('eform/eform1'); ?>" class="btn btn-outline-danger btn-block">填寫肌膚諮詢記錄表</a>
+                      <a href="<?php echo base_url('eform/eform1'); ?>" id="form-button" class="btn btn-outline-danger btn-block">填寫肌膚諮詢記錄表</a>
                     </div>
 
 
@@ -147,6 +147,7 @@
     });
     /*Scroll to top when arrow up clicked END*/
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
     // 全域變數
@@ -154,9 +155,13 @@
     var currentSubmissionId = null; // 當前選中的提交記錄ID
     var allSubmissions = []; // 儲存所有提交記錄
     var filteredSubmissions = []; // 儲存過濾後的記錄
+    var userSelection = null; // 全域變數儲存用戶選擇
 
     // 頁面載入時初始化
     $(document).ready(function() {
+      // 顯示選擇表單類型的 SweetAlert
+      showFormTypeSelection();
+
       if (currentMemberId) {
         loadSubmissions();
       } else {
@@ -177,6 +182,38 @@
         }
       });
     });
+
+    // 顯示表單類型選擇對話框
+    function showFormTypeSelection() {
+      Swal.fire({
+        title: '系統提示',
+        text: '請選擇要編輯的表單',
+        icon: 'info',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: '會員',
+        denyButtonText: '來賓',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // 用戶選擇了會員
+          userSelection = 'member';
+          updateFormButtonUrl('member');
+        } else if (result.isDenied) {
+          // 用戶選擇了來賓
+          userSelection = 'guest';
+          updateFormButtonUrl('guest');
+        }
+      });
+    }
+
+    // 更新表單按鈕的URL
+    function updateFormButtonUrl(selection) {
+      var baseUrl = '<?php echo base_url("eform/eform1"); ?>';
+      var newUrl = baseUrl + '?identity=' + selection;
+      $('#form-button').attr('href', newUrl);
+    }
 
     // 載入提交記錄列表
     function loadSubmissions() {

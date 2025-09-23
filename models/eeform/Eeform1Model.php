@@ -90,12 +90,18 @@ class Eeform1Model extends MY_Model
     public function validate_submission_data($data)
     {
         $errors = [];
-        // 檢查必填欄位 - 支援新的 birth_date 或舊的 birth_year/birth_month
-        $required_fields = ['member_name'];
-        foreach ($required_fields as $field) {
-            if (empty($data[$field])) {
-                $errors[] = "必填欄位 {$field} 不能為空";
-            }
+
+        // 檢查必填欄位 - 根據 identity 參數調整驗證規則
+        $identity = isset($data['identity']) ? $data['identity'] : null;
+
+        // 會員姓名永遠是必填的
+        if (empty($data['member_name'])) {
+            $errors[] = "必填欄位 member_name 不能為空";
+        }
+
+        // 來賓模式：phone 必填；會員模式：phone 非必填
+        if ($identity === 'guest' && empty($data['phone'])) {
+            $errors[] = "必填欄位 phone 不能為空";
         }
         
         // 驗證出生年月日 - 支援新的 birth_date (YYYY-MM-DD) 或舊的 birth_year/birth_month/birth_day
@@ -179,12 +185,13 @@ class Eeform1Model extends MY_Model
             $submission_data = [
                 'member_id' => isset($data['member_id']) ? $data['member_id'] : null,
                 'member_name' => $data['member_name'], // 被填表人姓名
+                'identity' => isset($data['identity']) ? $data['identity'] : null, // 填表身份：member/guest
                 'form_filler_id' => isset($data['form_filler_id']) ? $data['form_filler_id'] : null, // 代填問卷者ID
                 'form_filler_name' => isset($data['form_filler_name']) ? $data['form_filler_name'] : null, // 代填問卷者姓名
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
                 'birth_day' => intval($data['birth_day']),
-                'phone' => $data['phone'],
+                'phone' => isset($data['phone']) ? $data['phone'] : null,
                 'skin_type' => isset($data['skin_type']) ? $data['skin_type'] : null,
                 'skin_age' => isset($data['skin_age']) ? intval($data['skin_age']) : null,
                 'submission_date' => date('Y-m-d H:i:s'),
@@ -606,7 +613,7 @@ class Eeform1Model extends MY_Model
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
                 'birth_day' => intval($data['birth_day']),
-                'phone' => $data['phone'],
+                'phone' => isset($data['phone']) ? $data['phone'] : null,
                 'skin_type' => isset($data['skin_type']) ? $data['skin_type'] : null,
                 'skin_age' => isset($data['skin_age']) ? intval($data['skin_age']) : null,
                 'updated_at' => date('Y-m-d H:i:s')
@@ -1085,6 +1092,486 @@ class Eeform1Model extends MY_Model
             $this->db->trans_rollback();
             log_message('error', 'Error deleting all test data: ' . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * 檢查 MySQL 預儲程序是否存在
+     * @param string $procedure_name
+     * @return array
+     */
+    public function check_mysql_procedure($procedure_name) {
+        try {
+            // 使用 INFORMATION_SCHEMA 查詢預儲程序
+            $sql = "SELECT
+                        ROUTINE_NAME,
+                        ROUTINE_TYPE,
+                        ROUTINE_SCHEMA,
+                        CREATED,
+                        LAST_ALTERED,
+                        ROUTINE_COMMENT
+                    FROM INFORMATION_SCHEMA.ROUTINES
+                    WHERE ROUTINE_SCHEMA = DATABASE()
+                      AND ROUTINE_NAME = ?
+                      AND ROUTINE_TYPE = 'PROCEDURE'";
+
+            $query = $this->db->query($sql, [$procedure_name]);
+
+            if (!$query) {
+                throw new Exception('MySQL query failed: ' . $this->db->error()['message']);
+            }
+
+            $result = $query->row_array();
+
+            if ($result) {
+                // 預儲程序存在，取得參數資訊
+                $param_sql = "SELECT
+                                PARAMETER_NAME,
+                                PARAMETER_MODE,
+                                DATA_TYPE,
+                                CHARACTER_MAXIMUM_LENGTH
+                            FROM INFORMATION_SCHEMA.PARAMETERS
+                            WHERE SPECIFIC_SCHEMA = DATABASE()
+                              AND SPECIFIC_NAME = ?
+                            ORDER BY ORDINAL_POSITION";
+
+                $param_query = $this->db->query($param_sql, [$procedure_name]);
+                $parameters = $param_query ? $param_query->result_array() : [];
+
+                return [
+                    'exists' => true,
+                    'database_type' => 'MySQL',
+                    'procedure_info' => $result,
+                    'parameters' => $parameters,
+                    'message' => '預儲程序存在於 MySQL 資料庫中'
+                ];
+            } else {
+                return [
+                    'exists' => false,
+                    'database_type' => 'MySQL',
+                    'message' => '預儲程序不存在於 MySQL 資料庫中'
+                ];
+            }
+
+        } catch (Exception $e) {
+            return [
+                'exists' => false,
+                'database_type' => 'MySQL',
+                'error' => $e->getMessage(),
+                'message' => 'MySQL 檢查失敗: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * 檢查 MSSQL 預儲程序是否存在
+     * @param string $procedure_name
+     * @return array
+     */
+    public function check_mssql_procedure($procedure_name) {
+        // 暫時停用 MSSQL 檢查功能
+        return [
+            'exists' => false,
+            'database_type' => 'MSSQL',
+            'message' => '暫時停用 MSSQL 檢查功能',
+            'status' => 'disabled'
+        ];
+
+        /* 原始程碼暫時註解
+        try {
+            // 使用設定檔中的 MSSQL 連線配置
+            $mssql_db = $this->load->database('mssql', TRUE);
+
+            if (!$mssql_db) {
+                return [
+                    'exists' => false,
+                    'database_type' => 'MSSQL',
+                    'error' => 'MSSQL 連線失敗',
+                    'message' => '無法連線到 MSSQL 資料庫'
+                ];
+            }
+
+            // 查詢 MSSQL 預儲程序
+            $sql = "SELECT
+                        name,
+                        type_desc,
+                        create_date,
+                        modify_date
+                    FROM sys.objects
+                    WHERE type = 'P'
+                      AND name = ?";
+
+            $query = $mssql_db->query($sql, [$procedure_name]);
+
+            if (!$query) {
+                $mssql_db->close();
+                throw new Exception('MSSQL query failed');
+            }
+
+            $result = $query->row_array();
+            $mssql_db->close();
+
+            if ($result) {
+                return [
+                    'exists' => true,
+                    'database_type' => 'MSSQL',
+                    'procedure_info' => $result,
+                    'message' => '預儲程序存在於 MSSQL 資料庫中'
+                ];
+            } else {
+                return [
+                    'exists' => false,
+                    'database_type' => 'MSSQL',
+                    'message' => '預儲程序不存在於 MSSQL 資料庫中'
+                ];
+            }
+
+        } catch (Exception $e) {
+            return [
+                'exists' => false,
+                'database_type' => 'MSSQL',
+                'error' => $e->getMessage(),
+                'message' => 'MSSQL 檢查失敗: ' . $e->getMessage()
+            ];
+        }
+        */
+    }
+
+    /**
+     * 測試 MySQL 預儲程序
+     * @param array $test_data
+     * @return array
+     */
+    public function test_mysql_procedure($test_data) {
+        try {
+            // 調用 MySQL 預儲程序 - 使用輸出參數版本
+            $sql = "CALL ww_chkguest(?, ?, ?, ?, ?, @errcode, @guest_id)";
+
+            $result = $this->db->query($sql, [
+                $test_data['test'],
+                $test_data['d_spno'],
+                $test_data['cname'],
+                $test_data['bdate'],
+                $test_data['cell']
+            ]);
+
+            if (!$result) {
+                throw new Exception('MySQL 預儲程序調用失敗: ' . $this->db->error()['message']);
+            }
+
+            // 取得輸出參數
+            $output_query = $this->db->query("SELECT @errcode as errcode, @guest_id as guest_id");
+            $output = $output_query ? $output_query->row_array() : null;
+
+            if (!$output) {
+                throw new Exception('無法取得預儲程序輸出參數');
+            }
+
+            // 錯誤代碼對應訊息
+            $error_messages = [
+                0 => '來賓身分通過驗證',
+                1 => '已存在此來賓',
+                2 => '已存在此來賓，但推薦人不同',
+                3 => '此來賓已經是會員了'
+            ];
+
+            // 處理輸出參數
+            $errcode = isset($output['errcode']) ? (int)$output['errcode'] : -1;
+            $guest_id = $output['guest_id'] ?? null;
+
+            return [
+                'success' => true,
+                'database_type' => 'MySQL',
+                'input_data' => $test_data,
+                'raw_output' => $output,  // 原始輸出供調試用
+                'errcode' => $errcode,
+                'guest_id' => $guest_id,
+                'message' => $error_messages[$errcode] ?? '未知錯誤 (errcode: ' . $errcode . ')',
+                'execution_time' => date('Y-m-d H:i:s'),
+                'note' => '如果預儲程序不存在或參數不正確，此測試會失敗'
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'database_type' => 'MySQL',
+                'error' => $e->getMessage(),
+                'input_data' => $test_data,
+                'message' => 'MySQL 預儲程序執行失敗: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * 測試 MSSQL 預儲程序
+     * @param array $test_data
+     * @return array
+     */
+    public function test_mssql_procedure($test_data) {
+        // 暫時停用 MSSQL 測試功能
+        return [
+            'success' => false,
+            'database_type' => 'MSSQL',
+            'message' => '暫時停用 MSSQL 測試功能',
+            'status' => 'disabled',
+            'input_data' => $test_data
+        ];
+
+        /* 原始程碼暫時註解
+        try {
+            // 使用設定檔中的 MSSQL 連線配置
+            $mssql_db = $this->load->database('mssql', TRUE);
+
+            if (!$mssql_db) {
+                throw new Exception('MSSQL 連線失敗');
+            }
+
+            // 調用 MSSQL 預儲程序
+            $sql = "EXEC ww_chkguest ?, ?, ?, ?, ?";
+
+            $result = $mssql_db->query($sql, [
+                $test_data['test'],
+                $test_data['d_spno'],
+                $test_data['cname'],
+                $test_data['bdate'],
+                $test_data['cell']
+            ]);
+
+            if (!$result) {
+                $mssql_db->close();
+                throw new Exception('MSSQL 預儲程序調用失敗');
+            }
+
+            $output = $result->row_array();
+            $mssql_db->close();
+
+            // 錯誤代碼對應訊息
+            $error_messages = [
+                0 => '來賓身分通過驗證',
+                1 => '已存在此來賓',
+                2 => '已存在此來賓，但推薦人不同',
+                3 => '此來賓已經是會員了'
+            ];
+
+            $errcode = isset($output['errcode']) ? (int)$output['errcode'] : -1;
+
+            return [
+                'success' => true,
+                'database_type' => 'MSSQL',
+                'input_data' => $test_data,
+                'output' => $output,
+                'errcode' => $errcode,
+                'guest_id' => $output['c_no'] ?? null,
+                'message' => $error_messages[$errcode] ?? '未知錯誤',
+                'execution_time' => date('Y-m-d H:i:s')
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'database_type' => 'MSSQL',
+                'error' => $e->getMessage(),
+                'input_data' => $test_data,
+                'message' => 'MSSQL 預儲程序執行失敗: ' . $e->getMessage()
+            ];
+        }
+        */
+    }
+
+    /**
+     * 創建 MySQL 預儲程序 ww_chkguest
+     * @return array
+     */
+    public function create_mysql_procedure() {
+        try {
+            // 先檢查 member 表是否存在
+            $table_check = $this->db->query("SHOW TABLES LIKE 'member'");
+            $member_table_exists = $table_check && $table_check->num_rows() > 0;
+
+            // 定義需要檢查的欄位
+            $columns_to_check = [
+                'member_type' => "ALTER TABLE `member` ADD COLUMN `member_type` ENUM('member', 'guest') DEFAULT 'guest' COMMENT '會員類型'",
+                'birth_date' => "ALTER TABLE `member` ADD COLUMN `birth_date` VARCHAR(8) NULL COMMENT '生日 YYYYMMDD'",
+                'phone' => "ALTER TABLE `member` ADD COLUMN `phone` VARCHAR(20) NULL COMMENT '電話'"
+            ];
+
+            if (!$member_table_exists) {
+                // 創建基本的 member 表用於測試
+                $create_member_table = "
+                    CREATE TABLE IF NOT EXISTS `member` (
+                        `c_no` VARCHAR(10) PRIMARY KEY COMMENT '會員編號',
+                        `d_spno` CHAR(7) NULL COMMENT '推薦人編號',
+                        `c_name` VARCHAR(20) NOT NULL COMMENT '會員姓名',
+                        `birth_date` VARCHAR(8) NULL COMMENT '生日 YYYYMMDD',
+                        `phone` VARCHAR(20) NULL COMMENT '電話',
+                        `member_type` ENUM('member', 'guest') DEFAULT 'guest' COMMENT '會員類型',
+                        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='會員資料表'
+                ";
+
+                $this->db->query($create_member_table);
+
+                if ($this->db->error()['code'] != 0) {
+                    throw new Exception('創建 member 表失敗: ' . $this->db->error()['message']);
+                }
+            } else {
+                // 檢查現有 member 表是否有必要的欄位，如果沒有則添加
+                foreach ($columns_to_check as $column => $alter_sql) {
+                    $column_check = $this->db->query("SHOW COLUMNS FROM `member` LIKE '{$column}'");
+                    if (!$column_check || $column_check->num_rows() == 0) {
+                        // 欄位不存在，添加它
+                        $this->db->query($alter_sql);
+                        if ($this->db->error()['code'] != 0) {
+                            // 不是致命錯誤，記錄但繼續
+                            error_log("Warning: Could not add column {$column}: " . $this->db->error()['message']);
+                        }
+                    }
+                }
+            }
+
+            // 刪除已存在的預儲程序
+            $drop_sql = "DROP PROCEDURE IF EXISTS ww_chkguest";
+            $this->db->query($drop_sql);
+
+            // 創建預儲程序
+            $procedure_sql = "
+            CREATE PROCEDURE `ww_chkguest`(
+                IN `test_mode` TINYINT,
+                IN `d_spno` CHAR(7),
+                IN `cname` VARCHAR(20),
+                IN `bdate` VARCHAR(8),
+                IN `cell` VARCHAR(20),
+                OUT `errcode` SMALLINT,
+                OUT `guest_id` VARCHAR(10)
+            )
+            BEGIN
+                DECLARE v_count INT DEFAULT 0;
+                DECLARE v_existing_id VARCHAR(10) DEFAULT '';
+                DECLARE v_existing_d_spno CHAR(7) DEFAULT '';
+                DECLARE v_new_guest_id VARCHAR(10);
+                DECLARE v_member_type_exists INT DEFAULT 0;
+
+                -- 初始化輸出參數
+                SET errcode = 0;
+                SET guest_id = '';
+
+                -- 檢查 member_type 欄位是否存在
+                SELECT COUNT(*)
+                INTO v_member_type_exists
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = 'member'
+                  AND COLUMN_NAME = 'member_type';
+
+                -- 檢查是否已存在相同的來賓（根據姓名、生日、電話）
+                -- 首先檢查數量
+                SELECT COUNT(*)
+                INTO v_count
+                FROM member
+                WHERE c_name = cname
+                  AND (birth_date = bdate OR birth_date IS NULL)
+                  AND (phone = cell OR phone IS NULL);
+
+                -- 如果存在，取得詳細資料
+                IF v_count > 0 THEN
+                    SELECT c_no, COALESCE(d_spno, '') as d_spno
+                    INTO v_existing_id, v_existing_d_spno
+                    FROM member
+                    WHERE c_name = cname
+                      AND (birth_date = bdate OR birth_date IS NULL)
+                      AND (phone = cell OR phone IS NULL)
+                    LIMIT 1;
+                END IF;
+
+                IF v_count > 0 THEN
+                    -- 已存在此來賓
+                    SET guest_id = v_existing_id;
+
+                    -- 簡化邏輯：如果推薦人不同則返回錯誤2，否則返回錯誤1
+                    IF v_existing_d_spno != d_spno THEN
+                        -- 推薦人不同
+                        SET errcode = 2;
+                    ELSE
+                        -- 已存在此來賓，推薦人相同
+                        SET errcode = 1;
+                    END IF;
+                ELSE
+                    -- 新來賓，通過驗證
+                    SET errcode = 0;
+
+                    -- 如果是正式模式，產生來賓編號並新增資料
+                    IF test_mode = 0 THEN
+                        -- 產生新的來賓編號 (G + 6位數字)
+                        SELECT CONCAT('G', LPAD(COALESCE(MAX(CAST(SUBSTRING(c_no, 2) AS UNSIGNED)), 0) + 1, 6, '0'))
+                        INTO v_new_guest_id
+                        FROM member
+                        WHERE c_no LIKE 'G%';
+
+                        -- 插入新來賓資料（根據欄位是否存在決定插入語句）
+                        IF v_member_type_exists > 0 THEN
+                            INSERT INTO member (c_no, d_spno, c_name, birth_date, phone, member_type)
+                            VALUES (v_new_guest_id, d_spno, cname, bdate, cell, 'guest');
+                        ELSE
+                            INSERT INTO member (c_no, d_spno, c_name)
+                            VALUES (v_new_guest_id, d_spno, cname);
+                        END IF;
+
+                        SET guest_id = v_new_guest_id;
+                    ELSE
+                        -- 測試模式，不實際新增資料
+                        SET guest_id = 'TEST_GUEST';
+                    END IF;
+                END IF;
+
+            END
+            ";
+
+            // 執行創建預儲程序
+            $result = $this->db->query($procedure_sql);
+
+            if (!$result) {
+                $db_error = $this->db->error();
+                throw new Exception('創建預儲程序失敗: ' . $db_error['message']);
+            }
+
+            // 檢查哪些欄位被添加了
+            $added_columns = [];
+            if ($member_table_exists) {
+                foreach ($columns_to_check as $column => $alter_sql) {
+                    $column_check = $this->db->query("SHOW COLUMNS FROM `member` LIKE '{$column}'");
+                    if ($column_check && $column_check->num_rows() > 0) {
+                        $added_columns[] = $column;
+                    }
+                }
+            }
+
+            return [
+                'success' => true,
+                'message' => 'ww_chkguest 預儲程序創建成功',
+                'procedure_name' => 'ww_chkguest',
+                'created_at' => date('Y-m-d H:i:s'),
+                'member_table_existed' => $member_table_exists,
+                'columns_added' => $member_table_exists ? $added_columns : ['所有欄位 (新建表)'],
+                'parameters' => [
+                    'test_mode' => 'TINYINT (1=測試用, 0=正式模式)',
+                    'd_spno' => 'CHAR(7) (推薦人編號)',
+                    'cname' => 'VARCHAR(20) (來賓姓名)',
+                    'bdate' => 'VARCHAR(8) (生日 YYYYMMDD)',
+                    'cell' => 'VARCHAR(20) (電話)'
+                ],
+                'output_parameters' => [
+                    'errcode' => 'SMALLINT (0=通過, 1=已存在, 2=推薦人不同, 3=已是會員)',
+                    'guest_id' => 'VARCHAR(10) (來賓編號)'
+                ]
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => '創建預儲程序失敗: ' . $e->getMessage()
+            ];
         }
     }
 }

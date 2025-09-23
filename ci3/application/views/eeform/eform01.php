@@ -33,8 +33,8 @@
                             <input type="hidden" name="birth_day" />
                           </div>
                           <div class="col-sm-3 mb30">
-                            <label class="label-custom">電話</label>
-                            <input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" required />
+                            <label class="label-custom" id="phone-label">電話</label>
+                            <input type="tel" name="phone" class="form-control form-control-custom" placeholder="請填09xxxxxxxx" id="phone-input" />
                           </div>
 
                           <div class="col-sm-12 mb30">
@@ -1175,9 +1175,20 @@
           // guest 模式：隱藏會員編號欄位，且移除驗證
           $('#member-id-field').hide();
           $('input[name="member_id"]').removeAttr('required');
+
+          // 來賓模式：電話為必填，更新標籤和驗證
+          $('#phone-label').html('電話<span style="color: red;">(*必填)</span>');
+          $('#phone-input').attr('required', 'required');
+
+          // 來賓模式：設置欄位監聽
+          setupGuestFieldMonitoring();
         } else {
           // member 模式或預設模式：顯示會員編號欄位
           $('#member-id-field').show();
+
+          // 會員模式：電話為選填，移除必填標示和驗證
+          $('#phone-label').html('電話');
+          $('#phone-input').removeAttr('required');
         }
 
         // 設定會員編號欄位，預設為 000000
@@ -1266,6 +1277,48 @@
             }
           }
         });
+      }
+
+      // 來賓模式：設置欄位監聽
+      function setupGuestFieldMonitoring() {
+        // 移除之前可能存在的事件監聽器，避免重複綁定
+        $('input[name="member_name"], input[name="birth_date"], input[name="phone"]').off('blur.guestMonitor');
+
+        // 為三個關鍵欄位添加事件監聽器（離開欄位時執行檢查）
+        $('input[name="member_name"]').on('blur.guestMonitor', checkGuestFields);
+        $('input[name="birth_date"]').on('blur.guestMonitor', checkGuestFields);
+        $('input[name="phone"]').on('blur.guestMonitor', checkGuestFields);
+      }
+
+      // 檢查來賓必填欄位是否都已填寫
+      function checkGuestFields() {
+        // 只在來賓模式下執行
+        if (identityParam !== 'guest') {
+          return;
+        }
+
+        var memberName = $('input[name="member_name"]').val();
+        var birthDate = $('input[name="birth_date"]').val();
+        var phone = $('input[name="phone"]').val();
+
+        // 檢查三個欄位是否都有資料
+        if (memberName && memberName.trim() !== '' &&
+            birthDate && birthDate.trim() !== '' &&
+            phone && phone.trim() !== '') {
+
+          // 顯示提示訊息
+          if (typeof Swal !== 'undefined') {
+            Swal.fire({
+              title: '系統提示',
+              text: '有資料!',
+              icon: 'info',
+              showConfirmButton: false,
+              timer: 1500
+            });
+          } else {
+            alert('有資料!');
+          }
+        }
       }
 
       // 設定會員下拉選單
@@ -1362,8 +1415,8 @@
           $('input[name="birth_date"]').val(randomYear + '-' + (randomMonth < 10 ? '0' : '') + randomMonth + '-' + (randomDay < 10 ? '0' : '') + randomDay);
         }
         
-        // 電話 - 必填
-        if (!$('input[name="phone"]').val()) {
+        // 電話 - 來賓模式必填
+        if (identityParam === 'guest' && !$('input[name="phone"]').val()) {
           var phonePrefix = ['0912', '0933', '0988', '0975', '0910'];
           var randomPhone = phonePrefix[Math.floor(Math.random() * phonePrefix.length)] + Math.floor(100000 + Math.random() * 900000);
           $('input[name="phone"]').val(randomPhone);
@@ -1495,7 +1548,11 @@
         var missingFields = [];
         if (!memberName || memberName === '請選擇會員') missingFields.push('會員姓名');
         if (!birthDate) missingFields.push('出生年月日');
-        if (!phone) missingFields.push('電話');
+
+        // 來賓模式下電話為必填
+        if (identityParam === 'guest' && !phone) {
+          missingFields.push('電話');
+        }
         
         // 為往後相容性，從年月日中提取年月日
         var birthYear = '', birthMonth = '', birthDay = '';

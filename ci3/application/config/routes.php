@@ -76,6 +76,7 @@ $route['api/eeform1/list'] = 'api/eeform/eeform1/list';
 $route['api/eeform1/member_lookup/(:any)'] = 'api/eeform/eeform1/member_lookup/$1';
 $route['api/eeform1/export_single/(:any)'] = 'api/eeform/eeform1/export_single/$1';
 $route['api/eeform1/test_write'] = 'api/eeform/eeform1/test_write';
+$route['api/eeform1/test_procedure'] = 'api/eeform/eeform1/test_procedure';
 
 // eform2 view routes
 $route['eform/eform2'] = 'eform/eform2';

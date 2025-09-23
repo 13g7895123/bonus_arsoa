@@ -90,12 +90,18 @@ class Eeform1Model extends CI_Model
     public function validate_submission_data($data)
     {
         $errors = [];
-        // 檢查必填欄位 - 支援新的 birth_date 或舊的 birth_year/birth_month
-        $required_fields = ['member_name', 'phone'];
-        foreach ($required_fields as $field) {
-            if (empty($data[$field])) {
-                $errors[] = "必填欄位 {$field} 不能為空";
-            }
+
+        // 檢查必填欄位 - 根據 identity 參數調整驗證規則
+        $identity = isset($data['identity']) ? $data['identity'] : null;
+
+        // 會員姓名永遠是必填的
+        if (empty($data['member_name'])) {
+            $errors[] = "必填欄位 member_name 不能為空";
+        }
+
+        // 來賓模式：phone 必填；會員模式：phone 非必填
+        if ($identity === 'guest' && empty($data['phone'])) {
+            $errors[] = "必填欄位 phone 不能為空";
         }
         
         // 驗證出生年月日 - 支援新的 birth_date (YYYY-MM-DD) 或舊的 birth_year/birth_month/birth_day
@@ -185,7 +191,7 @@ class Eeform1Model extends CI_Model
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
                 'birth_day' => intval($data['birth_day']),
-                'phone' => $data['phone'],
+                'phone' => isset($data['phone']) ? $data['phone'] : null,
                 'skin_type' => isset($data['skin_type']) ? $data['skin_type'] : null,
                 'skin_age' => isset($data['skin_age']) ? intval($data['skin_age']) : null,
                 'submission_date' => date('Y-m-d H:i:s'),
@@ -607,7 +613,7 @@ class Eeform1Model extends CI_Model
                 'birth_year' => intval($data['birth_year']),
                 'birth_month' => intval($data['birth_month']),
                 'birth_day' => intval($data['birth_day']),
-                'phone' => $data['phone'],
+                'phone' => isset($data['phone']) ? $data['phone'] : null,
                 'skin_type' => isset($data['skin_type']) ? $data['skin_type'] : null,
                 'skin_age' => isset($data['skin_age']) ? intval($data['skin_age']) : null,
                 'updated_at' => date('Y-m-d H:i:s')
@@ -1078,6 +1084,261 @@ class Eeform1Model extends CI_Model
             $this->db->trans_rollback();
             log_message('error', 'Error deleting all test data: ' . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * 檢查 MySQL 預儲程序是否存在
+     * @param string $procedure_name
+     * @return array
+     */
+    public function check_mysql_procedure($procedure_name) {
+        try {
+            // 使用 INFORMATION_SCHEMA 查詢預儲程序
+            $sql = "SELECT
+                        ROUTINE_NAME,
+                        ROUTINE_TYPE,
+                        ROUTINE_SCHEMA,
+                        CREATED,
+                        LAST_ALTERED,
+                        ROUTINE_COMMENT
+                    FROM INFORMATION_SCHEMA.ROUTINES
+                    WHERE ROUTINE_SCHEMA = DATABASE()
+                      AND ROUTINE_NAME = ?
+                      AND ROUTINE_TYPE = 'PROCEDURE'";
+
+            $query = $this->db->query($sql, [$procedure_name]);
+
+            if (!$query) {
+                throw new Exception('MySQL query failed: ' . $this->db->error()['message']);
+            }
+
+            $result = $query->row_array();
+
+            if ($result) {
+                // 預儲程序存在，取得參數資訊
+                $param_sql = "SELECT
+                                PARAMETER_NAME,
+                                PARAMETER_MODE,
+                                DATA_TYPE,
+                                CHARACTER_MAXIMUM_LENGTH
+                            FROM INFORMATION_SCHEMA.PARAMETERS
+                            WHERE SPECIFIC_SCHEMA = DATABASE()
+                              AND SPECIFIC_NAME = ?
+                            ORDER BY ORDINAL_POSITION";
+
+                $param_query = $this->db->query($param_sql, [$procedure_name]);
+                $parameters = $param_query ? $param_query->result_array() : [];
+
+                return [
+                    'exists' => true,
+                    'database_type' => 'MySQL',
+                    'procedure_info' => $result,
+                    'parameters' => $parameters,
+                    'message' => '預儲程序存在於 MySQL 資料庫中'
+                ];
+            } else {
+                return [
+                    'exists' => false,
+                    'database_type' => 'MySQL',
+                    'message' => '預儲程序不存在於 MySQL 資料庫中'
+                ];
+            }
+
+        } catch (Exception $e) {
+            return [
+                'exists' => false,
+                'database_type' => 'MySQL',
+                'error' => $e->getMessage(),
+                'message' => 'MySQL 檢查失敗: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * 檢查 MSSQL 預儲程序是否存在
+     * @param string $procedure_name
+     * @return array
+     */
+    public function check_mssql_procedure($procedure_name) {
+        try {
+            // 使用設定檔中的 MSSQL 連線配置
+            $mssql_db = $this->load->database('mssql', TRUE);
+
+            if (!$mssql_db) {
+                return [
+                    'exists' => false,
+                    'database_type' => 'MSSQL',
+                    'error' => 'MSSQL 連線失敗',
+                    'message' => '無法連線到 MSSQL 資料庫'
+                ];
+            }
+
+            // 查詢 MSSQL 預儲程序
+            $sql = "SELECT
+                        name,
+                        type_desc,
+                        create_date,
+                        modify_date
+                    FROM sys.objects
+                    WHERE type = 'P'
+                      AND name = ?";
+
+            $query = $mssql_db->query($sql, [$procedure_name]);
+
+            if (!$query) {
+                $mssql_db->close();
+                throw new Exception('MSSQL query failed');
+            }
+
+            $result = $query->row_array();
+            $mssql_db->close();
+
+            if ($result) {
+                return [
+                    'exists' => true,
+                    'database_type' => 'MSSQL',
+                    'procedure_info' => $result,
+                    'message' => '預儲程序存在於 MSSQL 資料庫中'
+                ];
+            } else {
+                return [
+                    'exists' => false,
+                    'database_type' => 'MSSQL',
+                    'message' => '預儲程序不存在於 MSSQL 資料庫中'
+                ];
+            }
+
+        } catch (Exception $e) {
+            return [
+                'exists' => false,
+                'database_type' => 'MSSQL',
+                'error' => $e->getMessage(),
+                'message' => 'MSSQL 檢查失敗: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * 測試 MySQL 預儲程序
+     * @param array $test_data
+     * @return array
+     */
+    public function test_mysql_procedure($test_data) {
+        try {
+            // 調用 MySQL 預儲程序
+            $sql = "CALL ww_chkguest(?, ?, ?, ?, ?, @errcode, @guest_id)";
+
+            $result = $this->db->query($sql, [
+                $test_data['test'],
+                $test_data['d_spno'],
+                $test_data['cname'],
+                $test_data['bdate'],
+                $test_data['cell']
+            ]);
+
+            if (!$result) {
+                throw new Exception('MySQL 預儲程序調用失敗: ' . $this->db->error()['message']);
+            }
+
+            // 取得輸出參數
+            $output_query = $this->db->query("SELECT @errcode as errcode, @guest_id as guest_id");
+            $output = $output_query ? $output_query->row_array() : null;
+
+            // 錯誤代碼對應訊息
+            $error_messages = [
+                0 => '來賓身分通過驗證',
+                1 => '已存在此來賓',
+                2 => '已存在此來賓，但推薦人不同',
+                3 => '此來賓已經是會員了'
+            ];
+
+            $errcode = isset($output['errcode']) ? (int)$output['errcode'] : -1;
+
+            return [
+                'success' => true,
+                'database_type' => 'MySQL',
+                'input_data' => $test_data,
+                'output' => $output,
+                'errcode' => $errcode,
+                'guest_id' => $output['guest_id'] ?? null,
+                'message' => $error_messages[$errcode] ?? '未知錯誤',
+                'execution_time' => date('Y-m-d H:i:s')
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'database_type' => 'MySQL',
+                'error' => $e->getMessage(),
+                'input_data' => $test_data,
+                'message' => 'MySQL 預儲程序執行失敗: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * 測試 MSSQL 預儲程序
+     * @param array $test_data
+     * @return array
+     */
+    public function test_mssql_procedure($test_data) {
+        try {
+            // 使用設定檔中的 MSSQL 連線配置
+            $mssql_db = $this->load->database('mssql', TRUE);
+
+            if (!$mssql_db) {
+                throw new Exception('MSSQL 連線失敗');
+            }
+
+            // 調用 MSSQL 預儲程序
+            $sql = "EXEC ww_chkguest ?, ?, ?, ?, ?";
+
+            $result = $mssql_db->query($sql, [
+                $test_data['test'],
+                $test_data['d_spno'],
+                $test_data['cname'],
+                $test_data['bdate'],
+                $test_data['cell']
+            ]);
+
+            if (!$result) {
+                $mssql_db->close();
+                throw new Exception('MSSQL 預儲程序調用失敗');
+            }
+
+            $output = $result->row_array();
+            $mssql_db->close();
+
+            // 錯誤代碼對應訊息
+            $error_messages = [
+                0 => '來賓身分通過驗證',
+                1 => '已存在此來賓',
+                2 => '已存在此來賓，但推薦人不同',
+                3 => '此來賓已經是會員了'
+            ];
+
+            $errcode = isset($output['errcode']) ? (int)$output['errcode'] : -1;
+
+            return [
+                'success' => true,
+                'database_type' => 'MSSQL',
+                'input_data' => $test_data,
+                'output' => $output,
+                'errcode' => $errcode,
+                'guest_id' => $output['c_no'] ?? null,
+                'message' => $error_messages[$errcode] ?? '未知錯誤',
+                'execution_time' => date('Y-m-d H:i:s')
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'database_type' => 'MSSQL',
+                'error' => $e->getMessage(),
+                'input_data' => $test_data,
+                'message' => 'MSSQL 預儲程序執行失敗: ' . $e->getMessage()
+            ];
         }
     }
 }
