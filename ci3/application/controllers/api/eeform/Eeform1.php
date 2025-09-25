@@ -1085,10 +1085,134 @@ class Eeform1 extends CI_Controller
     }
 
     /**
+     * 創建來賓（正式模式）
+     * POST /api/eeform1/create_guest
+     */
+    public function create_guest() {
+        try {
+            if ($this->input->method(TRUE) !== 'POST') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得POST資料
+            $raw_input = $this->input->raw_input_stream;
+            $input_data = json_decode($raw_input, true);
+
+            if (!$input_data) {
+                $input_data = $this->input->post();
+            }
+
+            if (empty($input_data)) {
+                $this->_send_error('沒有接收到資料', 400, [
+                    'raw_input' => $raw_input,
+                    'post_data' => $this->input->post(),
+                    'json_last_error' => json_last_error_msg()
+                ]);
+                return;
+            }
+
+            // 驗證必填欄位
+            $required_fields = ['d_spno', 'cname', 'bdate', 'cell'];
+            $missing_fields = [];
+
+            foreach ($required_fields as $field) {
+                if (empty($input_data[$field])) {
+                    $missing_fields[] = $field;
+                }
+            }
+
+            if (!empty($missing_fields)) {
+                $this->_send_error('缺少必填欄位', 400, [
+                    'missing_fields' => $missing_fields,
+                    'required_fields' => [
+                        'd_spno' => '推薦人編號',
+                        'cname' => '來賓姓名',
+                        'bdate' => '生日 (YYYYMMDD)',
+                        'cell' => '電話'
+                    ]
+                ]);
+                return;
+            }
+
+            // 驗證資料格式
+            $validation_errors = [];
+
+            // 驗證生日格式 (YYYYMMDD)
+            if (!preg_match('/^\d{8}$/', $input_data['bdate'])) {
+                $validation_errors[] = '生日格式錯誤，需為8位數字 (YYYYMMDD)';
+            }
+
+            // 驗證電話格式
+            if (!preg_match('/^09\d{8}$/', $input_data['cell'])) {
+                $validation_errors[] = '電話格式錯誤，請輸入09開頭的10位數字';
+            }
+
+            // 驗證推薦人編號格式
+            if (strlen($input_data['d_spno']) > 7) {
+                $validation_errors[] = '推薦人編號不能超過7個字符';
+            }
+
+            // 驗證姓名長度
+            if (strlen($input_data['cname']) > 20) {
+                $validation_errors[] = '來賓姓名不能超過20個字符';
+            }
+
+            if (!empty($validation_errors)) {
+                $this->_send_error('資料格式驗證失敗', 400, [
+                    'validation_errors' => $validation_errors
+                ]);
+                return;
+            }
+
+            // 準備預儲程序資料
+            $guest_data = [
+                'd_spno' => $input_data['d_spno'],
+                'cname' => $input_data['cname'],
+                'bdate' => $input_data['bdate'],
+                'cell' => $input_data['cell']
+            ];
+
+            // 呼叫預儲程序（正式模式）
+            $result = $this->eform1_model->create_guest_procedure($guest_data);
+
+            if ($result['success']) {
+                $this->_send_success('來賓創建成功', $result);
+            } else {
+                // 根據錯誤代碼回傳不同的錯誤訊息
+                $error_code = $result['errcode'] ?? -1;
+                $status_code = 400;
+
+                if ($error_code === 2) {
+                    $status_code = 409; // Conflict - 推薦人不同
+                } elseif ($error_code === 3) {
+                    $status_code = 409; // Conflict - 已是會員
+                } elseif ($error_code === -1) {
+                    $status_code = 500; // Internal Server Error
+                }
+
+                $this->_send_error($result['message'], $status_code, [
+                    'errcode' => $error_code,
+                    'guest_id' => $result['guest_id'],
+                    'details' => $result
+                ]);
+            }
+
+        } catch (Exception $e) {
+            log_message('error', 'Create guest API error: ' . $e->getMessage());
+            $this->_send_error('創建來賓時發生錯誤: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
      * 發送成功回應
-     * @param string $message 
-     * @param mixed $data 
-     * @param int $code 
+     * @param string $message
+     * @param mixed $data
+     * @param int $code
      */
     private function _send_success($message = 'Success', $data = null, $code = 200) {
         $response = [

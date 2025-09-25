@@ -106,6 +106,9 @@ $route['api/eeform1/member_lookup/(:any)'] = 'api/eeform/eeform1/member_lookup/$
 $route['api/eeform1/export_single/(:any)'] = 'api/eeform/eeform1/export_single/$1';
 $route['api/eeform1/test_procedure'] = 'api/eeform/eeform1/test_procedure';
 $route['api/eeform1/create_procedure'] = 'api/eeform/eeform1/create_procedure';
+$route['api/eeform1/create_guest'] = 'api/eeform/eeform1/create_guest';
+$route['api/eeform1/ww_chkguest_test'] = 'api/eeform/eeform1/ww_chkguest_test';
+$route['api/eeform1/ww_chkguest_create'] = 'api/eeform/eeform1/ww_chkguest_create';
 
 $route['api/eeform2/health'] = 'api/eeform/eeform2/health';
 $route['api/eeform2/member_lookup/(:any)'] = 'api/eeform/eeform2/member_lookup/$1';

@@ -1290,6 +1290,9 @@
         $('input[name="phone"]').on('blur.guestMonitor', checkGuestFields);
       }
 
+      // 全域變數儲存來賓編號
+      var guestCNo = null;
+
       // 檢查來賓必填欄位是否都已填寫
       function checkGuestFields() {
         // 只在來賓模式下執行
@@ -1306,19 +1309,127 @@
             birthDate && birthDate.trim() !== '' &&
             phone && phone.trim() !== '') {
 
-          // 顯示提示訊息
+          // 顯示確認來賓資料的提示
           if (typeof Swal !== 'undefined') {
             Swal.fire({
               title: '系統提示',
-              text: '有資料!',
-              icon: 'info',
+              text: '確認來賓資料，請稍後',
+              icon: 'warning',
               showConfirmButton: false,
-              timer: 1500
+              allowOutsideClick: false,
+              allowEscapeKey: false
             });
+
+            // 準備測試預儲程序的資料
+            var testData = {
+              d_spno: currentUserData.member_id || '000000', // 推薦人編號
+              cname: memberName.trim(),
+              bdate: formatDateForProcedure(birthDate.trim()), // 轉換為 YYYYMMDD 格式
+              cell: phone.trim()
+            };
+
+            // 呼叫測試預儲程序 API
+            callTestProcedureAPI(testData);
           } else {
-            alert('有資料!');
+            alert('確認來賓資料，請稍後');
           }
         }
+      }
+
+      // 格式化日期為預儲程序所需的格式 (YYYYMMDD)
+      function formatDateForProcedure(dateStr) {
+        // 假設輸入格式為 YYYY-MM-DD
+        if (dateStr && dateStr.includes('-')) {
+          return dateStr.replace(/-/g, '');
+        }
+        return dateStr;
+      }
+
+      // 呼叫測試預儲程序 API
+      function callTestProcedureAPI(testData) {
+        $.ajax({
+          url: '/api/eeform1/test_procedure',
+          type: 'GET',
+          dataType: 'json',
+          success: function(response) {
+            if (response && response.success && response.data && response.data.mysql && response.data.mysql.test_result) {
+              var testResult = response.data.mysql.test_result;
+              var errcode = testResult.errcode;
+
+              if (errcode <= 1) {
+                // 檢測成功
+                Swal.fire({
+                  title: '系統提示',
+                  text: '檢測成功，請繼續填寫表單',
+                  icon: 'success',
+                  showConfirmButton: false,
+                  timer: 2000
+                }).then(function() {
+                  // 執行正式預儲程序，取得 c_no
+                  callCreateGuestAPI(testData);
+                });
+              } else {
+                // 檢測失敗
+                Swal.fire({
+                  title: '系統提示',
+                  text: '檢驗錯誤，請確認資料是否有誤',
+                  icon: 'error',
+                  confirmButtonText: '確定'
+                });
+              }
+            } else {
+              // API 回應格式錯誤
+              Swal.fire({
+                title: '系統提示',
+                text: '檢驗錯誤，請確認資料是否有誤',
+                icon: 'error',
+                confirmButtonText: '確定'
+              });
+            }
+          },
+          error: function(xhr, status, error) {
+            // API 呼叫失敗
+            Swal.fire({
+              title: '系統提示',
+              text: '檢驗錯誤，請確認資料是否有誤',
+              icon: 'error',
+              confirmButtonText: '確定'
+            });
+          }
+        });
+      }
+
+      // 呼叫正式預儲程序 API 取得 c_no
+      function callCreateGuestAPI(guestData) {
+        $.ajax({
+          url: '/api/eeform1/create_guest',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(guestData),
+          dataType: 'json',
+          success: function(response) {
+            if (response && response.success && response.data && response.data.c_no) {
+              // 成功取得來賓編號，儲存起來供表單提交時使用
+              guestCNo = response.data.c_no;
+              console.log('來賓編號已儲存:', guestCNo);
+
+              // 可選：顯示成功訊息
+              // Swal.fire({
+              //   title: '系統提示',
+              //   text: '來賓資料已確認，編號：' + guestCNo,
+              //   icon: 'info',
+              //   showConfirmButton: false,
+              //   timer: 1500
+              // });
+            } else {
+              console.warn('無法取得來賓編號:', response);
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('呼叫正式預儲程序失敗:', error);
+            // 不顯示錯誤訊息給用戶，因為測試已經通過了
+          }
+        });
       }
 
       // 設定會員下拉選單
@@ -1735,14 +1846,20 @@
           memberId = currentUserData.member_id;
           memberName = $('input[name="member_name"]').val() ? $('input[name="member_name"]').val().trim() : '';
         }
-        
+
+        // 如果是來賓模式且有取得來賓編號，則使用來賓編號作為 member_id
+        if (identityParam === 'guest' && guestCNo) {
+          memberId = guestCNo;
+        }
+
         var formData = {
           // 使用者識別資訊 - 調整送出資料
-          member_id: memberId, // 保留欄位但可能為空（相容性）
+          member_id: memberId, // 在來賓模式下為來賓編號，會員模式為會員編號
           member_name: memberName, // 被填表人姓名
           form_filler_id: formFillerID, // 代填問卷者ID（當前登入使用者）
           form_filler_name: formFillerName, // 代填問卷者姓名
           identity: identityParam, // 填表身份：member/guest
+          guest_c_no: identityParam === 'guest' ? guestCNo : null, // 來賓編號（額外欄位）
           birth_date: $('input[name="birth_date"]').val(),
           birth_year: $('input[name="birth_year"]').val(), // 從日期提取的年份
           birth_month: $('input[name="birth_month"]').val(), // 從日期提取的月份

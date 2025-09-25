@@ -184,10 +184,27 @@ class Eeform1 extends MY_Controller
                     'submission_date' => date('Y-m-d H:i:s')
                 ]);
             } else {
-                $this->_send_error('表單提交失敗', 500, [
+                // 獲取詳細的資料庫錯誤資訊
+                $db_error = $this->db->error();
+                $last_query = $this->db->last_query();
+
+                $detailed_error = [
                     'debug' => 'create_submission returned false',
-                    'input_data' => $input_data
-                ]);
+                    'db_error_code' => $db_error['code'],
+                    'db_error_message' => $db_error['message'],
+                    'last_query' => $last_query,
+                    'input_data_structure' => [
+                        'keys' => array_keys($input_data),
+                        'identity' => isset($input_data['identity']) ? $input_data['identity'] : 'not_set',
+                        'member_id' => isset($input_data['member_id']) ? $input_data['member_id'] : 'not_set',
+                        'member_name' => isset($input_data['member_name']) ? $input_data['member_name'] : 'not_set'
+                    ],
+                    'table_check' => $this->_check_table_structure()
+                ];
+
+                error_log('API Submit Error Details: ' . json_encode($detailed_error));
+
+                $this->_send_error('表單提交失敗 - 詳細錯誤請查看伺服器日誌', 500, $detailed_error);
             }
 
         } catch (Exception $e) {
@@ -1088,46 +1105,45 @@ class Eeform1 extends MY_Controller
                 return;
             }
 
-            // 檢查預儲程序是否已存在
-            $check_result = $this->eform1_model->check_mysql_procedure('ww_chkguest');
+            // 檢查MSSQL預儲程序是否存在
+            $check_result = $this->eform1_model->check_mssql_procedure('ww_chkguest');
 
-            if ($check_result['exists']) {
-                $this->_send_error('預儲程序已存在，無需重複創建', 409, [
-                    'procedure_info' => $check_result['procedure_info']
+            if (!$check_result['exists']) {
+                $this->_send_error('MSSQL預儲程序 ww_chkguest 不存在，請在MSSQL伺服器上建立該預儲程序', 404, [
+                    'procedure_info' => $check_result,
+                    'note' => '請參考第5點的預儲程序說明在MSSQL伺服器上建立 ww_chkguest',
+                    'required_parameters' => [
+                        '@test' => 'smallint (1=測試用, 0=正式模式)',
+                        '@d_spno' => 'char(7) (推薦人編號)',
+                        '@cname' => 'nvarchar(20) (來賓姓名)',
+                        '@bdate' => 'varchar(8) (生日 YYYYMMDD)',
+                        '@cell' => 'varchar(20) (電話)'
+                    ]
                 ]);
                 return;
             }
 
-            // 創建預儲程序
-            $create_result = $this->eform1_model->create_mysql_procedure();
+            // 預儲程序存在，執行測試
+            $test_data = [
+                'test' => 1,
+                'd_spno' => '000000',
+                'cname' => '章喆',
+                'bdate' => '19780615',
+                'cell' => '0966-123-456'
+            ];
 
-            if ($create_result['success']) {
-                // 創建成功後，再次檢查並測試
-                $verify_result = $this->eform1_model->check_mysql_procedure('ww_chkguest');
+            $test_result = $this->eform1_model->test_mssql_ww_chkguest($test_data);
 
-                $response_data = [
-                    'creation_result' => $create_result,
-                    'verification' => $verify_result,
-                    'timestamp' => date('Y-m-d H:i:s')
-                ];
+            $response_data = [
+                'procedure_check' => $check_result,
+                'test_result' => $test_result,
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
 
-                // 如果創建成功，執行一次測試
-                if ($verify_result['exists']) {
-                    $test_data = [
-                        'test' => 1,
-                        'd_spno' => '000000',
-                        'cname' => '章喆',
-                        'bdate' => '19780615',
-                        'cell' => '0966-123-456'
-                    ];
-
-                    $test_result = $this->eform1_model->test_mysql_procedure($test_data);
-                    $response_data['test_result'] = $test_result;
-                }
-
-                $this->_send_success('MySQL 預儲程序創建成功', $response_data);
+            if ($test_result['success']) {
+                $this->_send_success('MSSQL預儲程序檢查和測試完成', $response_data);
             } else {
-                $this->_send_error('預儲程序創建失敗', 500, $create_result);
+                $this->_send_error('MSSQL預儲程序測試失敗', 500, $response_data);
             }
 
         } catch (Exception $e) {
@@ -1169,28 +1185,25 @@ class Eeform1 extends MY_Controller
 
             // 檢查 MySQL 預儲程序
             try {
-                $mysql_result = $this->eform1_model->check_mysql_procedure('ww_chkguest');
-                $results['mysql'] = $mysql_result;
+                $mssql_result = $this->eform1_model->check_mssql_procedure('ww_chkguest');
+                $results['mssql'] = $mssql_result;
 
-                // 如果 MySQL 預儲程序存在，執行測試
-                if ($mysql_result['exists']) {
-                    $test_result = $this->eform1_model->test_mysql_procedure($test_data);
-                    $results['mysql']['test_result'] = $test_result;
+                // 如果 MSSQL 預儲程序存在，執行測試
+                if ($mssql_result['exists']) {
+                    $test_result = $this->eform1_model->test_mssql_ww_chkguest($test_data);
+                    $results['mssql']['test_result'] = $test_result;
+                } else {
+                    $results['mssql']['test_result'] = [
+                        'success' => false,
+                        'message' => 'MSSQL預儲程序不存在，跳過測試'
+                    ];
                 }
             } catch (Exception $e) {
-                $results['mysql'] = [
+                $results['mssql'] = [
                     'exists' => false,
-                    'error' => 'MySQL 連線或查詢錯誤: ' . $e->getMessage()
+                    'error' => 'MSSQL 連線或查詢錯誤: ' . $e->getMessage()
                 ];
             }
-
-            // 暫時隱藏 MSSQL 檢查功能
-            $results['mssql'] = [
-                'exists' => false,
-                'database_type' => 'MSSQL',
-                'message' => '暫時停用 MSSQL 檢查功能，只處理 MySQL',
-                'status' => 'disabled'
-            ];
 
             $this->_send_success('預儲程序檢查完成', $results);
 
@@ -1205,10 +1218,170 @@ class Eeform1 extends MY_Controller
     }
 
     /**
+     * 創建來賓（正式模式）
+     * POST /api/eeform1/create_guest
+     */
+    public function create_guest() {
+        try {
+            if ($this->input->method(TRUE) !== 'POST') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得POST資料
+            $raw_input = $this->input->raw_input_stream;
+            $input_data = json_decode($raw_input, true);
+
+            if (!$input_data) {
+                $input_data = $this->input->post();
+            }
+
+            if (empty($input_data)) {
+                $this->_send_error('沒有接收到資料', 400, [
+                    'raw_input' => $raw_input,
+                    'post_data' => $this->input->post(),
+                    'json_last_error' => json_last_error_msg()
+                ]);
+                return;
+            }
+
+            // 驗證必填欄位
+            $required_fields = ['d_spno', 'cname', 'bdate', 'cell'];
+            $missing_fields = [];
+
+            foreach ($required_fields as $field) {
+                if (empty($input_data[$field])) {
+                    $missing_fields[] = $field;
+                }
+            }
+
+            if (!empty($missing_fields)) {
+                $this->_send_error('缺少必填欄位', 400, [
+                    'missing_fields' => $missing_fields,
+                    'required_fields' => [
+                        'd_spno' => '推薦人編號',
+                        'cname' => '來賓姓名',
+                        'bdate' => '生日 (YYYYMMDD)',
+                        'cell' => '電話'
+                    ]
+                ]);
+                return;
+            }
+
+            // 驗證資料格式
+            $validation_errors = [];
+
+            // 驗證生日格式 (YYYYMMDD)
+            if (!preg_match('/^\d{8}$/', $input_data['bdate'])) {
+                $validation_errors[] = '生日格式錯誤，需為8位數字 (YYYYMMDD)';
+            }
+
+            // 驗證電話格式
+            if (!preg_match('/^09\d{8}$/', $input_data['cell'])) {
+                $validation_errors[] = '電話格式錯誤，請輸入09開頭的10位數字';
+            }
+
+            // 驗證推薦人編號格式
+            if (strlen($input_data['d_spno']) > 7) {
+                $validation_errors[] = '推薦人編號不能超過7個字符';
+            }
+
+            // 驗證姓名長度
+            if (strlen($input_data['cname']) > 20) {
+                $validation_errors[] = '來賓姓名不能超過20個字符';
+            }
+
+            if (!empty($validation_errors)) {
+                $this->_send_error('資料格式驗證失敗', 400, [
+                    'validation_errors' => $validation_errors
+                ]);
+                return;
+            }
+
+            // 準備預儲程序資料
+            $guest_data = [
+                'd_spno' => $input_data['d_spno'],
+                'cname' => $input_data['cname'],
+                'bdate' => $input_data['bdate'],
+                'cell' => $input_data['cell']
+            ];
+
+            // 呼叫 MSSQL 預儲程序（正式模式）
+            $result = $this->eform1_model->create_mssql_ww_chkguest($guest_data);
+
+            if ($result['success']) {
+                $this->_send_success('來賓創建成功', $result);
+            } else {
+                // 根據錯誤代碼回傳不同的錯誤訊息
+                $error_code = $result['errcode'] ?? -1;
+                $status_code = 400;
+
+                if ($error_code === 2) {
+                    $status_code = 409; // Conflict - 推薦人不同
+                } elseif ($error_code === 3) {
+                    $status_code = 409; // Conflict - 已是會員
+                } elseif ($error_code === -1) {
+                    $status_code = 500; // Internal Server Error
+                }
+
+                $this->_send_error($result['message'], $status_code, [
+                    'errcode' => $error_code,
+                    'guest_id' => $result['guest_id'],
+                    'details' => $result
+                ]);
+            }
+
+        } catch (Exception $e) {
+            log_message('error', 'Create guest API error: ' . $e->getMessage());
+            $this->_send_error('創建來賓時發生錯誤: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
+     * 檢查資料表結構
+     * @return array
+     */
+    private function _check_table_structure() {
+        try {
+            // 檢查 eeform1_submissions 表是否存在
+            $table_exists = $this->db->table_exists('eeform1_submissions');
+
+            if (!$table_exists) {
+                return ['table_exists' => false, 'error' => 'eeform1_submissions table not found'];
+            }
+
+            // 檢查表的欄位結構
+            $fields_query = $this->db->query("DESCRIBE eeform1_submissions");
+            $fields = $fields_query ? $fields_query->result_array() : [];
+
+            $field_names = array_column($fields, 'Field');
+
+            return [
+                'table_exists' => true,
+                'field_count' => count($field_names),
+                'critical_fields' => [
+                    'member_id' => in_array('member_id', $field_names),
+                    'member_name' => in_array('member_name', $field_names),
+                    'identity' => in_array('identity', $field_names),
+                    'created_at' => in_array('created_at', $field_names)
+                ]
+            ];
+        } catch (Exception $e) {
+            return [
+                'error' => 'Failed to check table structure: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * 發送成功回應
-     * @param string $message 
-     * @param mixed $data 
-     * @param int $code 
+     * @param string $message
+     * @param mixed $data
+     * @param int $code
      */
     private function _send_success($message = 'Success', $data = null, $code = 200) {
         $response = [
@@ -1230,9 +1403,9 @@ class Eeform1 extends MY_Controller
 
     /**
      * 發送錯誤回應
-     * @param string $message 
-     * @param int $code 
-     * @param mixed $errors 
+     * @param string $message
+     * @param int $code
+     * @param mixed $errors
      */
     private function _send_error($message = 'Error', $code = 500, $errors = null) {
         $response = [
@@ -1240,15 +1413,187 @@ class Eeform1 extends MY_Controller
             'code' => $code,
             'message' => $message
         ];
-        
+
         if ($errors !== null) {
             $response['errors'] = $errors;
         }
-        
+
         $response['timestamp'] = date('Y-m-d H:i:s');
-        
+
         $this->output
             ->set_status_header($code)
             ->set_output(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
+    /**
+     * 專用 ww_chkguest 預儲程序測試 API
+     * GET /api/eeform1/ww_chkguest_test?d_spno=000000&cname=章喆&bdate=19780615&cell=0966123456
+     */
+    public function ww_chkguest_test() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得GET參數
+            $d_spno = $this->input->get('d_spno') ?: '000000';
+            $cname = $this->input->get('cname') ?: '章喆';
+            $bdate = $this->input->get('bdate') ?: '19780615';
+            $cell = $this->input->get('cell') ?: '0966123456';
+
+            // 驗證參數
+            if (empty($cname)) {
+                $this->_send_error('來賓姓名不能為空', 400);
+                return;
+            }
+
+            $test_data = [
+                'd_spno' => $d_spno,
+                'cname' => $cname,
+                'bdate' => $bdate,
+                'cell' => $cell
+            ];
+
+            // 呼叫MSSQL預儲程序測試
+            $result = $this->eform1_model->test_mssql_ww_chkguest($test_data);
+
+            $this->_send_success('ww_chkguest 預儲程序測試完成', $result);
+
+        } catch (Exception $e) {
+            $this->_send_error('ww_chkguest 測試失敗', 500, [
+                'error' => $e->getMessage(),
+                'test_data' => $test_data ?? null
+            ]);
+        }
+    }
+
+    /**
+     * 除錯API - 檢查資料表結構和系統狀態
+     * GET /api/eeform1/debug_info
+     */
+    public function debug_info() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            $debug_info = [
+                'database_connection' => $this->db ? 'Connected' : 'Not Connected',
+                'table_structure' => $this->_check_table_structure(),
+                'model_loaded' => isset($this->eform1_model) ? 'Yes' : 'No',
+                'last_db_error' => $this->db->error(),
+                'php_version' => PHP_VERSION,
+                'ci_version' => CI_VERSION,
+                'server_time' => date('Y-m-d H:i:s'),
+                'test_data_sample' => [
+                    'identity' => 'guest',
+                    'member_id' => 'TEST123',
+                    'member_name' => '測試使用者',
+                    'birth_year' => 1990,
+                    'birth_month' => 1,
+                    'birth_day' => 1
+                ]
+            ];
+
+            // 嘗試檢查資料表欄位
+            try {
+                $fields_query = $this->db->query("SHOW COLUMNS FROM eeform1_submissions");
+                $fields = $fields_query ? $fields_query->result_array() : [];
+                $debug_info['table_columns'] = $fields;
+            } catch (Exception $e) {
+                $debug_info['table_columns_error'] = $e->getMessage();
+            }
+
+            $this->_send_success('除錯資訊', $debug_info);
+
+        } catch (Exception $e) {
+            $this->_send_error('取得除錯資訊失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * 專用 ww_chkguest 預儲程序創建來賓 API (正式模式)
+     * POST /api/eeform1/ww_chkguest_create
+     * Body: {"d_spno":"000000","cname":"章喆","bdate":"19780615","cell":"0966123456"}
+     */
+    public function ww_chkguest_create() {
+        try {
+            if ($this->input->method(TRUE) !== 'POST') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得POST資料
+            $raw_input = $this->input->raw_input_stream;
+            $input_data = json_decode($raw_input, true);
+
+            if (!$input_data) {
+                $input_data = $this->input->post();
+            }
+
+            if (empty($input_data)) {
+                $this->_send_error('沒有接收到資料', 400);
+                return;
+            }
+
+            // 驗證必填欄位
+            $required_fields = ['d_spno', 'cname', 'bdate', 'cell'];
+            $missing_fields = [];
+
+            foreach ($required_fields as $field) {
+                if (!isset($input_data[$field]) || $input_data[$field] === '') {
+                    $missing_fields[] = $field;
+                }
+            }
+
+            if (!empty($missing_fields)) {
+                $this->_send_error('缺少必填欄位', 400, [
+                    'missing_fields' => $missing_fields,
+                    'required_fields' => [
+                        'd_spno' => '推薦人編號',
+                        'cname' => '來賓姓名',
+                        'bdate' => '生日 (YYYYMMDD)',
+                        'cell' => '電話'
+                    ]
+                ]);
+                return;
+            }
+
+            $guest_data = [
+                'd_spno' => $input_data['d_spno'],
+                'cname' => $input_data['cname'],
+                'bdate' => $input_data['bdate'],
+                'cell' => $input_data['cell']
+            ];
+
+            // 呼叫MSSQL預儲程序（正式模式）
+            $result = $this->eform1_model->create_mssql_ww_chkguest($guest_data);
+
+            if ($result['success']) {
+                $this->_send_success('來賓創建成功', $result);
+            } else {
+                $error_messages = [
+                    0 => '來賓身分通過驗證',
+                    1 => '已存在此來賓，返回現有編號',
+                    2 => '已存在此來賓，但推薦人不同',
+                    3 => '此來賓已經是會員了'
+                ];
+
+                $error_code = $result['errcode'] ?? -1;
+                $message = $error_messages[$error_code] ?? '未知錯誤';
+
+                $this->_send_error($message, 400, $result);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('ww_chkguest 創建失敗', 500, [
+                'error' => $e->getMessage(),
+                'input_data' => $input_data ?? null
+            ]);
+        }
     }
 }
