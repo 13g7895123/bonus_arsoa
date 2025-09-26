@@ -1116,8 +1116,7 @@ class Eeform1 extends MY_Controller
                         '@test' => 'smallint (1=測試用, 0=正式模式)',
                         '@d_spno' => 'char(7) (推薦人編號)',
                         '@cname' => 'nvarchar(20) (來賓姓名)',
-                        '@bdate' => 'varchar(8) (生日 YYYYMMDD)',
-                        '@cell' => 'varchar(20) (電話)'
+                        '@bdate' => 'varchar(8) (生日 YYYYMMDD)'
                     ]
                 ]);
                 return;
@@ -1128,8 +1127,7 @@ class Eeform1 extends MY_Controller
                 'test' => 1,
                 'd_spno' => '000000',
                 'cname' => '章喆',
-                'bdate' => '19780615',
-                'cell' => '0966-123-456'
+                'bdate' => '19780615'
             ];
 
             $test_result = $this->eform1_model->test_mssql_ww_chkguest($test_data);
@@ -1172,8 +1170,7 @@ class Eeform1 extends MY_Controller
                 'test' => 1,
                 'd_spno' => '000000',
                 'cname' => '章喆',
-                'bdate' => '19780615',
-                'cell' => '0966-123-456'
+                'bdate' => '19780615'
             ];
 
             $results = [
@@ -1246,7 +1243,7 @@ class Eeform1 extends MY_Controller
             }
 
             // 驗證必填欄位
-            $required_fields = ['d_spno', 'cname', 'bdate', 'cell'];
+            $required_fields = ['d_spno', 'cname', 'bdate'];
             $missing_fields = [];
 
             foreach ($required_fields as $field) {
@@ -1261,8 +1258,7 @@ class Eeform1 extends MY_Controller
                     'required_fields' => [
                         'd_spno' => '推薦人編號',
                         'cname' => '來賓姓名',
-                        'bdate' => '生日 (YYYYMMDD)',
-                        'cell' => '電話'
+                        'bdate' => '生日 (YYYYMMDD)'
                     ]
                 ]);
                 return;

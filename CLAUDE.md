@@ -13,6 +13,15 @@ docs\prompts.md中的項目完成執行標準git操作：`git add` → `git comm
 - commit message 使用英文，不包含協作資訊
 - 推送至遠端 master 分支
 
+## 已完成項目
+
+### 2024-01-01 - ww_chkguest API 修正
+- **項目19-22**: ww_chkguest 預儲程序 API 完整實作與修正
+- 移除電話參數，修正預儲程序參數數量錯誤
+- 建立完整的 API 使用文檔於 `docs/info/ww_chkguest.md`
+- API 端點：`/api/eeform1/ww_chkguest_test` (測試模式) 和 `/api/eeform1/ww_chkguest_create` (正式模式)
+- 修正 MSSQL 預儲程序調用參數數量問題
+
 ## 專案功能說明
 
 ### eform03 微微卡日記表單
