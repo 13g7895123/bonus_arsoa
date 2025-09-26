@@ -37,6 +37,6 @@
 17. 幫我調整一下，看到第14點，要多一個is_guest=0這個資料並沒有被帶入insert中，並且有一個identify的欄位請幫我移除，他用不到了
 18. 幫我改回用identify好了，Undefined variable: identity，eeform/Eeform1Model.php，Line Number: 216，寫入資料的部分is_guest欄位沒有移除，這個用不到了，幫我全面徹查並移除，來賓判斷還是要保留，只是寫入的時候不用那個欄位了，已全面改用identity欄位
 19. 針對第13點，幫我看一下API是甚麼，告訴我要怎麼用，現在已經移除電話的參數了，幫我同時修改測試API，與正式環境用的API，完成後把說明寫入docs\info\ww_chkguest.md
-20. 承19，/api/eeform1/ww_chkguest_test這支API是不是沒有改到
+20. 承19，/api/eeform1/ww_chkguest_test這支API是不是沒有改到，如果不要僅只是空字串，是完全不要送出
 
 

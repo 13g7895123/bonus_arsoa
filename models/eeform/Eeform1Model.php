@@ -1244,7 +1244,7 @@ class Eeform1Model extends MY_Model
                 [$test_data['d_spno'], SQLSRV_PARAM_IN],
                 [$test_data['cname'], SQLSRV_PARAM_IN],
                 [$test_data['bdate'], SQLSRV_PARAM_IN],
-                [$test_data['cell'], SQLSRV_PARAM_IN]
+                ['', SQLSRV_PARAM_IN]  // cell 參數傳空字串
             ];
 
             // 調用MSSQL預儲程序
@@ -1312,7 +1312,7 @@ class Eeform1Model extends MY_Model
                 [$guest_data['d_spno'], SQLSRV_PARAM_IN],
                 [$guest_data['cname'], SQLSRV_PARAM_IN],
                 [$guest_data['bdate'], SQLSRV_PARAM_IN],
-                [$guest_data['cell'], SQLSRV_PARAM_IN]
+                ['', SQLSRV_PARAM_IN]  // cell 參數傳空字串
             ];
 
             // 調用MSSQL預儲程序

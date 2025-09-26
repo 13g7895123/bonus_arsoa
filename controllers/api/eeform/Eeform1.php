@@ -1297,8 +1297,7 @@ class Eeform1 extends MY_Controller
             $guest_data = [
                 'd_spno' => $input_data['d_spno'],
                 'cname' => $input_data['cname'],
-                'bdate' => $input_data['bdate'],
-                'cell' => '' // 電話參數已移除，傳空字串
+                'bdate' => $input_data['bdate']
             ];
 
             // 呼叫 MSSQL 預儲程序（正式模式）
@@ -1435,7 +1434,6 @@ class Eeform1 extends MY_Controller
             $d_spno = $this->input->get('d_spno') ?: '000000';
             $cname = $this->input->get('cname') ?: '章喆';
             $bdate = $this->input->get('bdate') ?: '19780615';
-            $cell = ''; // 電話參數已移除
 
             // 驗證參數
             if (empty($cname)) {
@@ -1446,8 +1444,7 @@ class Eeform1 extends MY_Controller
             $test_data = [
                 'd_spno' => $d_spno,
                 'cname' => $cname,
-                'bdate' => $bdate,
-                'cell' => $cell
+                'bdate' => $bdate
             ];
 
             // 呼叫MSSQL預儲程序測試
@@ -1560,8 +1557,7 @@ class Eeform1 extends MY_Controller
             $guest_data = [
                 'd_spno' => $input_data['d_spno'],
                 'cname' => $input_data['cname'],
-                'bdate' => $input_data['bdate'],
-                'cell' => '' // 電話參數已移除，傳空字串
+                'bdate' => $input_data['bdate']
             ];
 
             // 呼叫MSSQL預儲程序（正式模式）
