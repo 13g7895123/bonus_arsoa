@@ -1276,11 +1276,6 @@ class Eeform1 extends MY_Controller
                 $validation_errors[] = '生日格式錯誤，需為8位數字 (YYYYMMDD)';
             }
 
-            // 驗證電話格式
-            if (!preg_match('/^09\d{8}$/', $input_data['cell'])) {
-                $validation_errors[] = '電話格式錯誤，請輸入09開頭的10位數字';
-            }
-
             // 驗證推薦人編號格式
             if (strlen($input_data['d_spno']) > 7) {
                 $validation_errors[] = '推薦人編號不能超過7個字符';
@@ -1303,7 +1298,7 @@ class Eeform1 extends MY_Controller
                 'd_spno' => $input_data['d_spno'],
                 'cname' => $input_data['cname'],
                 'bdate' => $input_data['bdate'],
-                'cell' => $input_data['cell']
+                'cell' => '' // 電話參數已移除，傳空字串
             ];
 
             // 呼叫 MSSQL 預儲程序（正式模式）
@@ -1427,7 +1422,7 @@ class Eeform1 extends MY_Controller
 
     /**
      * 專用 ww_chkguest 預儲程序測試 API
-     * GET /api/eeform1/ww_chkguest_test?d_spno=000000&cname=章喆&bdate=19780615&cell=0966123456
+     * GET /api/eeform1/ww_chkguest_test?d_spno=000000&cname=章喆&bdate=19780615
      */
     public function ww_chkguest_test() {
         try {
@@ -1440,7 +1435,7 @@ class Eeform1 extends MY_Controller
             $d_spno = $this->input->get('d_spno') ?: '000000';
             $cname = $this->input->get('cname') ?: '章喆';
             $bdate = $this->input->get('bdate') ?: '19780615';
-            $cell = $this->input->get('cell') ?: '0966123456';
+            $cell = ''; // 電話參數已移除
 
             // 驗證參數
             if (empty($cname)) {
@@ -1518,7 +1513,7 @@ class Eeform1 extends MY_Controller
     /**
      * 專用 ww_chkguest 預儲程序創建來賓 API (正式模式)
      * POST /api/eeform1/ww_chkguest_create
-     * Body: {"d_spno":"000000","cname":"章喆","bdate":"19780615","cell":"0966123456"}
+     * Body: {"d_spno":"000000","cname":"章喆","bdate":"19780615"}
      */
     public function ww_chkguest_create() {
         try {
@@ -1540,8 +1535,8 @@ class Eeform1 extends MY_Controller
                 return;
             }
 
-            // 驗證必填欄位
-            $required_fields = ['d_spno', 'cname', 'bdate', 'cell'];
+            // 驗證必填欄位（移除cell）
+            $required_fields = ['d_spno', 'cname', 'bdate'];
             $missing_fields = [];
 
             foreach ($required_fields as $field) {
@@ -1556,8 +1551,7 @@ class Eeform1 extends MY_Controller
                     'required_fields' => [
                         'd_spno' => '推薦人編號',
                         'cname' => '來賓姓名',
-                        'bdate' => '生日 (YYYYMMDD)',
-                        'cell' => '電話'
+                        'bdate' => '生日 (YYYYMMDD)'
                     ]
                 ]);
                 return;
@@ -1567,7 +1561,7 @@ class Eeform1 extends MY_Controller
                 'd_spno' => $input_data['d_spno'],
                 'cname' => $input_data['cname'],
                 'bdate' => $input_data['bdate'],
-                'cell' => $input_data['cell']
+                'cell' => '' // 電話參數已移除，傳空字串
             ];
 
             // 呼叫MSSQL預儲程序（正式模式）

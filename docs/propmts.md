@@ -36,4 +36,7 @@
 16. 目前/eform/eform1?identity=guest這個網址送出後會出現錯誤，如果錯誤的話幫我回傳執行的錯誤訊息或是insert SQL，create_submission returned false只回了這個我無法除錯，等等，不要用error_log的方式，請幫我回傳在response就好!
 17. 幫我調整一下，看到第14點，要多一個is_guest=0這個資料並沒有被帶入insert中，並且有一個identify的欄位請幫我移除，他用不到了
 18. 幫我改回用identify好了，Undefined variable: identity，eeform/Eeform1Model.php，Line Number: 216，寫入資料的部分is_guest欄位沒有移除，這個用不到了，幫我全面徹查並移除，來賓判斷還是要保留，只是寫入的時候不用那個欄位了，已全面改用identity欄位
+19. 針對第13點，幫我看一下API是甚麼，告訴我要怎麼用，現在已經移除電話的參數了，幫我同時修改測試API，與正式環境用的API，完成後把說明寫入docs\info\ww_chkguest.md
+20. 承19，/api/eeform1/ww_chkguest_test這支API是不是沒有改到
+
 
