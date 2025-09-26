@@ -9,7 +9,7 @@
 
 ## Git 操作說明
 
-任務完成後會執行標準git操作：`git add` → `git commit` → `git push`
+docs\prompts.md中的項目完成執行標準git操作：`git add` → `git commit` → `git push`
 - commit message 使用英文，不包含協作資訊
 - 推送至遠端 master 分支
 

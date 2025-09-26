@@ -1243,12 +1243,11 @@ class Eeform1Model extends MY_Model
                 ['1', SQLSRV_PARAM_IN],  // test mode = 1 (測試)
                 [$test_data['d_spno'], SQLSRV_PARAM_IN],
                 [$test_data['cname'], SQLSRV_PARAM_IN],
-                [$test_data['bdate'], SQLSRV_PARAM_IN],
-                ['', SQLSRV_PARAM_IN]  // cell 參數傳空字串
+                [$test_data['bdate'], SQLSRV_PARAM_IN]
             ];
 
-            // 調用MSSQL預儲程序
-            $result = $CI->front_mssql_model->get_data($msconn, "{CALL ww_chkguest(?,?,?,?,?)}", $params);
+            // 調用MSSQL預儲程序 (移除cell參數)
+            $result = $CI->front_mssql_model->get_data($msconn, "{CALL ww_chkguest(?,?,?,?)}", $params);
 
             $CI->front_mssql_model->ms_close($msconn);
 
@@ -1311,12 +1310,11 @@ class Eeform1Model extends MY_Model
                 ['0', SQLSRV_PARAM_IN],  // test mode = 0 (正式)
                 [$guest_data['d_spno'], SQLSRV_PARAM_IN],
                 [$guest_data['cname'], SQLSRV_PARAM_IN],
-                [$guest_data['bdate'], SQLSRV_PARAM_IN],
-                ['', SQLSRV_PARAM_IN]  // cell 參數傳空字串
+                [$guest_data['bdate'], SQLSRV_PARAM_IN]
             ];
 
-            // 調用MSSQL預儲程序
-            $result = $CI->front_mssql_model->get_data($msconn, "{CALL ww_chkguest(?,?,?,?,?)}", $params);
+            // 調用MSSQL預儲程序 (移除cell參數)
+            $result = $CI->front_mssql_model->get_data($msconn, "{CALL ww_chkguest(?,?,?,?)}", $params);
 
             $CI->front_mssql_model->ms_close($msconn);
 

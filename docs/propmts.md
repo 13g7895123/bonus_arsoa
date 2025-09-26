@@ -38,5 +38,6 @@
 18. 幫我改回用identify好了，Undefined variable: identity，eeform/Eeform1Model.php，Line Number: 216，寫入資料的部分is_guest欄位沒有移除，這個用不到了，幫我全面徹查並移除，來賓判斷還是要保留，只是寫入的時候不用那個欄位了，已全面改用identity欄位
 19. 針對第13點，幫我看一下API是甚麼，告訴我要怎麼用，現在已經移除電話的參數了，幫我同時修改測試API，與正式環境用的API，完成後把說明寫入docs\info\ww_chkguest.md
 20. 承19，/api/eeform1/ww_chkguest_test這支API是不是沒有改到，如果不要僅只是空字串，是完全不要送出
-
+21. 我目前用/api/eeform1/ww_chkguest_test這支API測試的時候出現這個錯誤，[Microsoft][ODBC Driver 17 for SQL Server][SQL Server]程序或函數 ww_chkguest 指定了太多的引數
+22. 在docs\prompts.md完成的每一個項目，只要是要執行的，執行完畢後都請直接執行add commit push，寫入CLAUDE.md
 
