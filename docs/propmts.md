@@ -41,5 +41,6 @@
 21. 我目前用/api/eeform1/ww_chkguest_test這支API測試的時候出現這個錯誤，[Microsoft][ODBC Driver 17 for SQL Server][SQL Server]程序或函數 ww_chkguest 指定了太多的引數
 22. 在docs\prompts.md完成的每一個項目，只要是要執行的，執行完畢後都請直接執行add commit push，寫入CLAUDE.md
 23. 測試站確定沒問題了，幫我確認一下/api/eeform1這個頁面是否也有正常改到，不會再把電話的參數傳入，我目前看打的API還是一樣有cell，而且觸發還是一樣三個欄位都有資料才判斷，應該要改成只有兩個，電話的就不要了，另外，我看他執行完測試的API後，就直接執行ww_chkguest_create這支API，這樣是不對的，應該是最下面表單送出，確認視窗中的確認送出點下去才會打ww_chkguest_create這支API，幫我調整一下
+24. 送出表單的按鈕必填確認沒有移除電話
 
 

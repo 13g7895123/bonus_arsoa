@@ -1211,9 +1211,9 @@
           $('#member-id-field').hide();
           $('input[name="member_id"]').removeAttr('required');
 
-          // 來賓模式：電話為必填，更新標籤和驗證
-          $('#phone-label').html('電話<span style="color: red;">(*必填)</span>');
-          $('#phone-input').attr('required', 'required');
+          // 來賓模式：電話為選填，移除必填標示和驗證
+          $('#phone-label').html('電話');
+          $('#phone-input').removeAttr('required');
 
           // 來賓模式：設置欄位監聽
           setupGuestFieldMonitoring();
@@ -1569,12 +1569,8 @@
           $('input[name="birth_date"]').val(randomYear + '-' + (randomMonth < 10 ? '0' : '') + randomMonth + '-' + (randomDay < 10 ? '0' : '') + randomDay);
         }
         
-        // 電話 - 來賓模式必填
-        if (identityParam === 'guest' && !$('input[name="phone"]').val()) {
-          var phonePrefix = ['0912', '0933', '0988', '0975', '0910'];
-          var randomPhone = phonePrefix[Math.floor(Math.random() * phonePrefix.length)] + Math.floor(100000 + Math.random() * 900000);
-          $('input[name="phone"]').val(randomPhone);
-        }
+        // 電話 - 選填欄位，不需要自動填寫
+        // 如果需要填寫電話，可以手動輸入
 
         // 職業選擇 - 隨機選擇
         var occupations = ['occupation_service', 'occupation_office', 'occupation_restaurant', 'occupation_housewife'];
@@ -1714,10 +1710,8 @@
         if (!memberName) missingFields.push('會員姓名');
         if (!birthDate) missingFields.push('出生年月日');
 
-        // 來賓模式下電話為必填
-        if (identityParam === 'guest' && !phone) {
-          missingFields.push('電話');
-        }
+        // 來賓模式下電話為選填，不需要驗證
+        // 電話欄位已改為選填
 
         // 為往後相容性，從年月日中提取年月日
         var birthYear = '', birthMonth = '', birthDay = '';

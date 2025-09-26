@@ -22,12 +22,12 @@ docs\prompts.md中的項目完成執行標準git操作：`git add` → `git comm
 - API 端點：`/api/eeform1/ww_chkguest_test` (測試模式) 和 `/api/eeform1/ww_chkguest_create` (正式模式)
 - 修正 MSSQL 預儲程序調用參數數量問題
 
-### 2024-01-01 - API 電話參數全面移除
-- **項目23**: 確認 `/api/eeform1` 端點完全移除電話參數
-- 更新 `create_guest`、`create_procedure`、`test_procedure` 方法
-- 移除所有測試資料中的電話相關參數
-- 統一所有 ww_chkguest 相關 API 使用 4 個參數 (test, d_spno, cname, bdate)
-- 確保與預儲程序修改保持一致
+### 2024-01-01 - eform1 來賓驗證與 API 時機修正
+- **項目23**: 修正 `/eform/eform1` 頁面來賓驗證邏輯與API呼叫時機
+- 移除電話欄位驗證：將來賓欄位檢查從3個欄位（姓名、生日、電話）改為2個欄位（姓名、生日）
+- 修正 API 參數：移除測試 API 中的 `cell` 參數，統一使用 `d_spno`、`cname`、`bdate` 三個參數
+- 修正 API 呼叫時機：`ww_chkguest_create` API 改為僅在表單正式提交時呼叫，而非欄位驗證時
+- 來賓編號正確儲存至 `member_id` 欄位，確保表單提交完整性
 
 ## 專案功能說明
 
