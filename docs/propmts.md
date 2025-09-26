@@ -1,4 +1,4 @@
-1. 幫我調整一下/eform/eform2這一頁，get參數identity=guest，隱藏會員編號的欄位，且會員姓名為input，讓使用者自己填寫，identity=guest的時候，確認表單內容不應該有會員編號，也不會有那個資料帶到後端，幫我調整前端與後端，表單驗證都要一致移除，且傳資料到後端的時候，get參數identity=guest存在的時候，幫我多傳一個identity=guest到後端
+1. 幫我調整一下/eform/eform2這一頁，get參數identity=guest，隱藏會員編號的欄位，且會員姓名為input，讓使用者自己填寫，identity=guest的時候，確認表單內容不應該有會員編號，也不會有那個資料帶到後端，幫我調整前端與後端，表單驗證都要一致移除，且傳資料到後端的時候，get參數identity=guest存在的時候，幫我多傳一個identity=guest到後端，請確認傳到後端之後有正常更新該欄位的資料，我目前看到資料庫是沒有更新這個欄位的，寫入的是預設的資料
 2. 承1，幫我確認一下，get參數identity=guest的時候，後端是否會有驗證邏輯上的錯誤，檢查code的部分就好，幫我統一用identity，phone的部分為非必填
 3. 幫我調整一下/eform/eform1這一頁，如果身份為來賓，請幫我偵測會員姓名、出生年月日、電話這三個欄位，每次只要有編輯，就檢查三個欄位，請離開欄位再執行檢查，如果三個欄位都有帶入資料，請幫我寫一隻function，先跳提示通知"有資料!"
 4. 幫我調整一下/eform/eform1_list這一頁，提示的title請用系統提示，message才是"請選擇要編輯的表單"，icon用info

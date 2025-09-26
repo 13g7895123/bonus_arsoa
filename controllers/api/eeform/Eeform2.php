@@ -149,7 +149,8 @@ class Eeform2 extends MY_Controller
                 'meeting_date' => !empty($input_data['meeting_date']) ? $input_data['meeting_date'] : null,
                 'submission_date' => date('Y-m-d'),
                 'created_at' => date('Y-m-d H:i:s'),
-                'status' => 'submitted'
+                'status' => 'submitted',
+                'identity' => isset($input_data['identity']) ? $input_data['identity'] : null
             ];
 
             // 提交表單資料
