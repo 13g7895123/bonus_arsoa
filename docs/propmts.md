@@ -1,5 +1,5 @@
-1. 幫我調整一下/eform/eform2這一頁，get參數identify=guest，隱藏會員編號的欄位，且會員姓名為input，讓使用者自己填寫，identify=guest的時候，確認表單內容不應該有會員編號，也不會有那個資料帶到後端，幫我調整前端與後端，表單驗證都要一致移除，且傳資料到後端的時候，get參數identify=guest存在的時候，幫我多傳一個identify=guest到後端
-2. 承1，幫我確認一下，get參數identify=guest的時候，後端是否會有驗證邏輯上的錯誤，檢查code的部分就好，幫我統一用identity，phone的部分為非必填
+1. 幫我調整一下/eform/eform2這一頁，get參數identity=guest，隱藏會員編號的欄位，且會員姓名為input，讓使用者自己填寫，identity=guest的時候，確認表單內容不應該有會員編號，也不會有那個資料帶到後端，幫我調整前端與後端，表單驗證都要一致移除，且傳資料到後端的時候，get參數identity=guest存在的時候，幫我多傳一個identity=guest到後端
+2. 承1，幫我確認一下，get參數identity=guest的時候，後端是否會有驗證邏輯上的錯誤，檢查code的部分就好，幫我統一用identity，phone的部分為非必填
 3. 幫我調整一下/eform/eform1這一頁，如果身份為來賓，請幫我偵測會員姓名、出生年月日、電話這三個欄位，每次只要有編輯，就檢查三個欄位，請離開欄位再執行檢查，如果三個欄位都有帶入資料，請幫我寫一隻function，先跳提示通知"有資料!"
 4. 幫我調整一下/eform/eform1_list這一頁，提示的title請用系統提示，message才是"請選擇要編輯的表單"，icon用info
 5. 讀取下面這段預儲程序，告訴我他要怎麼使用
@@ -34,8 +34,8 @@
 	- 針對第三點的那三個特定欄位檢查，在輸入後達成檢測條件(即三個欄位都有資料)時，請用sweetalert調出提示，icon為warnig，title為"系統提示"，text為"確認來賓資料，請稍後"，並且執行第13點的測試模式API，且確認回傳的code，code小於等於1就提示icon為success，title為"系統提示"，text為"檢測成功，請繼續填寫表單"，否則提示錯誤"檢驗錯誤，請確認資料是否有誤"，然後在表單提交後後執行第13點的正式模式API，取得存到member_id欄位，並且要多代一個is_guest=0到後端，is_guest這個欄位是新的，請更新model的部分，他在eeform2_submissions這張表
 15. 承14，應該是在eeform1_submissions才對，幫我更正改錯的地方，另外測試模式API要用那三個欄位的資料帶入，不要用寫死的固定資料d_spno代入目前填寫者的會員編號，其餘三個欄位分別為會員姓名、出生年月日、電話這三個欄位，記得生日要調整格式
 16. 目前/eform/eform1?identity=guest這個網址送出後會出現錯誤，如果錯誤的話幫我回傳執行的錯誤訊息或是insert SQL，create_submission returned false只回了這個我無法除錯，等等，不要用error_log的方式，請幫我回傳在response就好!
-17. 幫我調整一下，看到第14點，要多一個is_guest=0這個資料並沒有被帶入insert中，並且有一個identify的欄位請幫我移除，他用不到了
-18. 幫我改回用identify好了，Undefined variable: identity，eeform/Eeform1Model.php，Line Number: 216，寫入資料的部分is_guest欄位沒有移除，這個用不到了，幫我全面徹查並移除，來賓判斷還是要保留，只是寫入的時候不用那個欄位了，已全面改用identity欄位
+17. 幫我調整一下，看到第14點，要多一個is_guest=0這個資料並沒有被帶入insert中，並且有一個identity的欄位請幫我移除，他用不到了
+18. 幫我改回用identity好了，Undefined variable: identity，eeform/Eeform1Model.php，Line Number: 216，寫入資料的部分is_guest欄位沒有移除，這個用不到了，幫我全面徹查並移除，來賓判斷還是要保留，只是寫入的時候不用那個欄位了，已全面改用identity欄位
 19. 針對第13點，幫我看一下API是甚麼，告訴我要怎麼用，現在已經移除電話的參數了，幫我同時修改測試API，與正式環境用的API，完成後把說明寫入docs\info\ww_chkguest.md
 20. 承19，/api/eeform1/ww_chkguest_test這支API是不是沒有改到，如果不要僅只是空字串，是完全不要送出
 21. 我目前用/api/eeform1/ww_chkguest_test這支API測試的時候出現這個錯誤，[Microsoft][ODBC Driver 17 for SQL Server][SQL Server]程序或函數 ww_chkguest 指定了太多的引數

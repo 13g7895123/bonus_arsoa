@@ -487,7 +487,7 @@
       
       // 檢查 URL 參數
       var urlParams = new URLSearchParams(window.location.search);
-      var identityParam = urlParams.get('identify');
+      var identityParam = urlParams.get('identity');
 
       // 頁面載入時檢查是否顯示測試按鈕
       $(document).ready(function() {
@@ -773,7 +773,7 @@
 
         // 如果是來賓模式，加入身分識別參數
         if (identityParam === 'guest') {
-          formData.identify = 'guest';
+          formData.identity = 'guest';
         }
 
         // 收集產品資料 (動態)
