@@ -18,7 +18,7 @@
                         <div class="row">
                           <div class="col-sm-12 text-right mb30">填寫日期：<span id="current-date"></span></div>
 
-                          <div class="col-sm-3 mb30">
+                          <div class="col-sm-3 mb30" id="member-id-field">
                             <label class="label-custom">會員編號</label>
                             <input type="text" name="member_id" class="form-control form-control-custom" placeholder="請填會員編號" value="<?php echo isset($userdata['c_no']) ? htmlspecialchars($userdata['c_no']) : ''; ?>" readonly required />
                           </div>
@@ -485,25 +485,49 @@
       var showTestButton = false; // 設為 true 顯示測試按鈕
       var productsData = []; // 存儲從API載入的產品資料
       
+      // 檢查 URL 參數
+      var urlParams = new URLSearchParams(window.location.search);
+      var identityParam = urlParams.get('identify');
+
       // 頁面載入時檢查是否顯示測試按鈕
       $(document).ready(function() {
         // 自動填入當天日期
         var today = new Date();
-        var currentDate = today.getFullYear() + '-' + 
-                         String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+        var currentDate = today.getFullYear() + '-' +
+                         String(today.getMonth() + 1).padStart(2, '0') + '-' +
                          String(today.getDate()).padStart(2, '0');
-        
+
         $('#current-date').text(currentDate);
         $('input[name="join_date"]').val(currentDate);
-        
+
         if (showTestButton) {
           $('#testDataButton').show();
         }
-        
+
+        // 處理來賓模式
+        if (identityParam === 'guest') {
+          setupGuestMode();
+        }
+
         // 載入產品資料
         loadProducts();
       });
       
+      // 設置來賓模式
+      function setupGuestMode() {
+        // 隱藏會員編號欄位
+        $('#member-id-field').hide();
+        $('input[name="member_id"]').removeAttr('required');
+
+        // 確保使用輸入框而非下拉選單
+        $('input[name="member_name"]').show().prop('required', true).prop('disabled', false);
+        $('select[name="member_name_select"]').hide().prop('required', false).prop('disabled', true);
+
+        // 清空會員編號並設置預設值
+        $('input[name="member_id"]').val('000000');
+        $('input[name="member_name"]').val('').attr('placeholder', '請填寫姓名');
+      }
+
       // 載入產品資料
       function loadProducts() {
         $.ajax({
@@ -832,17 +856,22 @@
       var isMultipleMembers = false;
 
       // 初始化會員資料
-      function initializeMemberData() {        
+      function initializeMemberData() {
+        // 如果是來賓模式，跳過會員資料初始化
+        if (identityParam === 'guest') {
+          return;
+        }
+
         // 設定會員編號欄位
         $('input[name="member_id"]').val(currentUserData.member_id);
-        
+
         // Point 60: 無論是否有會員編號，都進行測試API呼叫來確認端點是否正常
         if (currentUserData.member_id && currentUserData.member_id.trim() !== '') {
           lookupMemberData(currentUserData.member_id);
         } else {
           // 使用測試ID來確認API端點是否正常運作
           lookupMemberData('TEST123');
-          
+
           // 設定預設姓名
           $('input[name="member_name"]').val(currentUserData.member_name);
         }
