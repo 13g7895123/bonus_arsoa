@@ -144,7 +144,7 @@
                       <span class="text-dark" id="confirm-member-name"></span>
                     </div>
                   </div>
-                  <div class="col-md-4 mb-3">
+                  <div class="col-md-4 mb-3" id="confirm-member-id-field">
                     <div class="d-flex align-items-center">
                       <span class="text-muted mr-3" style="min-width: 70px;">會員編號：</span>
                       <span class="text-dark" id="confirm-member-id"></span>
@@ -519,6 +519,9 @@
         $('#member-id-field').hide();
         $('input[name="member_id"]').removeAttr('required');
 
+        // 隱藏確認視窗中的會員編號欄位
+        $('#confirm-member-id-field').hide();
+
         // 確保使用輸入框而非下拉選單
         $('input[name="member_name"]').show().prop('required', true).prop('disabled', false);
         $('select[name="member_name_select"]').hide().prop('required', false).prop('disabled', true);
@@ -637,10 +640,17 @@
         var age = $('input[name="age"]').val();
         var birthYearMonth = $('input[name="birth_year_month"]').val();
 
-        if (!memberName || !memberId || !joinDate || !birthYearMonth) {
+        // 來賓模式下不檢查會員編號
+        var missingFields = [];
+        if (!memberName) missingFields.push('姓名');
+        if (identityParam !== 'guest' && !memberId) missingFields.push('會員編號');
+        if (!joinDate) missingFields.push('入會日');
+        if (!birthYearMonth) missingFields.push('出生年月日');
+
+        if (missingFields.length > 0) {
           Swal.fire({
             title: '欄位未完整',
-            text: '請填寫所有必填欄位',
+            text: '請填寫以下必填欄位：' + missingFields.join('、'),
             icon: 'warning',
             confirmButtonText: '確定'
           });
@@ -742,7 +752,6 @@
         }
         
         var formData = {
-          member_id: memberId, // 保留欄位但可能為空（相容性）
           member_name: memberName, // 被填表人姓名
           form_filler_id: formFillerID, // 代填問卷者ID（當前登入使用者）
           form_filler_name: formFillerName, // 代填問卷者姓名
@@ -756,6 +765,16 @@
           meeting_date: $('input[name="meeting_date"]').val(),
           products: {}
         };
+
+        // 只有非來賓模式才包含會員編號
+        if (identityParam !== 'guest') {
+          formData.member_id = memberId;
+        }
+
+        // 如果是來賓模式，加入身分識別參數
+        if (identityParam === 'guest') {
+          formData.identify = 'guest';
+        }
 
         // 收集產品資料 (動態)
         $('#products-container input[type="number"]').each(function() {
