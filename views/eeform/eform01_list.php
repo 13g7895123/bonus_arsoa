@@ -15,7 +15,15 @@
                 <div class="mb30">
                   <div class="container wow fadeInUp" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
                     <form name="oForm" id="oForm">
-                      <div class="row">
+                      <!-- Search Title -->
+                      <div class="row mb-2">
+                        <div class="col-12">
+                          <h5 id="search-title" style="font-weight: bold;">幫會員填寫:</h5>
+                        </div>
+                      </div>
+
+                      <!-- Member Search (Default) -->
+                      <div class="row" id="member-search">
                         <div class="form-group mx-sm-3 mb-2">
                           <label for="search" class="sr-only">查詢姓名或電話</label>
                           <input type="text" class="form-control" id="search" name="search" placeholder="查詢姓名或電話" value="" maxlength="20">
@@ -23,6 +31,19 @@
                         <button type="button" class="btn btn-primary mb-2" style="height: 46px;" onclick="performSearch()">搜尋</button>
                         <button type="button" class="btn btn-secondary mb-2 ml-2" style="height: 46px;" onclick="clearSearch()">清除</button>
                         <span id="search_msg" style="color:red;margin-top: 8px;margin-left: 10px;"></span>
+                      </div>
+
+                      <!-- Guest Search (Hidden by default) -->
+                      <div class="row" id="guest-search" style="display: none;">
+                        <div class="form-group mx-sm-3 mb-2">
+                          <input type="text" class="form-control" id="guest-name" name="guest_name" placeholder="填寫來賓姓名" value="" maxlength="20">
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                          <input type="text" class="form-control" id="guest-birth" name="guest_birth" placeholder="填寫生日19xx-mm-dd" value="" pattern="\d{4}-\d{2}-\d{2}" title="請輸入格式：YYYY-MM-DD">
+                        </div>
+                        <button type="button" class="btn btn-primary mb-2" style="height: 46px;" onclick="performGuestSearch()">搜尋</button>
+                        <button type="button" class="btn btn-secondary mb-2 ml-2" style="height: 46px;" onclick="clearGuestSearch()">清除</button>
+                        <span id="guest_search_msg" style="color:red;margin-top: 8px;margin-left: 10px;"></span>
                       </div>
 
                       <div class="card mb-3">
@@ -181,6 +202,14 @@
           return false;
         }
       });
+
+      // 加入來賓搜尋Enter鍵功能
+      $('#guest-name, #guest-birth').on('keypress', function(e) {
+        if (e.which == 13) {
+          performGuestSearch();
+          return false;
+        }
+      });
     });
 
     // 顯示表單類型選擇對話框
@@ -200,10 +229,12 @@
           // 用戶選擇了會員
           userSelection = 'member';
           updateFormButtonUrl('member');
+          switchToMemberSearch();
         } else if (result.isDenied) {
           // 用戶選擇了來賓
           userSelection = 'guest';
           updateFormButtonUrl('guest');
+          switchToGuestSearch();
         }
       });
     }
@@ -1676,6 +1707,92 @@
     function clearSearch() {
       $('#search').val('');
       $('#search_msg').text('');
+      filteredSubmissions = allSubmissions;
+      renderSubmissionsTable(allSubmissions);
+    }
+
+    // 切換到會員搜尋模式
+    function switchToMemberSearch() {
+      $('#search-title').text('幫會員填寫:');
+      $('#member-search').show();
+      $('#guest-search').hide();
+      // 清除來賓搜尋的值
+      $('#guest-name').val('');
+      $('#guest-birth').val('');
+      $('#guest_search_msg').text('');
+    }
+
+    // 切換到來賓搜尋模式
+    function switchToGuestSearch() {
+      $('#search-title').text('幫來賓填寫:');
+      $('#member-search').hide();
+      $('#guest-search').show();
+      // 清除會員搜尋的值
+      $('#search').val('');
+      $('#search_msg').text('');
+    }
+
+    // 執行來賓搜尋
+    function performGuestSearch() {
+      var guestName = $('#guest-name').val().trim();
+      var guestBirth = $('#guest-birth').val().trim();
+      $('#guest_search_msg').text('');
+
+      if (!guestName && !guestBirth) {
+        // 如果搜尋欄位都為空，顯示所有記錄
+        filteredSubmissions = allSubmissions;
+        renderSubmissionsTable(allSubmissions);
+        $('#guest_search_msg').text('');
+        return;
+      }
+
+      // 驗證生日格式
+      if (guestBirth && !guestBirth.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        $('#guest_search_msg').text('生日格式錯誤，請使用 YYYY-MM-DD 格式');
+        return;
+      }
+
+      // 顯示搜尋中狀態
+      $('#guest_search_msg').html('<i class="icon ion-loading-c" style="animation: spin 1s linear infinite;"></i> 搜尋中...');
+
+      // 模擬搜尋延遲，提供更好的用戶體驗
+      setTimeout(function() {
+        // 在本地資料中進行搜尋
+        filteredSubmissions = allSubmissions.filter(function(submission) {
+          var memberName = (submission.member_name || '').toLowerCase();
+          var birthDate = '';
+
+          // 構造生日字串進行比較
+          if (submission.birth_year && submission.birth_month && submission.birth_day) {
+            var month = String(submission.birth_month).padStart(2, '0');
+            var day = String(submission.birth_day).padStart(2, '0');
+            birthDate = submission.birth_year + '-' + month + '-' + day;
+          }
+
+          var nameMatch = !guestName || memberName.includes(guestName.toLowerCase());
+          var birthMatch = !guestBirth || birthDate === guestBirth;
+
+          return nameMatch && birthMatch;
+        });
+
+        // 渲染搜尋結果
+        renderSubmissionsTable(filteredSubmissions);
+
+        // 顯示搜尋結果統計
+        var resultCount = filteredSubmissions.length;
+        if (resultCount === 0) {
+          $('#guest_search_msg').html('<i class="icon ion-search"></i> 找不到符合條件的記錄');
+        } else {
+          $('#guest_search_msg').html('<i class="icon ion-search"></i> 找到 ' + resultCount + ' 筆記錄');
+        }
+      }, 300);
+    }
+
+    // 清除來賓搜尋
+    function clearGuestSearch() {
+      $('#guest-name').val('');
+      $('#guest-birth').val('');
+      $('#guest_search_msg').text('');
       filteredSubmissions = allSubmissions;
       renderSubmissionsTable(allSubmissions);
     }
