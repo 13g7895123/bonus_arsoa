@@ -99,10 +99,8 @@ class Eeform1Model extends MY_Model
             $errors[] = "必填欄位 member_name 不能為空";
         }
 
-        // 來賓模式 (identity = 'guest')：phone 必填；會員模式：phone 非必填
-        if ($identity === 'guest' && empty($data['phone'])) {
-            $errors[] = "必填欄位 phone 不能為空";
-        }
+        // phone 欄位已改為所有模式都是選填，不再檢查必填
+        // 來賓模式和會員模式的 phone 都是非必填
         
         // 驗證出生年月日 - 支援新的 birth_date (YYYY-MM-DD) 或舊的 birth_year/birth_month/birth_day
         if (!empty($data['birth_date'])) {
