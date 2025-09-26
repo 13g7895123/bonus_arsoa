@@ -1326,12 +1326,11 @@
       // 來賓模式：設置欄位監聽
       function setupGuestFieldMonitoring() {
         // 移除之前可能存在的事件監聽器，避免重複綁定
-        $('input[name="member_name"], input[name="birth_date"], input[name="phone"]').off('blur.guestMonitor');
+        $('input[name="member_name"], input[name="birth_date"]').off('blur.guestMonitor');
 
-        // 為三個關鍵欄位添加事件監聽器（離開欄位時執行檢查）
+        // 為兩個關鍵欄位添加事件監聽器（離開欄位時執行檢查）
         $('input[name="member_name"]').on('blur.guestMonitor', checkGuestFields);
         $('input[name="birth_date"]').on('blur.guestMonitor', checkGuestFields);
-        $('input[name="phone"]').on('blur.guestMonitor', checkGuestFields);
       }
 
       // 全域變數儲存來賓編號
@@ -1348,10 +1347,9 @@
         var birthDate = $('input[name="birth_date"]').val();
         var phone = $('input[name="phone"]').val();
 
-        // 檢查三個欄位是否都有資料
+        // 檢查兩個欄位是否都有資料
         if (memberName && memberName.trim() !== '' &&
-            birthDate && birthDate.trim() !== '' &&
-            phone && phone.trim() !== '') {
+            birthDate && birthDate.trim() !== '') {
 
           // 顯示確認來賓資料的提示
           if (typeof Swal !== 'undefined') {
@@ -1368,8 +1366,7 @@
             var testData = {
               d_spno: currentUserData.member_id || '000000', // 推薦人編號
               cname: memberName.trim(),
-              bdate: formatDateForProcedure(birthDate.trim()), // 轉換為 YYYYMMDD 格式
-              cell: phone.trim()
+              bdate: formatDateForProcedure(birthDate.trim()) // 轉換為 YYYYMMDD 格式
             };
 
             // 呼叫測試預儲程序 API
@@ -1395,8 +1392,7 @@
         var queryParams = $.param({
           d_spno: testData.d_spno,
           cname: testData.cname,
-          bdate: testData.bdate,
-          cell: testData.cell
+          bdate: testData.bdate
         });
 
         $.ajax({
@@ -1415,9 +1411,6 @@
                   icon: 'success',
                   showConfirmButton: false,
                   timer: 2000
-                }).then(function() {
-                  // 執行正式預儲程序，取得 c_no
-                  callCreateGuestAPI(testData);
                 });
               } else {
                 // 檢測失敗
@@ -2045,7 +2038,68 @@
           pore_healthy: $('input[name="pore_healthy"]').val()
         };
 
-        // 發送API請求
+        // 如果是來賓模式且尚未取得來賓編號，先呼叫創建來賓API
+        if (identityParam === 'guest' && !guestCNo) {
+          // 準備來賓創建資料
+          var guestData = {
+            d_spno: currentUserData.member_id || '000000',
+            cname: memberName.trim(),
+            bdate: formatDateForProcedure($('input[name="birth_date"]').val())
+          };
+
+          // 先呼叫創建來賓API
+          $.ajax({
+            url: '/api/eeform1/ww_chkguest_create',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(guestData),
+            dataType: 'json',
+            beforeSend: function() {
+              // 顯示載入狀態
+              $('#confirmModal .modal-footer button').prop('disabled', true);
+              $('#confirmModal .modal-footer button').text('建立來賓資料中...');
+            },
+            success: function(response) {
+              if (response && response.success && response.data && (response.data.c_no || response.data.guest_id)) {
+                // 成功取得來賓編號，更新formData
+                guestCNo = response.data.c_no || response.data.guest_id;
+                formData.member_id = guestCNo;
+                formData.guest_c_no = guestCNo;
+
+                // 繼續提交表單
+                actuallySubmitForm(formData);
+              } else {
+                Swal.fire({
+                  title: '建立來賓失敗',
+                  text: '無法建立來賓資料，請稍後再試',
+                  icon: 'error',
+                  confirmButtonText: '確定'
+                });
+                // 恢復按鈕狀態
+                $('#confirmModal .modal-footer button').prop('disabled', false);
+                $('#confirmModal .modal-footer button').text('確認送出');
+              }
+            },
+            error: function(xhr, status, error) {
+              Swal.fire({
+                title: '建立來賓失敗',
+                text: '網絡錯誤，請稍後再試',
+                icon: 'error',
+                confirmButtonText: '確定'
+              });
+              // 恢復按鈕狀態
+              $('#confirmModal .modal-footer button').prop('disabled', false);
+              $('#confirmModal .modal-footer button').text('確認送出');
+            }
+          });
+        } else {
+          // 直接提交表單
+          actuallySubmitForm(formData);
+        }
+      }
+
+      // 實際提交表單的函數
+      function actuallySubmitForm(formData) {
         $.ajax({
           url: '<?php echo base_url("api/eeform1/submit"); ?>',
           method: 'POST',

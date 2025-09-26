@@ -22,6 +22,13 @@ docs\prompts.md中的項目完成執行標準git操作：`git add` → `git comm
 - API 端點：`/api/eeform1/ww_chkguest_test` (測試模式) 和 `/api/eeform1/ww_chkguest_create` (正式模式)
 - 修正 MSSQL 預儲程序調用參數數量問題
 
+### 2024-01-01 - API 電話參數全面移除
+- **項目23**: 確認 `/api/eeform1` 端點完全移除電話參數
+- 更新 `create_guest`、`create_procedure`、`test_procedure` 方法
+- 移除所有測試資料中的電話相關參數
+- 統一所有 ww_chkguest 相關 API 使用 4 個參數 (test, d_spno, cname, bdate)
+- 確保與預儲程序修改保持一致
+
 ## 專案功能說明
 
 ### eform03 微微卡日記表單
