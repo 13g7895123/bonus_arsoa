@@ -301,7 +301,15 @@
       var filteredData = allSubmissions;
       if (identity) {
         filteredData = allSubmissions.filter(function(submission) {
-          return submission.identity === identity;
+          // 如果選擇會員，顯示 identity 為 'member' 或沒有 identity 欄位的資料（舊資料）
+          if (identity === 'member') {
+            return submission.identity === 'member' || !submission.identity || submission.identity === '';
+          }
+          // 如果選擇來賓，只顯示 identity 明確為 'guest' 的資料
+          else if (identity === 'guest') {
+            return submission.identity === 'guest';
+          }
+          return false;
         });
       }
 
@@ -338,7 +346,15 @@
               // 根據 identity 參數過濾資料
               if (identity) {
                 submissions = submissions.filter(function(submission) {
-                  return submission.identity === identity;
+                  // 如果選擇會員，顯示 identity 為 'member' 或沒有 identity 欄位的資料（舊資料）
+                  if (identity === 'member') {
+                    return submission.identity === 'member' || !submission.identity || submission.identity === '';
+                  }
+                  // 如果選擇來賓，只顯示 identity 明確為 'guest' 的資料
+                  else if (identity === 'guest') {
+                    return submission.identity === 'guest';
+                  }
+                  return false;
                 });
               }
               filteredSubmissions = submissions;
