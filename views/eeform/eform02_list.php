@@ -15,7 +15,15 @@
                 <div class="mb30">
                   <div class="container wow fadeInUp" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
                     <form name="oForm" id="oForm">
-                      <div class="row">
+                      <!-- Search Title -->
+                      <div class="row mb-2">
+                        <div class="col">
+                          <strong id="search-title"></strong>
+                        </div>
+                      </div>
+
+                      <!-- Member Search (Default) -->
+                      <div class="row" id="member-search">
                         <div class="form-group mx-sm-3 mb-2">
                           <label for="search" class="sr-only">查詢會員編號或姓名</label>
                           <input type="text" class="form-control" id="search" name="search" placeholder="查詢會員編號或姓名" value="" maxlength="20">
@@ -25,15 +33,28 @@
                         <span id="search_msg" style="color:red;margin-top: 8px;margin-left: 10px;"></span>
                       </div>
 
+                      <!-- Guest Search (Hidden by default) -->
+                      <div class="row" id="guest-search" style="display: none;">
+                        <div class="form-group mx-sm-3 mb-2">
+                          <input type="text" class="form-control" id="guest-name" name="guest_name" placeholder="填寫來賓姓名" value="" maxlength="20">
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                          <input type="text" class="form-control" id="guest-birth" name="guest_birth" placeholder="填寫生日19xx-mm-dd" value="" pattern="\d{4}-\d{2}-\d{2}" title="請輸入格式：YYYY-MM-DD">
+                        </div>
+                        <button type="button" class="btn btn-primary mb-2" style="height: 46px;" onclick="performGuestSearch()">搜尋</button>
+                        <button type="button" class="btn btn-secondary mb-2 ml-2" style="height: 46px;" onclick="clearGuestSearch()">清除</button>
+                        <span id="guest_search_msg" style="color:red;margin-top: 8px;margin-left: 10px;"></span>
+                      </div>
+
                       <div class="card mb-3">
                         <div class="card-body">
                           <table class="table table-striped mb-2 text-center">
                             <thead class="thead-dark">
                               <tr>
-                                <th width="33%">會員</th>
-                                <th width="33%">最後填寫日期</th>
-                                <th width="17%">已填寫</th>
-                                <th width="17%">查看</th>
+                                <th width="30%">會員(來賓)資訊</th>
+                                <th width="30%">最後填寫日期</th>
+                                <th width="20%">已填寫</th>
+                                <th width="20%">查看</th>
                               </tr>
                             </thead>
                             <tbody id="submissions-table-body">
@@ -50,7 +71,7 @@
                     </form>
                     <div class="col-sm-12 mb30">
                       <hr class="my-4">
-                <a href="<?php echo base_url('eform/eform2'); ?>" class="btn btn-outline-danger btn-block">填寫會員服務追蹤管理表(肌膚)</a>
+                <a href="<?php echo base_url('eform/eform2'); ?>" id="form-button" class="btn btn-outline-danger btn-block">填寫會員服務追蹤管理表(肌膚)</a>
                     </div>
 
 
@@ -83,6 +104,10 @@
 
   <a id="back2Top" title="Back to top" href="#"><i class="ico ion-arrow-right-b"></i></a>
 
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
   <!--<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>-->
@@ -154,17 +179,22 @@
     var currentSubmissionId = null; // 當前選中的提交記錄ID
     var allSubmissions = []; // 儲存所有提交記錄
     var filteredSubmissions = []; // 儲存過濾後的記錄
+    var userSelection = null; // 全域變數儲存用戶選擇
+    var dataLoaded = false; // 記錄資料是否已載入
 
     // 頁面載入時初始化
     $(document).ready(function() {
       if (currentMemberId) {
-        loadSubmissions();
+        // 頁面載入時就載入所有資料，但不顯示
+        loadAllSubmissions();
+        // 然後顯示選擇表單類型的 SweetAlert
+        showFormTypeSelection();
       } else {
         $('#submissions-table-body').html(
           '<tr><td colspan="4" class="text-center text-warning p-4">' +
           '<div><i class="icon ion-person" style="font-size: 2rem;"></i></div>' +
           '<div class="mt-2">請先登入會員帳號</div>' +
-          '<div class="small mt-1">登入後即可查看您的肌膚諮詢記錄</div>' +
+          '<div class="small mt-1">登入後即可查看您的會員服務追蹤記錄</div>' +
           '</td></tr>'
         );
       }
@@ -176,10 +206,56 @@
           return false;
         }
       });
+
+      // 加入來賓搜尋Enter鍵功能
+      $('#guest-name, #guest-birth').on('keypress', function(e) {
+        if (e.which == 13) {
+          performGuestSearch();
+          return false;
+        }
+      });
     });
 
-    // 載入提交記錄列表
-    function loadSubmissions() {
+    // 顯示表單類型選擇對話框
+    function showFormTypeSelection() {
+      Swal.fire({
+        title: '系統提示',
+        text: '請選擇要編輯的表單',
+        icon: 'info',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: '會員',
+        denyButtonText: '來賓',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // 用戶選擇了會員
+          userSelection = 'member';
+          updateFormButtonUrl('member');
+          switchToMemberSearch();
+          // 顯示會員資料（identity=member）
+          displayFilteredSubmissions('member');
+        } else if (result.isDenied) {
+          // 用戶選擇了來賓
+          userSelection = 'guest';
+          updateFormButtonUrl('guest');
+          switchToGuestSearch();
+          // 顯示來賓資料（identity=guest）
+          displayFilteredSubmissions('guest');
+        }
+      });
+    }
+
+    // 更新表單按鈕的URL
+    function updateFormButtonUrl(selection) {
+      var baseUrl = '<?php echo base_url("eform/eform2"); ?>';
+      var newUrl = baseUrl + '?identity=' + selection;
+      $('#form-button').attr('href', newUrl);
+    }
+
+    // 載入所有提交記錄（頁面載入時調用）
+    function loadAllSubmissions() {
       // 顯示載入狀態
       $('#submissions-table-body').html(
         '<tr><td colspan="4" class="text-center text-muted p-4">' +
@@ -196,7 +272,116 @@
           if (response && response.success) {
             var submissions = response.data && response.data.data ? response.data.data : response.data;
             if (Array.isArray(submissions)) {
+              allSubmissions = submissions; // 儲存所有資料
+              dataLoaded = true; // 標記資料已載入
+            } else {
+              allSubmissions = [];
+              dataLoaded = true;
+            }
+          } else {
+            allSubmissions = [];
+            dataLoaded = true;
+          }
+        },
+        error: function() {
+          allSubmissions = [];
+          dataLoaded = true;
+        }
+      });
+    }
+
+    // 顯示過濾後的提交記錄（根據身分選擇）
+    function displayFilteredSubmissions(identity) {
+      if (!dataLoaded) {
+        // 如果資料還沒載入完成，稍後重試
+        setTimeout(function() {
+          displayFilteredSubmissions(identity);
+        }, 500);
+        return;
+      }
+
+      // 根據 identity 參數過濾資料
+      var filteredData = allSubmissions;
+      if (identity) {
+        filteredData = allSubmissions.filter(function(submission) {
+          // 如果選擇會員，顯示 identity 為 'member' 或沒有 identity 欄位的資料（舊資料）
+          if (identity === 'member') {
+            return submission.identity === 'member' || !submission.identity || submission.identity === '';
+          }
+          // 如果選擇來賓，只顯示 identity 明確為 'guest' 的資料
+          else if (identity === 'guest') {
+            return submission.identity === 'guest';
+          }
+          return false;
+        });
+      }
+
+      filteredSubmissions = filteredData;
+      renderSubmissionsTable(filteredData);
+    }
+
+    // 切換到會員搜尋模式
+    function switchToMemberSearch() {
+      $('#search-title').text('幫會員填寫:');
+      $('#member-search').show();
+      $('#guest-search').hide();
+      // 清除來賓搜尋的值
+      $('#guest-name').val('');
+      $('#guest-birth').val('');
+      $('#guest_search_msg').text('');
+    }
+
+    // 切換到來賓搜尋模式
+    function switchToGuestSearch() {
+      $('#search-title').text('幫來賓填寫:');
+      $('#member-search').hide();
+      $('#guest-search').show();
+      // 清除會員搜尋的值
+      $('#search').val('');
+      $('#search_msg').text('');
+    }
+
+    // 載入提交記錄列表（用於更新後重新載入）
+    function loadSubmissions(identity) {
+      // 如果資料已載入，直接顯示過濾後的資料
+      if (dataLoaded) {
+        displayFilteredSubmissions(identity || userSelection);
+        return;
+      }
+
+      // 否則重新載入所有資料
+      $('#submissions-table-body').html(
+        '<tr><td colspan="4" class="text-center text-muted p-4">' +
+        '<div><i class="icon ion-loading-c" style="font-size: 2rem; animation: spin 1s linear infinite;"></i></div>' +
+        '<div class="mt-2">載入中，請稍候...</div>' +
+        '</td></tr>'
+      );
+
+      $.ajax({
+        url: '<?php echo base_url("api/eeform/eeform2/submissions/"); ?>' + currentMemberId,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          if (response && response.success) {
+            var submissions = response.data && response.data.data ? response.data.data : response.data;
+            if (Array.isArray(submissions)) {
               allSubmissions = submissions;
+              dataLoaded = true;
+              // 根據 identity 參數過濾資料
+              if (identity || userSelection) {
+                var targetIdentity = identity || userSelection;
+                submissions = submissions.filter(function(submission) {
+                  // 如果選擇會員，顯示 identity 為 'member' 或沒有 identity 欄位的資料（舊資料）
+                  if (targetIdentity === 'member') {
+                    return submission.identity === 'member' || !submission.identity || submission.identity === '';
+                  }
+                  // 如果選擇來賓，只顯示 identity 明確為 'guest' 的資料
+                  else if (targetIdentity === 'guest') {
+                    return submission.identity === 'guest';
+                  }
+                  return false;
+                });
+              }
               filteredSubmissions = submissions;
               renderSubmissionsTable(submissions);
             } else {
@@ -211,7 +396,7 @@
               '<tr><td colspan="4" class="text-center text-warning p-4">' +
               '<div><i class="icon ion-alert-circled" style="font-size: 2rem;"></i></div>' +
               '<div class="mt-2">載入失敗: ' + errorMsg + '</div>' +
-              '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
+              '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions(userSelection)">重試</button></div>' +
               '</td></tr>'
             );
           }
@@ -261,11 +446,143 @@
             '<tr><td colspan="4" class="text-center text-danger p-4">' +
             '<div><i class="icon ' + errorIcon + '" style="font-size: 2rem;"></i></div>' +
             '<div class="mt-2">' + errorMessage + '</div>' +
-            '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
+            '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions(userSelection)">重試</button></div>' +
             '</td></tr>'
           );
         }
       });
+    }
+
+    // 執行搜尋
+    function performSearch() {
+      var searchTerm = $('#search').val().trim();
+      $('#search_msg').text('');
+
+      // 先過濾出會員資料
+      var memberSubmissions = allSubmissions.filter(function(submission) {
+        return submission.identity === 'member' || !submission.identity || submission.identity === '';
+      });
+
+      if (!searchTerm) {
+        // 如果搜尋欄位為空，顯示所有會員記錄
+        filteredSubmissions = memberSubmissions;
+        renderSubmissionsTable(memberSubmissions);
+        $('#search_msg').text('');
+        return;
+      }
+
+      // 顯示搜尋中狀態
+      $('#search_msg').html('<i class="icon ion-loading-c" style="animation: spin 1s linear infinite;"></i> 搜尋中...');
+
+      // 模擬搜尋延遲，提供更好的用戶體驗
+      setTimeout(function() {
+        // 在會員資料中進行搜尋
+        filteredSubmissions = memberSubmissions.filter(function(submission) {
+          var memberId = (submission.member_id || '').toLowerCase();
+          var memberName = (submission.member_name || '').toLowerCase();
+          var searchLower = searchTerm.toLowerCase();
+
+          return memberId.includes(searchLower) || memberName.includes(searchLower);
+        });
+
+        // 渲染搜尋結果
+        renderSubmissionsTable(filteredSubmissions);
+
+        // 顯示搜尋結果統計
+        var resultCount = filteredSubmissions.length;
+        if (resultCount === 0) {
+          $('#search_msg').text('找不到符合的記錄');
+        } else {
+          $('#search_msg').text('找到 ' + resultCount + ' 筆記錄');
+        }
+      }, 300);
+    }
+
+    // 清除搜尋
+    function clearSearch() {
+      $('#search').val('');
+      $('#search_msg').text('');
+      // 只顯示會員資料
+      var memberSubmissions = allSubmissions.filter(function(submission) {
+        return submission.identity === 'member' || !submission.identity || submission.identity === '';
+      });
+      filteredSubmissions = memberSubmissions;
+      renderSubmissionsTable(memberSubmissions);
+    }
+
+    // 執行來賓搜尋
+    function performGuestSearch() {
+      var guestName = $('#guest-name').val().trim();
+      var guestBirth = $('#guest-birth').val().trim();
+      $('#guest_search_msg').text('');
+
+      // 先過濾出來賓資料
+      var guestSubmissions = allSubmissions.filter(function(submission) {
+        return submission.identity === 'guest';
+      });
+
+      if (!guestName && !guestBirth) {
+        // 如果搜尋欄位都為空，顯示所有來賓記錄
+        filteredSubmissions = guestSubmissions;
+        renderSubmissionsTable(guestSubmissions);
+        $('#guest_search_msg').text('');
+        return;
+      }
+
+      // 驗證生日格式
+      if (guestBirth && !guestBirth.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        $('#guest_search_msg').text('生日格式錯誤，請使用 YYYY-MM-DD 格式');
+        return;
+      }
+
+      // 顯示搜尋中狀態
+      $('#guest_search_msg').html('<i class="icon ion-loading-c" style="animation: spin 1s linear infinite;"></i> 搜尋中...');
+
+      // 模擬搜尋延遲，提供更好的用戶體驗
+      setTimeout(function() {
+        // 在來賓資料中進行搜尋
+        filteredSubmissions = guestSubmissions.filter(function(submission) {
+          var memberName = (submission.member_name || '').toLowerCase();
+          var birthDate = '';
+
+          // 構造生日字串進行比較
+          if (submission.birth_year && submission.birth_month && submission.birth_day) {
+            birthDate = submission.birth_year + '-' +
+              String(submission.birth_month).padStart(2, '0') + '-' +
+              String(submission.birth_day).padStart(2, '0');
+          }
+
+          // 根據提供的搜尋條件進行過濾
+          var matchName = !guestName || memberName.includes(guestName.toLowerCase());
+          var matchBirth = !guestBirth || birthDate === guestBirth;
+
+          return matchName && matchBirth;
+        });
+
+        // 渲染搜尋結果
+        renderSubmissionsTable(filteredSubmissions);
+
+        // 顯示搜尋結果統計
+        var resultCount = filteredSubmissions.length;
+        if (resultCount === 0) {
+          $('#guest_search_msg').text('找不到符合的記錄');
+        } else {
+          $('#guest_search_msg').text('找到 ' + resultCount + ' 筆記錄');
+        }
+      }, 300);
+    }
+
+    // 清除來賓搜尋
+    function clearGuestSearch() {
+      $('#guest-name').val('');
+      $('#guest-birth').val('');
+      $('#guest_search_msg').text('');
+      // 只顯示來賓資料
+      var guestSubmissions = allSubmissions.filter(function(submission) {
+        return submission.identity === 'guest';
+      });
+      filteredSubmissions = guestSubmissions;
+      renderSubmissionsTable(guestSubmissions);
     }
 
     // 渲染提交記錄表格
