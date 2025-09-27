@@ -1760,10 +1760,15 @@
       var searchTerm = $('#search').val().trim();
       $('#search_msg').text('');
 
+      // 先過濾出會員資料
+      var memberSubmissions = allSubmissions.filter(function(submission) {
+        return submission.identity === 'member' || !submission.identity || submission.identity === '';
+      });
+
       if (!searchTerm) {
-        // 如果搜尋欄位為空，顯示所有記錄
-        filteredSubmissions = allSubmissions;
-        renderSubmissionsTable(allSubmissions);
+        // 如果搜尋欄位為空，顯示所有會員記錄
+        filteredSubmissions = memberSubmissions;
+        renderSubmissionsTable(memberSubmissions);
         $('#search_msg').text('');
         return;
       }
@@ -1773,8 +1778,8 @@
 
       // 模擬搜尋延遲，提供更好的用戶體驗
       setTimeout(function() {
-        // 在本地資料中進行搜尋
-        filteredSubmissions = allSubmissions.filter(function(submission) {
+        // 在會員資料中進行搜尋
+        filteredSubmissions = memberSubmissions.filter(function(submission) {
           var memberName = (submission.member_name || '').toLowerCase();
           var phone = (submission.phone || '').toLowerCase();
           var searchLower = searchTerm.toLowerCase();
@@ -1799,8 +1804,12 @@
     function clearSearch() {
       $('#search').val('');
       $('#search_msg').text('');
-      filteredSubmissions = allSubmissions;
-      renderSubmissionsTable(allSubmissions);
+      // 只顯示會員資料
+      var memberSubmissions = allSubmissions.filter(function(submission) {
+        return submission.identity === 'member' || !submission.identity || submission.identity === '';
+      });
+      filteredSubmissions = memberSubmissions;
+      renderSubmissionsTable(memberSubmissions);
     }
 
     // 切換到會員搜尋模式
@@ -1830,10 +1839,15 @@
       var guestBirth = $('#guest-birth').val().trim();
       $('#guest_search_msg').text('');
 
+      // 先過濾出來賓資料
+      var guestSubmissions = allSubmissions.filter(function(submission) {
+        return submission.identity === 'guest';
+      });
+
       if (!guestName && !guestBirth) {
-        // 如果搜尋欄位都為空，顯示所有記錄
-        filteredSubmissions = allSubmissions;
-        renderSubmissionsTable(allSubmissions);
+        // 如果搜尋欄位都為空，顯示所有來賓記錄
+        filteredSubmissions = guestSubmissions;
+        renderSubmissionsTable(guestSubmissions);
         $('#guest_search_msg').text('');
         return;
       }
@@ -1849,8 +1863,8 @@
 
       // 模擬搜尋延遲，提供更好的用戶體驗
       setTimeout(function() {
-        // 在本地資料中進行搜尋
-        filteredSubmissions = allSubmissions.filter(function(submission) {
+        // 在來賓資料中進行搜尋
+        filteredSubmissions = guestSubmissions.filter(function(submission) {
           var memberName = (submission.member_name || '').toLowerCase();
           var birthDate = '';
 
@@ -1885,8 +1899,12 @@
       $('#guest-name').val('');
       $('#guest-birth').val('');
       $('#guest_search_msg').text('');
-      filteredSubmissions = allSubmissions;
-      renderSubmissionsTable(allSubmissions);
+      // 只顯示來賓資料
+      var guestSubmissions = allSubmissions.filter(function(submission) {
+        return submission.identity === 'guest';
+      });
+      filteredSubmissions = guestSubmissions;
+      renderSubmissionsTable(guestSubmissions);
     }
   </script>
 
