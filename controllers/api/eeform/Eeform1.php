@@ -252,10 +252,10 @@ class Eeform1 extends MY_Controller
             $end_date = $this->input->get('end_date');
 
             $submissions = $this->eform1_model->get_member_submissions(
-                $member_id, 
-                $page, 
-                $limit, 
-                $start_date, 
+                $member_id,
+                $page,
+                $limit,
+                $start_date,
                 $end_date
             );
 

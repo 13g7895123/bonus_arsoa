@@ -23,7 +23,9 @@ docs\prompts.md中的項目完成執行標準git操作：`git add` → `git comm
 - 來賓模式下跳過會員資料初始化邏輯
 - 前端表單驗證移除會員編號必填檢查（僅限來賓模式）
 - 後端提交時排除 `member_id` 欄位，加入 `identity=guest` 參數
-- 確保前後端驗證邏輯完全一致
+- 修正後端 API 和 Model 正確處理 identity 欄位
+- 新增 SQL 腳本建立 identity 欄位到 eeform2_submissions 資料表
+- 確保前後端驗證邏輯完全一致，identity 參數正確儲存到資料庫
 
 ## 專案功能說明
 

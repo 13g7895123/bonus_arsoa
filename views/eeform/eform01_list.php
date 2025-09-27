@@ -183,9 +183,9 @@
       // 顯示選擇表單類型的 SweetAlert
       showFormTypeSelection();
 
-      if (currentMemberId) {
-        loadSubmissions();
-      } else {
+      // 移除自動載入，改為在選擇身分後才載入
+      // 只有在未登入時顯示提示
+      if (!currentMemberId) {
         $('#submissions-table-body').html(
           '<tr><td colspan="4" class="text-center text-warning p-4">' +
           '<div><i class="icon ion-person" style="font-size: 2rem;"></i></div>' +
@@ -230,11 +230,19 @@
           userSelection = 'member';
           updateFormButtonUrl('member');
           switchToMemberSearch();
+          // 載入會員資料（identity=member）
+          if (currentMemberId) {
+            loadSubmissions('member');
+          }
         } else if (result.isDenied) {
           // 用戶選擇了來賓
           userSelection = 'guest';
           updateFormButtonUrl('guest');
           switchToGuestSearch();
+          // 載入來賓資料（identity=guest）
+          if (currentMemberId) {
+            loadSubmissions('guest');
+          }
         }
       });
     }
@@ -247,7 +255,7 @@
     }
 
     // 載入提交記錄列表
-    function loadSubmissions() {
+    function loadSubmissions(identity) {
       // 顯示載入狀態
       $('#submissions-table-body').html(
         '<tr><td colspan="4" class="text-center text-muted p-4">' +
@@ -264,6 +272,12 @@
           if (response && response.success) {
             var submissions = response.data && response.data.data ? response.data.data : response.data;
             if (Array.isArray(submissions)) {
+              // 根據 identity 參數在前端過濾資料
+              if (identity) {
+                submissions = submissions.filter(function(submission) {
+                  return submission.identity === identity;
+                });
+              }
               allSubmissions = submissions;
               filteredSubmissions = submissions;
               renderSubmissionsTable(submissions);
@@ -279,7 +293,7 @@
               '<tr><td colspan="4" class="text-center text-warning p-4">' +
               '<div><i class="icon ion-alert-circled" style="font-size: 2rem;"></i></div>' +
               '<div class="mt-2">載入失敗: ' + errorMsg + '</div>' +
-              '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
+              '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions(userSelection)">重試</button></div>' +
               '</td></tr>'
             );
           }
@@ -329,7 +343,7 @@
             '<tr><td colspan="4" class="text-center text-danger p-4">' +
             '<div><i class="icon ' + errorIcon + '" style="font-size: 2rem;"></i></div>' +
             '<div class="mt-2">' + errorMessage + '</div>' +
-            '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions()">重試</button></div>' +
+            '<div class="mt-2"><button class="btn btn-sm btn-outline-primary retry-btn" onclick="loadSubmissions(userSelection)">重試</button></div>' +
             '</td></tr>'
           );
         }
@@ -1619,7 +1633,7 @@
               }).then(function() {
                 $('#exampleModal').modal('hide');
                 // 重新載入表格數據
-                loadSubmissions();
+                loadSubmissions(userSelection);
               });
             } else {
               alert('更新成功！');
