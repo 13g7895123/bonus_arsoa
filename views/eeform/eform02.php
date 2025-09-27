@@ -529,6 +529,145 @@
         // 清空會員編號並設置預設值
         $('input[name="member_id"]').val('000000');
         $('input[name="member_name"]').val('').attr('placeholder', '請填寫姓名');
+
+        // 設置欄位監聽
+        setupGuestFieldMonitoring();
+      }
+
+      // 來賓模式：設置欄位監聽
+      function setupGuestFieldMonitoring() {
+        // 移除之前可能存在的事件監聽器，避免重複綁定
+        $('input[name="member_name"], input[name="birth_year_month"]').off('blur.guestMonitor');
+
+        // 為兩個關鍵欄位添加事件監聽器（離開欄位時執行檢查）
+        $('input[name="member_name"]').on('blur.guestMonitor', checkGuestFields);
+        $('input[name="birth_year_month"]').on('blur.guestMonitor', checkGuestFields);
+      }
+
+      // 全域變數儲存來賓編號
+      var guestCNo = null;
+
+      // 格式化日期為預儲程序所需格式 (YYYYMMDD)
+      function formatDateForProcedure(dateString) {
+        if (!dateString) return '';
+
+        // 移除所有分隔符號
+        var cleanDate = dateString.replace(/[-\/]/g, '');
+
+        // 如果已經是 YYYYMMDD 格式，直接返回
+        if (cleanDate.length === 8) {
+          return cleanDate;
+        }
+
+        // 如果是 YYYY-MM-DD 格式，轉換為 YYYYMMDD
+        var parts = dateString.split('-');
+        if (parts.length === 3) {
+          return parts[0] + parts[1].padStart(2, '0') + parts[2].padStart(2, '0');
+        }
+
+        return dateString;
+      }
+
+      // 檢查來賓必填欄位是否都已填寫
+      function checkGuestFields() {
+        // 只在來賓模式下執行
+        if (identityParam !== 'guest') {
+          return;
+        }
+
+        var memberName = $('input[name="member_name"]').val();
+        var birthDate = $('input[name="birth_year_month"]').val();
+
+        // 檢查兩個欄位是否都有資料
+        if (memberName && memberName.trim() !== '' && birthDate && birthDate.trim() !== '') {
+          // 顯示確認提示
+          Swal.fire({
+            icon: 'warning',
+            title: '系統提示',
+            text: '確認來賓資料，請稍後',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+
+          // 準備API請求資料
+          var testData = {
+            d_spno: currentUserData.member_id || '000000',
+            cname: memberName,
+            bdate: formatDateForProcedure(birthDate)
+          };
+
+          var queryParams = $.param({
+            d_spno: testData.d_spno,
+            cname: testData.cname,
+            bdate: testData.bdate
+          });
+
+          $.ajax({
+            url: '/api/eeform2/ww_chkguest_test?' + queryParams,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+              if (response && response.success && response.data && typeof response.data.errcode !== 'undefined') {
+                var errcode = response.data.errcode;
+
+                if (errcode <= 1) {
+                  // 檢測成功
+                  Swal.fire({
+                    icon: 'success',
+                    title: '系統提示',
+                    text: '檢測成功，請繼續填寫表單',
+                    timer: 2000,
+                    showConfirmButton: false
+                  });
+
+                  // 如果返回了來賓編號，儲存它
+                  if (response.data.c_no) {
+                    guestCNo = response.data.c_no;
+                  }
+                } else {
+                  // 檢測失敗
+                  Swal.fire({
+                    icon: 'error',
+                    title: '系統提示',
+                    text: '檢驗錯誤，請確認資料是否有誤',
+                    confirmButtonText: '確定'
+                  });
+                }
+              } else {
+                // API 回應格式錯誤
+                Swal.fire({
+                  icon: 'error',
+                  title: '系統錯誤',
+                  text: '系統回應格式錯誤，請聯繫管理員',
+                  confirmButtonText: '確定'
+                });
+              }
+            },
+            error: function(xhr, status, error) {
+              Swal.fire({
+                icon: 'error',
+                title: '系統錯誤',
+                text: '檢測失敗，請稍後再試',
+                confirmButtonText: '確定'
+              });
+            }
+          });
+        }
+      }
+
+      // 呼叫正式預儲程序 API 取得 c_no
+      function callCreateGuestAPI(guestData) {
+        return $.ajax({
+          url: '/api/eeform2/ww_chkguest_create',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(guestData),
+          dataType: 'json'
+        });
       }
 
       // 載入產品資料
@@ -721,21 +860,74 @@
       }
 
       function submitForm() {
+        // 如果是來賓模式，先創建來賓並取得編號
+        if (identityParam === 'guest') {
+          var memberName = $('input[name="member_name"]').val();
+          var birthDate = $('input[name="birth_year_month"]').val();
+
+          // 準備來賓資料
+          var guestData = {
+            d_spno: currentUserData.member_id || '000000',
+            cname: memberName,
+            bdate: formatDateForProcedure(birthDate)
+          };
+
+          // 先呼叫創建來賓API
+          callCreateGuestAPI(guestData)
+            .done(function(createResponse) {
+              if (createResponse && createResponse.success && createResponse.data && createResponse.data.c_no) {
+                // 儲存來賓編號
+                guestCNo = createResponse.data.c_no;
+
+                // 繼續原本的表單提交流程
+                doSubmitForm(guestCNo);
+              } else {
+                Swal.fire({
+                  title: '提交失敗',
+                  text: '無法創建來賓資料，請稍後再試',
+                  icon: 'error',
+                  confirmButtonText: '確定'
+                });
+
+                // 恢復按鈕狀態
+                $('#confirmModal .modal-footer button').prop('disabled', false);
+                $('#confirmModal .modal-footer .btn-danger').text('確認送出');
+              }
+            })
+            .fail(function(xhr, status, error) {
+              Swal.fire({
+                title: '提交失敗',
+                text: '創建來賓資料失敗，請稍後再試',
+                icon: 'error',
+                confirmButtonText: '確定'
+              });
+
+              // 恢復按鈕狀態
+              $('#confirmModal .modal-footer button').prop('disabled', false);
+              $('#confirmModal .modal-footer .btn-danger').text('確認送出');
+            });
+        } else {
+          // 非來賓模式，直接提交
+          doSubmitForm(null);
+        }
+      }
+
+      function doSubmitForm(guestId) {
         // 收集表單資料
         var memberName = '';
         var memberId = '';
         var formFillerID = '<?php echo $userdata['c_no'];?>'; // 代填問卷者（當前登入使用者）
         var formFillerName = '<?php echo $userdata['c_name'];?>'; // 代填問卷者姓名
-        
+
         // 根據是否為多重會員選擇不同的取值方式
         if (isMultipleMembers && $('select[name="member_name_select"]').is(':visible')) {
           // 使用下拉選單的值 - 只取姓名，不取會員編號
           var selectedOption = $('select[name="member_name_select"]').find('option:selected');
           var selectedValue = selectedOption.val();
           var selectedDataName = selectedOption.data('name');
-          
+
           // 提交時驗證下拉選單資訊
-          
+
           // 確保選擇了有效的會員
           if (selectedValue && selectedValue !== '' && selectedDataName) {
             memberId = selectedValue; // 被填表人編號（僅用於顯示，不送出）
@@ -750,7 +942,7 @@
           memberId = currentUserData.member_id;
           memberName = $('input[name="member_name"]').val();
         }
-        
+
         var formData = {
           member_name: memberName, // 被填表人姓名
           form_filler_id: formFillerID, // 代填問卷者ID（當前登入使用者）
@@ -766,14 +958,12 @@
           products: {}
         };
 
-        // 只有非來賓模式才包含會員編號
-        if (identityParam !== 'guest') {
-          formData.member_id = memberId;
-        }
-
-        // 如果是來賓模式，加入身分識別參數
-        if (identityParam === 'guest') {
+        // 根據模式設定會員編號
+        if (identityParam === 'guest' && guestId) {
+          formData.member_id = guestId; // 使用來賓編號
           formData.identity = 'guest';
+        } else if (identityParam !== 'guest') {
+          formData.member_id = memberId; // 使用會員編號
         }
 
         // 收集產品資料 (動態)
@@ -784,7 +974,7 @@
           var label = $input.closest('.col-sm-3').find('label').text();
           var productCode = $input.data('product-code');
           var productName = $input.data('product-name');
-          
+
           if (name && (value || value === '0')) {
             formData.products[name] = {
               name: productName || label,
@@ -837,9 +1027,9 @@
               responseText: xhr.responseText,
               error: error
             });
-            
+
             var errorMessage = '提交失敗，請稍後再試';
-            
+
             try {
               var response = JSON.parse(xhr.responseText);
               if (response.message) {
@@ -848,7 +1038,7 @@
             } catch (e) {
               errorMessage += '\n錯誤代碼: ' + xhr.status + ' ' + xhr.statusText;
             }
-            
+
             Swal.fire({
               title: '提交錯誤',
               text: errorMessage,

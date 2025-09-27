@@ -732,4 +732,141 @@ class Eeform2Model extends MY_Model {
             throw new Exception('批量更新產品失敗: ' . $e->getMessage());
         }
     }
+
+    /**
+     * 測試 MSSQL 預儲程序 ww_chkguest (測試模式)
+     * @param array $test_data
+     * @return array
+     */
+    public function test_mssql_ww_chkguest($test_data) {
+        try {
+            // 載入front_mssql_model
+            $CI = &get_instance();
+            $CI->load->model('front_mssql_model');
+
+            // 檢查MSSQL連線
+            if (!$CI->front_mssql_model->ms_test()) {
+                throw new Exception('MSSQL 連線測試失敗');
+            }
+
+            $msconn = $CI->front_mssql_model->ms_connect();
+            if (!$msconn) {
+                throw new Exception('無法建立MSSQL連線');
+            }
+
+            // 準備參數 - 測試模式 (test=1)
+            $params = [
+                ['1', SQLSRV_PARAM_IN],  // test mode = 1 (測試)
+                [$test_data['d_spno'], SQLSRV_PARAM_IN],
+                [$test_data['cname'], SQLSRV_PARAM_IN],
+                [$test_data['bdate'], SQLSRV_PARAM_IN]
+            ];
+
+            // 調用MSSQL預儲程序 (移除cell參數)
+            $result = $CI->front_mssql_model->get_data($msconn, "{CALL ww_chkguest(?,?,?,?)}", $params);
+
+            $CI->front_mssql_model->ms_close($msconn);
+
+            // 錯誤代碼對應訊息
+            $error_messages = [
+                0 => '來賓身分通過驗證',
+                1 => '已存在此來賓',
+                2 => '已存在此來賓，但推薦人不同',
+                3 => '此來賓已經是會員了'
+            ];
+
+            $errcode = isset($result[0]['errcode']) ? (int)$result[0]['errcode'] : -1;
+
+            return [
+                'success' => true,
+                'database_type' => 'MSSQL',
+                'mode' => 'test',
+                'input_data' => $test_data,
+                'result' => $result,
+                'errcode' => $errcode,
+                'message' => $error_messages[$errcode] ?? '未知錯誤 (errcode: ' . $errcode . ')',
+                'execution_time' => date('Y-m-d H:i:s')
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'database_type' => 'MSSQL',
+                'mode' => 'test',
+                'error' => $e->getMessage(),
+                'input_data' => $test_data,
+                'message' => 'MSSQL 預儲程序測試失敗: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * 創建來賓（正式模式）- MSSQL 版本
+     * @param array $guest_data
+     * @return array
+     */
+    public function create_mssql_ww_chkguest($guest_data) {
+        try {
+            // 載入front_mssql_model
+            $CI = &get_instance();
+            $CI->load->model('front_mssql_model');
+
+            // 檢查MSSQL連線
+            if (!$CI->front_mssql_model->ms_test()) {
+                throw new Exception('MSSQL 連線測試失敗');
+            }
+
+            $msconn = $CI->front_mssql_model->ms_connect();
+            if (!$msconn) {
+                throw new Exception('無法建立MSSQL連線');
+            }
+
+            // 準備參數 - 正式模式 (test=0)
+            $params = [
+                ['0', SQLSRV_PARAM_IN],  // test mode = 0 (正式)
+                [$guest_data['d_spno'], SQLSRV_PARAM_IN],
+                [$guest_data['cname'], SQLSRV_PARAM_IN],
+                [$guest_data['bdate'], SQLSRV_PARAM_IN]
+            ];
+
+            // 調用MSSQL預儲程序 (移除cell參數)
+            $result = $CI->front_mssql_model->get_data($msconn, "{CALL ww_chkguest(?,?,?,?)}", $params);
+
+            $CI->front_mssql_model->ms_close($msconn);
+
+            // 錯誤代碼對應訊息
+            $error_messages = [
+                0 => '來賓身分通過驗證，成功創建來賓編號',
+                1 => '已存在此來賓，返回現有編號',
+                2 => '已存在此來賓，但推薦人不同',
+                3 => '此來賓已經是會員了'
+            ];
+
+            $errcode = isset($result[0]['errcode']) ? (int)$result[0]['errcode'] : -1;
+            $guest_id = $result[0]['c_no'] ?? null;
+
+            return [
+                'success' => $errcode <= 1, // errcode 0 或 1 視為成功
+                'database_type' => 'MSSQL',
+                'mode' => 'production',
+                'input_data' => $guest_data,
+                'result' => $result,
+                'errcode' => $errcode,
+                'guest_id' => $guest_id,
+                'c_no' => $guest_id, // 別名，方便前端使用
+                'message' => $error_messages[$errcode] ?? '未知錯誤 (errcode: ' . $errcode . ')',
+                'execution_time' => date('Y-m-d H:i:s')
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'database_type' => 'MSSQL',
+                'mode' => 'production',
+                'error' => $e->getMessage(),
+                'input_data' => $guest_data,
+                'message' => 'MSSQL 來賓創建失敗: ' . $e->getMessage()
+            ];
+        }
+    }
 }

@@ -1487,13 +1487,140 @@ class Eeform2 extends MY_Controller
             'message' => $message,
             'timestamp' => date('Y-m-d H:i:s')
         ];
-        
+
         if ($debug !== null) {
             $response['debug'] = $debug;
         }
-        
+
         http_response_code($code);
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit();
+    }
+
+    /**
+     * 專用 ww_chkguest 預儲程序測試 API
+     * GET /api/eeform2/ww_chkguest_test?d_spno=000000&cname=章喆&bdate=19780615
+     */
+    public function ww_chkguest_test() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得GET參數
+            $d_spno = $this->input->get('d_spno') ?: '000000';
+            $cname = $this->input->get('cname') ?: '章喆';
+            $bdate = $this->input->get('bdate') ?: '19780615';
+
+            // 驗證參數
+            if (empty($cname)) {
+                $this->_send_error('來賓姓名不能為空', 400);
+                return;
+            }
+
+            $test_data = [
+                'd_spno' => $d_spno,
+                'cname' => $cname,
+                'bdate' => $bdate
+            ];
+
+            // 呼叫MSSQL預儲程序測試
+            $result = $this->eform2_model->test_mssql_ww_chkguest($test_data);
+
+            $this->_send_success('ww_chkguest 預儲程序測試完成', $result);
+
+        } catch (Exception $e) {
+            $this->_send_error('ww_chkguest 測試失敗', 500, [
+                'error' => $e->getMessage(),
+                'test_data' => $test_data ?? null
+            ]);
+        }
+    }
+
+    /**
+     * 專用 ww_chkguest 預儲程序創建來賓 API (正式模式)
+     * POST /api/eeform2/ww_chkguest_create
+     * Body: {"d_spno":"000000","cname":"章喆","bdate":"19780615"}
+     */
+    public function ww_chkguest_create() {
+        try {
+            if ($this->input->method(TRUE) !== 'POST') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得POST資料
+            $raw_input = $this->input->raw_input_stream;
+            $input_data = json_decode($raw_input, true);
+
+            if (!$input_data) {
+                $input_data = $this->input->post();
+            }
+
+            if (empty($input_data)) {
+                $this->_send_error('沒有接收到資料', 400);
+                return;
+            }
+
+            // 驗證必填欄位（移除cell）
+            $required_fields = ['d_spno', 'cname', 'bdate'];
+            $missing_fields = [];
+
+            foreach ($required_fields as $field) {
+                if (!isset($input_data[$field]) || $input_data[$field] === '') {
+                    $missing_fields[] = $field;
+                }
+            }
+
+            if (!empty($missing_fields)) {
+                $this->_send_error('缺少必填欄位', 400, [
+                    'missing_fields' => $missing_fields,
+                    'required_fields' => [
+                        'd_spno' => '推薦人編號',
+                        'cname' => '來賓姓名',
+                        'bdate' => '生日 (YYYYMMDD)'
+                    ]
+                ]);
+                return;
+            }
+
+            $guest_data = [
+                'd_spno' => $input_data['d_spno'],
+                'cname' => $input_data['cname'],
+                'bdate' => $input_data['bdate']
+            ];
+
+            // 呼叫MSSQL預儲程序（正式模式）
+            $result = $this->eform2_model->create_mssql_ww_chkguest($guest_data);
+
+            if ($result['success']) {
+                $this->_send_success('來賓創建成功', $result);
+            } else {
+                $error_messages = [
+                    0 => '來賓身分通過驗證',
+                    1 => '已存在此來賓，返回現有編號',
+                    2 => '已存在此來賓，但推薦人不相同',
+                    3 => '此來賓已經是會員了'
+                ];
+
+                $message = isset($error_messages[$result['errcode']])
+                    ? $error_messages[$result['errcode']]
+                    : '未知錯誤碼: ' . $result['errcode'];
+
+                // errcode 0 或 1 視為成功
+                if (in_array($result['errcode'], [0, 1])) {
+                    $this->_send_success($message, $result);
+                } else {
+                    $this->_send_error($message, 400, $result);
+                }
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('來賓創建失敗', 500, [
+                'error' => $e->getMessage(),
+                'guest_data' => $guest_data ?? null
+            ]);
+        }
     }
 }
