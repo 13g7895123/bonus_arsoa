@@ -533,8 +533,7 @@
           // 準備API請求資料
           var requestData = {
             cname: memberName.trim(),
-            bdate: birthDate,
-            d_spno: $('input[name="member_id"]').val() || '000000'
+            bdate: birthDate
           };
 
           // 呼叫測試API
@@ -769,7 +768,6 @@
         var memberId = $('input[name="member_id"]').val() || '000000';
 
         var guestData = {
-          d_spno: memberId,
           cname: memberName.trim(),
           bdate: birthDate
         };

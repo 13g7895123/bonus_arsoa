@@ -1236,7 +1236,6 @@ class Eeform2 extends CI_Controller
             // 取得GET參數
             $cname = $this->input->get('cname');
             $bdate = $this->input->get('bdate');
-            $d_spno = $this->input->get('d_spno') ?: '000000';
 
             // 驗證必填欄位
             $missing_fields = [];
@@ -1266,7 +1265,7 @@ class Eeform2 extends CI_Controller
             // 測試資料
             $test_data = [
                 'test' => 1,
-                'd_spno' => $d_spno,
+                'd_spno' => '000000', // 預設推薦人編號
                 'cname' => $cname,
                 'bdate' => $formatted_bdate
             ];
@@ -1318,7 +1317,7 @@ class Eeform2 extends CI_Controller
             }
 
             // 驗證必填欄位
-            $required_fields = ['d_spno', 'cname', 'bdate'];
+            $required_fields = ['cname', 'bdate'];
             $missing_fields = [];
 
             foreach ($required_fields as $field) {
@@ -1350,7 +1349,7 @@ class Eeform2 extends CI_Controller
 
             // 準備預儲程序資料
             $guest_data = [
-                'd_spno' => $input_data['d_spno'],
+                'd_spno' => '000000', // 預設推薦人編號
                 'cname' => $input_data['cname'],
                 'bdate' => $formatted_bdate
             ];

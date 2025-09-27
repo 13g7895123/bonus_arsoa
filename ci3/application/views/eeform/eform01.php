@@ -1322,10 +1322,8 @@
 
             // 準備測試預儲程序的資料
             var testData = {
-              d_spno: currentUserData.member_id || '000000', // 推薦人編號
               cname: memberName.trim(),
-              bdate: formatDateForProcedure(birthDate.trim()), // 轉換為 YYYYMMDD 格式
-              cell: phone.trim()
+              bdate: formatDateForProcedure(birthDate.trim()) // 轉換為 YYYYMMDD 格式
             };
 
             // 呼叫測試預儲程序 API
@@ -1348,8 +1346,9 @@
       // 呼叫測試預儲程序 API
       function callTestProcedureAPI(testData) {
         $.ajax({
-          url: '/api/eeform1/test_procedure',
+          url: '/api/eeform1/ww_chkguest_test',
           type: 'GET',
+          data: testData,
           dataType: 'json',
           success: function(response) {
             if (response && response.success && response.data && response.data.mysql && response.data.mysql.test_result) {

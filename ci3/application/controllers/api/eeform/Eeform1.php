@@ -1085,6 +1085,72 @@ class Eeform1 extends CI_Controller
     }
 
     /**
+     * 測試來賓驗證（測試模式）
+     * GET /api/eeform1/ww_chkguest_test
+     */
+    public function ww_chkguest_test() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得GET參數
+            $cname = $this->input->get('cname');
+            $bdate = $this->input->get('bdate');
+
+            // 驗證必填欄位
+            $missing_fields = [];
+            if (empty($cname)) $missing_fields[] = 'cname';
+            if (empty($bdate)) $missing_fields[] = 'bdate';
+
+            if (!empty($missing_fields)) {
+                $this->_send_error('缺少必填欄位', 400, [
+                    'missing_fields' => $missing_fields,
+                    'required_fields' => [
+                        'cname' => '來賓姓名',
+                        'bdate' => '生日 (YYYY-MM-DD)'
+                    ]
+                ]);
+                return;
+            }
+
+            // 格式化生日 (YYYY-MM-DD to YYYYMMDD)
+            $formatted_bdate = str_replace('-', '', $bdate);
+            if (!preg_match('/^\d{8}$/', $formatted_bdate)) {
+                $this->_send_error('生日格式錯誤', 400, [
+                    'error' => '生日格式應為 YYYY-MM-DD'
+                ]);
+                return;
+            }
+
+            // 測試資料
+            $test_data = [
+                'test' => 1,
+                'd_spno' => '000000', // 預設推薦人編號
+                'cname' => $cname,
+                'bdate' => $formatted_bdate
+            ];
+
+            // 呼叫測試預儲程序
+            $result = $this->eform1_model->test_ww_chkguest($test_data);
+
+            if ($result['success']) {
+                $this->_send_success('來賓驗證測試成功', $result);
+            } else {
+                $this->_send_error($result['message'], 400, $result);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('測試來賓驗證時發生錯誤: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
      * 創建來賓（正式模式）
      * POST /api/eeform1/create_guest
      */
@@ -1113,7 +1179,7 @@ class Eeform1 extends CI_Controller
             }
 
             // 驗證必填欄位
-            $required_fields = ['d_spno', 'cname', 'bdate', 'cell'];
+            $required_fields = ['cname', 'bdate'];
             $missing_fields = [];
 
             foreach ($required_fields as $field) {
@@ -1138,19 +1204,10 @@ class Eeform1 extends CI_Controller
             // 驗證資料格式
             $validation_errors = [];
 
-            // 驗證生日格式 (YYYYMMDD)
-            if (!preg_match('/^\d{8}$/', $input_data['bdate'])) {
-                $validation_errors[] = '生日格式錯誤，需為8位數字 (YYYYMMDD)';
-            }
-
-            // 驗證電話格式
-            if (!preg_match('/^09\d{8}$/', $input_data['cell'])) {
-                $validation_errors[] = '電話格式錯誤，請輸入09開頭的10位數字';
-            }
-
-            // 驗證推薦人編號格式
-            if (strlen($input_data['d_spno']) > 7) {
-                $validation_errors[] = '推薦人編號不能超過7個字符';
+            // 格式化生日 (YYYY-MM-DD to YYYYMMDD)
+            $formatted_bdate = str_replace('-', '', $input_data['bdate']);
+            if (!preg_match('/^\d{8}$/', $formatted_bdate)) {
+                $validation_errors[] = '生日格式錯誤，需為 YYYY-MM-DD 格式';
             }
 
             // 驗證姓名長度
@@ -1167,10 +1224,9 @@ class Eeform1 extends CI_Controller
 
             // 準備預儲程序資料
             $guest_data = [
-                'd_spno' => $input_data['d_spno'],
+                'd_spno' => '000000', // 預設推薦人編號
                 'cname' => $input_data['cname'],
-                'bdate' => $input_data['bdate'],
-                'cell' => $input_data['cell']
+                'bdate' => $formatted_bdate
             ];
 
             // 呼叫預儲程序（正式模式）
