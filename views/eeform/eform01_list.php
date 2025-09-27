@@ -177,15 +177,16 @@
     var allSubmissions = []; // 儲存所有提交記錄
     var filteredSubmissions = []; // 儲存過濾後的記錄
     var userSelection = null; // 全域變數儲存用戶選擇
+    var dataLoaded = false; // 記錄資料是否已載入
 
     // 頁面載入時初始化
     $(document).ready(function() {
-      // 顯示選擇表單類型的 SweetAlert
-      showFormTypeSelection();
-
-      // 移除自動載入，改為在選擇身分後才載入
-      // 只有在未登入時顯示提示
-      if (!currentMemberId) {
+      if (currentMemberId) {
+        // 頁面載入時就載入所有資料，但不顯示
+        loadAllSubmissions();
+        // 然後顯示選擇表單類型的 SweetAlert
+        showFormTypeSelection();
+      } else {
         $('#submissions-table-body').html(
           '<tr><td colspan="4" class="text-center text-warning p-4">' +
           '<div><i class="icon ion-person" style="font-size: 2rem;"></i></div>' +
@@ -230,19 +231,15 @@
           userSelection = 'member';
           updateFormButtonUrl('member');
           switchToMemberSearch();
-          // 載入會員資料（identity=member）
-          if (currentMemberId) {
-            loadSubmissions('member');
-          }
+          // 顯示會員資料（identity=member）
+          displayFilteredSubmissions('member');
         } else if (result.isDenied) {
           // 用戶選擇了來賓
           userSelection = 'guest';
           updateFormButtonUrl('guest');
           switchToGuestSearch();
-          // 載入來賓資料（identity=guest）
-          if (currentMemberId) {
-            loadSubmissions('guest');
-          }
+          // 顯示來賓資料（identity=guest）
+          displayFilteredSubmissions('guest');
         }
       });
     }
@@ -254,8 +251,8 @@
       $('#form-button').attr('href', newUrl);
     }
 
-    // 載入提交記錄列表
-    function loadSubmissions(identity) {
+    // 載入所有提交記錄（頁面載入時調用）
+    function loadAllSubmissions() {
       // 顯示載入狀態
       $('#submissions-table-body').html(
         '<tr><td colspan="4" class="text-center text-muted p-4">' +
@@ -272,13 +269,78 @@
           if (response && response.success) {
             var submissions = response.data && response.data.data ? response.data.data : response.data;
             if (Array.isArray(submissions)) {
-              // 根據 identity 參數在前端過濾資料
+              allSubmissions = submissions; // 儲存所有資料
+              dataLoaded = true; // 標記資料已載入
+            } else {
+              allSubmissions = [];
+              dataLoaded = true;
+            }
+          } else {
+            allSubmissions = [];
+            dataLoaded = true;
+          }
+        },
+        error: function() {
+          allSubmissions = [];
+          dataLoaded = true;
+        }
+      });
+    }
+
+    // 顯示過濾後的提交記錄（根據身分選擇）
+    function displayFilteredSubmissions(identity) {
+      if (!dataLoaded) {
+        // 如果資料還沒載入完成，稍後重試
+        setTimeout(function() {
+          displayFilteredSubmissions(identity);
+        }, 500);
+        return;
+      }
+
+      // 根據 identity 參數過濾資料
+      var filteredData = allSubmissions;
+      if (identity) {
+        filteredData = allSubmissions.filter(function(submission) {
+          return submission.identity === identity;
+        });
+      }
+
+      filteredSubmissions = filteredData;
+      renderSubmissionsTable(filteredData);
+    }
+
+    // 載入提交記錄列表（用於更新後重新載入）
+    function loadSubmissions(identity) {
+      // 如果資料已載入，直接顯示過濾後的資料
+      if (dataLoaded) {
+        displayFilteredSubmissions(identity);
+        return;
+      }
+
+      // 否則重新載入所有資料
+      $('#submissions-table-body').html(
+        '<tr><td colspan="4" class="text-center text-muted p-4">' +
+        '<div><i class="icon ion-loading-c" style="font-size: 2rem; animation: spin 1s linear infinite;"></i></div>' +
+        '<div class="mt-2">載入中，請稍候...</div>' +
+        '</td></tr>'
+      );
+
+      $.ajax({
+        url: '<?php echo base_url("api/eeform1/submissions/"); ?>' + currentMemberId,
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          if (response && response.success) {
+            var submissions = response.data && response.data.data ? response.data.data : response.data;
+            if (Array.isArray(submissions)) {
+              allSubmissions = submissions;
+              dataLoaded = true;
+              // 根據 identity 參數過濾資料
               if (identity) {
                 submissions = submissions.filter(function(submission) {
                   return submission.identity === identity;
                 });
               }
-              allSubmissions = submissions;
               filteredSubmissions = submissions;
               renderSubmissionsTable(submissions);
             } else {
