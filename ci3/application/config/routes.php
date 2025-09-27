@@ -94,6 +94,8 @@ $route['api/eeform2/stats/(:any)'] = 'api/eeform/eeform2/stats/$1';
 $route['api/eeform2/list'] = 'api/eeform/eeform2/list';
 $route['api/eeform2/member_lookup/(:any)'] = 'api/eeform/eeform2/member_lookup/$1';
 $route['api/eeform2/export_single/(:any)'] = 'api/eeform/eeform2/export_single/$1';
+$route['api/eeform2/ww_chkguest_test'] = 'api/eeform/eeform2/ww_chkguest_test';
+$route['api/eeform2/ww_chkguest_create'] = 'api/eeform/eeform2/ww_chkguest_create';
 
 // eform4 view routes
 $route['eform/eform4'] = 'eform/eform4';
