@@ -15,28 +15,16 @@ docs\prompts.md中的項目完成執行標準git操作：`git add` → `git comm
 
 ## 已完成項目
 
-### 2025-09-27 - eform2 來賓驗證 API 功能實作
-- **項目29**: 為 `/eform/eform2` 頁面新增來賓驗證 API 功能
-- 新增 `ww_chkguest_test` 和 `ww_chkguest_create` API 端點到 Eeform2 控制器
-- 在 Eeform2Model 中實作 MSSQL 預儲程序呼叫方法
-- 實作姓名和生日欄位的即時驗證監聽（blur 事件）
-- 當兩個欄位都填寫時自動呼叫測試 API 進行驗證
-- 表單送出時自動呼叫正式 API 取得來賓編號
-- 整合 SweetAlert2 提供友善的使用者提示
-- 確保前後端驗證邏輯與 eform1 保持一致
-
-### 2025-09-27 - eform2 來賓驗證 API 功能完整實作
-- **項目29**: 完整實作 `/eform/eform2` 頁面來賓驗證 API 功能
-- 新增 `ww_chkguest_test` 和 `ww_chkguest_create` API 端點到 Eeform2 控制器
-- 在 Eeform2Model 中實作 MSSQL 預儲程序呼叫方法
-- 新增出生年月日欄位並整合到表單和確認視窗
-- 實作姓名和出生年月日欄位的即時驗證監聽（blur 事件）
-- 當兩個欄位都填寫時自動呼叫測試 API 進行驗證
-- 表單送出時自動呼叫正式 API 取得來賓編號並更新 member_id
+### 2025-09-27 - eform1/eform2 API 一致性修正完成
+- **項目29**: 完整修正 eform1 和 eform2 之間的 API 一致性問題
+- 為 eform1 新增 `ww_chkguest_test` API 端點匹配 eform2 功能
+- 移除前端 `d_spno` 參數傳送，改為後端使用預設值 '000000'
+- 移除 `cell` 電話參數要求，統一僅需 `cname` 和 `bdate` 參數
+- 更新前端驗證邏輯，僅監聽姓名和生日兩個欄位
+- 修正 routes.php 添加缺失的 API 路由配置
+- 確保 eform1 和 eform2 具有完全一致的 API 行為和參數要求
+- 統一使用 GET 方法進行測試驗證，POST 方法進行正式創建
 - 整合 SweetAlert2 提供友善的使用者提示和錯誤處理
-- **修復 404 路由錯誤**: 在 routes.php 中添加缺失的 API 路由映射
-- 確保 `/api/eeform2/ww_chkguest_test` 和 `/api/eeform2/ww_chkguest_create` 端點正常運作
-- 確保前後端驗證邏輯與 eform1 保持一致（移除電話欄位驗證）
 
 ### 2025-09-27 - eform02_list 身分選擇與篩選功能
 - **項目28**: 完整實作 `/eform/eform02_list` 頁面身分選擇與篩選功能
