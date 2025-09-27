@@ -1022,13 +1022,40 @@ class Eeform1 extends CI_Controller
                 return;
             }
 
+            // 取得GET參數
+            $cname = $this->input->get('cname');
+            $bdate = $this->input->get('bdate');
+
+            // 驗證必填欄位
+            $missing_fields = [];
+            if (empty($cname)) $missing_fields[] = 'cname';
+            if (empty($bdate)) $missing_fields[] = 'bdate';
+
+            if (!empty($missing_fields)) {
+                $this->_send_error('缺少必填欄位', 400, [
+                    'missing_fields' => $missing_fields,
+                    'required_fields' => [
+                        'cname' => '來賓姓名',
+                        'bdate' => '生日 (YYYY-MM-DD)'
+                    ]
+                ]);
+                return;
+            }
+
+            // 格式化生日 (YYYY-MM-DD to YYYYMMDD)
+            $formatted_bdate = str_replace('-', '', $bdate);
+            if (!preg_match('/^\d{8}$/', $formatted_bdate)) {
+                $this->_send_error('生日格式錯誤', 400, [
+                    'error' => '生日格式應為 YYYY-MM-DD'
+                ]);
+                return;
+            }
+
             // 測試資料
             $test_data = [
                 'test' => 1,
-                'd_spno' => '000000',
-                'cname' => '章喆',
-                'bdate' => '19780615',
-                'cell' => '0966-123-456'
+                'cname' => $cname,
+                'bdate' => $formatted_bdate
             ];
 
             $results = [
@@ -1077,72 +1104,6 @@ class Eeform1 extends CI_Controller
         } catch (Exception $e) {
             log_message('error', 'Test procedure API error: ' . $e->getMessage());
             $this->_send_error('測試預儲程序時發生錯誤: ' . $e->getMessage(), 500, [
-                'trace' => $e->getTraceAsString(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-        }
-    }
-
-    /**
-     * 測試來賓驗證（測試模式）
-     * GET /api/eeform1/ww_chkguest_test
-     */
-    public function ww_chkguest_test() {
-        try {
-            if ($this->input->method(TRUE) !== 'GET') {
-                $this->_send_error('Method not allowed', 405);
-                return;
-            }
-
-            // 取得GET參數
-            $cname = $this->input->get('cname');
-            $bdate = $this->input->get('bdate');
-
-            // 驗證必填欄位
-            $missing_fields = [];
-            if (empty($cname)) $missing_fields[] = 'cname';
-            if (empty($bdate)) $missing_fields[] = 'bdate';
-
-            if (!empty($missing_fields)) {
-                $this->_send_error('缺少必填欄位', 400, [
-                    'missing_fields' => $missing_fields,
-                    'required_fields' => [
-                        'cname' => '來賓姓名',
-                        'bdate' => '生日 (YYYY-MM-DD)'
-                    ]
-                ]);
-                return;
-            }
-
-            // 格式化生日 (YYYY-MM-DD to YYYYMMDD)
-            $formatted_bdate = str_replace('-', '', $bdate);
-            if (!preg_match('/^\d{8}$/', $formatted_bdate)) {
-                $this->_send_error('生日格式錯誤', 400, [
-                    'error' => '生日格式應為 YYYY-MM-DD'
-                ]);
-                return;
-            }
-
-            // 測試資料
-            $test_data = [
-                'test' => 1,
-                'd_spno' => '000000', // 預設推薦人編號
-                'cname' => $cname,
-                'bdate' => $formatted_bdate
-            ];
-
-            // 呼叫測試預儲程序
-            $result = $this->eform1_model->test_ww_chkguest($test_data);
-
-            if ($result['success']) {
-                $this->_send_success('來賓驗證測試成功', $result);
-            } else {
-                $this->_send_error($result['message'], 400, $result);
-            }
-
-        } catch (Exception $e) {
-            $this->_send_error('測試來賓驗證時發生錯誤: ' . $e->getMessage(), 500, [
                 'trace' => $e->getTraceAsString(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine()

@@ -1346,7 +1346,7 @@
       // 呼叫測試預儲程序 API
       function callTestProcedureAPI(testData) {
         $.ajax({
-          url: '/api/eeform1/ww_chkguest_test',
+          url: '/api/eeform1/test_procedure',
           type: 'GET',
           data: testData,
           dataType: 'json',
