@@ -1195,15 +1195,15 @@ class Eeform2 extends CI_Controller
             $this->db->where('c_no', $member_id);
             $this->db->or_where('d_spno', $member_id);
             $this->db->group_end();
-            
+
             $query = $this->db->get();
-            
+
             if (!$query) {
                 throw new Exception('Database query failed: ' . $this->db->error()['message']);
             }
 
             $members = $query->result_array();
-            
+
             // 返回查詢結果
             $result = [
                 'count' => count($members),
@@ -1215,6 +1215,173 @@ class Eeform2 extends CI_Controller
 
         } catch (Exception $e) {
             $this->_send_error('查詢會員資料失敗: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
+     * 測試來賓驗證（測試模式）
+     * GET /api/eeform2/ww_chkguest_test
+     */
+    public function ww_chkguest_test() {
+        try {
+            if ($this->input->method(TRUE) !== 'GET') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得GET參數
+            $cname = $this->input->get('cname');
+            $bdate = $this->input->get('bdate');
+            $d_spno = $this->input->get('d_spno') ?: '000000';
+
+            // 驗證必填欄位
+            $missing_fields = [];
+            if (empty($cname)) $missing_fields[] = 'cname';
+            if (empty($bdate)) $missing_fields[] = 'bdate';
+
+            if (!empty($missing_fields)) {
+                $this->_send_error('缺少必填欄位', 400, [
+                    'missing_fields' => $missing_fields,
+                    'required_fields' => [
+                        'cname' => '來賓姓名',
+                        'bdate' => '生日 (YYYY-MM-DD)'
+                    ]
+                ]);
+                return;
+            }
+
+            // 格式化生日 (YYYY-MM-DD to YYYYMMDD)
+            $formatted_bdate = str_replace('-', '', $bdate);
+            if (!preg_match('/^\d{8}$/', $formatted_bdate)) {
+                $this->_send_error('生日格式錯誤', 400, [
+                    'error' => '生日格式應為 YYYY-MM-DD'
+                ]);
+                return;
+            }
+
+            // 測試資料
+            $test_data = [
+                'test' => 1,
+                'd_spno' => $d_spno,
+                'cname' => $cname,
+                'bdate' => $formatted_bdate
+            ];
+
+            // 呼叫測試預儲程序
+            $result = $this->eform2_model->test_ww_chkguest($test_data);
+
+            if ($result['success']) {
+                $this->_send_success('來賓驗證測試成功', $result);
+            } else {
+                $this->_send_error($result['message'], 400, $result);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('測試來賓驗證時發生錯誤: ' . $e->getMessage(), 500, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
+    /**
+     * 創建來賓（正式模式）
+     * POST /api/eeform2/ww_chkguest_create
+     */
+    public function ww_chkguest_create() {
+        try {
+            if ($this->input->method(TRUE) !== 'POST') {
+                $this->_send_error('Method not allowed', 405);
+                return;
+            }
+
+            // 取得POST資料
+            $raw_input = $this->input->raw_input_stream;
+            $input_data = json_decode($raw_input, true);
+
+            if (!$input_data) {
+                $input_data = $this->input->post();
+            }
+
+            if (empty($input_data)) {
+                $this->_send_error('沒有接收到資料', 400, [
+                    'raw_input' => $raw_input,
+                    'post_data' => $this->input->post(),
+                    'json_last_error' => json_last_error_msg()
+                ]);
+                return;
+            }
+
+            // 驗證必填欄位
+            $required_fields = ['d_spno', 'cname', 'bdate'];
+            $missing_fields = [];
+
+            foreach ($required_fields as $field) {
+                if (empty($input_data[$field])) {
+                    $missing_fields[] = $field;
+                }
+            }
+
+            if (!empty($missing_fields)) {
+                $this->_send_error('缺少必填欄位', 400, [
+                    'missing_fields' => $missing_fields,
+                    'required_fields' => [
+                        'd_spno' => '推薦人編號',
+                        'cname' => '來賓姓名',
+                        'bdate' => '生日 (YYYY-MM-DD)'
+                    ]
+                ]);
+                return;
+            }
+
+            // 格式化生日 (YYYY-MM-DD to YYYYMMDD)
+            $formatted_bdate = str_replace('-', '', $input_data['bdate']);
+            if (!preg_match('/^\d{8}$/', $formatted_bdate)) {
+                $this->_send_error('生日格式錯誤', 400, [
+                    'error' => '生日格式應為 YYYY-MM-DD'
+                ]);
+                return;
+            }
+
+            // 準備預儲程序資料
+            $guest_data = [
+                'd_spno' => $input_data['d_spno'],
+                'cname' => $input_data['cname'],
+                'bdate' => $formatted_bdate
+            ];
+
+            // 呼叫預儲程序（正式模式）
+            $result = $this->eform2_model->create_ww_chkguest($guest_data);
+
+            if ($result['success']) {
+                $this->_send_success('來賓創建成功', $result);
+            } else {
+                // 根據錯誤代碼回傳不同的錯誤訊息
+                $error_code = $result['errcode'] ?? -1;
+                $status_code = 400;
+
+                if ($error_code === 2) {
+                    $status_code = 409; // Conflict - 推薦人不同
+                } elseif ($error_code === 3) {
+                    $status_code = 409; // Conflict - 已是會員
+                } elseif ($error_code === -1) {
+                    $status_code = 500; // Internal Server Error
+                }
+
+                $this->_send_error($result['message'], $status_code, [
+                    'errcode' => $error_code,
+                    'guest_id' => $result['guest_id'],
+                    'details' => $result
+                ]);
+            }
+
+        } catch (Exception $e) {
+            $this->_send_error('創建來賓時發生錯誤: ' . $e->getMessage(), 500, [
                 'trace' => $e->getTraceAsString(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine()

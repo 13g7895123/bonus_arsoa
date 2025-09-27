@@ -24,6 +24,10 @@
                             </select>
                           </div>
                           <div class="col-sm-3 mb30">
+                            <label class="label-custom">出生年月日</label>
+                            <input type="date" name="birth_date" class="form-control form-control-custom" min="1950-01-01" max="2010-12-31" required />
+                          </div>
+                          <div class="col-sm-3 mb30">
                             <label class="label-custom">入會日</label>
                             <input type="date" name="join_date" class="form-control form-control-custom" required />
                           </div>
@@ -145,13 +149,19 @@
                       <span class="text-dark" id="confirm-age"></span> 歲
                     </div>
                   </div>
-                  <div class="col-md-6 mb-3">
+                  <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center">
+                      <span class="text-muted mr-3" style="min-width: 80px;">出生年月日：</span>
+                      <span class="text-dark" id="confirm-birth-date"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
                     <div class="d-flex align-items-center">
                       <span class="text-muted mr-3" style="min-width: 60px;">入會日：</span>
                       <span class="text-dark" id="confirm-join-date"></span>
                     </div>
                   </div>
-                  <div class="col-md-6 mb-3">
+                  <div class="col-md-4 mb-3">
                     <div class="d-flex align-items-center">
                       <span class="text-muted mr-3" style="min-width: 60px;">見面日：</span>
                       <span class="text-dark" id="confirm-meeting-date"></span>
@@ -462,24 +472,111 @@
       var showTestButton = false; // 設為 true 顯示測試按鈕
       var productsData = []; // 存儲從API載入的產品資料
       
+      // 全域變數儲存來賓編號
+      var guestCNo = null;
+
       // 頁面載入時檢查是否顯示測試按鈕
       $(document).ready(function() {
         // 自動填入當天日期
         var today = new Date();
-        var currentDate = today.getFullYear() + '-' + 
-                         String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+        var currentDate = today.getFullYear() + '-' +
+                         String(today.getMonth() + 1).padStart(2, '0') + '-' +
                          String(today.getDate()).padStart(2, '0');
-        
+
         $('#current-date').text(currentDate);
         $('input[name="join_date"]').val(currentDate);
-        
+
         if (showTestButton) {
           $('#testDataButton').show();
         }
-        
+
         // 載入產品資料
         loadProducts();
+
+        // 檢查URL參數決定是否啟用來賓驗證監聽
+        var urlParams = new URLSearchParams(window.location.search);
+        var identityParam = urlParams.get('identity');
+
+        if (identityParam === 'guest') {
+          initGuestValidation();
+        }
       });
+
+      // 初始化來賓驗證監聽
+      function initGuestValidation() {
+        // 移除之前的事件監聽器（如果有的話）
+        $('input[name="member_name"], input[name="birth_date"]').off('blur.guestMonitor');
+
+        // 為兩個關鍵欄位添加事件監聽器（離開欄位時執行檢查）
+        $('input[name="member_name"]').on('blur.guestMonitor', checkGuestFields);
+        $('input[name="birth_date"]').on('blur.guestMonitor', checkGuestFields);
+      }
+
+      // 檢查來賓欄位並執行驗證
+      function checkGuestFields() {
+        var memberName = $('input[name="member_name"]').val();
+        var birthDate = $('input[name="birth_date"]').val();
+
+        // 檢查兩個欄位是否都有資料
+        if (memberName && memberName.trim() !== '' &&
+            birthDate && birthDate.trim() !== '') {
+
+          // 顯示系統提示
+          Swal.fire({
+            icon: 'warning',
+            title: '系統提示',
+            text: '確認來賓資料，請稍後',
+            showConfirmButton: false,
+            timer: 2000
+          });
+
+          // 準備API請求資料
+          var requestData = {
+            cname: memberName.trim(),
+            bdate: birthDate,
+            d_spno: $('input[name="member_id"]').val() || '000000'
+          };
+
+          // 呼叫測試API
+          $.ajax({
+            url: '<?php echo base_url("api/eeform2/ww_chkguest_test"); ?>',
+            method: 'GET',
+            data: requestData,
+            dataType: 'json',
+            success: function(response) {
+              if (response.success && response.data && response.data.errcode <= 1) {
+                // 測試成功
+                Swal.fire({
+                  icon: 'success',
+                  title: '系統提示',
+                  text: '檢測成功，請繼續填寫表單',
+                  timer: 2000,
+                  showConfirmButton: false
+                });
+              } else {
+                // 測試失敗
+                Swal.fire({
+                  icon: 'error',
+                  title: '系統提示',
+                  text: '檢驗錯誤，請確認資料是否有誤',
+                  timer: 3000,
+                  showConfirmButton: false
+                });
+              }
+            },
+            error: function(xhr, status, error) {
+              console.error('測試API調用失敗:', error);
+              Swal.fire({
+                icon: 'error',
+                title: '系統提示',
+                text: '檢驗錯誤，請確認資料是否有誤',
+                timer: 3000,
+                showConfirmButton: false
+              });
+            }
+          });
+        }
+      }
       
       // 載入產品資料
       function loadProducts() {
@@ -601,6 +698,7 @@
         // 填入確認視窗的內容
         $('#confirm-member-name').text(memberName);
         $('#confirm-member-id').text(memberId);
+        $('#confirm-birth-date').text($('input[name="birth_date"]').val() || '(未填寫)');
         $('#confirm-join-date').text(joinDate);
         $('#confirm-gender').text(gender);
         $('#confirm-age').text(age);
@@ -651,6 +749,70 @@
       }
 
       function submitForm() {
+        // 檢查是否為來賓模式
+        var urlParams = new URLSearchParams(window.location.search);
+        var identityParam = urlParams.get('identity');
+
+        if (identityParam === 'guest') {
+          // 來賓模式：先創建來賓編號，再提交表單
+          createGuestAndSubmit();
+        } else {
+          // 一般模式：直接提交表單
+          performFormSubmission();
+        }
+      }
+
+      // 創建來賓並提交表單
+      function createGuestAndSubmit() {
+        var memberName = $('input[name="member_name"]').val();
+        var birthDate = $('input[name="birth_date"]').val();
+        var memberId = $('input[name="member_id"]').val() || '000000';
+
+        var guestData = {
+          d_spno: memberId,
+          cname: memberName.trim(),
+          bdate: birthDate
+        };
+
+        $.ajax({
+          url: '<?php echo base_url("api/eeform2/ww_chkguest_create"); ?>',
+          method: 'POST',
+          data: JSON.stringify(guestData),
+          contentType: 'application/json',
+          dataType: 'json',
+          success: function(response) {
+            if (response.success && response.data && response.data.guest_id) {
+              // 成功取得來賓編號，更新member_id並提交表單
+              guestCNo = response.data.guest_id;
+              $('input[name="member_id"]').val(guestCNo);
+              performFormSubmission();
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: '錯誤',
+                text: '來賓編號創建失敗: ' + (response.message || '未知錯誤')
+              });
+              // 重新啟用按鈕
+              $('#confirmModal .modal-footer button').prop('disabled', false);
+              $('#confirmModal .modal-footer .btn-danger').text('確認送出');
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error('創建來賓編號失敗:', error);
+            Swal.fire({
+              icon: 'error',
+              title: '錯誤',
+              text: '來賓編號創建失敗，請稍後再試'
+            });
+            // 重新啟用按鈕
+            $('#confirmModal .modal-footer button').prop('disabled', false);
+            $('#confirmModal .modal-footer .btn-danger').text('確認送出');
+          }
+        });
+      }
+
+      // 執行表單提交
+      function performFormSubmission() {
         // 收集表單資料
         var formData = {
           member_name: $('input[name="member_name"]').val(),
@@ -662,6 +824,7 @@
           line_contact: $('input[name="line_contact"]').val(),
           tel_contact: $('input[name="tel_contact"]').val(),
           meeting_date: $('input[name="meeting_date"]').val(),
+          birth_date: $('input[name="birth_date"]').val(),
           products: {}
         };
 

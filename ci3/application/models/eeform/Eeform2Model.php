@@ -520,25 +520,25 @@ class Eeform2Model extends CI_Model {
     public function batch_update_products($products) {
         try {
             $this->db->trans_start();
-            
+
             // 先取得目前所有啟用的產品清單
             $current_products = $this->get_all_products();
             $current_product_ids = array_column($current_products, 'id');
-            
+
             // 取得目前最大的 sort_order 值，用於新增產品
             $max_sort_order = 0;
             if (!empty($current_products)) {
                 $sort_orders = array_column($current_products, 'sort_order');
                 $max_sort_order = max($sort_orders);
             }
-            
+
             // 記錄提交的產品ID清單
             $submitted_product_ids = [];
-            
+
             foreach ($products as $product) {
                 if (isset($product['id']) && $product['id']) {
                     $submitted_product_ids[] = $product['id'];
-                    
+
                     // 更新現有產品
                     $update_data = [
                         'product_code' => $product['code'],
@@ -548,7 +548,7 @@ class Eeform2Model extends CI_Model {
                         'sort_order' => isset($product['sort_order']) ? $product['sort_order'] : 0,
                         'is_active' => isset($product['is_active']) ? $product['is_active'] : true
                     ];
-                    
+
                     $this->db->where('id', $product['id']);
                     $this->db->update($this->table_product_master, $update_data);
                 } else {
@@ -562,14 +562,14 @@ class Eeform2Model extends CI_Model {
                         'sort_order' => $max_sort_order,
                         'is_active' => isset($product['is_active']) ? $product['is_active'] : true
                     ];
-                    
+
                     $this->db->insert($this->table_product_master, $insert_data);
                 }
             }
-            
+
             // 找出需要停用的產品（目前啟用但不在提交清單中的產品）
             $products_to_deactivate = array_diff($current_product_ids, $submitted_product_ids);
-            
+
             // 停用被刪除的產品
             if (!empty($products_to_deactivate)) {
                 $this->db->where_in('id', $products_to_deactivate);
@@ -577,18 +577,216 @@ class Eeform2Model extends CI_Model {
                     'is_active' => false
                 ]);
             }
-            
+
             $this->db->trans_complete();
-            
+
             if ($this->db->trans_status() === FALSE) {
                 throw new Exception('批量更新產品失敗');
             }
-            
+
             return true;
-            
+
         } catch (Exception $e) {
             $this->db->trans_rollback();
             throw new Exception('批量更新產品失敗: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 測試來賓驗證（測試模式）- MSSQL 版本
+     * @param array $test_data
+     * @return array
+     */
+    public function test_ww_chkguest($test_data) {
+        try {
+            // 載入front_mssql_model
+            $CI = &get_instance();
+            $CI->load->model('front_mssql_model');
+
+            // 檢查MSSQL連線
+            if (!$CI->front_mssql_model->ms_test()) {
+                throw new Exception('MSSQL 連線測試失敗');
+            }
+
+            $msconn = $CI->front_mssql_model->ms_connect();
+            if (!$msconn) {
+                throw new Exception('無法建立MSSQL連線');
+            }
+
+            // 準備參數 - 測試模式 (test=1)
+            $params = [
+                ['1', SQLSRV_PARAM_IN],  // test mode = 1 (測試)
+                [$test_data['d_spno'], SQLSRV_PARAM_IN],
+                [$test_data['cname'], SQLSRV_PARAM_IN],
+                [$test_data['bdate'], SQLSRV_PARAM_IN]
+            ];
+
+            // 調用MSSQL預儲程序
+            $result = $CI->front_mssql_model->get_data($msconn, "{CALL ww_chkguest(?,?,?,?)}", $params);
+
+            $CI->front_mssql_model->ms_close($msconn);
+
+            // 錯誤代碼對應訊息
+            $error_messages = [
+                0 => '來賓身分通過驗證',
+                1 => '已存在此來賓',
+                2 => '已存在此來賓，但推薦人不同',
+                3 => '此來賓已經是會員了'
+            ];
+
+            $errcode = isset($result[0]['errcode']) ? (int)$result[0]['errcode'] : -1;
+
+            return [
+                'success' => true,
+                'database_type' => 'MSSQL',
+                'mode' => 'test',
+                'input_data' => $test_data,
+                'result' => $result,
+                'errcode' => $errcode,
+                'message' => $error_messages[$errcode] ?? '未知錯誤 (errcode: ' . $errcode . ')',
+                'execution_time' => date('Y-m-d H:i:s')
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'database_type' => 'MSSQL',
+                'mode' => 'test',
+                'error' => $e->getMessage(),
+                'input_data' => $test_data,
+                'message' => 'MSSQL 預儲程序測試失敗: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * 創建來賓（正式模式）- MSSQL 版本
+     * @param array $guest_data
+     * @return array
+     */
+    public function create_ww_chkguest($guest_data) {
+        try {
+            // 載入front_mssql_model
+            $CI = &get_instance();
+            $CI->load->model('front_mssql_model');
+
+            // 檢查MSSQL連線
+            if (!$CI->front_mssql_model->ms_test()) {
+                throw new Exception('MSSQL 連線測試失敗');
+            }
+
+            $msconn = $CI->front_mssql_model->ms_connect();
+            if (!$msconn) {
+                throw new Exception('無法建立MSSQL連線');
+            }
+
+            // 準備參數 - 正式模式 (test=0)
+            $params = [
+                ['0', SQLSRV_PARAM_IN],  // test mode = 0 (正式)
+                [$guest_data['d_spno'], SQLSRV_PARAM_IN],
+                [$guest_data['cname'], SQLSRV_PARAM_IN],
+                [$guest_data['bdate'], SQLSRV_PARAM_IN]
+            ];
+
+            // 調用MSSQL預儲程序
+            $result = $CI->front_mssql_model->get_data($msconn, "{CALL ww_chkguest(?,?,?,?)}", $params);
+
+            $CI->front_mssql_model->ms_close($msconn);
+
+            // 錯誤代碼對應訊息
+            $error_messages = [
+                0 => '來賓身分通過驗證，成功創建來賓編號',
+                1 => '已存在此來賓，返回現有編號',
+                2 => '已存在此來賓，但推薦人不同',
+                3 => '此來賓已經是會員了'
+            ];
+
+            $errcode = isset($result[0]['errcode']) ? (int)$result[0]['errcode'] : -1;
+            $guest_id = $result[0]['c_no'] ?? null;
+
+            return [
+                'success' => $errcode <= 1, // errcode 0 或 1 視為成功
+                'database_type' => 'MSSQL',
+                'mode' => 'production',
+                'input_data' => $guest_data,
+                'result' => $result,
+                'errcode' => $errcode,
+                'guest_id' => $guest_id,
+                'c_no' => $guest_id, // 別名，方便前端使用
+                'message' => $error_messages[$errcode] ?? '未知錯誤 (errcode: ' . $errcode . ')',
+                'execution_time' => date('Y-m-d H:i:s'),
+                'is_new_guest' => $errcode === 0, // 是否為新來賓
+                'can_proceed' => $errcode <= 1 // 是否可以繼續處理
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'database_type' => 'MSSQL',
+                'mode' => 'production',
+                'error' => $e->getMessage(),
+                'input_data' => $guest_data,
+                'message' => 'MSSQL 預儲程序執行失敗: ' . $e->getMessage(),
+                'errcode' => -1,
+                'guest_id' => null,
+                'c_no' => null
+            ];
+        }
+    }
+
+    /**
+     * 檢查 MSSQL 預儲程序是否存在
+     * @param string $procedure_name
+     * @return array
+     */
+    public function check_mssql_procedure($procedure_name = 'ww_chkguest') {
+        try {
+            // 載入front_mssql_model
+            $CI = &get_instance();
+            $CI->load->model('front_mssql_model');
+
+            // 檢查MSSQL連線
+            if (!$CI->front_mssql_model->ms_test()) {
+                return [
+                    'exists' => false,
+                    'message' => 'MSSQL連線測試失敗',
+                    'error' => 'MSSQL服務無法連接'
+                ];
+            }
+
+            $msconn = $CI->front_mssql_model->ms_connect();
+            if (!$msconn) {
+                return [
+                    'exists' => false,
+                    'message' => 'MSSQL連線建立失敗',
+                    'error' => '無法建立MSSQL連線'
+                ];
+            }
+
+            // 查詢預儲程序是否存在
+            $check_sql = "SELECT COUNT(*) as count FROM sys.objects WHERE type = 'P' AND name = ?";
+            $result = $CI->front_mssql_model->get_data($msconn, $check_sql, [[$procedure_name, SQLSRV_PARAM_IN]]);
+
+            $CI->front_mssql_model->ms_close($msconn);
+
+            $exists = isset($result[0]['count']) && $result[0]['count'] > 0;
+
+            return [
+                'exists' => $exists,
+                'procedure_name' => $procedure_name,
+                'database_type' => 'MSSQL',
+                'message' => $exists ? "預儲程序 {$procedure_name} 存在於MSSQL資料庫中" : "預儲程序 {$procedure_name} 不存在於MSSQL資料庫中",
+                'checked_at' => date('Y-m-d H:i:s')
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'exists' => false,
+                'procedure_name' => $procedure_name,
+                'database_type' => 'MSSQL',
+                'error' => $e->getMessage(),
+                'message' => 'MSSQL預儲程序檢查失敗: ' . $e->getMessage()
+            ];
         }
     }
 }
