@@ -15,14 +15,17 @@ docs\prompts.md中的項目完成執行標準git操作：`git add` → `git comm
 
 ## 已完成項目
 
-### 2025-09-28 - eform1 API 結構優化完成
+### 2025-09-28 - eform1/eform2 API 結構優化完成
 - **項目30**: 移除多餘的 `ww_chkguest_test` API，優化 `test_procedure` API
 - 移除不必要的 `ww_chkguest_test` API 方法，避免功能重複
 - 修改現有 `test_procedure` API 接受前端真實資料（`cname`, `bdate`）
 - 移除不必要的 `d_spno` 和 `cell` 參數，簡化 API 結構
 - 更新前端呼叫原始 `test_procedure` 端點，避免 API 重複
 - 移除多餘的路由配置，簡化系統架構
-- 確保 API 功能單一且明確，提升程式碼可維護性
+- **項目31**: 確認 eform2 已符合相同優化標準
+- eform2 系統結構已優化：使用 `ww_chkguest_test` 和 `ww_chkguest_create` API
+- 前端僅傳送必要參數（`cname`, `bdate`），後端使用預設 `d_spno` 值
+- 兩系統架構統一：無重複 API，功能單一明確，提升可維護性
 
 ### 2025-09-27 - eform1/eform2 API 一致性修正完成
 - **項目29**: 完整修正 eform1 和 eform2 之間的 API 一致性問題
