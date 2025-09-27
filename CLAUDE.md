@@ -34,7 +34,8 @@ docs\prompts.md中的項目完成執行標準git操作：`git add` → `git comm
 - 當兩個欄位都填寫時自動呼叫測試 API 進行驗證
 - 表單送出時自動呼叫正式 API 取得來賓編號並更新 member_id
 - 整合 SweetAlert2 提供友善的使用者提示和錯誤處理
-- 修復 404 路由錯誤，確保 API 端點正常運作
+- **修復 404 路由錯誤**: 在 routes.php 中添加缺失的 API 路由映射
+- 確保 `/api/eeform2/ww_chkguest_test` 和 `/api/eeform2/ww_chkguest_create` 端點正常運作
 - 確保前後端驗證邏輯與 eform1 保持一致（移除電話欄位驗證）
 
 ### 2025-09-27 - eform02_list 身分選擇與篩選功能
